@@ -1,4 +1,4 @@
-﻿using System.Xml.Linq;
+﻿using System.Diagnostics;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
@@ -10,9 +10,24 @@ public static class Process
         var random = new Random();
         var inputValues = new List<int>();
 
-        for (int x = 1; x <= settings.NumberOfSeries; x++)
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+
+        while (inputValues.Count < settings.NumberOfSeries)
         {
-            var randomValue = random.Next(settings.MaxStartingNumber) + 1;
+            if (stopwatch.Elapsed.TotalSeconds >= 10)
+            {
+                stopwatch.Stop();
+
+                break;
+            }
+
+            int randomValue = random.Next(settings.MaxStartingNumber) + 1;
+
+            if (settings.ListOfNumbersToExclude.Contains(randomValue))
+            {
+                continue;
+            }
 
             if (!inputValues.Contains(randomValue))
             {
@@ -33,7 +48,7 @@ public static class Process
         Console.WriteLine("Settings:");
         Console.WriteLine();
 
-        var settingsProperties = typeof(Settings).GetProperties();
+        var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null).ToList();
 
         foreach(var property in settingsProperties)
         {
@@ -45,6 +60,12 @@ public static class Process
         Console.WriteLine();
         Console.WriteLine("-----------------");
         Console.WriteLine();
+
+        if (settings.NumberOfSeries > outputValues.Count)
+        {
+            Console.WriteLine($"Gave up generating {settings.NumberOfSeries} random numbers. Generated {inputValues.Count}");
+            Console.WriteLine();
+        }
 
         Console.Write($"Adding series starting with: ");
 
@@ -62,11 +83,31 @@ public static class Process
         Console.WriteLine();
         Console.WriteLine();
 
+        Console.WriteLine($"Top 10 longest series: ");
+
+        foreach ((int FirstNumber, int Count) in GenerateTop10Series(outputValues))
+        {
+            Console.WriteLine($"    {FirstNumber}: {Count}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine();
+
         graph.PositionNodes();
         graph.Draw(settings);
+
+        Histogram.GenerateHistogram(outputValues, settings.ImagePath!);
 
         Console.WriteLine();
         Console.WriteLine("Press any key to quit...");
         Console.ReadKey();
+    }
+
+    private static List<(int FirstNumber, int Count)> GenerateTop10Series(List<List<int>> series)
+    {
+        return series.Where(list => list.Any()).Select(list => (list.First(), list.Count))
+                                               .OrderByDescending(item => item.Count)
+                                               .Take(10)
+                                               .ToList();
     }
 }
