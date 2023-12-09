@@ -1,30 +1,14 @@
 ﻿using SkiaSharp;
 using ThreeXPlusOne.Config;
+using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code;
 
-internal class DirectedGraphNode
-{
-    public DirectedGraphNode(int value)
-    {
-        Value = value;
-        Children = new List<DirectedGraphNode>();
-        Depth = -1;
-    }
-
-    public int Value { get; set; }
-    public DirectedGraphNode? Parent { get; set; }
-    public List<DirectedGraphNode> Children { get; set; }
-    public int Depth { get; set; }
-    public SKPoint Position { get; set; }
-    public bool IsPositioned { get; set; }
-}
-
 internal class DirectedGraph
 {
-    private Dictionary<int, DirectedGraphNode> _nodes;
-    private readonly Random _random;
+    private readonly Dictionary<int, DirectedGraphNode> _nodes;
     private readonly Settings _settings;
+    private readonly Random _random;
 
     internal DirectedGraph(Settings settings)
     {
@@ -33,18 +17,20 @@ internal class DirectedGraph
         _settings = settings;
     }
 
-    public void AddSeries(IEnumerable<int> series)
+    public void AddSeries(List<int> series)
     {
         DirectedGraphNode? previousNode = null;
-        int currentDepth = series.Count();
+        int currentDepth = series.Count;
 
         foreach (var number in series)
         {
-            DirectedGraphNode? currentNode;
-            if (!_nodes.TryGetValue(number, out currentNode))
+            if (!_nodes.TryGetValue(number, out DirectedGraphNode? currentNode))
             {
-                currentNode = new DirectedGraphNode(number);
-                currentNode.Depth = currentDepth; // Set the initial depth for the node
+                currentNode = new DirectedGraphNode(number)
+                {
+                    Depth = currentDepth // Set the initial depth for the node
+                };
+
                 _nodes.Add(number, currentNode);
             }
 
@@ -76,9 +62,9 @@ internal class DirectedGraph
         Console.WriteLine("Positioning nodes...");
 
         // Set up the base nodes' positions
-        SKPoint base1 = new SKPoint(_settings.CanvasWidth / 2, _settings.CanvasHeight - 100);         // Node '1' at the bottom
-        SKPoint base2 = new SKPoint(_settings.CanvasWidth / 2, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
-        SKPoint base4 = new SKPoint(_settings.CanvasWidth / 2, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
+        var base1 = new SKPoint(_settings.CanvasWidth / 2, _settings.CanvasHeight - 100);         // Node '1' at the bottom
+        var base2 = new SKPoint(_settings.CanvasWidth / 2, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
+        var base4 = new SKPoint(_settings.CanvasWidth / 2, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;

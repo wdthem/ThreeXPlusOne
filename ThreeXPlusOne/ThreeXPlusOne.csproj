@@ -10,10 +10,12 @@
   <ItemGroup>
     <None Remove="Code\" />
     <None Remove="Config\" />
+    <None Remove="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Code\" />
     <Folder Include="Config\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="2.88.6" />
