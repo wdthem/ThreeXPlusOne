@@ -1,4 +1,5 @@
-﻿using ThreeXPlusOne.Config;
+﻿using System.Xml.Linq;
+using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
@@ -24,35 +25,48 @@ public static class Process
         var graph = new DirectedGraph(settings);
 
         Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine();
+        Console.WriteLine();
         Console.WriteLine("3x + 1 Visualizer");
         Console.WriteLine("-----------------");
         Console.WriteLine();
-        Console.WriteLine($"Canvas dimensions: {settings.CanvasWidth}W x {settings.CanvasHeight}H");
-        Console.WriteLine($"Horizontal space between nodes: {settings.XNodeSpacer}");
-        Console.WriteLine($"Vertical space between nodes: {settings.YNodeSpacer}");
-        Console.WriteLine($"Rotation angle: {settings.RotationAngle}");
+        Console.WriteLine("Settings:");
+        Console.WriteLine();
+
+        var settingsProperties = typeof(Settings).GetProperties();
+
+        foreach(var property in settingsProperties)
+        {
+            var value = property.GetValue(settings, null);
+
+            Console.WriteLine($"    {property.Name}: {value}");
+        }
+
         Console.WriteLine();
         Console.WriteLine("-----------------");
         Console.WriteLine();
 
+        Console.Write($"Adding series starting with: ");
+
         foreach (List<int> values in outputValues)
         {
-            graph.AddSeries(values);
+            Console.Write($"{values[0]}  ");
 
-            Console.WriteLine($"Added series starting with: {values[0]}");
+            graph.AddSeries(values);
         }
 
+        Console.Write("... ");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Done");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine();
         Console.WriteLine();
 
         graph.PositionNodes();
+        graph.Draw(settings);
 
-        var outFileType = settings.RotationAngle == 0 ? "NoRotation" : "Rotation";
-        var outputFileName = $"/Users/williamthem/Documents/Projects/ThreeXPlusOne/ThreeXPlusOne-" +
-                             $"{outFileType}-{Guid.NewGuid()}.png";
-
-        graph.Draw(settings.SaveOutput, outputFileName);
-
-        Console.WriteLine("Press any key to close...");
+        Console.WriteLine();
+        Console.WriteLine("Press any key to quit...");
         Console.ReadKey();
     }
 }

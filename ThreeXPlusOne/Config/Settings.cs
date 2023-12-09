@@ -10,5 +10,6 @@ public class Settings
     public double RotationAngle { get; set; }
     public int XNodeSpacer { get; set; }
     public int YNodeSpacer { get; set; }
-    public bool SaveOutput { get; set; }
+    public bool GenerateImage { get; set; }
+    public string? ImagePath { get; set; }
 }

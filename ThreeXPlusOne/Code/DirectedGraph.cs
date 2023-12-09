@@ -59,7 +59,7 @@ internal class DirectedGraph
 
     public void PositionNodes()
     {
-        Console.WriteLine("Positioning nodes...");
+        Console.Write("Positioning nodes... ");
 
         // Set up the base nodes' positions
         var base1 = new SKPoint(_settings.CanvasWidth / 2, _settings.CanvasHeight - 100);         // Node '1' at the bottom
@@ -103,7 +103,9 @@ internal class DirectedGraph
         }
 
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Done");
+        Console.Write("Done");
+        Console.WriteLine();
+        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.White;
     }
 
@@ -120,9 +122,9 @@ internal class DirectedGraph
         }
     }
 
-    public void Draw(bool saveOutput, string outputFileName)
+    public void Draw(Settings settings)
     {
-        Console.WriteLine("Drawing nodes...");
+        Console.WriteLine("Drawing connections and nodes... ");
 
         using (var surface = SKSurface.Create(new SKImageInfo(_settings.CanvasWidth, _settings.CanvasHeight)))
         {
@@ -130,37 +132,75 @@ internal class DirectedGraph
 
             canvas.Clear(SKColors.Black);
 
+            var lcv = 1;
             foreach (var node in _nodes)
             {
                 DrawConnection(canvas, node.Value);
+
+                Console.Write($"    \r{lcv} connections drawn");
+
+                lcv += node.Value.Children.Count;
             }
 
+            Console.WriteLine();
+
+            lcv = 1;
             foreach (var node in _nodes)
             {
                 DrawNode(canvas, node.Value);
+
+                Console.Write($"    \r{lcv} nodes drawn");
+
+                lcv = lcv + 1 + node.Value.Children.Count;
             }
 
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Done");
+            Console.Write("Done");
+            Console.WriteLine();
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (saveOutput)
+            if (settings.GenerateImage)
             {
-                if (string.IsNullOrEmpty(outputFileName))
+                var graphRotation = settings.RotationAngle == 0 ? "NoRotation" : "Rotation";
+                var outputFileName = $"ThreeXPlusOne-{graphRotation}-{Guid.NewGuid()}.png";
+
+                string fullPath = Path.Combine(settings.ImagePath ?? "", outputFileName);
+
+                if (string.IsNullOrEmpty(outputFileName) || fullPath == outputFileName)
                 {
-                    throw new FileNotFoundException("The output file path was empty");
+                    Console.WriteLine("ERROR: The image path was empty. Check 'settings.json'");
+
+                    return;
                 }
                 else
                 {
-                    var directory = Path.GetDirectoryName(outputFileName);
+                    var directory = Path.GetDirectoryName(fullPath);
 
                     if (!Directory.Exists(directory))
                     {
-                        throw new FileNotFoundException("The specified output directory does not exist");
+                        Console.WriteLine("ERROR: The specified image path does not exist. Check 'settings.json'");
+
+                        return;
                     }
                 }
 
-                SaveCanvas(surface, outputFileName);
+                Console.Write("Proceed to generate image? (y/n): ");
+                ConsoleKeyInfo keyInfo = Console.ReadKey();
+
+                if (keyInfo.Key != ConsoleKey.Y)
+                {
+                    Console.WriteLine("");
+                    Console.WriteLine("Image generation cancelled");
+                    Console.WriteLine("");
+
+                    return;
+                }
+
+                Console.WriteLine();
+
+                SaveCanvas(surface, fullPath);
             }
             else
             {
@@ -282,7 +322,7 @@ internal class DirectedGraph
 
     private static void SaveCanvas(SKSurface surface, string path)
     {
-        Console.WriteLine("Saving image...");
+        Console.Write("Saving image... ");
 
         using (var image = surface.Snapshot())
         using (var data = image.Encode(SKEncodedImageFormat.Png, 25))
@@ -292,7 +332,9 @@ internal class DirectedGraph
         }
 
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Output saved to: {path}");
+        Console.Write($"Console.WriteLine($\"Output saved to: {path}\");");
+        Console.WriteLine();
+        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.White;
     }
 
@@ -305,7 +347,7 @@ internal class DirectedGraph
         return new SKColor(red, green, blue);
     }
 
-    public (double x, double y) RotatePointAntiClockWise(double x, double y, double angleDegrees)
+    public static (double x, double y) RotatePointAntiClockWise(double x, double y, double angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 
@@ -318,7 +360,7 @@ internal class DirectedGraph
         return (xNew, yNew);
     }
 
-    public (double x, double y) RotatePointClockwise(double x, double y, double angleDegrees)
+    public static (double x, double y) RotatePointClockwise(double x, double y, double angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 
