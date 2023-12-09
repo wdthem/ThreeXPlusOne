@@ -27,8 +27,6 @@ internal class Program
 
     internal static void OutputHelpText()
     {
-        var settingsProperties = typeof(Settings).GetProperties();
-
         Console.WriteLine("");
         Console.WriteLine("3x + 1 Visualizer - Help");
         Console.WriteLine("------------------------");
@@ -38,8 +36,9 @@ internal class Program
         Console.WriteLine("{");
 
         var lcv = 1;
+        var settingsProperties = typeof(Settings).GetProperties();
 
-        foreach(var property in settingsProperties)
+        foreach (var property in settingsProperties)
         {
             var comma = lcv != settingsProperties.Length ? "," : "";
 
