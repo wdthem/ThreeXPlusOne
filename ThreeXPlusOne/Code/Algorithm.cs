@@ -2,6 +2,7 @@
 
 internal static class Algorithm
 {
+
     internal static List<List<int>> Run(List<int> inputValues)
     {
         if (inputValues.Count == 0)
