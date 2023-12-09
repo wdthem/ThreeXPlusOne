@@ -332,7 +332,7 @@ internal class DirectedGraph
         }
 
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"Console.WriteLine($\"Output saved to: {path}\");");
+        Console.Write($"Console.WriteLine($\"Output saved to: {path}\")");
         Console.WriteLine();
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.White;
