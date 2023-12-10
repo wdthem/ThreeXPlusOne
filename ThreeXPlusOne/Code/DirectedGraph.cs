@@ -161,32 +161,18 @@ internal class DirectedGraph
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (settings.GenerateImage)
+            if (settings.GenerateGraph)
             {
-                var graphRotation = settings.RotationAngle == 0 ? "NoRotation" : "Rotation";
-                var outputFileName = $"ThreeXPlusOne-{graphRotation}-{Guid.NewGuid()}.png";
+                string fullPath = FileHelper.GenerateGraphFilePath(settings);
 
-                string fullPath = Path.Combine(settings.ImagePath ?? "", outputFileName);
-
-                if (string.IsNullOrEmpty(outputFileName) || fullPath == outputFileName)
+                if (string.IsNullOrEmpty(fullPath))
                 {
-                    Console.WriteLine("ERROR: The image path was empty. Check 'settings.json'");
+                    Console.WriteLine("ERROR: Invalid ImagePath. Check 'settings.json");
 
                     return;
                 }
-                else
-                {
-                    var directory = Path.GetDirectoryName(fullPath);
 
-                    if (!Directory.Exists(directory))
-                    {
-                        Console.WriteLine("ERROR: The specified image path does not exist. Check 'settings.json'");
-
-                        return;
-                    }
-                }
-
-                Console.Write("Proceed to generate image? (y/n): ");
+                Console.Write("Proceed to generate graph? (y/n): ");
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
 
                 if (keyInfo.Key != ConsoleKey.Y)
@@ -204,7 +190,7 @@ internal class DirectedGraph
             }
             else
             {
-                Console.WriteLine("Output saving disabled");
+                Console.WriteLine("Graph generation disabled");
             }
         }
     }
@@ -311,13 +297,51 @@ internal class DirectedGraph
         };
 
         // Draw the circle
-        canvas.DrawCircle(node.Position, 40, circlePaint);
+        //canvas.DrawCircle(node.Position, 40, circlePaint);
+        DrawDistortedCircle(canvas, node.Position, 40, 25, 5);
 
         // Draw the text
         // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
         float textY = node.Position.Y + 8;
 
         canvas.DrawText(node.Value.ToString(), node.Position.X, textY, textPaint);
+    }
+
+    private void DrawDistortedCircle(SKCanvas canvas,
+                                     SKPoint center,
+                                     float baseRadius,
+                                     int distortionLevel,
+                                     int pointsCount)
+    {
+        var path = new SKPath();
+        var random = new Random();
+
+        path.MoveTo(center.X + baseRadius, center.Y);
+
+        for (int i = 1; i <= pointsCount; i++)
+        {
+            float angle = (float)(2 * Math.PI / pointsCount * i);
+            float radiusVariation = random.Next(-distortionLevel, distortionLevel);
+            float radius = baseRadius + radiusVariation;
+
+            var point = new SKPoint(
+                center.X + radius * (float)Math.Cos(angle),
+                center.Y + radius * (float)Math.Sin(angle));
+
+            path.LineTo(point);
+        }
+
+        path.Close();
+
+        // Draw the distorted path/circle
+        var paint = new SKPaint
+        {
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill,
+            Color = GetRandomColor()
+        };
+
+        canvas.DrawPath(path, paint);
     }
 
     private static void SaveCanvas(SKSurface surface, string path)
@@ -332,7 +356,7 @@ internal class DirectedGraph
         }
 
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"Console.WriteLine($\"Output saved to: {path}\")");
+        Console.Write($"Saved to: {path}");
         Console.WriteLine();
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.White;

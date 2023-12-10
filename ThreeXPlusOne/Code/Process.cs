@@ -3,9 +3,9 @@ using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public static class Process
+internal static class Process
 {
-	public static void Run(Settings settings)
+	internal static void Run(Settings settings)
 	{
         var random = new Random();
         var inputValues = new List<int>();
@@ -40,11 +40,9 @@ public static class Process
         var graph = new DirectedGraph(settings);
 
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine("3x + 1 Visualizer");
-        Console.WriteLine("-----------------");
-        Console.WriteLine();
+
+        ConsoleOutput.WriteAsciiArtLogo();
+       
         Console.WriteLine("Settings:");
         Console.WriteLine();
 
@@ -58,7 +56,7 @@ public static class Process
         }
 
         Console.WriteLine();
-        Console.WriteLine("-----------------");
+        ConsoleOutput.WriteSeparator();
         Console.WriteLine();
 
         if (settings.NumberOfSeries > outputValues.Count)
@@ -67,13 +65,22 @@ public static class Process
             Console.WriteLine();
         }
 
-        Console.Write($"Adding series starting with: ");
+        Console.WriteLine($"Adding series starting with: ");
+
+        var lcv = 1;
 
         foreach (List<int> values in outputValues)
         {
-            Console.Write($"{values[0]}  ");
+            Console.Write($"{values[0]}, ");
+
+            if (lcv % 20 == 0)
+            {
+                Console.WriteLine();
+            }
 
             graph.AddSeries(values);
+
+            lcv++;
         }
 
         Console.Write("... ");
@@ -87,16 +94,25 @@ public static class Process
 
         foreach ((int FirstNumber, int Count) in GenerateTop10Series(outputValues))
         {
-            Console.WriteLine($"    {FirstNumber}: {Count}");
+            Console.WriteLine($"    {FirstNumber}: {Count} in series");
         }
 
-        Console.WriteLine();
         Console.WriteLine();
 
         graph.PositionNodes();
         graph.Draw(settings);
 
-        Histogram.GenerateHistogram(outputValues, settings.ImagePath!);
+        if (settings.GenerateHistogram)
+        {
+            Console.Write("Generating histogram...");
+
+            Histogram.GenerateHistogram(outputValues, settings);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("Done");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine();
+        }
 
         Console.WriteLine();
         Console.WriteLine("Press any key to quit...");

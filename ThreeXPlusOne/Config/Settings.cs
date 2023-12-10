@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace ThreeXPlusOne.Config;
 
 public class Settings
@@ -11,9 +13,14 @@ public class Settings
     public double RotationAngle { get; set; }
     public int XNodeSpacer { get; set; }
     public int YNodeSpacer { get; set; }
-    public bool GenerateImage { get; set; }
-    public string? ImagePath { get; set; }
+    public bool GenerateGraph { get; set; }
+    public bool GenerateHistogram { get; set; }
+    public string? OutputPath { get; set; }
 
+    [JsonIgnore]
+    public string FileNameUniqueId { get; set; } = Guid.NewGuid().ToString();
+
+    [JsonIgnore]
     public List<int> ListOfNumbersToExclude
     {
         get

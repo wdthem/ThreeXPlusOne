@@ -1,11 +1,12 @@
 ﻿using SkiaSharp;
+using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
 internal static class Histogram
 {
 
-    internal static void GenerateHistogram(List<List<int>> seriesData, string imagePath)
+    internal static void GenerateHistogram(List<List<int>> seriesData, Settings settings)
     {
         int width = 500;
         int height = 400;
@@ -19,7 +20,17 @@ internal static class Histogram
 
         using SKImage image = SKImage.FromBitmap(bitmap);
         using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
-        using var stream = File.OpenWrite($"{imagePath}histogram.png");
+
+        string fullPath = FileHelper.GenerateHistogramFilePath(settings);
+
+        if (string.IsNullOrEmpty(fullPath))
+        {
+            Console.WriteLine("ERROR: Invalid image path. Check 'settings.json'");
+
+            return;
+        }
+
+        using var stream = File.OpenWrite($"{fullPath}");
 
         data.SaveTo(stream);
     }
