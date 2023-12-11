@@ -2,7 +2,7 @@
 
 namespace ThreeXPlusOne.Models;
 
-internal class DirectedGraphNode
+public class DirectedGraphNode
 {
     public DirectedGraphNode(int value)
     {

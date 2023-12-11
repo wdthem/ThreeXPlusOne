@@ -2,9 +2,9 @@
 
 namespace ThreeXPlusOne.Code;
 
-internal static class FileHelper
+public static class FileHelper
 {
-	internal static string GenerateGraphFilePath(Settings settings)
+	public static string GenerateGraphFilePath(Settings settings)
 	{
         string fullPath;
 
@@ -29,7 +29,7 @@ internal static class FileHelper
         return fullPath;
     }
 
-    internal static string GenerateHistogramFilePath(Settings settings)
+    public static string GenerateHistogramFilePath(Settings settings)
     {
         string fullPath;
 

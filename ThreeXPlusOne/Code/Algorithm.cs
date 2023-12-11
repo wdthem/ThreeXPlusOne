@@ -1,9 +1,9 @@
 ﻿namespace ThreeXPlusOne.Code;
 
-internal static class Algorithm
+public static class Algorithm
 {
 
-    internal static List<List<int>> Run(List<int> inputValues)
+    public static List<List<int>> Run(List<int> inputValues)
     {
         if (inputValues.Count == 0)
         {

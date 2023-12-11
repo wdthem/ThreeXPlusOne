@@ -4,13 +4,13 @@ using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code;
 
-internal class DirectedGraph
+public class DirectedGraph
 {
     private readonly Dictionary<int, DirectedGraphNode> _nodes;
     private readonly Settings _settings;
     private readonly Random _random;
 
-    internal DirectedGraph(Settings settings)
+    public DirectedGraph(Settings settings)
     {
         _nodes = new Dictionary<int, DirectedGraphNode>();
         _random = new Random();
@@ -158,7 +158,6 @@ internal class DirectedGraph
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("Done");
             Console.WriteLine();
-            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
 
             if (settings.GenerateGraph)
@@ -172,6 +171,7 @@ internal class DirectedGraph
                     return;
                 }
 
+                Console.WriteLine();
                 Console.Write("Proceed to generate graph? (y/n): ");
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
 
@@ -190,6 +190,7 @@ internal class DirectedGraph
             }
             else
             {
+                ConsoleOutput.WriteSeparator();
                 Console.WriteLine("Graph generation disabled");
             }
         }
@@ -298,7 +299,7 @@ internal class DirectedGraph
 
         // Draw the circle
         //canvas.DrawCircle(node.Position, 40, circlePaint);
-        DrawDistortedCircle(canvas, node.Position, 40, 25, 5);
+        DrawDistortedCircle(canvas, node.Position, 40, 30);
 
         // Draw the text
         // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
@@ -310,18 +311,17 @@ internal class DirectedGraph
     private void DrawDistortedCircle(SKCanvas canvas,
                                      SKPoint center,
                                      float baseRadius,
-                                     int distortionLevel,
-                                     int pointsCount)
+                                     int distortionLevel)
     {
         var path = new SKPath();
-        var random = new Random();
+        var randomPointsCount = _random.Next(1, 9); //from 1 to 8
 
         path.MoveTo(center.X + baseRadius, center.Y);
 
-        for (int i = 1; i <= pointsCount; i++)
+        for (int i = 1; i <= randomPointsCount; i++)
         {
-            float angle = (float)(2 * Math.PI / pointsCount * i);
-            float radiusVariation = random.Next(-distortionLevel, distortionLevel);
+            float angle = (float)(2 * Math.PI / randomPointsCount * i);
+            float radiusVariation = _random.Next(-distortionLevel, distortionLevel);
             float radius = baseRadius + radiusVariation;
 
             var point = new SKPoint(
@@ -346,6 +346,7 @@ internal class DirectedGraph
 
     private static void SaveCanvas(SKSurface surface, string path)
     {
+        Console.WriteLine();
         Console.Write("Saving image... ");
 
         using (var image = surface.Snapshot())

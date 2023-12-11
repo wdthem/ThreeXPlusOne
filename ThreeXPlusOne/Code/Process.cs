@@ -3,38 +3,45 @@ using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-internal static class Process
+public static class Process
 {
-	internal static void Run(Settings settings)
+	public static void Run(Settings settings)
 	{
         var random = new Random();
         var inputValues = new List<int>();
 
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
-
-        while (inputValues.Count < settings.NumberOfSeries)
+        if (string.IsNullOrEmpty(settings.UseOnlyTheseNumbers))
         {
-            if (stopwatch.Elapsed.TotalSeconds >= 10)
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            while (inputValues.Count < settings.NumberOfSeries)
             {
-                stopwatch.Stop();
+                if (stopwatch.Elapsed.TotalSeconds >= 10)
+                {
+                    stopwatch.Stop();
 
-                break;
-            }
+                    break;
+                }
 
-            int randomValue = random.Next(settings.MaxStartingNumber) + 1;
+                int randomValue = random.Next(0, settings.MaxStartingNumber) + 1;
 
-            if (settings.ListOfNumbersToExclude.Contains(randomValue))
-            {
-                continue;
-            }
+                if (settings.ListOfNumbersToExclude.Contains(randomValue))
+                {
+                    continue;
+                }
 
-            if (!inputValues.Contains(randomValue))
-            {
-                inputValues.Add(randomValue);
+                if (!inputValues.Contains(randomValue))
+                {
+                    inputValues.Add(randomValue);
+                }
             }
         }
-
+        else
+        {
+            inputValues = settings.ListOfManualSeriesNumbers;
+        }
+        
         List<List<int>> outputValues = Algorithm.Run(inputValues);
 
         var graph = new DirectedGraph(settings);
@@ -42,9 +49,8 @@ internal static class Process
         Console.ForegroundColor = ConsoleColor.White;
 
         ConsoleOutput.WriteAsciiArtLogo();
-       
-        Console.WriteLine("Settings:");
-        Console.WriteLine();
+
+        ConsoleOutput.WriteHeading("Settings");
 
         var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null).ToList();
 
@@ -52,20 +58,26 @@ internal static class Process
         {
             var value = property.GetValue(settings, null);
 
-            Console.WriteLine($"    {property.Name}: {value}");
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.Write($"    {property.Name}: ");
+
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.Write($"{value}");
+            Console.WriteLine();
         }
 
-        Console.WriteLine();
         ConsoleOutput.WriteSeparator();
-        Console.WriteLine();
 
-        if (settings.NumberOfSeries > outputValues.Count)
+        if (string.IsNullOrEmpty(settings.UseOnlyTheseNumbers) &&
+            settings.NumberOfSeries > outputValues.Count)
         {
             Console.WriteLine($"Gave up generating {settings.NumberOfSeries} random numbers. Generated {inputValues.Count}");
             Console.WriteLine();
         }
 
-        Console.WriteLine($"Adding series starting with: ");
+        ConsoleOutput.WriteHeading("Adding series for the following numbers:");
 
         var lcv = 1;
 
@@ -88,35 +100,27 @@ internal static class Process
         Console.Write("Done");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine();
-        Console.WriteLine();
 
-        Console.WriteLine($"Top 10 longest series: ");
+        ConsoleOutput.WriteHeading("Top 10 longest series:");
 
         foreach ((int FirstNumber, int Count) in GenerateTop10Series(outputValues))
         {
             Console.WriteLine($"    {FirstNumber}: {Count} in series");
         }
 
-        Console.WriteLine();
+        ConsoleOutput.WriteSeparator();
+
+        ConsoleOutput.WriteHeading("Graph generation:");
 
         graph.PositionNodes();
         graph.Draw(settings);
 
-        if (settings.GenerateHistogram)
-        {
-            Console.Write("Generating histogram...");
+        Histogram.GenerateHistogram(outputValues, settings);
 
-            Histogram.GenerateHistogram(outputValues, settings);
+        ConsoleOutput.WriteSeparator();
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Done");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine();
-        }
-
+        Console.WriteLine("Process complete.");
         Console.WriteLine();
-        Console.WriteLine("Press any key to quit...");
-        Console.ReadKey();
     }
 
     private static List<(int FirstNumber, int Count)> GenerateTop10Series(List<List<int>> series)

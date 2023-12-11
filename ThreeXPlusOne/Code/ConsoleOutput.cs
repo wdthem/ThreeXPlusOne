@@ -2,12 +2,12 @@
 
 namespace ThreeXPlusOne.Code;
 
-internal static class ConsoleOutput
+public static class ConsoleOutput
 {
-    internal static void WriteAsciiArtLogo()
+    public static void WriteAsciiArtLogo()
     {
-        Console.WriteLine("");
         WriteSeparator();
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
         Console.WriteLine(" .d8888b.                              d888   ");
         Console.WriteLine("d88P  Y88b                            d8888   ");
         Console.WriteLine("     .d88P                              888   ");
@@ -16,11 +16,11 @@ internal static class ConsoleOutput
         Console.WriteLine("888    888   X88K          888          888   ");
         Console.WriteLine("Y88b  d88P .d8\"\"8b.                     888   ");
         Console.WriteLine(" \"Y8888P\"  888  888                   8888888 ");
+        Console.ForegroundColor = ConsoleColor.White;
         WriteSeparator();
-        Console.WriteLine("");
     }
 
-    internal static void WriteHelpText()
+    public static void WriteHelpText()
     {
         WriteAsciiArtLogo();
 
@@ -57,7 +57,8 @@ internal static class ConsoleOutput
         Console.WriteLine($"     {nameof(Settings.YNodeSpacer)}: 125 (the space between nodes on the y-axis)");
         Console.WriteLine($"     {nameof(Settings.NumberOfSeries)}: 200 (the total number of series that will run)");
         Console.WriteLine($"     {nameof(Settings.MaxStartingNumber)}: 1000 (the highest number any given series can start with)");
-        Console.WriteLine($"     {nameof(Settings.NumbersToExclude)}: \"73, 54\" (comma-separated list of numbers not to use)");
+        Console.WriteLine($"     {nameof(Settings.UseOnlyTheseNumbers)}: \"\" (comma-separated list of numbers to run the program with. Overrides {nameof(Settings.NumberOfSeries)} and {nameof(Settings.MaxStartingNumber)})");
+        Console.WriteLine($"     {nameof(Settings.ExcludeTheseNumbers)}: \"73, 54\" (comma-separated list of numbers not to use)");
         Console.WriteLine($"     {nameof(Settings.GenerateGraph)}: true (whether or not to generate the image of the data)");
         Console.WriteLine($"     {nameof(Settings.GenerateHistogram)}: true (whether or not to generate a histogram of numbers starting from 1-9)");
         Console.WriteLine($"     {nameof(Settings.OutputPath)}: \"C:\\path\\to\\save\\image\\\" (the folder where the image should be placed)");
@@ -69,8 +70,21 @@ internal static class ConsoleOutput
         Console.WriteLine("");
     }
 
-    internal static void WriteSeparator()
+    public static void WriteSeparator()
     {
+        Console.WriteLine();
         Console.WriteLine("----------------------------------------------");
+        Console.WriteLine();
+    }
+
+    public static void WriteHeading(string headerText)
+    {
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+        Console.WriteLine();
+        Console.WriteLine(headerText);
+        Console.WriteLine();
+
+        Console.ForegroundColor = ConsoleColor.White;
     }
 }

@@ -3,11 +3,22 @@ using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-internal static class Histogram
+public static class Histogram
 {
 
-    internal static void GenerateHistogram(List<List<int>> seriesData, Settings settings)
+    public static void GenerateHistogram(List<List<int>> seriesData, Settings settings)
     {
+        if (settings.GenerateHistogram)
+        {
+            Console.Write("Generating histogram...");
+        }
+        else
+        {
+            Console.WriteLine("Histogram generation disabled");
+
+            return;
+        }
+
         int width = 500;
         int height = 400;
         using SKBitmap bitmap = new(width, height);
@@ -33,6 +44,11 @@ internal static class Histogram
         using var stream = File.OpenWrite($"{fullPath}");
 
         data.SaveTo(stream);
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.Write("Done");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine();
     }
 
     private static List<int> GenerateHistogramData(List<List<int>> seriesData)

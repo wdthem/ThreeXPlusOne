@@ -2,9 +2,11 @@
 using ThreeXPlusOne.Code;
 using ThreeXPlusOne.Config;
 
-internal class Program
+namespace ThreeXPlusOne;
+
+public static class Program
 {
-    internal static void Main(string[] args)
+    public static void Main(string[] args)
     {
         if (args.Length > 0)
         {
