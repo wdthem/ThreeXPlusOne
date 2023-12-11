@@ -20,6 +20,46 @@ public static class ConsoleOutput
         WriteSeparator();
     }
 
+    public static void WriteSettings(Settings settings)
+    {
+        ConsoleOutput.WriteHeading("Settings");
+
+        var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null).ToList();
+
+        foreach (var property in settingsProperties)
+        {
+            var value = property.GetValue(settings, null);
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.Write($"    {property.Name}: ");
+
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.Write($"{value}");
+            Console.WriteLine();
+        }
+
+        WriteSeparator();
+    }
+
+    public static void WriteError(string message)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.Write("ERROR:");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine(message);
+        Console.WriteLine();
+    }
+
+    public static void WriteDone()
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine("Done");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine();
+    }
+
     public static void WriteHelpText()
     {
         WriteAsciiArtLogo();
@@ -52,7 +92,8 @@ public static class ConsoleOutput
         Console.WriteLine("");
         Console.WriteLine($"     {nameof(Settings.CanvasWidth)}: 30000 (the width of the drawing canvas)");
         Console.WriteLine($"     {nameof(Settings.CanvasHeight)}: 35000 (the height of the drawing canvas)");
-        Console.WriteLine($"     {nameof(Settings.RotationAngle)}: 0 (the size of the rotation angle. 0 is no rotation)");
+        Console.WriteLine($"     {nameof(Settings.NodeRotationAngle)}: 0 (the size of the rotation angle. 0 is no rotation)");
+        Console.WriteLine($"     {nameof(Settings.DistortNodes)}: false (whether or not to use cirecles or distorted shapes as graph nodes)");
         Console.WriteLine($"     {nameof(Settings.XNodeSpacer)}: 125 (the space between nodes on the x-axis)");
         Console.WriteLine($"     {nameof(Settings.YNodeSpacer)}: 125 (the space between nodes on the y-axis)");
         Console.WriteLine($"     {nameof(Settings.NumberOfSeries)}: 200 (the total number of series that will run)");
@@ -61,6 +102,7 @@ public static class ConsoleOutput
         Console.WriteLine($"     {nameof(Settings.ExcludeTheseNumbers)}: \"73, 54\" (comma-separated list of numbers not to use)");
         Console.WriteLine($"     {nameof(Settings.GenerateGraph)}: true (whether or not to generate the image of the data)");
         Console.WriteLine($"     {nameof(Settings.GenerateHistogram)}: true (whether or not to generate a histogram of numbers starting from 1-9)");
+        Console.WriteLine($"     {nameof(Settings.GenerateMetadataFile)}: true (whether or not to generate a a file with metadata about the run)");
         Console.WriteLine($"     {nameof(Settings.OutputPath)}: \"C:\\path\\to\\save\\image\\\" (the folder where the image should be placed)");
         Console.ResetColor();
         Console.WriteLine("");

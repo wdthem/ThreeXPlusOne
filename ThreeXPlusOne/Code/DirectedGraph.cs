@@ -147,7 +147,7 @@ public class DirectedGraph
             lcv = 1;
             foreach (var node in _nodes)
             {
-                DrawNode(canvas, node.Value);
+                DrawNode(canvas, node.Value, settings);
 
                 Console.Write($"    \r{lcv} nodes drawn");
 
@@ -166,7 +166,7 @@ public class DirectedGraph
 
                 if (string.IsNullOrEmpty(fullPath))
                 {
-                    Console.WriteLine("ERROR: Invalid ImagePath. Check 'settings.json");
+                    ConsoleOutput.WriteError("Invalid ImagePath. Check 'settings.json'");
 
                     return;
                 }
@@ -237,17 +237,17 @@ public class DirectedGraph
 
             node.Position = new SKPoint(xOffset, yOffset);
 
-            if (_settings.RotationAngle != 0)
+            if (_settings.NodeRotationAngle != 0)
             {
                 (double x, double y) rotatedPosition;
 
                 if (node.Value % 2 == 0)
                 {
-                    rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.RotationAngle);
+                    rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
                 }
                 else
                 {
-                    rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.RotationAngle);
+                    rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.NodeRotationAngle);
                 }
 
                 node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
@@ -277,16 +277,14 @@ public class DirectedGraph
         }
     }
 
-    private void DrawNode(SKCanvas canvas, DirectedGraphNode node)
+    private void DrawNode(SKCanvas canvas, DirectedGraphNode node, Settings settings)
     {
-        // Paint for the circle
         var circlePaint = new SKPaint
         {
             Style = SKPaintStyle.Fill,
             Color = GetRandomColor()
         };
 
-        // Paint for the text
         var textPaint = new SKPaint
         {
             Color = SKColors.White,
@@ -297,10 +295,15 @@ public class DirectedGraph
             FakeBoldText = true,
         };
 
-        // Draw the circle
-        //canvas.DrawCircle(node.Position, 40, circlePaint);
-        DrawDistortedCircle(canvas, node.Position, 40, 30);
-
+        if (settings.DistortNodes)
+        {
+            DrawDistortedPath(canvas, node.Position, 40, 30);
+        }
+        else
+        {
+            canvas.DrawCircle(node.Position, 40, circlePaint);
+        }
+        
         // Draw the text
         // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
         float textY = node.Position.Y + 8;
@@ -308,10 +311,10 @@ public class DirectedGraph
         canvas.DrawText(node.Value.ToString(), node.Position.X, textY, textPaint);
     }
 
-    private void DrawDistortedCircle(SKCanvas canvas,
-                                     SKPoint center,
-                                     float baseRadius,
-                                     int distortionLevel)
+    private void DrawDistortedPath(SKCanvas canvas,
+                                   SKPoint center,
+                                   float baseRadius,
+                                   int distortionLevel)
     {
         var path = new SKPath();
         var randomPointsCount = _random.Next(1, 9); //from 1 to 8

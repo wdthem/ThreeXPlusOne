@@ -9,6 +9,7 @@ public static class Histogram
     {
         if (settings.GenerateHistogram)
         {
+            ConsoleOutput.WriteSeparator();
             Console.Write("Generating histogram...");
         }
         else
@@ -35,7 +36,7 @@ public static class Histogram
 
         if (string.IsNullOrEmpty(fullPath))
         {
-            Console.WriteLine("ERROR: Invalid image path. Check 'settings.json'");
+            ConsoleOutput.WriteError("Invalid image path. Check 'settings.json'");
 
             return;
         }
@@ -44,10 +45,7 @@ public static class Histogram
 
         data.SaveTo(stream);
 
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("Done");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine();
+        ConsoleOutput.WriteDone();
     }
 
     private static List<int> GenerateHistogramData(List<List<int>> seriesData)

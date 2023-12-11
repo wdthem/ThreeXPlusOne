@@ -11,11 +11,13 @@ public class Settings
     public int MaxStartingNumber { get; set; }
     public string? UseOnlyTheseNumbers { get; set; }
     public string? ExcludeTheseNumbers { get; set; }
-    public double RotationAngle { get; set; }
+    public double NodeRotationAngle { get; set; }
+    public bool DistortNodes { get; set; }
     public int XNodeSpacer { get; set; }
     public int YNodeSpacer { get; set; }
     public bool GenerateGraph { get; set; }
     public bool GenerateHistogram { get; set; }
+    public bool GenerateMetadataFile { get; set; }
     public string? OutputPath { get; set; }
 
     [JsonIgnore]

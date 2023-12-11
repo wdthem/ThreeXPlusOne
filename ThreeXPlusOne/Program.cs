@@ -20,10 +20,20 @@ public static class Program
 
         string jsonFilePath = "settings.json";
         string json = File.ReadAllText(jsonFilePath);
+        Settings? settings;
 
-        Settings? settings = JsonSerializer.Deserialize<Settings>(json)
-            ?? throw new Exception("Invalid settings. Ensure 'settings.json' is in the same folder as the executable");
+        try
+        {
+            settings = JsonSerializer.Deserialize<Settings>(json)
+                ?? throw new Exception("Invalid settings. Ensure 'settings.json' is in the same folder as the executable");
+        }
+        catch
+        {
+            ConsoleOutput.WriteError("Could not load settings. Please check 'settings.json'");
 
+            return;
+        }
+        
         Process.Run(settings);
     }
 }
