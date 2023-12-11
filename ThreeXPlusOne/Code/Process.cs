@@ -101,6 +101,8 @@ public static class Process
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine();
 
+        ConsoleOutput.WriteSeparator();
+
         ConsoleOutput.WriteHeading("Top 10 longest series:");
 
         foreach ((int FirstNumber, int Count) in GenerateTop10Series(outputValues))
