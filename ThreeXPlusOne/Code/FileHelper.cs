@@ -18,7 +18,9 @@ public static class FileHelper
 
         string fullPath;
 
-        Directory.CreateDirectory(Path.Combine(path ?? "", uniqueId));
+        string newDirectoryName = $"ThreeXPlusOne-{uniqueId}";
+
+        Directory.CreateDirectory(Path.Combine(path ?? "", newDirectoryName));
 
         fullPath = Path.Combine(path ?? "", uniqueId, fileName);
 
@@ -45,20 +47,20 @@ public static class FileHelper
 
         var fileName = $"ThreeXPlusOne-DirectedGraph-{graphRotation}.png";
 
-        return GenerateFullFilePath(settings.FileNameUniqueId, settings.OutputPath, fileName);
+        return GenerateFullFilePath(settings.UniqueExecutionId, settings.OutputPath, fileName);
     }
 
     public static string GenerateHistogramFilePath(Settings settings)
     {
         var fileName = $"ThreeXPlusOne-Histogram.png";
 
-        return GenerateFullFilePath(settings.FileNameUniqueId, settings.OutputPath, fileName);
+        return GenerateFullFilePath(settings.UniqueExecutionId, settings.OutputPath, fileName);
     }
 
     public static string GenerateMetadataFilePath(Settings settings)
     {
         var fileName = $"ThreeXPlusOne-Metadata.txt";
 
-        return GenerateFullFilePath(settings.FileNameUniqueId, settings.OutputPath, fileName);
+        return GenerateFullFilePath(settings.UniqueExecutionId, settings.OutputPath, fileName);
     }
 }

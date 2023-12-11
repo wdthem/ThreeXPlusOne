@@ -21,7 +21,7 @@ public class Settings
     public string? OutputPath { get; set; }
 
     [JsonIgnore]
-    public string FileNameUniqueId { get; set; } = Guid.NewGuid().ToString();
+    public string UniqueExecutionId { get; set; } = Guid.NewGuid().ToString();
 
     [JsonIgnore]
     public List<int> ListOfManualSeriesNumbers
