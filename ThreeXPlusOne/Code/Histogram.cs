@@ -5,7 +5,6 @@ namespace ThreeXPlusOne.Code;
 
 public static class Histogram
 {
-
     public static void GenerateHistogram(List<List<int>> seriesData, Settings settings)
     {
         if (settings.GenerateHistogram)

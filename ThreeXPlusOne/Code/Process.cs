@@ -105,7 +105,15 @@ public static class Process
 
         foreach ((int FirstNumber, int Count) in GenerateTop10Series(outputValues))
         {
-            Console.WriteLine($"    {FirstNumber}: {Count} in series");
+            Console.ForegroundColor = ConsoleColor.Blue;
+
+            Console.Write($"    {FirstNumber}: ");
+
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.Write($"{Count} in series");
+
+            Console.WriteLine();
         }
 
         ConsoleOutput.WriteSeparator();

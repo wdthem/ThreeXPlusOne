@@ -2,7 +2,6 @@
 
 public static class Algorithm
 {
-
     public static List<List<int>> Run(List<int> inputValues)
     {
         if (inputValues.Count == 0)
