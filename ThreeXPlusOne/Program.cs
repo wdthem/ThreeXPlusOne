@@ -25,7 +25,7 @@ public static class Program
         try
         {
             settings = JsonSerializer.Deserialize<Settings>(json)
-                ?? throw new Exception("Invalid settings. Ensure 'settings.json' is in the same folder as the executable");
+                ?? throw new Exception();
         }
         catch
         {
@@ -33,7 +33,14 @@ public static class Program
 
             return;
         }
-        
-        Process.Run(settings);
+
+        try
+        {
+            Process.Run(settings);
+        }
+        catch(Exception e)
+        {
+            ConsoleOutput.WriteError(e.Message);
+        }
     }
 }

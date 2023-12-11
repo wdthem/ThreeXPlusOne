@@ -41,6 +41,11 @@ public class Settings
             {
                 if (int.TryParse(numberAsString, out int parsedNumber))
                 {
+                    if (parsedNumber <= 0)
+                    {
+                        continue;
+                    }
+
                     parsedNumbers.Add(parsedNumber);
                 }
             }

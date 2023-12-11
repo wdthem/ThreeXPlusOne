@@ -7,6 +7,9 @@ public static class Histogram
 {
     public static void GenerateHistogram(List<List<int>> seriesData, Settings settings)
     {
+        Console.WriteLine();
+        ConsoleOutput.WriteHeading("Histogram");
+
         if (settings.GenerateHistogram)
         {
             ConsoleOutput.WriteSeparator();

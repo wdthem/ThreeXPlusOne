@@ -4,23 +4,23 @@ namespace ThreeXPlusOne.Code;
 
 public static class FileHelper
 {
-    private static string GenerateFullFilePath(string? path, string fileName)
+    private static string GenerateFullFilePath(string uniqueId, string? path, string fileName)
     {
+        if (!string.IsNullOrEmpty(path))
+        {
+            var directory = Path.GetDirectoryName(path);
+
+            if (!Directory.Exists(directory))
+            {
+                return "";
+            }
+        }
+
         string fullPath;
 
-        fullPath = Path.Combine(path ?? "", fileName);
+        Directory.CreateDirectory(Path.Combine(path ?? "", uniqueId));
 
-        if (fullPath == fileName)
-        {
-            return fullPath;
-        }
-
-        var directory = Path.GetDirectoryName(fullPath);
-
-        if (!Directory.Exists(directory))
-        {
-            return "";
-        }
+        fullPath = Path.Combine(path ?? "", uniqueId, fileName);
 
         return fullPath;
     }
@@ -43,22 +43,22 @@ public static class FileHelper
 	{
         var graphRotation = settings.NodeRotationAngle == 0 ? "NoRotation" : "Rotation";
 
-        var fileName = $"ThreeXPlusOne-{graphRotation}-{settings.FileNameUniqueId}.png";
+        var fileName = $"ThreeXPlusOne-DirectedGraph-{graphRotation}.png";
 
-        return GenerateFullFilePath(settings.OutputPath, fileName);
+        return GenerateFullFilePath(settings.FileNameUniqueId, settings.OutputPath, fileName);
     }
 
     public static string GenerateHistogramFilePath(Settings settings)
     {
-        var fileName = $"ThreeXPlusOne-Histogram-{settings.FileNameUniqueId}.png";
+        var fileName = $"ThreeXPlusOne-Histogram.png";
 
-        return GenerateFullFilePath(settings.OutputPath, fileName);
+        return GenerateFullFilePath(settings.FileNameUniqueId, settings.OutputPath, fileName);
     }
 
     public static string GenerateMetadataFilePath(Settings settings)
     {
-        var fileName = $"ThreeXPlusOne-Metadata-{settings.FileNameUniqueId}.txt";
+        var fileName = $"ThreeXPlusOne-Metadata.txt";
 
-        return GenerateFullFilePath(settings.OutputPath, fileName);
+        return GenerateFullFilePath(settings.FileNameUniqueId, settings.OutputPath, fileName);
     }
 }

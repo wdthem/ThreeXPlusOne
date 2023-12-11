@@ -155,10 +155,7 @@ public class DirectedGraph
             }
 
             Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Done");
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.White;
+            ConsoleOutput.WriteDone();
 
             if (settings.GenerateGraph)
             {
@@ -190,7 +187,6 @@ public class DirectedGraph
             }
             else
             {
-                ConsoleOutput.WriteSeparator();
                 Console.WriteLine("Graph generation disabled");
             }
         }

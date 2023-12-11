@@ -6,9 +6,11 @@ public class Metadata
 {
     public static void GenerateMedatadataFile(Settings settings, List<List<int>> seriesData)
     {
+        Console.WriteLine();
+        ConsoleOutput.WriteHeading("Metadata");
+
         if (settings.GenerateMetadataFile)
         {
-            ConsoleOutput.WriteSeparator();
             Console.Write("Generating metadata... ");
 
             GenerateNumberSeriesMetadata(settings, seriesData);
@@ -18,7 +20,7 @@ public class Metadata
         }
         else
         {
-            Console.WriteLine("Metata generation disabled");
+            Console.WriteLine("Metadata generation disabled");
         }
     }
 
