@@ -84,22 +84,22 @@ public class DirectedGraph
             PositionNode(node);
         }
 
-        var allNodesWithParent = nodesToDraw.Where(n => n.Value > 0).SelectMany(node => FlattenHierarchy(node)).ToList();
+        // Assuming nodeList is your initial list of nodes
+        var allNodes = nodesToDraw.SelectMany(FlattenHierarchy).ToList();
 
-        var nodesWithSamePosition = allNodesWithParent
-            .GroupBy(item => item.Node.Position)
-            .Where(group => group.Count() > 1)
-            .Select(group => group
-                // Order by depth and select the first node in the hierarchy
-                .OrderBy(item => item.Node.Depth)
-                .ThenBy(item => item.Parent != null ? item.Parent.Value : int.MinValue)
-                .Select(item => item.Node)
-                .First())
-            .ToList();
+        var nodesWithSamePosition = allNodes.GroupBy(node => node.Position)
+                                            .Where(group => group.Count() > 1)
+                                            .SelectMany(group => group)
+                                            .Distinct() // To remove duplicates if a node appears in multiple hierarchies
+                                            .ToList();
 
+        //This needs more thought.
         foreach (var node in nodesWithSamePosition)
         {
-            node.Position = new SKPoint(node.Position.X + (_settings.XNodeSpacer * 2), node.Parent!.Position.Y - _settings.YNodeSpacer);
+            var randomX = _random.Next(1, _settings.XNodeSpacer / 2);
+            var randomY = _random.Next(1, _settings.YNodeSpacer / 2);
+
+            node.Position = new SKPoint(node.Position.X + randomX, node.Parent!.Position.Y - randomY);
         }
 
         Console.ForegroundColor = ConsoleColor.Green;
@@ -109,13 +109,13 @@ public class DirectedGraph
         Console.ForegroundColor = ConsoleColor.White;
     }
 
-    private IEnumerable<(DirectedGraphNode Node, DirectedGraphNode Parent)> FlattenHierarchy(DirectedGraphNode node, DirectedGraphNode? parent = null)
+    private static IEnumerable<DirectedGraphNode> FlattenHierarchy(DirectedGraphNode node)
     {
-        yield return (node!, parent!);
+        yield return node;
 
         foreach (var child in node.Children)
         {
-            foreach (var childNode in FlattenHierarchy(child, node))
+            foreach (var childNode in FlattenHierarchy(child))
             {
                 yield return childNode;
             }
@@ -169,7 +169,7 @@ public class DirectedGraph
                 }
 
                 Console.WriteLine();
-                Console.Write("Proceed to generate graph? (y/n): ");
+                Console.Write("Generate visualization? (y/n): ");
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
 
                 if (keyInfo.Key != ConsoleKey.Y)
@@ -293,11 +293,16 @@ public class DirectedGraph
 
         if (settings.DistortNodes)
         {
-            DrawDistortedPath(canvas, node.Position, 40, 30);
+            DrawDistortedPath(canvas,
+                              node.Position,
+                              settings.NodeRadius,
+                              settings.RadiusDistortion);
         }
         else
         {
-            canvas.DrawCircle(node.Position, 40, circlePaint);
+            canvas.DrawCircle(node.Position,
+                              settings.NodeRadius,
+                              circlePaint);
         }
         
         // Draw the text
@@ -320,7 +325,7 @@ public class DirectedGraph
         for (int i = 1; i <= randomPointsCount; i++)
         {
             float angle = (float)(2 * Math.PI / randomPointsCount * i);
-            float radiusVariation = _random.Next(-(distortionLevel / 2), distortionLevel);
+            float radiusVariation = _random.Next(4, distortionLevel) + 1;
             float radius = baseRadius + radiusVariation;
 
             var point = new SKPoint(
@@ -355,18 +360,23 @@ public class DirectedGraph
             data.SaveTo(stream);
         }
 
+        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"Saved to: {path}");
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine($"Saved to: {path}");
+        Console.ForegroundColor = ConsoleColor.White; 
     }
 
     private SKColor GetRandomColor()
     {
-        byte red = (byte)_random.Next(256);
-        byte green = (byte)_random.Next(256);
-        byte blue = (byte)_random.Next(256);
+        byte red, green, blue;
+
+        do
+        {
+            red = (byte)_random.Next(256);
+            green = (byte)_random.Next(256);
+            blue = (byte)_random.Next(256);
+        }
+        while (red == 0 && green == 0 && blue == 0); // Repeat if the color is black
 
         return new SKColor(red, green, blue);
     }

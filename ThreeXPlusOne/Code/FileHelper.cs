@@ -20,7 +20,7 @@ public static class FileHelper
 
         Directory.CreateDirectory(Path.Combine(path ?? "", newDirectoryName));
 
-        return Path.Combine(path ?? "", uniqueId, fileName);
+        return Path.Combine(path ?? "", newDirectoryName, fileName);
     }
 
     public static void WriteMetadataToFile(string content, string filePath)

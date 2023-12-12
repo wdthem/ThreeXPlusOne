@@ -1,4 +1,5 @@
-﻿using ThreeXPlusOne.Config;
+﻿using System;
+using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
@@ -22,9 +23,9 @@ public static class ConsoleOutput
 
     public static void WriteSettings(Settings settings)
     {
-        ConsoleOutput.WriteHeading("Settings");
+        WriteHeading("Settings");
 
-        var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null).ToList();
+        var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
 
         foreach (var property in settingsProperties)
         {
@@ -64,13 +65,15 @@ public static class ConsoleOutput
     {
         WriteAsciiArtLogo();
 
+        WriteHeading("Usage information");
+
         Console.WriteLine();
         Console.WriteLine("Ensure that a 'settings.json' file exists in the same folder as the executable. It must have the following content:");
         Console.WriteLine("");
         Console.WriteLine("{");
 
         var lcv = 1;
-        var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null).ToList();
+        var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
 
         Console.ForegroundColor = ConsoleColor.White;
 
@@ -78,38 +81,116 @@ public static class ConsoleOutput
         {
             var comma = lcv != settingsProperties.Count ? "," : "";
 
-            Console.WriteLine($"    \"{property.Name}\": [value]{comma}");
+            Console.ForegroundColor = ConsoleColor.Blue;
 
+            Console.Write($"    {property.Name}: ");
+
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (property.PropertyType == typeof(string))
+            {
+                Console.WriteLine("\"[value]\"");
+            }
+            else
+            {
+                Console.WriteLine("[value]");
+            }
+            
             lcv++;
         }
 
-        Console.ResetColor();
+        Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("}");
 
         Console.WriteLine("");
         Console.WriteLine("A useful starting point for settings:");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("");
-        Console.WriteLine($"     {nameof(Settings.CanvasWidth)}: 30000 (the width of the drawing canvas)");
-        Console.WriteLine($"     {nameof(Settings.CanvasHeight)}: 35000 (the height of the drawing canvas)");
-        Console.WriteLine($"     {nameof(Settings.NodeRotationAngle)}: 0 (the size of the rotation angle. 0 is no rotation)");
-        Console.WriteLine($"     {nameof(Settings.DistortNodes)}: false (whether or not to use cirecles or distorted shapes as graph nodes)");
-        Console.WriteLine($"     {nameof(Settings.XNodeSpacer)}: 125 (the space between nodes on the x-axis)");
-        Console.WriteLine($"     {nameof(Settings.YNodeSpacer)}: 125 (the space between nodes on the y-axis)");
-        Console.WriteLine($"     {nameof(Settings.NumberOfSeries)}: 200 (the total number of series that will run)");
-        Console.WriteLine($"     {nameof(Settings.MaxStartingNumber)}: 1000 (the highest number any given series can start with)");
-        Console.WriteLine($"     {nameof(Settings.UseOnlyTheseNumbers)}: \"\" (comma-separated list of numbers to run the program with. Overrides {nameof(Settings.NumberOfSeries)} and {nameof(Settings.MaxStartingNumber)})");
-        Console.WriteLine($"     {nameof(Settings.ExcludeTheseNumbers)}: \"73, 54\" (comma-separated list of numbers not to use)");
-        Console.WriteLine($"     {nameof(Settings.GenerateGraph)}: true (whether or not to generate the image of the data)");
-        Console.WriteLine($"     {nameof(Settings.GenerateHistogram)}: true (whether or not to generate a histogram of numbers starting from 1-9)");
-        Console.WriteLine($"     {nameof(Settings.GenerateMetadataFile)}: true (whether or not to generate a a file with metadata about the run)");
-        Console.WriteLine($"     {nameof(Settings.OutputPath)}: \"C:\\path\\to\\save\\image\\\" (the folder where the image should be placed)");
-        Console.ResetColor();
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.CanvasWidth)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("20000 (the width of the drawing canvas in pixels)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.CanvasHeight)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("20000 (the height of the drawing canvas in pixels)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.NumberOfSeries)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("200 (the total number of series that will run)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.MaxStartingNumber)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("1000 (the highest number any given series can start with)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.UseOnlyTheseNumbers)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine($"\"\" (comma-separated list of numbers to run the program with. Overrides {nameof(Settings.NumberOfSeries)} and {nameof(Settings.MaxStartingNumber)})");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.ExcludeTheseNumbers)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("\"\" (comma-separated list of numbers not to use)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.NodeRotationAngle)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("0 (the size of the rotation angle. 0 is no rotation)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.NodeRadius)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("40 (the radius of the nodes in pixels)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.DistortNodes)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("false (whether or not to use cirecles or distorted shapes as graph nodes)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.RadiusDistortion)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("30 (the max amount by which to distort node radii in pixels)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.XNodeSpacer)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("125 (the space between nodes on the x-axis)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.YNodeSpacer)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("125 (the space between nodes on the y-axis)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.GenerateGraph)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("true (whether or not to generate the visualization of the data)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.GenerateHistogram)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("true (whether or not to generate a histogram of the distribution of numbers starting from 1-9)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.GenerateMetadataFile)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("true (whether or not to generate a a file with metadata about the run)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.OutputPath)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder where the output files should be placed)");
         Console.WriteLine("");
 
         Console.WriteLine("Note: Increasing settings may cause the program to fail. It depends on the capabilities of the machine running it.");
-        Console.WriteLine("");
-        Console.WriteLine("");
+        Console.WriteLine();
+        Console.WriteLine();
     }
 
     public static void WriteSeparator()

@@ -13,18 +13,17 @@ if (args.Length > 0)
     }
 }
 
-string jsonFilePath = "settings.json";
-string json = File.ReadAllText(jsonFilePath);
 Settings? settings;
+string json = File.ReadAllText("settings.json");
 
 try
 {
     settings = JsonSerializer.Deserialize<Settings>(json)
-        ?? throw new Exception();
+        ?? throw new Exception("Setting are null");
 }
-catch
+catch(Exception e)
 {
-    ConsoleOutput.WriteError("Could not load settings. Please check 'settings.json'");
+    ConsoleOutput.WriteError($"Could not load settings. Please check 'settings.json'. Error was: {e.Message}");
 
     return;
 }
@@ -35,5 +34,5 @@ try
 }
 catch(Exception e)
 {
-    ConsoleOutput.WriteError(e.Message);
+    ConsoleOutput.WriteError($"\n{e.Message}");
 }

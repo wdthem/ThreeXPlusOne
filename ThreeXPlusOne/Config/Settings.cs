@@ -11,7 +11,9 @@ public class Settings
     public string? UseOnlyTheseNumbers { get; set; }
     public string? ExcludeTheseNumbers { get; set; }
     public double NodeRotationAngle { get; set; }
+    public float NodeRadius { get; set; }
     public bool DistortNodes { get; set; }
+    public int RadiusDistortion { get; set; }
     public int XNodeSpacer { get; set; }
     public int YNodeSpacer { get; set; }
     public bool GenerateGraph { get; set; }
@@ -20,7 +22,7 @@ public class Settings
     public string? OutputPath { get; set; }
 
     [JsonIgnore]
-    public string UniqueExecutionId { get; set; } = Guid.NewGuid().ToString();
+    public string UniqueExecutionId { get; private set; } = Guid.NewGuid().ToString();
 
     [JsonIgnore]
     public List<int> ListOfManualSeriesNumbers

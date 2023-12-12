@@ -12,7 +12,6 @@ public static class Histogram
 
         if (settings.GenerateHistogram)
         {
-            ConsoleOutput.WriteSeparator();
             Console.Write("Generating histogram...");
         }
         else

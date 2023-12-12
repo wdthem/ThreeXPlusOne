@@ -6,7 +6,6 @@ public class Metadata
 {
     public static void GenerateMedatadataFile(Settings settings, List<List<int>> seriesData)
     {
-        Console.WriteLine();
         ConsoleOutput.WriteHeading("Metadata");
 
         if (settings.GenerateMetadataFile)
@@ -15,6 +14,7 @@ public class Metadata
 
             GenerateNumberSeriesMetadata(settings, seriesData);
             GenerateTop10LongestSeriesMetadata(settings, seriesData);
+            GenerateFullSeriesData(settings, seriesData);
 
             ConsoleOutput.WriteDone();
         }
@@ -78,6 +78,28 @@ public class Metadata
         foreach ((int FirstNumber, int Count) in GenerateTop10Series(seriesData))
         {
             content += $"{FirstNumber}: {Count} in series\n";
+        }
+
+        FileHelper.WriteMetadataToFile(content, filePath);
+    }
+
+    public static void GenerateFullSeriesData(Settings settings, List<List<int>> seriesData)
+    {
+        var filePath = FileHelper.GenerateMetadataFilePath(settings);
+
+        if (string.IsNullOrEmpty(filePath))
+        {
+            ConsoleOutput.WriteError("Invalid metadata file path. Check 'settings.json'");
+
+            return;
+        }
+
+        string content = "\nFull series data:\n";
+
+        foreach (List<int> series in seriesData)
+        {
+            content += string.Join(", ", series);
+            content += "\n\n";
         }
 
         FileHelper.WriteMetadataToFile(content, filePath);
