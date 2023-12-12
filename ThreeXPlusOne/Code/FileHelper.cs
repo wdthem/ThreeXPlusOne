@@ -16,15 +16,11 @@ public static class FileHelper
             }
         }
 
-        string fullPath;
-
         string newDirectoryName = $"ThreeXPlusOne-{uniqueId}";
 
         Directory.CreateDirectory(Path.Combine(path ?? "", newDirectoryName));
 
-        fullPath = Path.Combine(path ?? "", uniqueId, fileName);
-
-        return fullPath;
+        return Path.Combine(path ?? "", uniqueId, fileName);
     }
 
     public static void WriteMetadataToFile(string content, string filePath)

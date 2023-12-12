@@ -46,7 +46,7 @@ public static class ConsoleOutput
     public static void WriteError(string message)
     {
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.Write("ERROR:");
+        Console.Write("ERROR: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine(message);
         Console.WriteLine();

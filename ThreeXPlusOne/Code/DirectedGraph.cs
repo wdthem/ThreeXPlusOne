@@ -320,7 +320,7 @@ public class DirectedGraph
         for (int i = 1; i <= randomPointsCount; i++)
         {
             float angle = (float)(2 * Math.PI / randomPointsCount * i);
-            float radiusVariation = _random.Next(-distortionLevel, distortionLevel);
+            float radiusVariation = _random.Next(-(distortionLevel / 2), distortionLevel);
             float radius = baseRadius + radiusVariation;
 
             var point = new SKPoint(
