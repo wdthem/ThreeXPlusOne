@@ -1,4 +1,5 @@
-﻿using ThreeXPlusOne.Models;
+﻿using SkiaSharp;
+using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
 
@@ -51,5 +52,64 @@ public abstract class DirectedGraph
 
             currentDepth--;  // decrement the depth as we move through the series
         }
+    }
+
+    protected static void SaveCanvas(SKSurface surface, string path)
+    {
+        Console.WriteLine();
+        Console.Write("Saving image... ");
+
+        using (var image = surface.Snapshot())
+        using (var data = image.Encode(SKEncodedImageFormat.Png, 25))
+        using (var stream = File.OpenWrite(path))
+        {
+            data.SaveTo(stream);
+        }
+
+        Console.WriteLine();
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Saved to: {path}");
+        Console.ForegroundColor = ConsoleColor.White;
+    }
+
+    protected SKColor GetRandomColor()
+    {
+        byte red, green, blue;
+
+        do
+        {
+            red = (byte)_random.Next(256);
+            green = (byte)_random.Next(256);
+            blue = (byte)_random.Next(256);
+        }
+        while (red == 0 && green == 0 && blue == 0); // Repeat if the color is black
+
+        return new SKColor(red, green, blue);
+    }
+
+    protected static (double x, double y) RotatePointAntiClockWise(double x, double y, double angleDegrees)
+    {
+        double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
+
+        double cosTheta = Math.Cos(angleRadians);
+        double sinTheta = Math.Sin(angleRadians);
+
+        double xNew = cosTheta * x - sinTheta * y;
+        double yNew = sinTheta * x + cosTheta * y;
+
+        return (xNew, yNew);
+    }
+
+    protected static (double x, double y) RotatePointClockwise(double x, double y, double angleDegrees)
+    {
+        double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
+
+        double cosTheta = Math.Cos(angleRadians);
+        double sinTheta = Math.Sin(angleRadians);
+
+        double xNew = cosTheta * x + sinTheta * y;
+        double yNew = -sinTheta * x + cosTheta * y;
+
+        return (xNew, yNew);
     }
 }

@@ -12,14 +12,18 @@
     <None Remove="Config\" />
     <None Remove="Models\" />
     <None Remove="Code\Graph\" />
+    <None Remove="Code\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Code\" />
     <Folder Include="Config\" />
     <Folder Include="Models\" />
     <Folder Include="Code\Graph\" />
+    <Folder Include="Code\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="2.88.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
 </Project>

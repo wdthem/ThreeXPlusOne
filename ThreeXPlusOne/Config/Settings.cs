@@ -16,7 +16,7 @@ public class Settings
     public int RadiusDistortion { get; set; }
     public int XNodeSpacer { get; set; }
     public int YNodeSpacer { get; set; }
-    public bool RenderPseudo3D { get; set; }
+    public int GraphDimensions { get; set; }
     public bool GenerateGraph { get; set; }
     public bool GenerateHistogram { get; set; }
     public bool GenerateMetadataFile { get; set; }
@@ -24,6 +24,20 @@ public class Settings
 
     [JsonIgnore]
     public string UniqueExecutionId { get; private set; } = Guid.NewGuid().ToString();
+
+    [JsonIgnore]
+    public int ParsedGraphDimensions
+    {
+        get
+        {
+            if (GraphDimensions < 2 || GraphDimensions > 3)
+            {
+                return 2;
+            }
+
+            return GraphDimensions;
+        }
+    }
 
     [JsonIgnore]
     public List<int> ListOfManualSeriesNumbers

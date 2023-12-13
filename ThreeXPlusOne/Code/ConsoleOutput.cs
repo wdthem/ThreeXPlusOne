@@ -41,12 +41,19 @@ public static class ConsoleOutput
             Console.WriteLine();
         }
 
+        if (settings.GraphDimensions != settings.ParsedGraphDimensions)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Invalid GraphDimensions ({settings.GraphDimensions}). Defaulted to {settings.ParsedGraphDimensions}");
+        }
+
         WriteSeparator();
     }
 
     public static void WriteError(string message)
     {
         Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine();
         Console.Write("ERROR: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine(message);
@@ -168,9 +175,9 @@ public static class ConsoleOutput
         Console.WriteLine("125 (the space between nodes on the y-axis)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.RenderPseudo3D)}: ");
+        Console.Write($"     {nameof(Settings.GraphDimensions)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("false (whether or not to render a pseudo-3D graph)");
+        Console.WriteLine("2 (the number of dimensions to render in the graph (2 or 3)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.GenerateGraph)}: ");

@@ -1,5 +1,11 @@
 ﻿using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using ThreeXPlusOne;
 using ThreeXPlusOne.Code;
+using ThreeXPlusOne.Code.Graph;
+using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 
 
@@ -13,26 +19,24 @@ if (args.Length > 0)
     }
 }
 
-Settings? settings;
-string json = File.ReadAllText("settings.json");
+using IHost host = Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((context, builder) =>
+            {
+                builder.AddJsonFile("settings.json", optional: false, reloadOnChange: true);
+            })
+            .ConfigureServices((context, services) =>
+            {
+                services.AddServices(context.Configuration);
+            })
+            .Build();
 
 try
 {
-    settings = JsonSerializer.Deserialize<Settings>(json)
-        ?? throw new Exception("Setting are null");
+    var process = host.Services.GetRequiredService<IProcess>();
+
+    process.Run();
 }
 catch(Exception e)
 {
-    ConsoleOutput.WriteError($"Could not load settings. Please check 'settings.json'. Error was: {e.Message}");
-
-    return;
-}
-
-try
-{
-    Process.Run(settings);
-}
-catch(Exception e)
-{
-    ConsoleOutput.WriteError($"\n{e.Message}");
+    ConsoleOutput.WriteError($"{e.Message}");
 }

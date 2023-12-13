@@ -1,6 +1,6 @@
 ﻿using ThreeXPlusOne.Config;
 
-namespace ThreeXPlusOne.Code.Graph;
+namespace ThreeXPlusOne.Code.Interfaces;
 
 public interface IDirectedGraph
 {

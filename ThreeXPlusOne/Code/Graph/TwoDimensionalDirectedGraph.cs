@@ -1,4 +1,6 @@
-﻿using SkiaSharp;
+﻿using Microsoft.Extensions.Options;
+using SkiaSharp;
+using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 using ThreeXPlusOne.Models;
 
@@ -6,9 +8,9 @@ namespace ThreeXPlusOne.Code.Graph;
 
 public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 {
-    private readonly Settings _settings;
+    private readonly IOptions<Settings> _settings;
 
-    public TwoDimensionalDirectedGraph(Settings settings)
+    public TwoDimensionalDirectedGraph(IOptions<Settings> settings)
     {
         _settings = settings;
     }
@@ -18,9 +20,9 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         Console.Write("Positioning nodes... ");
 
         // Set up the base nodes' positions
-        var base1 = new SKPoint(_settings.CanvasWidth / 2, _settings.CanvasHeight - 100);         // Node '1' at the bottom
-        var base2 = new SKPoint(_settings.CanvasWidth / 2, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
-        var base4 = new SKPoint(_settings.CanvasWidth / 2, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
+        var base1 = new SKPoint(_settings.Value.CanvasWidth / 2, _settings.Value.CanvasHeight - 100);         // Node '1' at the bottom
+        var base2 = new SKPoint(_settings.Value.CanvasWidth / 2, base1.Y - _settings.Value.YNodeSpacer);      // Node '2' just above '1'
+        var base4 = new SKPoint(_settings.Value.CanvasWidth / 2, base2.Y - _settings.Value.YNodeSpacer);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
@@ -52,8 +54,8 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         //Instead of random x,y movement, do the angle rotation to a random angle
         foreach (var node in nodesWithSamePosition)
         {
-            var randomX = _random.Next(1, _settings.XNodeSpacer / 2);
-            var randomY = _random.Next(1, _settings.YNodeSpacer / 2);
+            var randomX = _random.Next(1, _settings.Value.XNodeSpacer / 2);
+            var randomY = _random.Next(1, _settings.Value.YNodeSpacer / 2);
 
             node.Position = new SKPoint(node.Position.X + randomX, node.Parent!.Position.Y - randomY);
         }
@@ -82,7 +84,7 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
     {
         Console.WriteLine("Drawing connections and nodes... ");
 
-        using var surface = SKSurface.Create(new SKImageInfo(_settings.CanvasWidth, _settings.CanvasHeight));
+        using var surface = SKSurface.Create(new SKImageInfo(_settings.Value.CanvasWidth, _settings.Value.CanvasHeight));
 
         SKCanvas canvas = surface.Canvas;
 
@@ -158,7 +160,7 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
                 _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
 
             float xOffset = node.Parent == null
-                                    ? _settings.CanvasWidth / 2
+                                    ? _settings.Value.CanvasWidth / 2
                                     : node.Parent.Position.X;
 
             if (allNodesAtDepth > 1)
@@ -180,25 +182,25 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
                         addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth;
                     }
 
-                    xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.XNodeSpacer)) + (_settings.XNodeSpacer * addedWidth);
+                    xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) + (_settings.Value.XNodeSpacer * addedWidth);
                 }
             }
 
-            var yOffset = node.Parent!.Position.Y - _settings.YNodeSpacer;
+            var yOffset = node.Parent!.Position.Y - _settings.Value.YNodeSpacer;
 
             node.Position = new SKPoint(xOffset, yOffset);
 
-            if (_settings.NodeRotationAngle != 0)
+            if (_settings.Value.NodeRotationAngle != 0)
             {
                 (double x, double y) rotatedPosition;
 
                 if (node.Value % 2 == 0)
                 {
-                    rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
+                    rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.Value.NodeRotationAngle);
                 }
                 else
                 {
-                    rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.NodeRotationAngle);
+                    rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.Value.NodeRotationAngle);
                 }
 
                 node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
@@ -296,64 +298,5 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         path.Close();
 
         canvas.DrawPath(path, paint);
-    }
-
-    private static void SaveCanvas(SKSurface surface, string path)
-    {
-        Console.WriteLine();
-        Console.Write("Saving image... ");
-
-        using (var image = surface.Snapshot())
-        using (var data = image.Encode(SKEncodedImageFormat.Png, 25))
-        using (var stream = File.OpenWrite(path))
-        {
-            data.SaveTo(stream);
-        }
-
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Saved to: {path}");
-        Console.ForegroundColor = ConsoleColor.White; 
-    }
-
-    private SKColor GetRandomColor()
-    {
-        byte red, green, blue;
-
-        do
-        {
-            red = (byte)_random.Next(256);
-            green = (byte)_random.Next(256);
-            blue = (byte)_random.Next(256);
-        }
-        while (red == 0 && green == 0 && blue == 0); // Repeat if the color is black
-
-        return new SKColor(red, green, blue);
-    }
-
-    private static (double x, double y) RotatePointAntiClockWise(double x, double y, double angleDegrees)
-    {
-        double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
-
-        double cosTheta = Math.Cos(angleRadians);
-        double sinTheta = Math.Sin(angleRadians);
-
-        double xNew = cosTheta * x - sinTheta * y;
-        double yNew = sinTheta * x + cosTheta * y;
-
-        return (xNew, yNew);
-    }
-
-    private static (double x, double y) RotatePointClockwise(double x, double y, double angleDegrees)
-    {
-        double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
-
-        double cosTheta = Math.Cos(angleRadians);
-        double sinTheta = Math.Sin(angleRadians);
-
-        double xNew = cosTheta * x + sinTheta * y;
-        double yNew = -sinTheta * x + cosTheta * y;
-
-        return (xNew, yNew);
     }
 }

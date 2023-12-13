@@ -1,24 +1,34 @@
-﻿using System;
-using System.Diagnostics;
-using ThreeXPlusOne.Code.Graph;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Options;
+using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public static class Process
+public class Process : IProcess
 {
-    public static void Run(Settings settings)
+    private readonly IOptions<Settings> _settings;
+    private readonly List<IDirectedGraph> _directedGraphs;
+
+    public Process(IOptions<Settings> settings,
+                   IEnumerable<IDirectedGraph> directedGraphs)
+    {
+        _settings = settings;
+        _directedGraphs = directedGraphs.ToList();
+    }
+
+    public void Run()
 	{
         var stopwatch = new Stopwatch();
 
         stopwatch.Start();
 
         ConsoleOutput.WriteAsciiArtLogo();
-        ConsoleOutput.WriteSettings(settings);
+        ConsoleOutput.WriteSettings(_settings.Value);
 
         ConsoleOutput.WriteHeading("Series data");
 
-        List<int> inputValues = GenerateInputValues(settings, stopwatch);
+        List<int> inputValues = GenerateInputValues(_settings.Value, stopwatch);
 
         ConsoleOutput.WriteHeading("Algorithm execution");
 
@@ -30,13 +40,13 @@ public static class Process
 
         IDirectedGraph graph;
 
-        if (settings.RenderPseudo3D)
+        if (_settings.Value.ParsedGraphDimensions == 2)
         {
-            graph = new ThreeDimensionalDirectedGraph(settings);
+            graph = _directedGraphs[0];
         }
         else
         {
-            graph = new TwoDimensionalDirectedGraph(settings);
+            graph = _directedGraphs[1];
         }
         
         foreach (List<int> values in outputValues)
@@ -47,10 +57,10 @@ public static class Process
         ConsoleOutput.WriteHeading("Directed graph");
 
         graph.PositionNodes();
-        graph.Draw(settings);
+        graph.Draw(_settings.Value);
 
-        Histogram.GenerateHistogram(outputValues, settings);
-        Metadata.GenerateMedatadataFile(settings, outputValues);
+        Histogram.GenerateHistogram(outputValues, _settings.Value);
+        Metadata.GenerateMedatadataFile(_settings.Value, outputValues);
 
         stopwatch.Stop();
         TimeSpan ts = stopwatch.Elapsed;
