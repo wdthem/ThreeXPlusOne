@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ThreeXPlusOne.Code.Graph;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
@@ -27,7 +28,16 @@ public static class Process
 
         ConsoleOutput.WriteDone();
 
-        var graph = new DirectedGraph(settings);
+        IDirectedGraph graph;
+
+        if (settings.RenderPseudo3D)
+        {
+            graph = new ThreeDimensionalDirectedGraph(settings);
+        }
+        else
+        {
+            graph = new TwoDimensionalDirectedGraph(settings);
+        }
         
         foreach (List<int> values in outputValues)
         {

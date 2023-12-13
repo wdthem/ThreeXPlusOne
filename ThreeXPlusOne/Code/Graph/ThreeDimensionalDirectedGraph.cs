@@ -2,60 +2,16 @@
 using ThreeXPlusOne.Config;
 using ThreeXPlusOne.Models;
 
-namespace ThreeXPlusOne.Code;
+namespace ThreeXPlusOne.Code.Graph;
 
-public class DirectedGraph
+public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 {
-    private readonly Dictionary<int, DirectedGraphNode> _nodes;
     private readonly Settings _settings;
-    private readonly Random _random;
 
-    public DirectedGraph(Settings settings)
-    {
-        _nodes = new Dictionary<int, DirectedGraphNode>();
-        _random = new Random();
+    public ThreeDimensionalDirectedGraph(Settings settings)
+	{
         _settings = settings;
-    }
-
-    public void AddSeries(List<int> series)
-    {
-        DirectedGraphNode? previousNode = null;
-        int currentDepth = series.Count;
-
-        foreach (var number in series)
-        {
-            if (!_nodes.TryGetValue(number, out DirectedGraphNode? currentNode))
-            {
-                currentNode = new DirectedGraphNode(number)
-                {
-                    Depth = currentDepth // Set the initial depth for the node
-                };
-
-                _nodes.Add(number, currentNode);
-            }
-
-            // Check if this is a deeper path to the current node
-            if (currentDepth < currentNode.Depth)
-            {
-                currentNode.Depth = currentDepth;
-            }
-
-            if (previousNode != null)
-            {
-                previousNode.Parent = currentNode;
-
-                // Check if previousNode is already a child to prevent duplicate additions
-                if (!currentNode.Children.Contains(previousNode))
-                {
-                    currentNode.Children.Add(previousNode);
-                }
-            }
-
-            previousNode = currentNode;
-
-            currentDepth--;  // decrement the depth as we move through the series
-        }
-    }
+	}
 
     public void PositionNodes()
     {
@@ -93,7 +49,7 @@ public class DirectedGraph
                                             .Distinct() // To remove duplicates if a node appears in multiple hierarchies
                                             .ToList();
 
-        //This needs more thought.
+        //Instead of random x,y movement, do the angle rotation to a random angle
         foreach (var node in nodesWithSamePosition)
         {
             var randomX = _random.Next(1, _settings.XNodeSpacer / 2);
@@ -126,69 +82,68 @@ public class DirectedGraph
     {
         Console.WriteLine("Drawing connections and nodes... ");
 
-        using (var surface = SKSurface.Create(new SKImageInfo(_settings.CanvasWidth, _settings.CanvasHeight)))
+        using var surface = SKSurface.Create(new SKImageInfo(_settings.CanvasWidth, _settings.CanvasHeight));
+
+        SKCanvas canvas = surface.Canvas;
+
+        canvas.Clear(SKColors.Black);
+
+        var lcv = 1;
+        foreach (var node in _nodes)
         {
-            SKCanvas canvas = surface.Canvas;
+            DrawConnection(canvas, node.Value);
 
-            canvas.Clear(SKColors.Black);
+            Console.Write($"    \r{lcv} connections drawn");
 
-            var lcv = 1;
-            foreach (var node in _nodes)
+            lcv += node.Value.Children.Count;
+        }
+
+        Console.WriteLine();
+
+        lcv = 1;
+        foreach (var node in _nodes)
+        {
+            DrawNode(canvas, node.Value, settings);
+
+            Console.Write($"    \r{lcv} nodes drawn");
+
+            lcv = lcv + 1 + node.Value.Children.Count;
+        }
+
+        Console.WriteLine();
+        ConsoleOutput.WriteDone();
+
+        if (settings.GenerateGraph)
+        {
+            string fullPath = FileHelper.GenerateGraphFilePath(settings);
+
+            if (string.IsNullOrEmpty(fullPath))
             {
-                DrawConnection(canvas, node.Value);
+                ConsoleOutput.WriteError("Invalid ImagePath. Check 'settings.json'");
 
-                Console.Write($"    \r{lcv} connections drawn");
+                return;
+            }
 
-                lcv += node.Value.Children.Count;
+            Console.WriteLine();
+            Console.Write("Generate visualization? (y/n): ");
+            ConsoleKeyInfo keyInfo = Console.ReadKey();
+
+            if (keyInfo.Key != ConsoleKey.Y)
+            {
+                Console.WriteLine("");
+                Console.WriteLine("Image generation cancelled");
+                Console.WriteLine("");
+
+                return;
             }
 
             Console.WriteLine();
 
-            lcv = 1;
-            foreach (var node in _nodes)
-            {
-                DrawNode(canvas, node.Value, settings);
-
-                Console.Write($"    \r{lcv} nodes drawn");
-
-                lcv = lcv + 1 + node.Value.Children.Count;
-            }
-
-            Console.WriteLine();
-            ConsoleOutput.WriteDone();
-
-            if (settings.GenerateGraph)
-            {
-                string fullPath = FileHelper.GenerateGraphFilePath(settings);
-
-                if (string.IsNullOrEmpty(fullPath))
-                {
-                    ConsoleOutput.WriteError("Invalid ImagePath. Check 'settings.json'");
-
-                    return;
-                }
-
-                Console.WriteLine();
-                Console.Write("Generate visualization? (y/n): ");
-                ConsoleKeyInfo keyInfo = Console.ReadKey();
-
-                if (keyInfo.Key != ConsoleKey.Y)
-                {
-                    Console.WriteLine("");
-                    Console.WriteLine("Image generation cancelled");
-                    Console.WriteLine("");
-
-                    return;
-                }
-
-                Console.WriteLine();
-
-                SaveCanvas(surface, fullPath);
-            }
-            else
-            {
-                Console.WriteLine("Graph generation disabled");
-            }
+            SaveCanvas(surface, fullPath);
+        }
+        else
+        {
+            Console.WriteLine("Graph generation disabled");
         }
     }
 
@@ -275,8 +230,9 @@ public class DirectedGraph
 
     private void DrawNode(SKCanvas canvas, DirectedGraphNode node, Settings settings)
     {
-        var circlePaint = new SKPaint
+        var paint = new SKPaint
         {
+            IsAntialias = true,
             Style = SKPaintStyle.Fill,
             Color = GetRandomColor()
         };
@@ -296,15 +252,16 @@ public class DirectedGraph
             DrawDistortedPath(canvas,
                               node.Position,
                               settings.NodeRadius,
-                              settings.RadiusDistortion);
+                              settings.RadiusDistortion,
+                              paint);
         }
         else
         {
             canvas.DrawCircle(node.Position,
                               settings.NodeRadius,
-                              circlePaint);
+                              paint);
         }
-        
+
         // Draw the text
         // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
         float textY = node.Position.Y + 8;
@@ -315,7 +272,8 @@ public class DirectedGraph
     private void DrawDistortedPath(SKCanvas canvas,
                                    SKPoint center,
                                    float baseRadius,
-                                   int distortionLevel)
+                                   int distortionLevel,
+                                   SKPaint paint)
     {
         var path = new SKPath();
         var randomPointsCount = _random.Next(1, 9); //from 1 to 8
@@ -337,14 +295,6 @@ public class DirectedGraph
 
         path.Close();
 
-        // Draw the distorted path/circle
-        var paint = new SKPaint
-        {
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            Color = GetRandomColor()
-        };
-
         canvas.DrawPath(path, paint);
     }
 
@@ -363,7 +313,7 @@ public class DirectedGraph
         Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"Saved to: {path}");
-        Console.ForegroundColor = ConsoleColor.White; 
+        Console.ForegroundColor = ConsoleColor.White;
     }
 
     private SKColor GetRandomColor()
@@ -381,7 +331,7 @@ public class DirectedGraph
         return new SKColor(red, green, blue);
     }
 
-    public static (double x, double y) RotatePointAntiClockWise(double x, double y, double angleDegrees)
+    private static (double x, double y) RotatePointAntiClockWise(double x, double y, double angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 
@@ -394,7 +344,7 @@ public class DirectedGraph
         return (xNew, yNew);
     }
 
-    public static (double x, double y) RotatePointClockwise(double x, double y, double angleDegrees)
+    private static (double x, double y) RotatePointClockwise(double x, double y, double angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 

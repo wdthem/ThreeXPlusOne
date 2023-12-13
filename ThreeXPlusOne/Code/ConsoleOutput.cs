@@ -168,6 +168,11 @@ public static class ConsoleOutput
         Console.WriteLine("125 (the space between nodes on the y-axis)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.RenderPseudo3D)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("false (whether or not to render a pseudo-3D graph)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.GenerateGraph)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("true (whether or not to generate the visualization of the data)");

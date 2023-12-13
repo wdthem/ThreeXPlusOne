@@ -16,6 +16,7 @@ public class Settings
     public int RadiusDistortion { get; set; }
     public int XNodeSpacer { get; set; }
     public int YNodeSpacer { get; set; }
+    public bool RenderPseudo3D { get; set; }
     public bool GenerateGraph { get; set; }
     public bool GenerateHistogram { get; set; }
     public bool GenerateMetadataFile { get; set; }
