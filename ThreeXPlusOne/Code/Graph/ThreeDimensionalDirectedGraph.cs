@@ -9,10 +9,15 @@ namespace ThreeXPlusOne.Code.Graph;
 public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 {
     private readonly IOptions<Settings> _settings;
+    private readonly IFileHelper _fileHelper;
 
-    public ThreeDimensionalDirectedGraph(IOptions<Settings> settings)
+    public int Dimensions => 3;
+
+    public ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
+                                         IFileHelper fileHelper)
     {
         _settings = settings;
+        _fileHelper = fileHelper;
     }
 
     public void PositionNodes()
@@ -60,11 +65,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
             node.Position = new SKPoint(node.Position.X + randomX, node.Parent!.Position.Y - randomY);
         }
 
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("Done");
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.White;
+        ConsoleOutput.WriteDone();
     }
 
     private static IEnumerable<DirectedGraphNode> FlattenHierarchy(DirectedGraphNode node)
@@ -117,7 +118,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 
         if (settings.GenerateGraph)
         {
-            string fullPath = FileHelper.GenerateGraphFilePath(settings);
+            string fullPath = _fileHelper.GenerateGraphFilePath();
 
             if (string.IsNullOrEmpty(fullPath))
             {
@@ -127,7 +128,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
             }
 
             Console.WriteLine();
-            Console.Write("Generate visualization? (y/n): ");
+            Console.Write("Generate 3D visualization? (y/n): ");
             ConsoleKeyInfo keyInfo = Console.ReadKey();
 
             if (keyInfo.Key != ConsoleKey.Y)

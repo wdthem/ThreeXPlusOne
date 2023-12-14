@@ -14,8 +14,12 @@ public static class StartupExtensions
         services.Configure<Settings>(configuration);
 
         services.AddScoped<IProcess, Process>();
+        services.AddScoped<IAlgorithm, Algorithm>();
         services.AddScoped<IDirectedGraph, TwoDimensionalDirectedGraph>();
         services.AddScoped<IDirectedGraph, ThreeDimensionalDirectedGraph>();
+        services.AddScoped<IHistogram, Histogram>();
+        services.AddScoped<IMetadata, Metadata>();
+        services.AddScoped<IFileHelper, FileHelper>();
 
         return services;
     }

@@ -1,4 +1,5 @@
 ﻿using SkiaSharp;
+using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
@@ -54,7 +55,7 @@ public abstract class DirectedGraph
         }
     }
 
-    protected static void SaveCanvas(SKSurface surface, string path)
+    protected void SaveCanvas(SKSurface surface, string path)
     {
         Console.WriteLine();
         Console.Write("Saving image... ");

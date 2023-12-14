@@ -1,16 +1,28 @@
-﻿using SkiaSharp;
+﻿using Microsoft.Extensions.Options;
+using SkiaSharp;
+using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public static class Histogram
+public class Histogram : IHistogram
 {
-    public static void GenerateHistogram(List<List<int>> seriesData, Settings settings)
+    private readonly IOptions<Settings> _settings;
+    private readonly IFileHelper _fileHelper;
+
+    public Histogram(IOptions<Settings> settings,
+                     IFileHelper fileHelper)
+    {
+        _settings = settings;
+        _fileHelper = fileHelper;
+    }
+
+    public void GenerateHistogram(List<List<int>> seriesData)
     {
         Console.WriteLine();
         ConsoleOutput.WriteHeading("Histogram");
 
-        if (settings.GenerateHistogram)
+        if (_settings.Value.GenerateHistogram)
         {
             Console.Write("Generating histogram...");
         }
@@ -34,7 +46,7 @@ public static class Histogram
         using SKImage image = SKImage.FromBitmap(bitmap);
         using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
 
-        string fullPath = FileHelper.GenerateHistogramFilePath(settings);
+        string fullPath = _fileHelper.GenerateHistogramFilePath();
 
         if (string.IsNullOrEmpty(fullPath))
         {

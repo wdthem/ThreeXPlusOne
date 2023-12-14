@@ -1,8 +1,10 @@
-﻿namespace ThreeXPlusOne.Code;
+﻿using ThreeXPlusOne.Code.Interfaces;
 
-public static class Algorithm
+namespace ThreeXPlusOne.Code;
+
+public class Algorithm : IAlgorithm
 {
-    public static List<List<int>> Run(List<int> inputValues)
+    public List<List<int>> Run(List<int> inputValues)
     {
         if (inputValues.Count == 0)
         {

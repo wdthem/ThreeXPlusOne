@@ -1,9 +1,8 @@
-﻿using System;
-using ThreeXPlusOne.Config;
+﻿using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public static class ConsoleOutput
+public class ConsoleOutput
 {
     public static void WriteAsciiArtLogo()
     {
@@ -44,7 +43,7 @@ public static class ConsoleOutput
         if (settings.GraphDimensions != settings.ParsedGraphDimensions)
         {
             Console.WriteLine();
-            Console.WriteLine($"Invalid GraphDimensions ({settings.GraphDimensions}). Defaulted to {settings.ParsedGraphDimensions}");
+            Console.WriteLine($"Invalid GraphDimensions ({settings.GraphDimensions}). Defaulted to {settings.ParsedGraphDimensions}.");
         }
 
         WriteSeparator();

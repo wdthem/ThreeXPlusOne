@@ -1,20 +1,32 @@
-﻿using ThreeXPlusOne.Config;
+﻿using Microsoft.Extensions.Options;
+using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public class Metadata
+public class Metadata : IMetadata
 {
-    public static void GenerateMedatadataFile(Settings settings, List<List<int>> seriesData)
+    private readonly IOptions<Settings> _settings;
+    private readonly IFileHelper _fileHelper;
+
+    public Metadata(IOptions<Settings> settings,
+                    IFileHelper fileHelper)
+    {
+        _settings = settings;
+        _fileHelper = fileHelper;
+    }
+
+    public void GenerateMedatadataFile(List<List<int>> seriesData)
     {
         ConsoleOutput.WriteHeading("Metadata");
 
-        if (settings.GenerateMetadataFile)
+        if (_settings.Value.GenerateMetadataFile)
         {
             Console.Write("Generating metadata... ");
 
-            GenerateNumberSeriesMetadata(settings, seriesData);
-            GenerateTop10LongestSeriesMetadata(settings, seriesData);
-            GenerateFullSeriesData(settings, seriesData);
+            GenerateNumberSeriesMetadata(seriesData);
+            GenerateTop10LongestSeriesMetadata(seriesData);
+            GenerateFullSeriesData(seriesData);
 
             ConsoleOutput.WriteDone();
         }
@@ -32,9 +44,9 @@ public class Metadata
                                                .ToList();
     }
 
-    public static void GenerateNumberSeriesMetadata(Settings settings, List<List<int>> seriesData)
+    private void GenerateNumberSeriesMetadata(List<List<int>> seriesData)
 	{
-        var filePath = FileHelper.GenerateMetadataFilePath(settings);
+        var filePath = _fileHelper.GenerateMetadataFilePath();
 
         if (string.IsNullOrEmpty(filePath))
         {
@@ -59,12 +71,12 @@ public class Metadata
             lcv++;
         }
 
-        FileHelper.WriteMetadataToFile(content, filePath);
+        _fileHelper.WriteMetadataToFile(content, filePath);
     }
 
-    public static void GenerateTop10LongestSeriesMetadata(Settings settings, List<List<int>> seriesData)
+    private void GenerateTop10LongestSeriesMetadata(List<List<int>> seriesData)
     {
-        var filePath = FileHelper.GenerateMetadataFilePath(settings);
+        var filePath = _fileHelper.GenerateMetadataFilePath();
 
         if (string.IsNullOrEmpty(filePath))
         {
@@ -80,12 +92,12 @@ public class Metadata
             content += $"{FirstNumber}: {Count} in series\n";
         }
 
-        FileHelper.WriteMetadataToFile(content, filePath);
+        _fileHelper.WriteMetadataToFile(content, filePath);
     }
 
-    public static void GenerateFullSeriesData(Settings settings, List<List<int>> seriesData)
+    private void GenerateFullSeriesData(List<List<int>> seriesData)
     {
-        var filePath = FileHelper.GenerateMetadataFilePath(settings);
+        var filePath = _fileHelper.GenerateMetadataFilePath();
 
         if (string.IsNullOrEmpty(filePath))
         {
@@ -102,6 +114,6 @@ public class Metadata
             content += "\n\n";
         }
 
-        FileHelper.WriteMetadataToFile(content, filePath);
+        _fileHelper.WriteMetadataToFile(content, filePath);
     }
 }

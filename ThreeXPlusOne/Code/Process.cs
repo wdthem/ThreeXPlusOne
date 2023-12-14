@@ -8,13 +8,22 @@ namespace ThreeXPlusOne.Code;
 public class Process : IProcess
 {
     private readonly IOptions<Settings> _settings;
+    private readonly IAlgorithm _algorithm;
     private readonly List<IDirectedGraph> _directedGraphs;
+    private readonly IHistogram _histogram;
+    private readonly IMetadata _metadata;
 
     public Process(IOptions<Settings> settings,
-                   IEnumerable<IDirectedGraph> directedGraphs)
-    {
+                   IAlgorithm algorithm,
+                   IEnumerable<IDirectedGraph> directedGraphs,
+                   IHistogram histogram,
+                   IMetadata metadata)
+    { 
         _settings = settings;
+        _algorithm = algorithm;
         _directedGraphs = directedGraphs.ToList();
+        _histogram = histogram;
+        _metadata = metadata;
     }
 
     public void Run()
@@ -34,20 +43,12 @@ public class Process : IProcess
 
         Console.Write($"Running 3x+1 algorithm on {inputValues.Count} numbers... ");
 
-        List<List<int>> outputValues = Algorithm.Run(inputValues);
+        List<List<int>> outputValues = _algorithm.Run(inputValues);
 
         ConsoleOutput.WriteDone();
 
-        IDirectedGraph graph;
-
-        if (_settings.Value.ParsedGraphDimensions == 2)
-        {
-            graph = _directedGraphs[0];
-        }
-        else
-        {
-            graph = _directedGraphs[1];
-        }
+        IDirectedGraph graph = _directedGraphs.Where(graph => graph.Dimensions == _settings.Value.ParsedGraphDimensions)
+                                              .First();
         
         foreach (List<int> values in outputValues)
         {
@@ -59,8 +60,8 @@ public class Process : IProcess
         graph.PositionNodes();
         graph.Draw(_settings.Value);
 
-        Histogram.GenerateHistogram(outputValues, _settings.Value);
-        Metadata.GenerateMedatadataFile(_settings.Value, outputValues);
+        _histogram.GenerateHistogram(outputValues);
+        _metadata.GenerateMedatadataFile(outputValues);
 
         stopwatch.Stop();
         TimeSpan ts = stopwatch.Elapsed;
@@ -71,7 +72,7 @@ public class Process : IProcess
         ConsoleOutput.WriteHeading($"Process completed. Execution time: {elapsedTime}");
     }
 
-    private static List<int> GenerateInputValues(Settings settings, Stopwatch stopwatch)
+    private List<int> GenerateInputValues(Settings settings, Stopwatch stopwatch)
     {
         var random = new Random();
         var inputValues = new List<int>();

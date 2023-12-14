@@ -1,13 +1,9 @@
-﻿using System.Text.Json;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ThreeXPlusOne;
 using ThreeXPlusOne.Code;
-using ThreeXPlusOne.Code.Graph;
 using ThreeXPlusOne.Code.Interfaces;
-using ThreeXPlusOne.Config;
-
 
 if (args.Length > 0)
 {
