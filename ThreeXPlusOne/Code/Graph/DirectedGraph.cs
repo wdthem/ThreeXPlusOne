@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using System.Xml.Linq;
+using SkiaSharp;
 using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
@@ -44,6 +45,13 @@ public abstract class DirectedGraph
                 // Check if previousNode is already a child to prevent duplicate additions
                 if (!currentNode.Children.Contains(previousNode))
                 {
+                    previousNode.IsFirstChild = true;
+
+                    if (currentNode.Children.Count == 1)
+                    {
+                        previousNode.IsFirstChild = false;
+                        previousNode.IsSecondChild = true;
+                    }
                     currentNode.Children.Add(previousNode);
                 }
             }
@@ -51,6 +59,16 @@ public abstract class DirectedGraph
             previousNode = currentNode;
 
             currentDepth--;  // decrement the depth as we move through the series
+        }
+
+        var maxNodeDepth = _nodes.Max(node => node.Value.Depth);
+
+
+        foreach (var node in _nodes)
+        {
+            float z = maxNodeDepth - node.Value.Depth;
+
+            node.Value.Z = z;
         }
     }
 

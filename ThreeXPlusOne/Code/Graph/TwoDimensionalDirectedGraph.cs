@@ -106,7 +106,7 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         lcv = 1;
         foreach (var node in _nodes)
         {
-            DrawNode(canvas, node.Value, settings);
+            DrawNode(canvas, node.Value);
 
             Console.Write($"    \r{lcv} nodes drawn");
 
@@ -231,7 +231,7 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         }
     }
 
-    private void DrawNode(SKCanvas canvas, DirectedGraphNode node, Settings settings)
+    private void DrawNode(SKCanvas canvas, DirectedGraphNode node)
     {
         var paint = new SKPaint
         {
@@ -250,18 +250,18 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
             FakeBoldText = true,
         };
 
-        if (settings.DistortNodes)
+        if (_settings.Value.DistortNodes)
         {
             DrawDistortedPath(canvas,
                               node.Position,
-                              settings.NodeRadius,
-                              settings.RadiusDistortion,
+                              _settings.Value.NodeRadius,
+                              _settings.Value.RadiusDistortion,
                               paint);
         }
         else
         {
             canvas.DrawCircle(node.Position,
-                              settings.NodeRadius,
+                              _settings.Value.NodeRadius,
                               paint);
         }
         

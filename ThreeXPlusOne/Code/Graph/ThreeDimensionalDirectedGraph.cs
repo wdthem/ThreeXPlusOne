@@ -11,7 +11,6 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 {
     private readonly IOptions<Settings> _settings;
     private readonly IFileHelper _fileHelper;
-    private int _maxNodeDepth;
 
     public int Dimensions => 3;
 
@@ -26,8 +25,6 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
     {
         Console.Write("Positioning nodes... ");
 
-        _maxNodeDepth = _nodes.Max(node => node.Value.Depth);
-
         // Set up the base nodes' positions
         var base1 = new SKPoint(_settings.Value.CanvasWidth / 2, _settings.Value.CanvasHeight - 100);         // Node '1' at the bottom
         var base2 = new SKPoint(_settings.Value.CanvasWidth / 2, base1.Y - _settings.Value.YNodeSpacer);      // Node '2' just above '1'
@@ -35,14 +32,17 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
+        _nodes[1].Z = 0;
         _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], (float)100);
 
         _nodes[2].Position = base2;
         _nodes[2].IsPositioned = true;
+        _nodes[2].Z = 0;
         _nodes[2].Position = ApplyPerspectiveTransform(_nodes[1], (float)100);
 
         _nodes[4].Position = base4;
         _nodes[4].IsPositioned = true;
+        _nodes[4].Z = 0;
         _nodes[4].Position = ApplyPerspectiveTransform(_nodes[1], (float)100);
 
         List<DirectedGraphNode> nodesToDraw = _nodes.Where(n => n.Value.Depth == _nodes[4].Depth + 1)
@@ -113,7 +113,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         lcv = 1;
         foreach (var node in _nodes)
         {
-            DrawNode(canvas, node.Value, settings);
+            DrawNode(canvas, node.Value);
 
             Console.Write($"    \r{lcv} nodes drawn");
 
@@ -159,80 +159,92 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 
     private void PositionNode(DirectedGraphNode node)
     {
-        if (!node.IsPositioned)
+        if (node.IsPositioned)
         {
-            int allNodesAtDepth =
-                _nodes.Values.Count(n => n.Depth == node.Depth);
+            return;
+        }
 
-            int positionedNodesAtDepth =
-                _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
+        int allNodesAtDepth =
+            _nodes.Values.Count(n => n.Depth == node.Depth);
 
-            float xOffset = node.Parent == null
-                                    ? _settings.Value.CanvasWidth / 2
-                                    : node.Parent.Position.X;
+        int positionedNodesAtDepth =
+            _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
 
-            if (allNodesAtDepth > 1)
+        float xOffset = node.Parent == null
+                                ? _settings.Value.CanvasWidth / 2
+                                : node.Parent.Position.X;
+
+        if (allNodesAtDepth > 1)
+        {
+            if (node.Parent!.Children.Count == 1)
             {
-                if (node.Parent!.Children.Count == 1)
+                xOffset = node.Parent.Position.X;
+            }
+            else
+            {
+                int addedWidth;
+
+                if (allNodesAtDepth % 2 == 0)
                 {
-                    xOffset = node.Parent.Position.X;
+                    addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth + 1;
                 }
                 else
                 {
-                    int addedWidth;
+                    addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth;
+                }
 
-                    if (allNodesAtDepth % 2 == 0)
-                    {
-                        addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth + 1;
-                    }
-                    else
-                    {
-                        addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth;
-                    }
-
+                if (node.IsFirstChild)
+                {
                     xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) + (_settings.Value.XNodeSpacer * addedWidth);
-                }
-            }
-
-            var yOffset = node.Parent!.Position.Y - _settings.Value.YNodeSpacer;
-
-            node.Position = new SKPoint(xOffset, yOffset);
-
-            if (_settings.Value.NodeRotationAngle != 0)
-            {
-                (double x, double y) rotatedPosition;
-
-                if (node.Value % 2 == 0)
-                {
-                    rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.Value.NodeRotationAngle);
+                    node.Z -= 50; 
                 }
                 else
                 {
-                    rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.Value.NodeRotationAngle);
+                    xOffset = (xOffset + ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) + (_settings.Value.XNodeSpacer * addedWidth);
+                    node.Z += 50;
                 }
 
-                node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
+                
             }
+        }
 
-            node.Position = ApplyPerspectiveTransform(node, (float)100);
+        var yOffset = node.Parent!.Position.Y - _settings.Value.YNodeSpacer;
 
-            node.IsPositioned = true;
+        node.Position = new SKPoint(xOffset, yOffset);
 
-            foreach (var childNode in node.Children)
+        if (_settings.Value.NodeRotationAngle != 0)
+        {
+            (double x, double y) rotatedPosition;
+
+            if (node.Value % 2 == 0)
             {
-                PositionNode(childNode);
+                rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.Value.NodeRotationAngle);
             }
+            else
+            {
+                rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.Value.NodeRotationAngle);
+            }
+
+            node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
+        }
+
+        node.Position = ApplyPerspectiveTransform(node, (float)200);
+
+        node.IsPositioned = true;
+
+        foreach (var childNode in node.Children)
+        {
+            PositionNode(childNode);
         }
     }
 
     public SKPoint ApplyPerspectiveTransform(DirectedGraphNode node, float d)
     {
-        int reversedDepth = _maxNodeDepth - node.Depth + 1;
 
         float xCentered = node.Position.X - _settings.Value.CanvasWidth / 2;
         float yCentered = node.Position.Y - _settings.Value.CanvasHeight / 2;
-        float xPrime = xCentered / (1 + reversedDepth / d) + _settings.Value.CanvasWidth / 2;
-        float yPrime = yCentered / (1 + reversedDepth / d) + _settings.Value.CanvasHeight / 2;
+        float xPrime = xCentered / (1 + node.Z / d) + _settings.Value.CanvasWidth / 2;
+        float yPrime = yCentered / (1 + node.Z / d) + _settings.Value.CanvasHeight / 2;
 
         //float xPrime = node.Position.X / (1 + reversedDepth / d);
         //float yPrime = node.Position.Y / (1 + reversedDepth / d);
@@ -255,7 +267,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         }
     }
 
-    private void DrawNode(SKCanvas canvas, DirectedGraphNode node, Settings settings)
+    private void DrawNode(SKCanvas canvas, DirectedGraphNode node)
     {
         var paint = new SKPaint
         {
@@ -274,18 +286,22 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
             FakeBoldText = true,
         };
 
-        if (settings.DistortNodes)
+        float maxZ = _nodes.Max(node => node.Value.Z);
+        float depthFactor = 1 - (node.Z / maxZ);
+        float nodeRadius = _settings.Value.NodeRadius * (0.5f + depthFactor * 0.5f);
+
+        if (_settings.Value.DistortNodes)
         {
             DrawDistortedPath(canvas,
                               node.Position,
-                              settings.NodeRadius,
-                              settings.RadiusDistortion,
+                              _settings.Value.NodeRadius,
+                              _settings.Value.RadiusDistortion,
                               paint);
         }
         else
         {
             canvas.DrawCircle(node.Position,
-                              settings.NodeRadius,
+                              nodeRadius,
                               paint);
         }
 

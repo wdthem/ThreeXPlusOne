@@ -16,5 +16,9 @@ public class DirectedGraphNode
     public List<DirectedGraphNode> Children { get; set; }
     public int Depth { get; set; }
     public SKPoint Position { get; set; }
+    public float Z { get; set; }
     public bool IsPositioned { get; set; }
+
+    public bool IsFirstChild { get; set; }
+    public bool IsSecondChild { get; set; }
 }
