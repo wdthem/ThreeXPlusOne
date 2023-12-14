@@ -1,5 +1,4 @@
 ﻿using SkiaSharp;
-using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;

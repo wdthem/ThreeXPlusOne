@@ -50,7 +50,7 @@ public class FileHelper : IFileHelper
 	{
         var graphRotation = _settings.Value.NodeRotationAngle == 0 ? "NoRotation" : "Rotation";
 
-        var fileName = $"ThreeXPlusOne-DirectedGraph-{graphRotation}.png";
+        var fileName = $"ThreeXPlusOne-{_settings.Value.ParsedGraphDimensions}D-DirectedGraph-{graphRotation}.png";
 
         return GenerateFullFilePath(_settings.Value.UniqueExecutionId, _settings.Value.OutputPath, fileName);
     }

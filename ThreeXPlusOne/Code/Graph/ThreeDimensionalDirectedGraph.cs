@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Xml.Linq;
+using Microsoft.Extensions.Options;
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
@@ -10,6 +11,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 {
     private readonly IOptions<Settings> _settings;
     private readonly IFileHelper _fileHelper;
+    private int _maxNodeDepth;
 
     public int Dimensions => 3;
 
@@ -24,6 +26,8 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
     {
         Console.Write("Positioning nodes... ");
 
+        _maxNodeDepth = _nodes.Max(node => node.Value.Depth);
+
         // Set up the base nodes' positions
         var base1 = new SKPoint(_settings.Value.CanvasWidth / 2, _settings.Value.CanvasHeight - 100);         // Node '1' at the bottom
         var base2 = new SKPoint(_settings.Value.CanvasWidth / 2, base1.Y - _settings.Value.YNodeSpacer);      // Node '2' just above '1'
@@ -31,12 +35,15 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
+        _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], (float)100);
 
         _nodes[2].Position = base2;
         _nodes[2].IsPositioned = true;
+        _nodes[2].Position = ApplyPerspectiveTransform(_nodes[1], (float)100);
 
         _nodes[4].Position = base4;
         _nodes[4].IsPositioned = true;
+        _nodes[4].Position = ApplyPerspectiveTransform(_nodes[1], (float)100);
 
         List<DirectedGraphNode> nodesToDraw = _nodes.Where(n => n.Value.Depth == _nodes[4].Depth + 1)
                                                     .Select(n => n.Value)
@@ -207,6 +214,8 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
                 node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
             }
 
+            node.Position = ApplyPerspectiveTransform(node, (float)100);
+
             node.IsPositioned = true;
 
             foreach (var childNode in node.Children)
@@ -214,6 +223,21 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
                 PositionNode(childNode);
             }
         }
+    }
+
+    public SKPoint ApplyPerspectiveTransform(DirectedGraphNode node, float d)
+    {
+        int reversedDepth = _maxNodeDepth - node.Depth + 1;
+
+        float xCentered = node.Position.X - _settings.Value.CanvasWidth / 2;
+        float yCentered = node.Position.Y - _settings.Value.CanvasHeight / 2;
+        float xPrime = xCentered / (1 + reversedDepth / d) + _settings.Value.CanvasWidth / 2;
+        float yPrime = yCentered / (1 + reversedDepth / d) + _settings.Value.CanvasHeight / 2;
+
+        //float xPrime = node.Position.X / (1 + reversedDepth / d);
+        //float yPrime = node.Position.Y / (1 + reversedDepth / d);
+
+        return new SKPoint(xPrime, yPrime);
     }
 
     private static void DrawConnection(SKCanvas canvas, DirectedGraphNode node)
