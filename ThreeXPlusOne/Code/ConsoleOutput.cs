@@ -151,12 +151,12 @@ public class ConsoleOutput
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.NodeRadius)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("40 (the radius of the nodes in pixels)");
+        Console.WriteLine("40 for 2D, 300 for 3D (the radius of the nodes in pixels)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.DistortNodes)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("false (whether or not to use cirecles or distorted shapes as graph nodes)");
+        Console.WriteLine("false (whether or not to use circles or distorted shapes as graph nodes)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.RadiusDistortion)}: ");
@@ -166,7 +166,7 @@ public class ConsoleOutput
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.XNodeSpacer)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("125 (the space between nodes on the x-axis)");
+        Console.WriteLine("125 for 2D, 250 for 3D (the space between nodes on the x-axis)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.YNodeSpacer)}: ");
@@ -176,7 +176,7 @@ public class ConsoleOutput
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.GraphDimensions)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("2 (the number of dimensions to render in the graph (2 or 3)");
+        Console.WriteLine("2 (the number of dimensions to render in the graph - 2 or 3)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.GenerateGraph)}: ");

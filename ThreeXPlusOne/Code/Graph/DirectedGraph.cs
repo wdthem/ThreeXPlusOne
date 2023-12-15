@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Drawing;
+using Microsoft.Extensions.Options;
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
@@ -181,7 +182,24 @@ public abstract class DirectedGraph
 
         canvas.Clear(SKColors.Black);
 
+        var randomPoints = GenerateRandomPoints(100, _settings.Value.CanvasWidth, _settings.Value.CanvasHeight);
+
         var lcv = 1;
+        foreach (var point in randomPoints)
+        {
+            if (lcv % 7 == 0)
+            {
+                DrawStarWithTrails(canvas, point);
+            }
+            else
+            {
+                DrawStarWithBlur(canvas, point);
+            }
+            
+            lcv++;
+        }
+
+        lcv = 1;
         foreach (var node in _nodes)
         {
             DrawConnection(canvas, node.Value);
@@ -324,5 +342,112 @@ public abstract class DirectedGraph
         path.Close();
 
         canvas.DrawPath(path, paint);
+    }
+
+    private List<SKPoint> GenerateRandomPoints(int count, int canvasWidth, int canvasHeight)
+    {
+        var points = new List<SKPoint>();
+
+        for (int i = 0; i < count; i++)
+        {
+            float x = (float)_random.NextDouble() * canvasWidth;
+            float y = (float)_random.NextDouble() * canvasHeight;
+
+            points.Add(new SKPoint(x, y));
+        }
+
+        return points;
+    }
+
+    private void DrawStarWithBlur(SKCanvas canvas, SKPoint point)
+    {
+        float starSize = _random.Next(20, 40);
+        float blurRadius = 9.0f;
+
+        var blurPaint = new SKPaint
+        {
+            IsAntialias = true,
+            MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, blurRadius)
+        };
+
+        var starPaint = new SKPaint
+        {
+            IsAntialias = true,
+            Color = SKColors.White
+        };
+
+        canvas.DrawCircle(point, starSize, blurPaint);
+        canvas.DrawCircle(point, starSize, starPaint);
+    }
+
+    private void DrawStarWithTrails(SKCanvas canvas, SKPoint center)
+    {
+        float starSize = _random.Next(20, 40);
+        float trailLength = starSize + 50; // Length of the light trails
+        float trailStartWidth = starSize / 2; // Starting width of the light trails
+        float trailEndWidth = starSize / 10; // Ending width (tip) of the light trails
+        float blurRadius = 9.0f;
+
+        var starPaint = new SKPaint
+        {
+            IsAntialias = true,
+            Color = SKColors.White
+        };
+
+        var trailPaint = new SKPaint
+        {
+            IsAntialias = true,
+            Color = SKColors.White,
+            Style = SKPaintStyle.StrokeAndFill
+        };
+
+        var blurPaint = new SKPaint
+        {
+            IsAntialias = true,
+            MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, blurRadius)
+        };
+
+        canvas.DrawCircle(center, starSize / 2, blurPaint);
+        canvas.DrawCircle(center, starSize / 2, starPaint);
+
+        // Draw trails in all four directions
+        DrawTaperedTrail(canvas, center, new SKPoint(center.X, center.Y - trailLength), trailStartWidth, trailEndWidth, trailPaint); // Up
+        DrawTaperedTrail(canvas, center, new SKPoint(center.X, center.Y + trailLength), trailStartWidth, trailEndWidth, trailPaint); // Down
+        DrawTaperedTrail(canvas, center, new SKPoint(center.X - trailLength, center.Y), trailStartWidth, trailEndWidth, trailPaint); // Left
+        DrawTaperedTrail(canvas, center, new SKPoint(center.X + trailLength, center.Y), trailStartWidth, trailEndWidth, trailPaint); // Right
+    }
+
+    private static void DrawTaperedTrail(SKCanvas canvas, SKPoint start, SKPoint end, float startWidth, float endWidth, SKPaint paint)
+    {
+        using var path = new SKPath();
+
+        // Calculate the direction of the trail
+        var direction = new SKPoint(end.X - start.X, end.Y - start.Y);
+        var perpendicular = NormalizeVector(new SKPoint(-direction.Y, direction.X));
+
+        // Calculate the four corners of the trail
+        var corner1 = new SKPoint(start.X + perpendicular.X * (startWidth / 2), start.Y + perpendicular.Y * (startWidth / 2));
+        var corner2 = new SKPoint(start.X - perpendicular.X * (startWidth / 2), start.Y - perpendicular.Y * (startWidth / 2));
+        var corner3 = new SKPoint(end.X - perpendicular.X * (endWidth / 2), end.Y - perpendicular.Y * (endWidth / 2));
+        var corner4 = new SKPoint(end.X + perpendicular.X * (endWidth / 2), end.Y + perpendicular.Y * (endWidth / 2));
+
+        // Draw the tapered trail
+        path.MoveTo(corner1);
+        path.LineTo(corner2);
+        path.LineTo(corner3);
+        path.LineTo(corner4);
+        path.Close();
+
+        canvas.DrawPath(path, paint);
+    }
+
+    private static SKPoint NormalizeVector(SKPoint vector)
+    {
+        float length = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
+        if (length > 0)
+        {
+            return new SKPoint(vector.X / length, vector.Y / length);
+        }
+        return vector;
     }
 }

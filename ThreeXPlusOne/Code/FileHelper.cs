@@ -48,9 +48,7 @@ public class FileHelper : IFileHelper
 
     public string GenerateGraphFilePath()
 	{
-        var graphRotation = _settings.Value.NodeRotationAngle == 0 ? "NoRotation" : "Rotation";
-
-        var fileName = $"ThreeXPlusOne-{_settings.Value.ParsedGraphDimensions}D-DirectedGraph-{graphRotation}.png";
+        var fileName = $"ThreeXPlusOne-{_settings.Value.ParsedGraphDimensions}D-DirectedGraph.png";
 
         return GenerateFullFilePath(_settings.Value.UniqueExecutionId, _settings.Value.OutputPath, fileName);
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Xml.Linq;
+using Microsoft.Extensions.Options;
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
@@ -26,21 +27,21 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 
         // Set up the base nodes' positions
         var base1 = new SKPoint(_settings.Value.CanvasWidth / 2, _settings.Value.CanvasHeight - 100);         // Node '1' at the bottom
-        var base2 = new SKPoint(_settings.Value.CanvasWidth / 2, base1.Y - _settings.Value.YNodeSpacer);      // Node '2' just above '1'
-        var base4 = new SKPoint(_settings.Value.CanvasWidth / 2, base2.Y - _settings.Value.YNodeSpacer);      // Node '4' above '2'
+        var base2 = new SKPoint(_settings.Value.CanvasWidth / 2, base1.Y - (_settings.Value.YNodeSpacer * 2));      // Node '2' just above '1'
+        var base4 = new SKPoint(_settings.Value.CanvasWidth / 2, base2.Y - (_settings.Value.YNodeSpacer * 2));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
-        _nodes[1].Z = 0;
+        _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], (float)200);
         _nodes[1].Radius = _settings.Value.NodeRadius;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
-        _nodes[2].Z = 0;
+        _nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], (float)200);
         _nodes[2].Radius = _settings.Value.NodeRadius;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
-        _nodes[4].Z = 0;
+        _nodes[4].Position = ApplyPerspectiveTransform(_nodes[4], (float)200);
         _nodes[4].Radius = _settings.Value.NodeRadius;
         _nodes[4].IsPositioned = true;
 
@@ -79,12 +80,9 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         }
 
         float maxZ = _nodes.Max(node => node.Value.Z);
-        //float depthFactor = 1 - (node.Z / maxZ);
-        float depthFactor = (node.Z / maxZ); //used to be 1-(div)
-        //float scale = (float)(0.5f + (1 - Math.Pow(depthFactor, 2)) * 0.98f);
+        float depthFactor = (node.Z / maxZ);
         float scale = 0.98f - depthFactor * 0.1f;
         float minScale = (float)0.3;
-        //float nodeRadius = baseRadius * (0.5f + depthFactor * 0.5f);
         float nodeRadius = baseRadius * Math.Max(scale - 0.02f, minScale);
 
         float xOffset = node.Parent == null
@@ -115,15 +113,12 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
             {
                 xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) - (_settings.Value.XNodeSpacer * addedWidth);
                 node.Z -= 25;
-                //nodeRadius = node.Parent.Radius * (0.75f + depthFactor * 0.99f); // Larger for closer (left) nodes
-                //nodeRadius = node.Parent.Radius * scale;
                 nodeRadius = node.Parent.Radius * Math.Max(scale, minScale);
             }
             else
             {
                 xOffset = (xOffset + ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) + (_settings.Value.XNodeSpacer * addedWidth);
                 node.Z += 10;
-                //nodeRadius = node.Parent.Radius * (0.5f + depthFactor * 0.98f); // Smaller for further (right) nodes
                 nodeRadius = node.Parent.Radius * Math.Max(scale - 0.02f, minScale);
             }
         }
@@ -164,14 +159,11 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 
     private SKPoint ApplyPerspectiveTransform(DirectedGraphNode node, float d)
     {
-
         float xCentered = node.Position.X - _settings.Value.CanvasWidth / 2;
         float yCentered = node.Position.Y - _settings.Value.CanvasHeight / 2;
+
         float xPrime = xCentered / (1 + node.Z / d) + _settings.Value.CanvasWidth / 2;
         float yPrime = yCentered / (1 + node.Z / d) + _settings.Value.CanvasHeight / 2;
-
-        //float xPrime = node.Position.X / (1 + reversedDepth / d);
-        //float yPrime = node.Position.Y / (1 + reversedDepth / d);
 
         return new SKPoint(xPrime, yPrime);
     }
