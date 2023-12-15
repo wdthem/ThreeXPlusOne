@@ -48,13 +48,6 @@ public class Metadata : IMetadata
 	{
         var filePath = _fileHelper.GenerateMetadataFilePath();
 
-        if (string.IsNullOrEmpty(filePath))
-        {
-            ConsoleOutput.WriteError("Invalid metadata file path. Check 'settings.json'");
-
-            return;
-        }
-
         string content = "\nSeries run for the following numbers: \n";
 
         var lcv = 1;
@@ -78,13 +71,6 @@ public class Metadata : IMetadata
     {
         var filePath = _fileHelper.GenerateMetadataFilePath();
 
-        if (string.IsNullOrEmpty(filePath))
-        {
-            ConsoleOutput.WriteError("Invalid metadata file path. Check 'settings.json'");
-
-            return;
-        }
-
         string content = "\nTop 10 longest series:\n";
 
         foreach ((int FirstNumber, int Count) in GenerateTop10Series(seriesData))
@@ -98,13 +84,6 @@ public class Metadata : IMetadata
     private void GenerateFullSeriesData(List<List<int>> seriesData)
     {
         var filePath = _fileHelper.GenerateMetadataFilePath();
-
-        if (string.IsNullOrEmpty(filePath))
-        {
-            ConsoleOutput.WriteError("Invalid metadata file path. Check 'settings.json'");
-
-            return;
-        }
 
         string content = "\nFull series data:\n";
 

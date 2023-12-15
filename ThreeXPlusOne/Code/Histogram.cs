@@ -48,13 +48,6 @@ public class Histogram : IHistogram
 
         string fullPath = _fileHelper.GenerateHistogramFilePath();
 
-        if (string.IsNullOrEmpty(fullPath))
-        {
-            ConsoleOutput.WriteError("Invalid image path. Check 'settings.json'");
-
-            return;
-        }
-
         using var stream = File.OpenWrite($"{fullPath}");
 
         data.SaveTo(stream);

@@ -8,8 +8,8 @@ public class Settings
     public int CanvasHeight { get; set; }
     public int NumberOfSeries { get; set; }
     public int MaxStartingNumber { get; set; }
-    public string? UseOnlyTheseNumbers { get; set; }
-    public string? ExcludeTheseNumbers { get; set; }
+    public string UseOnlyTheseNumbers { get; set; } = "";
+    public string ExcludeTheseNumbers { get; set; } = "";
     public double NodeRotationAngle { get; set; }
     public float NodeRadius { get; set; }
     public bool DistortNodes { get; set; }
@@ -20,7 +20,8 @@ public class Settings
     public bool GenerateGraph { get; set; }
     public bool GenerateHistogram { get; set; }
     public bool GenerateMetadataFile { get; set; }
-    public string? OutputPath { get; set; }
+    public bool GenerateBackgroundStars { get; set; }
+    public string OutputPath { get; set; } = "";
 
     [JsonIgnore]
     public string UniqueExecutionId { get; private set; } = Guid.NewGuid().ToString();

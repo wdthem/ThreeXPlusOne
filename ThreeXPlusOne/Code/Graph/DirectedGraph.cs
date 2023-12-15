@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
@@ -34,7 +33,7 @@ public abstract class DirectedGraph
             {
                 currentNode = new DirectedGraphNode(number)
                 {
-                    Depth = currentDepth // Set the initial depth for the node
+                    Depth = currentDepth
                 };
 
                 _nodes.Add(number, currentNode);
@@ -66,7 +65,7 @@ public abstract class DirectedGraph
 
             previousNode = currentNode;
 
-            currentDepth--;  // decrement the depth as we move through the series
+            currentDepth--;
         }
 
         var maxNodeDepth = _nodes.Max(node => node.Value.Depth);
@@ -80,10 +79,12 @@ public abstract class DirectedGraph
         }
     }
 
-    protected static void SaveCanvas(SKSurface surface, string path)
+    protected void SaveCanvas(SKSurface surface)
     {
         Console.WriteLine();
         Console.Write("Saving image... ");
+
+        string path = _fileHelper.GenerateGraphFilePath();
 
         using (var image = surface.Snapshot())
         using (var data = image.Encode(SKEncodedImageFormat.Png, 25))
@@ -98,7 +99,7 @@ public abstract class DirectedGraph
         Console.ForegroundColor = ConsoleColor.White;
     }
 
-    protected void MoveNodesWithSamePosition(List<DirectedGraphNode> nodes)
+    protected void AdjustNodesWithSamePosition(List<DirectedGraphNode> nodes)
     {
         var allNodes = nodes.SelectMany(FlattenHierarchy).ToList();
 
@@ -182,24 +183,12 @@ public abstract class DirectedGraph
 
         canvas.Clear(SKColors.Black);
 
-        var randomPoints = GenerateRandomPoints(100, _settings.Value.CanvasWidth, _settings.Value.CanvasHeight);
-
-        var lcv = 1;
-        foreach (var point in randomPoints)
+        if (_settings.Value.GenerateBackgroundStars)
         {
-            if (lcv % 7 == 0)
-            {
-                DrawStarWithTrails(canvas, point);
-            }
-            else
-            {
-                DrawStarWithBlur(canvas, point);
-            }
-            
-            lcv++;
+            GenerateBackgroundStars(canvas, 100);
         }
 
-        lcv = 1;
+        var lcv = 1;
         foreach (var node in _nodes)
         {
             DrawConnection(canvas, node.Value);
@@ -226,17 +215,9 @@ public abstract class DirectedGraph
 
         if (_settings.Value.GenerateGraph)
         {
-            string fullPath = _fileHelper.GenerateGraphFilePath();
-
-            if (string.IsNullOrEmpty(fullPath))
-            {
-                ConsoleOutput.WriteError($"Invalid {nameof(_settings.Value.OutputPath)}. Check 'settings.json'");
-
-                return;
-            }
-
             Console.WriteLine();
             Console.Write($"Generate {_settings.Value.GraphDimensions}D visualization? (y/n): ");
+
             ConsoleKeyInfo keyInfo = Console.ReadKey();
 
             if (keyInfo.Key != ConsoleKey.Y)
@@ -251,7 +232,7 @@ public abstract class DirectedGraph
 
             Console.WriteLine();
 
-            SaveCanvas(surface, fullPath);
+            SaveCanvas(surface);
         }
         else
         {
@@ -344,19 +325,32 @@ public abstract class DirectedGraph
         canvas.DrawPath(path, paint);
     }
 
-    private List<SKPoint> GenerateRandomPoints(int count, int canvasWidth, int canvasHeight)
+    private void GenerateBackgroundStars(SKCanvas canvas, int count)
     {
         var points = new List<SKPoint>();
 
         for (int i = 0; i < count; i++)
         {
-            float x = (float)_random.NextDouble() * canvasWidth;
-            float y = (float)_random.NextDouble() * canvasHeight;
+            float x = (float)_random.NextDouble() * _settings.Value.CanvasWidth;
+            float y = (float)_random.NextDouble() * _settings.Value.CanvasHeight;
 
             points.Add(new SKPoint(x, y));
         }
 
-        return points;
+        var lcv = 1;
+        foreach (var point in points)
+        {
+            if (lcv % 7 == 0)
+            {
+                DrawStarWithTrails(canvas, point);
+            }
+            else
+            {
+                DrawStarWithBlur(canvas, point);
+            }
+
+            lcv++;
+        }
     }
 
     private void DrawStarWithBlur(SKCanvas canvas, SKPoint point)

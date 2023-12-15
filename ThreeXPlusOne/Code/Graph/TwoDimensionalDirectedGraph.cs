@@ -47,7 +47,7 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
             PositionNode(node);
         }
 
-        MoveNodesWithSamePosition(nodesToDraw);
+        AdjustNodesWithSamePosition(nodesToDraw);
 
         ConsoleOutput.WriteDone();
     }

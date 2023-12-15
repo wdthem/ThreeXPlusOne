@@ -1,5 +1,4 @@
-﻿using System.Xml.Linq;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
@@ -54,7 +53,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
             PositionNode(node);
         }
 
-        MoveNodesWithSamePosition(nodesToDraw);
+        AdjustNodesWithSamePosition(nodesToDraw);
 
         ConsoleOutput.WriteDone();
     }

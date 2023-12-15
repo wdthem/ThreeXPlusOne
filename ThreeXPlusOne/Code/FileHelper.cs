@@ -13,7 +13,7 @@ public class FileHelper : IFileHelper
         _settings = settings;
     }
 
-    private static string GenerateFullFilePath(string uniqueId, string? path, string fileName)
+    private string GenerateFullFilePath(string uniqueId, string? path, string fileName)
     {
         if (!string.IsNullOrEmpty(path))
         {
@@ -21,7 +21,7 @@ public class FileHelper : IFileHelper
 
             if (!Directory.Exists(directory))
             {
-                return "";
+                throw new Exception($"Invalid {nameof(_settings.Value.OutputPath)}. Check 'settings.json'");
             }
         }
 

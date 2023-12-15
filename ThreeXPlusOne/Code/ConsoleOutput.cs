@@ -191,7 +191,12 @@ public class ConsoleOutput
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.GenerateMetadataFile)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("true (whether or not to generate a a file with metadata about the run)");
+        Console.WriteLine("true (whether or not to generate a file with metadata about the run)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.GenerateBackgroundStars)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("true (whether or not to generate random stars in the background of the graph)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.OutputPath)}: ");
