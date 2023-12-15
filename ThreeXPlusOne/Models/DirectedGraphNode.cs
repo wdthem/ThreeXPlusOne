@@ -21,4 +21,6 @@ public class DirectedGraphNode
 
     public bool IsFirstChild { get; set; }
     public bool IsSecondChild { get; set; }
+
+    public float Radius { get; set; }
 }

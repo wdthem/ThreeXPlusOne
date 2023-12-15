@@ -31,25 +31,25 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         var base4 = new SKPoint(_settings.Value.CanvasWidth / 2, base2.Y - _settings.Value.YNodeSpacer);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
-        _nodes[1].IsPositioned = true;
         _nodes[1].Z = 0;
-        _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], (float)100);
+        _nodes[1].Radius = _settings.Value.NodeRadius;
+        _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
-        _nodes[2].IsPositioned = true;
         _nodes[2].Z = 0;
-        _nodes[2].Position = ApplyPerspectiveTransform(_nodes[1], (float)100);
+        _nodes[2].Radius = _settings.Value.NodeRadius;
+        _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
-        _nodes[4].IsPositioned = true;
         _nodes[4].Z = 0;
-        _nodes[4].Position = ApplyPerspectiveTransform(_nodes[1], (float)100);
+        _nodes[4].Radius = _settings.Value.NodeRadius;
+        _nodes[4].IsPositioned = true;
 
         List<DirectedGraphNode> nodesToDraw = _nodes.Where(n => n.Value.Depth == _nodes[4].Depth + 1)
                                                     .Select(n => n.Value)
                                                     .ToList();
 
-        foreach (var node in nodesToDraw.Where(n => n.Value > 0))
+        foreach (var node in nodesToDraw)
         {
             PositionNode(node);
         }
@@ -170,46 +170,58 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         int positionedNodesAtDepth =
             _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
 
+        var baseRadius = _settings.Value.NodeRadius;
+
+        if (node.Parent != null &&  node.Parent.Radius > 0)
+        {
+            baseRadius = node.Parent.Radius;
+        }
+
+        float maxZ = _nodes.Max(node => node.Value.Z);
+        float depthFactor = 1 - (node.Z / maxZ);
+        float nodeRadius = baseRadius * (0.5f + depthFactor * 0.5f);
+
         float xOffset = node.Parent == null
                                 ? _settings.Value.CanvasWidth / 2
                                 : node.Parent.Position.X;
 
-        if (allNodesAtDepth > 1)
+        
+        if (node.Parent!.Children.Count == 1)
         {
-            if (node.Parent!.Children.Count == 1)
+            xOffset = node.Parent.Position.X;
+            nodeRadius = node.Parent.Radius;
+        }
+        else
+        {
+            int addedWidth;
+
+
+            if (allNodesAtDepth % 2 == 0)
             {
-                xOffset = node.Parent.Position.X;
+                addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth + 1;
             }
             else
             {
-                int addedWidth;
+                addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth;
+            }
 
-                if (allNodesAtDepth % 2 == 0)
-                {
-                    addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth + 1;
-                }
-                else
-                {
-                    addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth;
-                }
-
-                if (node.IsFirstChild)
-                {
-                    xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) + (_settings.Value.XNodeSpacer * addedWidth);
-                    node.Z -= 50; 
-                }
-                else
-                {
-                    xOffset = (xOffset + ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) + (_settings.Value.XNodeSpacer * addedWidth);
-                    node.Z += 50;
-                }
-
-                
+            if (node.IsFirstChild)
+            {
+                xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) - (_settings.Value.XNodeSpacer * addedWidth);
+                node.Z -= 25;
+                nodeRadius = node.Parent.Radius * (0.75f + depthFactor * 0.99f); // Larger for closer (left) nodes
+            }
+            else
+            {
+                xOffset = (xOffset + ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) + (_settings.Value.XNodeSpacer * addedWidth);
+                node.Z += 10;
+                nodeRadius = node.Parent.Radius * (0.5f + depthFactor * 0.98f); // Smaller for further (right) nodes
             }
         }
-
+        
         var yOffset = node.Parent!.Position.Y - _settings.Value.YNodeSpacer;
 
+        node.Radius = nodeRadius;
         node.Position = new SKPoint(xOffset, yOffset);
 
         if (_settings.Value.NodeRotationAngle != 0)
@@ -228,8 +240,11 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
             node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
         }
 
-        node.Position = ApplyPerspectiveTransform(node, (float)200);
-
+        if (node.Parent != null && node.Parent.Children.Count == 2)
+        {
+            node.Position = ApplyPerspectiveTransform(node, (float)200);
+        }
+        
         node.IsPositioned = true;
 
         foreach (var childNode in node.Children)
@@ -273,7 +288,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         {
             IsAntialias = true,
             Style = SKPaintStyle.Fill,
-            Color = GetRandomColor()
+            Color = GetRandomColor(128)
         };
 
         var textPaint = new SKPaint
@@ -286,10 +301,6 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
             FakeBoldText = true,
         };
 
-        float maxZ = _nodes.Max(node => node.Value.Z);
-        float depthFactor = 1 - (node.Z / maxZ);
-        float nodeRadius = _settings.Value.NodeRadius * (0.5f + depthFactor * 0.5f);
-
         if (_settings.Value.DistortNodes)
         {
             DrawDistortedPath(canvas,
@@ -301,7 +312,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         else
         {
             canvas.DrawCircle(node.Position,
-                              nodeRadius,
+                              node.Radius,
                               paint);
         }
 

@@ -90,7 +90,7 @@ public abstract class DirectedGraph
         Console.ForegroundColor = ConsoleColor.White;
     }
 
-    protected SKColor GetRandomColor()
+    protected SKColor GetRandomColor(byte alpha = 255)
     {
         byte red, green, blue;
 
@@ -102,7 +102,7 @@ public abstract class DirectedGraph
         }
         while (red == 0 && green == 0 && blue == 0); // Repeat if the color is black
 
-        return new SKColor(red, green, blue);
+        return new SKColor(red, green, blue, alpha);
     }
 
     protected static (double x, double y) RotatePointAntiClockWise(double x, double y, double angleDegrees)
