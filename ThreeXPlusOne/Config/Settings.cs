@@ -1,12 +1,10 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace ThreeXPlusOne.Config;
 
 public class Settings
 {
-    [JsonIgnore]
     private string? _uniqueExecutionId;
     
     public int CanvasWidth { get; set; }
@@ -28,7 +26,6 @@ public class Settings
     public bool GenerateBackgroundStars { get; set; }
     public string OutputPath { get; set; } = "";
 
-    [JsonIgnore]
     public string UniqueExecutionId
     {
         get
@@ -42,7 +39,6 @@ public class Settings
         }
     }
 
-    [JsonIgnore]
     public int ParsedGraphDimensions
     {
         get
@@ -56,7 +52,6 @@ public class Settings
         }
     }
 
-    [JsonIgnore]
     public List<int> ListOfSeriesNumbers
     {
         get
@@ -87,7 +82,6 @@ public class Settings
         }
     }
 
-    [JsonIgnore]
     public List<int> ListOfNumbersToExclude
     {
         get
