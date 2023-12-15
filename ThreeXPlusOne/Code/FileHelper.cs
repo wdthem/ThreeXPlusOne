@@ -32,6 +32,11 @@ public class FileHelper : IFileHelper
         return Path.Combine(path ?? "", newDirectoryName, fileName);
     }
 
+    private static string GetFilenameTimestamp()
+    {
+        return DateTime.Now.ToString("yyyyMMdd-HHmmss");
+    }
+
     public void WriteMetadataToFile(string content, string filePath)
     {
         try
@@ -48,21 +53,21 @@ public class FileHelper : IFileHelper
 
     public string GenerateGraphFilePath()
 	{
-        var fileName = $"ThreeXPlusOne-{_settings.Value.ParsedGraphDimensions}D-DirectedGraph.png";
+        var fileName = $"ThreeXPlusOne-{_settings.Value.ParsedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
         return GenerateFullFilePath(_settings.Value.UniqueExecutionId, _settings.Value.OutputPath, fileName);
     }
 
     public string GenerateHistogramFilePath()
     {
-        var fileName = $"ThreeXPlusOne-Histogram.png";
+        var fileName = $"ThreeXPlusOne-Histogram-{GetFilenameTimestamp()}.png";
 
         return GenerateFullFilePath(_settings.Value.UniqueExecutionId, _settings.Value.OutputPath, fileName);
     }
 
     public string GenerateMetadataFilePath()
     {
-        var fileName = $"ThreeXPlusOne-Metadata.txt";
+        var fileName = $"ThreeXPlusOne-Metadata-{GetFilenameTimestamp()}.txt";
 
         return GenerateFullFilePath(_settings.Value.UniqueExecutionId, _settings.Value.OutputPath, fileName);
     }

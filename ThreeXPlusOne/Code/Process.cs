@@ -37,7 +37,7 @@ public class Process : IProcess
 
         ConsoleOutput.WriteHeading("Series data");
 
-        List<int> inputValues = GenerateInputValues(_settings.Value, stopwatch);
+        List<int> inputValues = GenerateInputValues(stopwatch);
 
         ConsoleOutput.WriteHeading("Algorithm execution");
 
@@ -72,29 +72,29 @@ public class Process : IProcess
         ConsoleOutput.WriteHeading($"Process completed. Execution time: {elapsedTime}");
     }
 
-    private List<int> GenerateInputValues(Settings settings, Stopwatch stopwatch)
+    private List<int> GenerateInputValues(Stopwatch stopwatch)
     {
         var random = new Random();
         var inputValues = new List<int>();
 
-        if (string.IsNullOrEmpty(settings.UseOnlyTheseNumbers))
+        if (string.IsNullOrEmpty(_settings.Value.UseOnlyTheseNumbers))
         {
-            Console.Write($"Generating {settings.NumberOfSeries} random numbers from 1 to {settings.MaxStartingNumber}... ");
+            Console.Write($"Generating {_settings.Value.NumberOfSeries} random numbers from 1 to {_settings.Value.MaxStartingNumber}... ");
 
-            while (inputValues.Count < settings.NumberOfSeries)
+            while (inputValues.Count < _settings.Value.NumberOfSeries)
             {
                 if (stopwatch.Elapsed.TotalSeconds >= 10)
                 {
                     Console.WriteLine();
-                    Console.WriteLine($"Gave up generating {settings.NumberOfSeries} random numbers. Generated {inputValues.Count}");
+                    Console.WriteLine($"Gave up generating {_settings.Value.NumberOfSeries} random numbers. Generated {inputValues.Count}");
                     Console.WriteLine();
 
                     break;
                 }
 
-                int randomValue = random.Next(0, settings.MaxStartingNumber) + 1;
+                int randomValue = random.Next(0, _settings.Value.MaxStartingNumber) + 1;
 
-                if (settings.ListOfNumbersToExclude.Contains(randomValue))
+                if (_settings.Value.ListOfNumbersToExclude.Contains(randomValue))
                 {
                     continue;
                 }
@@ -105,11 +105,13 @@ public class Process : IProcess
                 }
             }
 
+            _settings.Value.UseOnlyTheseNumbers = string.Join(", ", inputValues);
+
             ConsoleOutput.WriteDone();
         }
         else
         {
-            inputValues = settings.ListOfManualSeriesNumbers;
+            inputValues = _settings.Value.ListOfManualSeriesNumbers;
         }
 
         return inputValues;

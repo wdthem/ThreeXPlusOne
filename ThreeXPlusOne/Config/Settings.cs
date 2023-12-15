@@ -1,9 +1,14 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ThreeXPlusOne.Config;
 
 public class Settings
 {
+    [JsonIgnore]
+    private string? _uniqueExecutionId;
+    
     public int CanvasWidth { get; set; }
     public int CanvasHeight { get; set; }
     public int NumberOfSeries { get; set; }
@@ -24,7 +29,18 @@ public class Settings
     public string OutputPath { get; set; } = "";
 
     [JsonIgnore]
-    public string UniqueExecutionId { get; private set; } = Guid.NewGuid().ToString();
+    public string UniqueExecutionId
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_uniqueExecutionId))
+            {
+                _uniqueExecutionId = ComputeHashFromSeriesData();
+            }
+
+            return _uniqueExecutionId;
+        }
+    }
 
     [JsonIgnore]
     public int ParsedGraphDimensions
@@ -95,5 +111,19 @@ public class Settings
 
             return parsedNumbers;
         }
+    }
+
+    private string ComputeHashFromSeriesData()
+    {
+        byte[] bytes = MD5.HashData(Encoding.UTF8.GetBytes(UseOnlyTheseNumbers));
+
+        StringBuilder builder = new();
+
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            builder.Append(bytes[i].ToString("x2"));
+        }
+
+        return builder.ToString().ToLower();
     }
 }
