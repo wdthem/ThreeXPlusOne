@@ -58,7 +58,7 @@ public class Process : IProcess
         ConsoleOutput.WriteHeading("Directed graph");
 
         graph.PositionNodes();
-        graph.Draw(_settings.Value);
+        graph.DrawGraph();
 
         _histogram.GenerateHistogram(outputValues);
         _metadata.GenerateMedatadataFile(outputValues);

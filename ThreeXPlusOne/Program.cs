@@ -26,13 +26,13 @@ using IHost host = Host.CreateDefaultBuilder(args)
             })
             .Build();
 
-//try
-//{
+try
+{
     var process = host.Services.GetRequiredService<IProcess>();
 
     process.Run();
-//}
-//catch(Exception e)
-//{
-    //ConsoleOutput.WriteError($"{e.Message}");
-//}
+}
+catch(Exception e)
+{
+    ConsoleOutput.WriteError($"{e.Message}");
+}
