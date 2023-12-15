@@ -77,7 +77,7 @@ public class Process : IProcess
         var random = new Random();
         var inputValues = new List<int>();
 
-        if (string.IsNullOrEmpty(_settings.Value.UseOnlyTheseNumbers))
+        if (string.IsNullOrEmpty(_settings.Value.UseTheseNumbers))
         {
             Console.Write($"Generating {_settings.Value.NumberOfSeries} random numbers from 1 to {_settings.Value.MaxStartingNumber}... ");
 
@@ -105,13 +105,14 @@ public class Process : IProcess
                 }
             }
 
-            _settings.Value.UseOnlyTheseNumbers = string.Join(", ", inputValues);
+            //populate the property as the number list is used to generate a hash value for the directory name
+            _settings.Value.UseTheseNumbers = string.Join(", ", inputValues);
 
             ConsoleOutput.WriteDone();
         }
         else
         {
-            inputValues = _settings.Value.ListOfManualSeriesNumbers;
+            inputValues = _settings.Value.ListOfSeriesNumbers;
         }
 
         return inputValues;

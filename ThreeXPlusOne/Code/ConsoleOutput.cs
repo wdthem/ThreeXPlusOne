@@ -134,7 +134,7 @@ public class ConsoleOutput
         Console.WriteLine("1000 (the highest number any given series can start with)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.UseOnlyTheseNumbers)}: ");
+        Console.Write($"     {nameof(Settings.UseTheseNumbers)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine($"\"\" (comma-separated list of numbers to run the program with. Overrides {nameof(Settings.NumberOfSeries)} and {nameof(Settings.MaxStartingNumber)})");
 

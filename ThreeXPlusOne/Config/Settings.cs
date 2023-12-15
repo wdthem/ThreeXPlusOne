@@ -13,7 +13,7 @@ public class Settings
     public int CanvasHeight { get; set; }
     public int NumberOfSeries { get; set; }
     public int MaxStartingNumber { get; set; }
-    public string UseOnlyTheseNumbers { get; set; } = "";
+    public string UseTheseNumbers { get; set; } = "";
     public string ExcludeTheseNumbers { get; set; } = "";
     public double NodeRotationAngle { get; set; }
     public float NodeRadius { get; set; }
@@ -57,18 +57,18 @@ public class Settings
     }
 
     [JsonIgnore]
-    public List<int> ListOfManualSeriesNumbers
+    public List<int> ListOfSeriesNumbers
     {
         get
         {
             var parsedNumbers = new List<int>();
 
-            if (string.IsNullOrEmpty(UseOnlyTheseNumbers))
+            if (string.IsNullOrEmpty(UseTheseNumbers))
             {
                 return parsedNumbers;
             }
 
-            string[] stringArray = UseOnlyTheseNumbers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] stringArray = UseTheseNumbers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var numberAsString in stringArray)
             {
@@ -115,7 +115,7 @@ public class Settings
 
     private string ComputeHashFromSeriesData()
     {
-        byte[] bytes = MD5.HashData(Encoding.UTF8.GetBytes(UseOnlyTheseNumbers));
+        byte[] bytes = MD5.HashData(Encoding.UTF8.GetBytes(string.Join("", ListOfSeriesNumbers)));
 
         StringBuilder builder = new();
 

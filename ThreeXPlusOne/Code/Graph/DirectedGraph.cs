@@ -59,6 +59,7 @@ public abstract class DirectedGraph
                         previousNode.IsFirstChild = false;
                         previousNode.IsSecondChild = true;
                     }
+
                     currentNode.Children.Add(previousNode);
                 }
             }
