@@ -438,7 +438,7 @@ public abstract class DirectedGraph
         Console.WriteLine();
         Console.Write("Saving image... ");
 
-        string path = _fileHelper.GenerateGraphFilePath();
+        string path = _fileHelper.GenerateDirectedGraphFilePath();
 
         using (var image = surface.Snapshot())
         using (var data = image.Encode(SKEncodedImageFormat.Png, 25))

@@ -51,7 +51,7 @@ public class FileHelper : IFileHelper
         }
     }
 
-    public string GenerateGraphFilePath()
+    public string GenerateDirectedGraphFilePath()
 	{
         var fileName = $"ThreeXPlusOne-{_settings.Value.ParsedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
