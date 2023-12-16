@@ -27,7 +27,8 @@ public class Algorithm : IAlgorithm
             //add the first number in the series
             outputValues.Add(calculatedValue);
 
-            while (calculatedValue > 1 || calculatedValue < -1)
+            //avoid the infinite loop of 4, 2, 1 by stopping when the algorithm hits 1
+            while (calculatedValue > 1)
             {
                 if (calculatedValue % 2 != 0)
                 {
