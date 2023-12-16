@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using ThreeXPlusOne.Code;
 using ThreeXPlusOne.Code.Graph;
 using ThreeXPlusOne.Code.Interfaces;
@@ -9,7 +10,30 @@ namespace ThreeXPlusOne;
 
 public static class StartupExtensions
 {
-    public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
+    /// <summary>
+    /// Set up the host required for dependency injection
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static IHostBuilder ConfigureApplication(this IHostBuilder builder)
+    {
+        return builder.ConfigureAppConfiguration((context, configBuilder) =>
+                            {
+                                configBuilder.AddJsonFile("settings.json", optional: false, reloadOnChange: true);
+                            })
+                            .ConfigureServices((context, services) =>
+                            {
+                                services.AddServices(context.Configuration);
+                            });
+    }
+
+    /// <summary>
+    /// Configure all required services for dependency injection
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<Settings>(configuration);
 

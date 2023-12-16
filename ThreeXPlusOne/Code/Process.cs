@@ -26,10 +26,12 @@ public class Process : IProcess
         _metadata = metadata;
     }
 
+    /// <summary>
+    /// Run the algorithm and data generation based on the user-provided settings
+    /// </summary>
     public void Run()
 	{
-        var stopwatch = new Stopwatch();
-
+        Stopwatch stopwatch = new();
         stopwatch.Start();
 
         ConsoleOutput.WriteAsciiArtLogo();
@@ -43,16 +45,16 @@ public class Process : IProcess
 
         Console.Write($"Running 3x+1 algorithm on {inputValues.Count} numbers... ");
 
-        List<List<int>> outputValues = _algorithm.Run(inputValues);
+        List<List<int>> seriesData = _algorithm.Run(inputValues);
 
         ConsoleOutput.WriteDone();
 
         IDirectedGraph graph = _directedGraphs.Where(graph => graph.Dimensions == _settings.Value.ParsedGraphDimensions)
                                               .First();
         
-        foreach (List<int> values in outputValues)
+        foreach (List<int> series in seriesData)
         {
-            graph.AddSeries(values);
+            graph.AddSeries(series);
         }
 
         ConsoleOutput.WriteHeading("Directed graph");
@@ -60,8 +62,8 @@ public class Process : IProcess
         graph.PositionNodes();
         graph.DrawGraph();
 
-        _histogram.GenerateHistogram(outputValues);
-        _metadata.GenerateMedatadataFile(outputValues);
+        _histogram.GenerateHistogram(seriesData);
+        _metadata.GenerateMedatadataFile(seriesData);
 
         stopwatch.Stop();
         TimeSpan ts = stopwatch.Elapsed;
@@ -72,6 +74,14 @@ public class Process : IProcess
         ConsoleOutput.WriteHeading($"Process completed. Execution time: {elapsedTime}");
     }
 
+    /// <summary>
+    /// Get the list of numbers to use to run through the algorithm
+    /// Either:
+    ///     Random numbers - the amount specified in settings; or
+    ///     The list specified by the user in settings (this take priority)
+    /// </summary>
+    /// <param name="stopwatch"></param>
+    /// <returns></returns>
     private List<int> GenerateInputValues(Stopwatch stopwatch)
     {
         var random = new Random();

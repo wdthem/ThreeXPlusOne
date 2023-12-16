@@ -15,11 +15,17 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
     {
     }
 
+    /// <summary>
+    /// Generate a 3D visual representation of the directed graph
+    /// </summary>
     public void DrawGraph()
     {
         Draw();
     }
 
+    /// <summary>
+    /// Position the nodes on the graph in pseudo-3D space
+    /// </summary>
     public void PositionNodes()
     {
         Console.Write("Positioning nodes... ");

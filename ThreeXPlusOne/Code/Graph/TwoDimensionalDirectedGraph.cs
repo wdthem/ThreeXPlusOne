@@ -15,11 +15,17 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
     {
     }
 
+    /// <summary>
+    /// Generate a 2D visual representation of the directed graph
+    /// </summary>
     public void DrawGraph()
     {
         Draw();
     }
 
+    /// <summary>
+    /// Position the nodes on the graph in 2D space
+    /// </summary>
     public void PositionNodes()
     {
         Console.Write("Positioning nodes... ");

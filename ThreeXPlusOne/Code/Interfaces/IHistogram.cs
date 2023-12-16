@@ -2,5 +2,10 @@
 
 public interface IHistogram
 {
+    /// <summary>
+    /// Generate a histogram based on the given run of the process
+    /// The histogram shows the distribution of all generated numbers based on their starting digit (1-9)
+    /// </summary>
+    /// <param name="seriesData"></param>
     void GenerateHistogram(List<List<int>> seriesData);
 }
