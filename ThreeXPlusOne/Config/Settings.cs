@@ -112,9 +112,14 @@ public class Settings
         }
     }
 
+    /// <summary>
+    /// Create an MD5 hash of the list of numbers that the process is running on such that
+    /// the output directory can be uniquely named and re-used if the process is re-run with the same numbers
+    /// </summary>
+    /// <returns></returns>
     private string ComputeHashFromSeriesData()
     {
-        byte[] bytes = MD5.HashData(Encoding.UTF8.GetBytes(string.Join("", ListOfSeriesNumbers)));
+        byte[] bytes = MD5.HashData(Encoding.UTF8.GetBytes(string.Join("", ListOfSeriesNumbers.OrderBy(x => x))));
 
         StringBuilder builder = new();
 
