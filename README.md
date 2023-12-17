@@ -28,6 +28,7 @@ All output can be toggled on and off.
 # Usage
 
 * A 'settings.json' file must exist in the same folder of either the executable or the DLL, depending on how you run the app.
+* Run the executable from the command line with no arguments
 * Running the executable or dll with the flag --help will output help text regarding a suggested starting point for the values of the settings.
 * Running the process with the same list of numbers will put any generated output into the same folder name as created by the process itself
 
