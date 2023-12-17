@@ -5,24 +5,26 @@ namespace ThreeXPlusOne.Config;
 
 /// <summary>
 /// Run --help command for property documentation
+/// Defaults are provided in this class
 /// </summary>
 public class Settings
 {
     private string? _uniqueExecutionId;
-    
-    public int CanvasWidth { get; set; }
-    public int CanvasHeight { get; set; }
-    public int NumberOfSeries { get; set; }
-    public int MaxStartingNumber { get; set; }
+
+    public int CanvasWidth { get; set; } = 20000;
+    public int CanvasHeight { get; set; } = 20000;
+    public int NumberOfSeries { get; set; } = 200;
+    public int MaxStartingNumber { get; set; } = 1000;
     public string UseTheseNumbers { get; set; } = "";
     public string ExcludeTheseNumbers { get; set; } = "";
-    public double NodeRotationAngle { get; set; }
-    public float NodeRadius { get; set; }
+    public double NodeRotationAngle { get; set; } = 0;
+    public float NodeRadius { get; set; } = 40;
     public bool DistortNodes { get; set; }
-    public int RadiusDistortion { get; set; }
-    public int XNodeSpacer { get; set; }
-    public int YNodeSpacer { get; set; }
-    public int GraphDimensions { get; set; }
+    public int RadiusDistortion { get; set; } = 30;
+    public int XNodeSpacer { get; set; } = 125;
+    public int YNodeSpacer { get; set; } = 125;
+    public float DistanceFromViewer { get; set; } = 200;
+    public int GraphDimensions { get; set; } = 2;
     public bool GenerateGraph { get; set; }
     public bool GenerateHistogram { get; set; }
     public bool GenerateMetadataFile { get; set; }

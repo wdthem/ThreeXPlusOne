@@ -36,17 +36,17 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         var base4 = new SKPoint(_settings.Value.CanvasWidth / 2, base2.Y - (_settings.Value.YNodeSpacer * 2));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
-        _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], (float)200);
+        _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.Value.DistanceFromViewer);
         _nodes[1].Radius = _settings.Value.NodeRadius;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
-        _nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], (float)200);
+        _nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], _settings.Value.DistanceFromViewer);
         _nodes[2].Radius = _settings.Value.NodeRadius;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
-        _nodes[4].Position = ApplyPerspectiveTransform(_nodes[4], (float)200);
+        _nodes[4].Position = ApplyPerspectiveTransform(_nodes[4], _settings.Value.DistanceFromViewer);
         _nodes[4].Radius = _settings.Value.NodeRadius;
         _nodes[4].IsPositioned = true;
 
@@ -154,7 +154,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 
         if (node.Parent != null && node.Parent.Children.Count == 2)
         {
-            node.Position = ApplyPerspectiveTransform(node, (float)200);
+            node.Position = ApplyPerspectiveTransform(node, _settings.Value.DistanceFromViewer);
         }
         
         node.IsPositioned = true;
@@ -170,7 +170,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
     /// The Z-coordinate is set to the reverse of the depth value of the node in the AddSeries() method
     /// </summary>
     /// <param name="node"></param>
-    /// <param name="d"></param>
+    /// <param name="d">The distance to the viewer</param>
     /// <returns></returns>
     private SKPoint ApplyPerspectiveTransform(DirectedGraphNode node, float d)
     {

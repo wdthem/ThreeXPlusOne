@@ -174,6 +174,11 @@ public class ConsoleOutput
         Console.WriteLine("125 (the space between nodes on the y-axis)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.DistanceFromViewer)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("200 (for the 3D graph, the distance from the view when applying the perspective transformation)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.GraphDimensions)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("2 (the number of dimensions to render in the graph - 2 or 3)");

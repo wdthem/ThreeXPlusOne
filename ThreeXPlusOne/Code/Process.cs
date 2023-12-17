@@ -95,6 +95,11 @@ public class Process : IProcess
             {
                 if (stopwatch.Elapsed.TotalSeconds >= 10)
                 {
+                    if (inputValues.Count == 0)
+                    {
+                        throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_settings.Value.ExcludeTheseNumbers)}");
+                    }
+
                     Console.WriteLine();
                     Console.WriteLine($"Gave up generating {_settings.Value.NumberOfSeries} random numbers. Generated {inputValues.Count}");
                     Console.WriteLine();
@@ -123,6 +128,16 @@ public class Process : IProcess
         else
         {
             inputValues = _settings.Value.ListOfSeriesNumbers;
+
+            inputValues.RemoveAll(_settings.Value.ListOfNumbersToExclude.Contains);
+
+            if (inputValues.Count == 0)
+            {
+                throw new Exception("No numbers provided on which to run the algorithm");
+            }
+
+            Console.WriteLine($"Using series numbers defined in {nameof(_settings.Value.UseTheseNumbers)} apart from any excluded in {nameof(_settings.Value.ExcludeTheseNumbers)}");
+            Console.WriteLine();
         }
 
         return inputValues;
