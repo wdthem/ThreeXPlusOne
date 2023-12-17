@@ -3,6 +3,9 @@ using System.Text;
 
 namespace ThreeXPlusOne.Config;
 
+/// <summary>
+/// Run --help command for property documentation
+/// </summary>
 public class Settings
 {
     private string? _uniqueExecutionId;

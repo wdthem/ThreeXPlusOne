@@ -58,6 +58,10 @@ public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         ConsoleOutput.WriteDone();
     }
 
+    /// <summary>
+    /// Recursive method to position node and all its children down the tree
+    /// </summary>
+    /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
     {
         node.Radius = _settings.Value.NodeRadius;

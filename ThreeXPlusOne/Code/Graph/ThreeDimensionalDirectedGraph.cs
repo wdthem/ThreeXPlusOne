@@ -64,6 +64,10 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         ConsoleOutput.WriteDone();
     }
 
+    /// <summary>
+    /// Recursive method to position node and all its children down the tree
+    /// </summary>
+    /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
     {
         if (node.IsPositioned)
@@ -103,7 +107,6 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         else
         {
             int addedWidth;
-
 
             if (allNodesAtDepth % 2 == 0)
             {
@@ -162,6 +165,13 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         }
     }
 
+    /// <summary>
+    /// For the pseduo-three-dimensional graph, apply depth to the given node based on the Z coordinate.
+    /// The Z-coordinate is set to the reverse of the depth value of the node in the AddSeries() method
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="d"></param>
+    /// <returns></returns>
     private SKPoint ApplyPerspectiveTransform(DirectedGraphNode node, float d)
     {
         float xCentered = node.Position.X - _settings.Value.CanvasWidth / 2;
