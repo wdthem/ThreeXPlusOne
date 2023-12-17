@@ -116,12 +116,12 @@ public class ConsoleOutput
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.CanvasWidth)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("20000 (the width of the drawing canvas in pixels)");
+        Console.WriteLine("30000 (the width of the drawing canvas in pixels)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.CanvasHeight)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("20000 (the height of the drawing canvas in pixels)");
+        Console.WriteLine("35000 (the height of the drawing canvas in pixels)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.NumberOfSeries)}: ");
