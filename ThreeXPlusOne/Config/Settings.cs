@@ -11,8 +11,8 @@ public class Settings
 {
     private string? _uniqueExecutionId;
 
-    public int CanvasWidth { get; set; } = 20000;
-    public int CanvasHeight { get; set; } = 20000;
+    public int CanvasWidth { get; set; } = 30000;
+    public int CanvasHeight { get; set; } = 35000;
     public int NumberOfSeries { get; set; } = 200;
     public int MaxStartingNumber { get; set; } = 1000;
     public string UseTheseNumbers { get; set; } = "";
