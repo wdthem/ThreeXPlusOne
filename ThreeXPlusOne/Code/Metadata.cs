@@ -7,14 +7,11 @@ namespace ThreeXPlusOne.Code;
 public class Metadata(IOptions<Settings> settings,
                       IFileHelper fileHelper) : IMetadata
 {
-    private readonly IOptions<Settings> _settings = settings;
-    private readonly IFileHelper _fileHelper = fileHelper;
-
     public void GenerateMedatadataFile(List<List<int>> seriesData)
     {
         ConsoleOutput.WriteHeading("Metadata");
 
-        if (_settings.Value.GenerateMetadataFile)
+        if (settings.Value.GenerateMetadataFile)
         {
             Console.Write("Generating metadata... ");
 
@@ -40,7 +37,7 @@ public class Metadata(IOptions<Settings> settings,
 
     private void GenerateNumberSeriesMetadata(List<List<int>> seriesData)
     {
-        var filePath = _fileHelper.GenerateMetadataFilePath();
+        var filePath = fileHelper.GenerateMetadataFilePath();
 
         string content = "\nSeries run for the following numbers: \n";
 
@@ -58,12 +55,12 @@ public class Metadata(IOptions<Settings> settings,
             lcv++;
         }
 
-        _fileHelper.WriteMetadataToFile(content, filePath);
+        fileHelper.WriteMetadataToFile(content, filePath);
     }
 
     private void GenerateTop10LongestSeriesMetadata(List<List<int>> seriesData)
     {
-        var filePath = _fileHelper.GenerateMetadataFilePath();
+        var filePath = fileHelper.GenerateMetadataFilePath();
 
         string content = "\nTop 10 longest series:\n";
 
@@ -72,12 +69,12 @@ public class Metadata(IOptions<Settings> settings,
             content += $"{FirstNumber}: {Count} in series\n";
         }
 
-        _fileHelper.WriteMetadataToFile(content, filePath);
+        fileHelper.WriteMetadataToFile(content, filePath);
     }
 
     private void GenerateFullSeriesData(List<List<int>> seriesData)
     {
-        var filePath = _fileHelper.GenerateMetadataFilePath();
+        var filePath = fileHelper.GenerateMetadataFilePath();
 
         string content = "\nFull series data:\n";
 
@@ -87,6 +84,6 @@ public class Metadata(IOptions<Settings> settings,
             content += "\n\n";
         }
 
-        _fileHelper.WriteMetadataToFile(content, filePath);
+        fileHelper.WriteMetadataToFile(content, filePath);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ThreeXPlusOne.Code;
 
-public class ConsoleOutput
+public static class ConsoleOutput
 {
     public static void WriteAsciiArtLogo()
     {

@@ -6,8 +6,6 @@ namespace ThreeXPlusOne.Code;
 
 public class FileHelper(IOptions<Settings> settings) : IFileHelper
 {
-    private readonly IOptions<Settings> _settings = settings;
-
     private string GenerateFullFilePath(string uniqueId, string? path, string fileName)
     {
         if (!string.IsNullOrWhiteSpace(path))
@@ -16,7 +14,7 @@ public class FileHelper(IOptions<Settings> settings) : IFileHelper
 
             if (!Directory.Exists(directory))
             {
-                throw new Exception($"Invalid {nameof(_settings.Value.OutputPath)}. Check 'settings.json'");
+                throw new Exception($"Invalid {nameof(settings.Value.OutputPath)}. Check 'settings.json'");
             }
         }
 
@@ -48,22 +46,22 @@ public class FileHelper(IOptions<Settings> settings) : IFileHelper
 
     public string GenerateDirectedGraphFilePath()
     {
-        var fileName = $"ThreeXPlusOne-{_settings.Value.ParsedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
+        var fileName = $"ThreeXPlusOne-{settings.Value.ParsedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
-        return GenerateFullFilePath(_settings.Value.UniqueExecutionId, _settings.Value.OutputPath, fileName);
+        return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
     }
 
     public string GenerateHistogramFilePath()
     {
         var fileName = $"ThreeXPlusOne-Histogram-{GetFilenameTimestamp()}.png";
 
-        return GenerateFullFilePath(_settings.Value.UniqueExecutionId, _settings.Value.OutputPath, fileName);
+        return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
     }
 
     public string GenerateMetadataFilePath()
     {
         var fileName = $"ThreeXPlusOne-Metadata-{GetFilenameTimestamp()}.txt";
 
-        return GenerateFullFilePath(_settings.Value.UniqueExecutionId, _settings.Value.OutputPath, fileName);
+        return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
     }
 }

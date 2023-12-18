@@ -8,15 +8,12 @@ namespace ThreeXPlusOne.Code;
 public class Histogram(IOptions<Settings> settings,
                        IFileHelper fileHelper) : IHistogram
 {
-    private readonly IOptions<Settings> _settings = settings;
-    private readonly IFileHelper _fileHelper = fileHelper;
-
     public void GenerateHistogram(List<List<int>> seriesData)
     {
         Console.WriteLine();
         ConsoleOutput.WriteHeading("Histogram");
 
-        if (_settings.Value.GenerateHistogram)
+        if (settings.Value.GenerateHistogram)
         {
             Console.Write("Generating histogram...");
         }
@@ -40,7 +37,7 @@ public class Histogram(IOptions<Settings> settings,
         using SKImage image = SKImage.FromBitmap(bitmap);
         using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
 
-        string fullPath = _fileHelper.GenerateHistogramFilePath();
+        string fullPath = fileHelper.GenerateHistogramFilePath();
 
         using var stream = File.OpenWrite($"{fullPath}");
 

@@ -11,12 +11,6 @@ public class Process(IOptions<Settings> settings,
                      IHistogram histogram,
                      IMetadata metadata) : IProcess
 {
-    private readonly IOptions<Settings> _settings = settings;
-    private readonly IAlgorithm _algorithm = algorithm;
-    private readonly List<IDirectedGraph> _directedGraphs = directedGraphs.ToList();
-    private readonly IHistogram _histogram = histogram;
-    private readonly IMetadata _metadata = metadata;
-
     /// <summary>
     /// Run the algorithm and data generation based on the user-provided settings
     /// </summary>
@@ -26,7 +20,7 @@ public class Process(IOptions<Settings> settings,
         stopwatch.Start();
 
         ConsoleOutput.WriteAsciiArtLogo();
-        ConsoleOutput.WriteSettings(_settings.Value);
+        ConsoleOutput.WriteSettings(settings.Value);
 
         ConsoleOutput.WriteHeading("Series data");
 
@@ -36,12 +30,13 @@ public class Process(IOptions<Settings> settings,
 
         Console.Write($"Running 3x+1 algorithm on {inputValues.Count} numbers... ");
 
-        List<List<int>> seriesData = _algorithm.Run(inputValues);
+        List<List<int>> seriesData = algorithm.Run(inputValues);
 
         ConsoleOutput.WriteDone();
 
-        IDirectedGraph graph = _directedGraphs.Where(graph => graph.Dimensions == _settings.Value.ParsedGraphDimensions)
-                                              .First();
+        IDirectedGraph graph = directedGraphs.ToList()
+                                             .Where(graph => graph.Dimensions == settings.Value.ParsedGraphDimensions)
+                                             .First();
 
         foreach (List<int> series in seriesData)
         {
@@ -53,8 +48,8 @@ public class Process(IOptions<Settings> settings,
         graph.PositionNodes();
         graph.DrawGraph();
 
-        _histogram.GenerateHistogram(seriesData);
-        _metadata.GenerateMedatadataFile(seriesData);
+        histogram.GenerateHistogram(seriesData);
+        metadata.GenerateMedatadataFile(seriesData);
 
         stopwatch.Stop();
         TimeSpan ts = stopwatch.Elapsed;
@@ -78,29 +73,29 @@ public class Process(IOptions<Settings> settings,
         var random = new Random();
         var inputValues = new List<int>();
 
-        if (string.IsNullOrWhiteSpace(_settings.Value.UseTheseNumbers))
+        if (string.IsNullOrWhiteSpace(settings.Value.UseTheseNumbers))
         {
-            Console.Write($"Generating {_settings.Value.NumberOfSeries} random numbers from 1 to {_settings.Value.MaxStartingNumber}... ");
+            Console.Write($"Generating {settings.Value.NumberOfSeries} random numbers from 1 to {settings.Value.MaxStartingNumber}... ");
 
-            while (inputValues.Count < _settings.Value.NumberOfSeries)
+            while (inputValues.Count < settings.Value.NumberOfSeries)
             {
                 if (stopwatch.Elapsed.TotalSeconds >= 10)
                 {
                     if (inputValues.Count == 0)
                     {
-                        throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_settings.Value.ExcludeTheseNumbers)}");
+                        throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(settings.Value.ExcludeTheseNumbers)}");
                     }
 
                     Console.WriteLine();
-                    Console.WriteLine($"Gave up generating {_settings.Value.NumberOfSeries} random numbers. Generated {inputValues.Count}");
+                    Console.WriteLine($"Gave up generating {settings.Value.NumberOfSeries} random numbers. Generated {inputValues.Count}");
                     Console.WriteLine();
 
                     break;
                 }
 
-                int randomValue = random.Next(0, _settings.Value.MaxStartingNumber) + 1;
+                int randomValue = random.Next(0, settings.Value.MaxStartingNumber) + 1;
 
-                if (_settings.Value.ListOfNumbersToExclude.Contains(randomValue))
+                if (settings.Value.ListOfNumbersToExclude.Contains(randomValue))
                 {
                     continue;
                 }
@@ -112,22 +107,22 @@ public class Process(IOptions<Settings> settings,
             }
 
             //populate the property as the number list is used to generate a hash value for the directory name
-            _settings.Value.UseTheseNumbers = string.Join(", ", inputValues);
+            settings.Value.UseTheseNumbers = string.Join(", ", inputValues);
 
             ConsoleOutput.WriteDone();
         }
         else
         {
-            inputValues = _settings.Value.ListOfSeriesNumbers;
+            inputValues = settings.Value.ListOfSeriesNumbers;
 
-            inputValues.RemoveAll(_settings.Value.ListOfNumbersToExclude.Contains);
+            inputValues.RemoveAll(settings.Value.ListOfNumbersToExclude.Contains);
 
             if (inputValues.Count == 0)
             {
                 throw new Exception("No numbers provided on which to run the algorithm");
             }
 
-            Console.WriteLine($"Using series numbers defined in {nameof(_settings.Value.UseTheseNumbers)} apart from any excluded in {nameof(_settings.Value.ExcludeTheseNumbers)}");
+            Console.WriteLine($"Using series numbers defined in {nameof(settings.Value.UseTheseNumbers)} apart from any excluded in {nameof(settings.Value.ExcludeTheseNumbers)}");
             Console.WriteLine();
         }
 
