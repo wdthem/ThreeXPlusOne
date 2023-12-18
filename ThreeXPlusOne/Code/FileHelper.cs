@@ -15,7 +15,7 @@ public class FileHelper : IFileHelper
 
     private string GenerateFullFilePath(string uniqueId, string? path, string fileName)
     {
-        if (!string.IsNullOrEmpty(path))
+        if (!string.IsNullOrWhiteSpace(path))
         {
             var directory = Path.GetDirectoryName(path);
 

@@ -63,7 +63,7 @@ public class Settings
         {
             var parsedNumbers = new List<int>();
 
-            if (string.IsNullOrEmpty(UseTheseNumbers))
+            if (string.IsNullOrWhiteSpace(UseTheseNumbers))
             {
                 return parsedNumbers;
             }
@@ -93,7 +93,7 @@ public class Settings
         {
             var parsedNumbers = new List<int>();
 
-            if (string.IsNullOrEmpty(ExcludeTheseNumbers))
+            if (string.IsNullOrWhiteSpace(ExcludeTheseNumbers))
             {
                 return parsedNumbers;
             }

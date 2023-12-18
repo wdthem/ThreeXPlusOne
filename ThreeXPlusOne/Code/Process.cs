@@ -87,7 +87,7 @@ public class Process : IProcess
         var random = new Random();
         var inputValues = new List<int>();
 
-        if (string.IsNullOrEmpty(_settings.Value.UseTheseNumbers))
+        if (string.IsNullOrWhiteSpace(_settings.Value.UseTheseNumbers))
         {
             Console.Write($"Generating {_settings.Value.NumberOfSeries} random numbers from 1 to {_settings.Value.MaxStartingNumber}... ");
 
