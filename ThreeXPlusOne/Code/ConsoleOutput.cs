@@ -74,7 +74,7 @@ public static class ConsoleOutput
         WriteHeading("Usage information");
 
         Console.WriteLine();
-        Console.WriteLine("Ensure that a 'settings.json' file exists in the same folder as the executable. It must have the following content:");
+        Console.WriteLine("To apply custom settings, ensure that a 'settings.json' file exists in the same folder as the executable. It must have the following content:");
         Console.WriteLine("");
         Console.WriteLine("{");
 

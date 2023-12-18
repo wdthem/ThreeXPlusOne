@@ -19,7 +19,7 @@ public static class StartupExtensions
     {
         return builder.ConfigureAppConfiguration((context, configBuilder) =>
                             {
-                                configBuilder.AddJsonFile("settings.json", optional: false, reloadOnChange: true);
+                                configBuilder.AddJsonFile("settings.json", optional: true, reloadOnChange: true);
                             })
                             .ConfigureServices((context, services) =>
                             {
