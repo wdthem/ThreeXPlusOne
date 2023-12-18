@@ -10,6 +10,7 @@ namespace ThreeXPlusOne.Config;
 public class Settings
 {
     private string? _uniqueExecutionId;
+    private static readonly char[] separator = [','];
 
     public int CanvasWidth { get; set; } = 30000;
     public int CanvasHeight { get; set; } = 35000;
@@ -68,7 +69,7 @@ public class Settings
                 return parsedNumbers;
             }
 
-            string[] stringArray = UseTheseNumbers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] stringArray = UseTheseNumbers.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var numberAsString in stringArray)
             {
@@ -98,9 +99,9 @@ public class Settings
                 return parsedNumbers;
             }
 
-            string[] stringArray = ExcludeTheseNumbers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] stringArray = ExcludeTheseNumbers.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach(var numberAsString in stringArray)
+            foreach (var numberAsString in stringArray)
             {
                 if (int.TryParse(numberAsString, out int parsedNumber))
                 {

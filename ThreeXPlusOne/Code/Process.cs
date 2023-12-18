@@ -5,32 +5,23 @@ using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public class Process : IProcess
+public class Process(IOptions<Settings> settings,
+                     IAlgorithm algorithm,
+                     IEnumerable<IDirectedGraph> directedGraphs,
+                     IHistogram histogram,
+                     IMetadata metadata) : IProcess
 {
-    private readonly IOptions<Settings> _settings;
-    private readonly IAlgorithm _algorithm;
-    private readonly List<IDirectedGraph> _directedGraphs;
-    private readonly IHistogram _histogram;
-    private readonly IMetadata _metadata;
-
-    public Process(IOptions<Settings> settings,
-                   IAlgorithm algorithm,
-                   IEnumerable<IDirectedGraph> directedGraphs,
-                   IHistogram histogram,
-                   IMetadata metadata)
-    { 
-        _settings = settings;
-        _algorithm = algorithm;
-        _directedGraphs = directedGraphs.ToList();
-        _histogram = histogram;
-        _metadata = metadata;
-    }
+    private readonly IOptions<Settings> _settings = settings;
+    private readonly IAlgorithm _algorithm = algorithm;
+    private readonly List<IDirectedGraph> _directedGraphs = directedGraphs.ToList();
+    private readonly IHistogram _histogram = histogram;
+    private readonly IMetadata _metadata = metadata;
 
     /// <summary>
     /// Run the algorithm and data generation based on the user-provided settings
     /// </summary>
     public void Run()
-	{
+    {
         Stopwatch stopwatch = new();
         stopwatch.Start();
 
@@ -51,7 +42,7 @@ public class Process : IProcess
 
         IDirectedGraph graph = _directedGraphs.Where(graph => graph.Dimensions == _settings.Value.ParsedGraphDimensions)
                                               .First();
-        
+
         foreach (List<int> series in seriesData)
         {
             graph.AddSeries(series);

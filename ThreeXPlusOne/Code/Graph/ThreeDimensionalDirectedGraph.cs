@@ -6,14 +6,10 @@ using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
 
-public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
+public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
+                                           IFileHelper fileHelper) : DirectedGraph(settings, fileHelper), IDirectedGraph
 {
     public int Dimensions => 3;
-
-    public ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
-                                         IFileHelper fileHelper) : base(settings, fileHelper)
-    {
-    }
 
     /// <summary>
     /// Generate a 3D visual representation of the directed graph
@@ -83,7 +79,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
 
         var baseRadius = _settings.Value.NodeRadius;
 
-        if (node.Parent != null &&  node.Parent.Radius > 0)
+        if (node.Parent != null && node.Parent.Radius > 0)
         {
             baseRadius = node.Parent.Radius;
         }
@@ -98,7 +94,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
                                 ? _settings.Value.CanvasWidth / 2
                                 : node.Parent.Position.X;
 
-        
+
         if (node.Parent!.Children.Count == 1)
         {
             xOffset = node.Parent.Position.X;
@@ -130,7 +126,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
                 nodeRadius = node.Parent.Radius * Math.Max(scale - 0.02f, minScale);
             }
         }
-        
+
         var yOffset = node.Parent!.Position.Y - _settings.Value.YNodeSpacer;
 
         node.Radius = nodeRadius;
@@ -156,7 +152,7 @@ public class ThreeDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
         {
             node.Position = ApplyPerspectiveTransform(node, _settings.Value.DistanceFromViewer);
         }
-        
+
         node.IsPositioned = true;
 
         foreach (var childNode in node.Children)

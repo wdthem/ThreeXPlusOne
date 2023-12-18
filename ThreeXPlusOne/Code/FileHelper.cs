@@ -4,14 +4,9 @@ using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public class FileHelper : IFileHelper
+public class FileHelper(IOptions<Settings> settings) : IFileHelper
 {
-    private readonly IOptions<Settings> _settings;
-
-    public FileHelper(IOptions<Settings> settings)
-    {
-        _settings = settings;
-    }
+    private readonly IOptions<Settings> _settings = settings;
 
     private string GenerateFullFilePath(string uniqueId, string? path, string fileName)
     {
@@ -52,7 +47,7 @@ public class FileHelper : IFileHelper
     }
 
     public string GenerateDirectedGraphFilePath()
-	{
+    {
         var fileName = $"ThreeXPlusOne-{_settings.Value.ParsedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
         return GenerateFullFilePath(_settings.Value.UniqueExecutionId, _settings.Value.OutputPath, fileName);

@@ -5,17 +5,11 @@ using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public class Histogram : IHistogram
+public class Histogram(IOptions<Settings> settings,
+                       IFileHelper fileHelper) : IHistogram
 {
-    private readonly IOptions<Settings> _settings;
-    private readonly IFileHelper _fileHelper;
-
-    public Histogram(IOptions<Settings> settings,
-                     IFileHelper fileHelper)
-    {
-        _settings = settings;
-        _fileHelper = fileHelper;
-    }
+    private readonly IOptions<Settings> _settings = settings;
+    private readonly IFileHelper _fileHelper = fileHelper;
 
     public void GenerateHistogram(List<List<int>> seriesData)
     {

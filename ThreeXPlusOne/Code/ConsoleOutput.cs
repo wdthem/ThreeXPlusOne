@@ -101,7 +101,7 @@ public class ConsoleOutput
             {
                 Console.WriteLine("[value]");
             }
-            
+
             lcv++;
         }
 

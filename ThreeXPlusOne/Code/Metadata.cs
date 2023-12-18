@@ -4,17 +4,11 @@ using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public class Metadata : IMetadata
+public class Metadata(IOptions<Settings> settings,
+                      IFileHelper fileHelper) : IMetadata
 {
-    private readonly IOptions<Settings> _settings;
-    private readonly IFileHelper _fileHelper;
-
-    public Metadata(IOptions<Settings> settings,
-                    IFileHelper fileHelper)
-    {
-        _settings = settings;
-        _fileHelper = fileHelper;
-    }
+    private readonly IOptions<Settings> _settings = settings;
+    private readonly IFileHelper _fileHelper = fileHelper;
 
     public void GenerateMedatadataFile(List<List<int>> seriesData)
     {
@@ -45,7 +39,7 @@ public class Metadata : IMetadata
     }
 
     private void GenerateNumberSeriesMetadata(List<List<int>> seriesData)
-	{
+    {
         var filePath = _fileHelper.GenerateMetadataFilePath();
 
         string content = "\nSeries run for the following numbers: \n";

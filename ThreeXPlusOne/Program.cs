@@ -24,7 +24,7 @@ try
 
     process.Run();
 }
-catch(Exception e)
+catch (Exception e)
 {
     ConsoleOutput.WriteError($"{e.Message}");
 }

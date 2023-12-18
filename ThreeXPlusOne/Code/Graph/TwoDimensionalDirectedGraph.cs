@@ -6,14 +6,10 @@ using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
 
-public class TwoDimensionalDirectedGraph : DirectedGraph, IDirectedGraph
+public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
+                                         IFileHelper fileHelper) : DirectedGraph(settings, fileHelper), IDirectedGraph
 {
     public int Dimensions => 2;
-
-    public TwoDimensionalDirectedGraph(IOptions<Settings> settings,
-                                       IFileHelper fileHelper) : base(settings, fileHelper)
-    {
-    }
 
     /// <summary>
     /// Generate a 2D visual representation of the directed graph

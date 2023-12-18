@@ -8,10 +8,10 @@ public class Algorithm : IAlgorithm
     {
         if (inputValues.Count == 0)
         {
-            return new List<List<int>>();
+            return [];
         }
 
-        List<List<int>> returnValues = new List<List<int>>();
+        List<List<int>> returnValues = [];
 
         foreach (var value in inputValues)
         {
@@ -20,7 +20,7 @@ public class Algorithm : IAlgorithm
                 continue;
             }
 
-            List<int> outputValues = new List<int>();
+            List<int> outputValues = [];
 
             int calculatedValue = value;
 

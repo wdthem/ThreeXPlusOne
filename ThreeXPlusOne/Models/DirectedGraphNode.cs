@@ -2,19 +2,12 @@
 
 namespace ThreeXPlusOne.Models;
 
-public class DirectedGraphNode
+public class DirectedGraphNode(int value)
 {
-    public DirectedGraphNode(int value)
-    {
-        Value = value;
-        Children = new List<DirectedGraphNode>();
-        Depth = -1;
-    }
-
-    public int Value { get; set; }
+    public int Value { get; set; } = value;
     public DirectedGraphNode? Parent { get; set; }
-    public List<DirectedGraphNode> Children { get; set; }
-    public int Depth { get; set; }
+    public List<DirectedGraphNode> Children { get; set; } = new List<DirectedGraphNode>();
+    public int Depth { get; set; } = -1;
     public SKPoint Position { get; set; }
     public float Z { get; set; }
     public bool IsPositioned { get; set; }
