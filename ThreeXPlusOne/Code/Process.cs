@@ -35,7 +35,7 @@ public class Process(IOptions<Settings> settings,
         ConsoleOutput.WriteDone();
 
         IDirectedGraph graph = directedGraphs.ToList()
-                                             .Where(graph => graph.Dimensions == settings.Value.ParsedGraphDimensions)
+                                             .Where(graph => graph.Dimensions == settings.Value.SanitizedGraphDimensions)
                                              .First();
 
         foreach (List<int> series in seriesData)

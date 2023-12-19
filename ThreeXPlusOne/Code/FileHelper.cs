@@ -46,7 +46,7 @@ public class FileHelper(IOptions<Settings> settings) : IFileHelper
 
     public string GenerateDirectedGraphFilePath()
     {
-        var fileName = $"ThreeXPlusOne-{settings.Value.ParsedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
+        var fileName = $"ThreeXPlusOne-{settings.Value.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
         return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
     }

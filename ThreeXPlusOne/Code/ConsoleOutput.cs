@@ -41,10 +41,10 @@ public static class ConsoleOutput
             Console.WriteLine();
         }
 
-        if (settings.GraphDimensions != settings.ParsedGraphDimensions)
+        if (settings.GraphDimensions != settings.SanitizedGraphDimensions)
         {
             Console.WriteLine();
-            Console.WriteLine($"Invalid GraphDimensions ({settings.GraphDimensions}). Defaulted to {settings.ParsedGraphDimensions}.");
+            Console.WriteLine($"Invalid GraphDimensions ({settings.GraphDimensions}). Defaulted to {settings.SanitizedGraphDimensions}.");
         }
 
         if (!settingsFileExists)
