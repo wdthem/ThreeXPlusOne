@@ -1,10 +1,10 @@
 # ThreeXPlusOne
 
-A .NET 8 Console app that generates a visualization of the Collatz Conjecture (aka 3x+1).
+A .NET 8 Console app that generates a visualization of the [Collatz Conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture) (aka 3x+1).
 
-# What is the Collatz Conjecture?
+## What is the Collatz Conjecture?
 
-Watch this Veritasium video: https://www.youtube.com/watch?v=094y1Z2wpJg
+Veritasium has a great [explainer video](https://www.youtube.com/watch?v=094y1Z2wpJg).
 
 The basics:
 
@@ -13,25 +13,37 @@ The basics:
 * If it is odd, multiply it by 3 and add 1
 * Repeat until an infinite loop is reached of 4, 2, 1
 
-This means that all selected integers result in the inifinite loop. When running the algorithm on many positive integers and plotting the generated numbers as a Directed Graph, all number series lead to a root of 4, 2, 1. Where numbers are shared in the series, branching occurs.
+This means that (in theory) all selected integers result in the inifinite loop. When running the algorithm on many positive integers and plotting the generated numbers as a Directed Graph, all number series lead to a root of 4, 2, 1. Where numbers are shared in the series, branching occurs.
 
-# What does this app do?
+## What does this app do?
 
 The app creates:
 
 * Either a 2D or pseudo-3D Directed Graph based on running the conjecture with a list of random numbers or numbers provided by the user
-* A histogram showing the distribution of numbers in the generated series that start with 1 - 9
+* A histogram showing the distribution of numbers in the generated series that start with 1 - 9, which illustrates that the calculated numbers follow [Benford's law](https://en.wikipedia.org/wiki/Benford%27s_law).
 * A metadata file containing information about the given run of the process
 
 All output can be toggled on and off.
 
-# Usage
+## Usage
 
-* In order to provide custom settings to the app, a 'settings.json' file must exist in the same folder of either the executable or the DLL, depending on how you run the app. If this file is not supplied, defaults will be used.
-* Running the executable or dll with the flag --help will output help text regarding the format and suggested starting points for the values of the settings.
-* Run the executable from the command line with no arguments (with or without 'settings.json' in place)
+* In order to provide custom settings to the app, a `settings.json` file must exist in the same folder of either the executable or the DLL, depending on how you run the app. If this file is not supplied, defaults will be used.
+* Running the executable or DLL with the flag `--help` will output help text regarding the format and suggested starting points for the values of the settings.
+* Run the executable from the command line with no arguments (with or without `settings.json` in place)
 * Running the process with the same list of numbers will put any generated output into the same folder name as created by the process itself
 
-# Performance
+## Performance
 
 * Note that the app needs to create a large canvas in order to plot the points. This can be resource intensive. The app could fail on machines with low GPU specs.
+
+## Example output
+<table>
+  <tr>
+    <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ExampleOutput/2D-NoRotation.png" width="250" height="250" alt="ThreeXPlusOne - 2D without node rotation"><br />2D without node rotation</td>
+    <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ExampleOutput/2D-WithRotation.png" width="250" height="250" alt="ThreeXPlusOne - 2D with node rotation"><br />2D with node rotation</td>
+    <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ExampleOutput/3D-WithRotation.png" width="250" height="250" alt="ThreeXPlusOne - 3D with node rotation"><br />3D with node rotation</td>
+  </tr>
+</table>
+
+
+
