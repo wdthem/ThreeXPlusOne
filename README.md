@@ -27,9 +27,11 @@ All output can be toggled on and off.
 
 # Usage
 
-* A 'settings.json' file must exist in the same folder of either the executable or the DLL, depending on how you run the app.
-* Running the executable or dll with the flag --help will output help text regarding a suggested starting point for the values of the settings.
-* With the 'settings.json' file in place, run the executable from the command line with no arguments
+* In order to provide custom settings to the app, a 'settings.json' file must exist in the same folder of either the executable or the DLL, depending on how you run the app. If this file is not supplied, defaults will be used.
+* Running the executable or dll with the flag --help will output help text regarding the format and suggested starting points for the values of the settings.
+* Run the executable from the command line with no arguments (with or without 'settings.json' in place)
 * Running the process with the same list of numbers will put any generated output into the same folder name as created by the process itself
 
-Note that the app needs to create a large canvas in order to plot the points. This can be resource intensive. The app could fail on machines with low GPU specs.
+# Performance
+
+* Note that the app needs to create a large canvas in order to plot the points. This can be resource intensive. The app could fail on machines with low GPU specs.
