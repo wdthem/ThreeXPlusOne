@@ -10,6 +10,7 @@ namespace ThreeXPlusOne.Config;
 public class Settings
 {
     private string? _uniqueExecutionId;
+
     private static readonly char[] _separator = [','];
 
     /// <summary>
