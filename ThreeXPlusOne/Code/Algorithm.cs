@@ -4,6 +4,11 @@ namespace ThreeXPlusOne.Code;
 
 public class Algorithm : IAlgorithm
 {
+    /// <summary>
+    /// The the 3x+1 algorithm for all numbers either supplied by the user or generated randomly
+    /// </summary>
+    /// <param name="inputValues"></param>
+    /// <returns></returns>
     public List<List<int>> Run(List<int> inputValues)
     {
         if (inputValues.Count == 0)
