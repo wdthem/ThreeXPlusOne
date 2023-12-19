@@ -24,6 +24,7 @@ public static class ConsoleOutput
     {
         WriteHeading("Settings");
 
+        var settingsFileExists = File.Exists("settings.json");
         var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
 
         foreach (var property in settingsProperties)
@@ -44,6 +45,12 @@ public static class ConsoleOutput
         {
             Console.WriteLine();
             Console.WriteLine($"Invalid GraphDimensions ({settings.GraphDimensions}). Defaulted to {settings.ParsedGraphDimensions}.");
+        }
+
+        if (!settingsFileExists)
+        {
+            Console.WriteLine();
+            Console.WriteLine("File 'settings.json' not found. Used defaults.");
         }
 
         WriteSeparator();
