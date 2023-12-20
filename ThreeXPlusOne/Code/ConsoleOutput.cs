@@ -191,6 +191,11 @@ public static class ConsoleOutput
         Console.WriteLine("2 (the number of dimensions to render in the graph - 2 or 3)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.DrawConnections)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("true (whether or not to draw connections between the nodes in the graph - if true can increase image file size substantially)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.GenerateGraph)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("true (whether or not to generate the visualization of the data)");

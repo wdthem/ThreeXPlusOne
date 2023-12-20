@@ -95,16 +95,20 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         }
 
         var lcv = 1;
-        foreach (var node in _nodes)
+
+        if (_settings.Value.DrawConnections)
         {
-            DrawConnection(canvas, node.Value);
+            foreach (var node in _nodes)
+            {
+                DrawConnection(canvas, node.Value);
 
-            Console.Write($"    \r{lcv} connections drawn");
+                Console.Write($"    \r{lcv} connections drawn");
 
-            lcv += node.Value.Children.Count;
+                lcv += node.Value.Children.Count;
+            }
+
+            Console.WriteLine();
         }
-
-        Console.WriteLine();
 
         lcv = 1;
         foreach (var node in _nodes)

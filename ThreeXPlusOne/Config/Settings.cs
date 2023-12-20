@@ -88,6 +88,11 @@ public class Settings
     public int GraphDimensions { get; set; } = 2;
 
     /// <summary>
+    /// Whether or not to draw the connections between nodes on the graph
+    /// </summary>
+    public bool DrawConnections { get; set; }
+
+    /// <summary>
     /// Whether or not to generate the directed graph
     /// </summary>
     public bool GenerateGraph { get; set; }
