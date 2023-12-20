@@ -90,7 +90,7 @@ public class Settings
     /// <summary>
     /// Whether or not to draw the connections between nodes on the graph
     /// </summary>
-    public bool DrawConnections { get; set; }
+    public bool DrawConnections { get; set; } = true;
 
     /// <summary>
     /// Whether or not to generate the directed graph
