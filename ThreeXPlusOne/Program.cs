@@ -20,7 +20,9 @@ using IHost host = Host.CreateDefaultBuilder(args)
 
 try
 {
-    var process = host.Services.GetRequiredService<IProcess>();
+    using IServiceScope scope = host.Services.CreateScope();
+
+    var process = scope.ServiceProvider.GetRequiredService<IProcess>();
 
     process.Run();
 }
