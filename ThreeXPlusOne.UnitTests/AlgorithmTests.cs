@@ -14,8 +14,7 @@ public class AlgorithmTests
     {
         // Arrange
         List<int> startingNumbers = [5, 7, 12, 33, 179];
-        List<int> expectedEndingSeries = [4, 2, 1];
-
+        List<int> expectedEndingSeries = [16, 8, 4, 2, 1];
         Algorithm algorithm = new();
 
         // Act
@@ -40,7 +39,6 @@ public class AlgorithmTests
         // Arrange
         List<int> startingNumbers = [4, 2, 1];
         List<int> expectedEndingSeriesNumberCounts = [3, 2, 1];
-
         Algorithm algorithm = new();
 
         // Act
@@ -49,8 +47,8 @@ public class AlgorithmTests
         // Assert
         foreach (var series in results)
         {
-            var hasExpectedCount = expectedEndingSeriesNumberCounts.Contains(series.Count);
-            var hasExpectedNumbers = series.All(item => startingNumbers.Contains(item));
+            bool hasExpectedCount = expectedEndingSeriesNumberCounts.Contains(series.Count);
+            bool hasExpectedNumbers = series.All(item => startingNumbers.Contains(item));
 
             hasExpectedCount.Should().BeTrue();
             hasExpectedNumbers.Should().BeTrue();
