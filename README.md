@@ -39,9 +39,9 @@ All output can be toggled on and off.
 ## Example output
 <table>
   <tr>
-    <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ExampleOutput/2D-NoRotation.png" width="250" height="250" alt="ThreeXPlusOne - 2D without node rotation"><br />2D without node rotation</td>
-    <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ExampleOutput/2D-WithRotation.png" width="250" height="250" alt="ThreeXPlusOne - 2D with node rotation"><br />2D with node rotation</td>
-    <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ExampleOutput/3D-WithRotation.png" width="250" height="250" alt="ThreeXPlusOne - 3D with node rotation"><br />3D with node rotation</td>
+    <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ThreeXPlusOne.ExampleOutput/2D-NoRotation.png" width="250" height="250" alt="ThreeXPlusOne - 2D without node rotation"><br />2D without node rotation</td>
+    <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ThreeXPlusOne.ExampleOutput/2D-WithRotation.png" width="250" height="250" alt="ThreeXPlusOne - 2D with node rotation"><br />2D with node rotation</td>
+    <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ThreeXPlusOne.ExampleOutput/3D-WithRotation.png" width="250" height="250" alt="ThreeXPlusOne - 3D with node rotation"><br />3D with node rotation</td>
   </tr>
 </table>
 
