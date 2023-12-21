@@ -5,6 +5,8 @@ VisualStudioVersion = 25.0.1706.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreeXPlusOne", "ThreeXPlusOne\ThreeXPlusOne.csproj", "{9C4F3FBF-C69D-43EB-A17D-942311E0BFDC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreeXPlusOne.UnitTests", "ThreeXPlusOne.UnitTests\ThreeXPlusOne.UnitTests.csproj", "{F395FC52-D170-48B3-B200-A2886DDE6B1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9C4F3FBF-C69D-43EB-A17D-942311E0BFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C4F3FBF-C69D-43EB-A17D-942311E0BFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C4F3FBF-C69D-43EB-A17D-942311E0BFDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F395FC52-D170-48B3-B200-A2886DDE6B1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F395FC52-D170-48B3-B200-A2886DDE6B1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F395FC52-D170-48B3-B200-A2886DDE6B1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F395FC52-D170-48B3-B200-A2886DDE6B1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
