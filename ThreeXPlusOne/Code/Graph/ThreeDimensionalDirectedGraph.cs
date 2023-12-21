@@ -7,7 +7,8 @@ using ThreeXPlusOne.Models;
 namespace ThreeXPlusOne.Code.Graph;
 
 public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
-                                           IFileHelper fileHelper) : DirectedGraph(settings, fileHelper), IDirectedGraph
+                                           IFileHelper fileHelper,
+                                           IConsoleHelper consoleHelper) : DirectedGraph(settings, fileHelper, consoleHelper), IDirectedGraph
 {
     public int Dimensions => 3;
 
@@ -24,7 +25,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     /// </summary>
     public void PositionNodes()
     {
-        Console.Write("Positioning nodes... ");
+        _consoleHelper.Write("Positioning nodes... ");
 
         // Set up the base nodes' positions
         var base1 = new SKPoint(_settings.Value.CanvasWidth / 2, _settings.Value.CanvasHeight - 100);         // Node '1' at the bottom
@@ -57,7 +58,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         AdjustNodesWithSamePosition(nodesToDraw);
 
-        ConsoleOutput.WriteDone();
+        _consoleHelper.WriteDone();
     }
 
     /// <summary>

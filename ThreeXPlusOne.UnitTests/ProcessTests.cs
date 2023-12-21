@@ -19,6 +19,8 @@ public class ProcessTests
     private readonly IEnumerable<IDirectedGraph> _directedGraphs;
     private readonly Mock<IHistogram> _histogramMock;
     private readonly Mock<IMetadata> _metadataMock;
+    private readonly Mock<IFileHelper> _fileHelperMock;
+    private readonly Mock<IConsoleHelper> _consoleHelperMock;
 
     public ProcessTests()
     {
@@ -28,6 +30,8 @@ public class ProcessTests
         _directedGraphs = new List<IDirectedGraph> { _directedGraph.Object };
         _histogramMock = new Mock<IHistogram>();
         _metadataMock = new Mock<IMetadata>();
+        _fileHelperMock = new Mock<IFileHelper>();
+        _consoleHelperMock = new Mock<IConsoleHelper>();
     }
 
     [Fact]
@@ -36,7 +40,13 @@ public class ProcessTests
         // Arrange
         _algorithmMock.Setup(algorithm => algorithm.Run(It.IsAny<List<int>>())).Returns([[32, 16, 8, 4, 2, 1]]);
 
-        var process = new Process(_settings, _algorithmMock.Object, _directedGraphs, _histogramMock.Object, _metadataMock.Object);
+        var process = new Process(_settings,
+                                  _algorithmMock.Object,
+                                  _directedGraphs,
+                                  _histogramMock.Object,
+                                  _metadataMock.Object,
+                                  _fileHelperMock.Object,
+                                  _consoleHelperMock.Object);
 
         // Act
         process.Run();

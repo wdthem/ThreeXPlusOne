@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ThreeXPlusOne.Config;
 
@@ -9,8 +10,10 @@ namespace ThreeXPlusOne.Config;
 /// </summary>
 public class Settings
 {
+    [JsonIgnore]
     private string? _uniqueExecutionId;
 
+    [JsonIgnore]
     private static readonly char[] _separator = [','];
 
     /// <summary>
@@ -120,6 +123,7 @@ public class Settings
     /// <summary>
     /// An MD5 hash used to name a directory to store the output for the run of the given number series
     /// </summary>
+    [JsonIgnore]
     public string UniqueExecutionId
     {
         get
@@ -136,6 +140,7 @@ public class Settings
     /// <summary>
     /// The sanitized graph dimensions property
     /// </summary>
+    [JsonIgnore]
     public int SanitizedGraphDimensions
     {
         get
@@ -152,6 +157,7 @@ public class Settings
     /// <summary>
     /// The series numbers parsed as a list of integers
     /// </summary>
+    [JsonIgnore]
     public List<int> ListOfSeriesNumbers
     {
         get
@@ -185,6 +191,7 @@ public class Settings
     /// <summary>
     /// The number to exclude parsed as a list of integers
     /// </summary>
+    [JsonIgnore]
     public List<int> ListOfNumbersToExclude
     {
         get

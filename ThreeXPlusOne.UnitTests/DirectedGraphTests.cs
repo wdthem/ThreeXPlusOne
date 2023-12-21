@@ -11,6 +11,7 @@ namespace ThreeXPlusOne.UnitTests;
 public class DirectedGraphTests
 {
     private readonly Mock<IFileHelper> _fileHelperMock;
+    private readonly Mock<IConsoleHelper> _consoleHelperMock;
     private readonly IOptions<Settings> _settings = new OptionsWrapper<Settings>
     (
         new Settings { }
@@ -19,6 +20,7 @@ public class DirectedGraphTests
     public DirectedGraphTests()
     {
         _fileHelperMock = new Mock<IFileHelper>();
+        _consoleHelperMock = new Mock<IConsoleHelper>();
     }
 
     [Fact]
@@ -27,7 +29,7 @@ public class DirectedGraphTests
         // Arrange
         List<int> series = [64, 32, 16, 8, 4, 2, 1];
 
-        TwoDimensionalDirectedGraph twoDimensionalGraph = new(_settings, _fileHelperMock.Object);
+        TwoDimensionalDirectedGraph twoDimensionalGraph = new(_settings, _fileHelperMock.Object, _consoleHelperMock.Object);
 
         // Act + Assert
         twoDimensionalGraph.Invoking(graph => graph.AddSeries(series)).Should().NotThrow();

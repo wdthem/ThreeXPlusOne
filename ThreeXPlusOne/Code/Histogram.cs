@@ -6,20 +6,20 @@ using ThreeXPlusOne.Config;
 namespace ThreeXPlusOne.Code;
 
 public class Histogram(IOptions<Settings> settings,
-                       IFileHelper fileHelper) : IHistogram
+                       IFileHelper fileHelper,
+                       IConsoleHelper consoleHelper) : IHistogram
 {
     public void GenerateHistogram(List<List<int>> seriesData)
     {
-        Console.WriteLine();
-        ConsoleOutput.WriteHeading("Histogram");
+        consoleHelper.WriteHeading("Histogram");
 
         if (settings.Value.GenerateHistogram)
         {
-            Console.Write("Generating histogram...");
+            consoleHelper.Write("Generating histogram...");
         }
         else
         {
-            Console.WriteLine("Histogram generation disabled");
+            consoleHelper.WriteLine("Histogram generation disabled");
 
             return;
         }
@@ -45,7 +45,7 @@ public class Histogram(IOptions<Settings> settings,
 
         data.SaveTo(stream);
 
-        ConsoleOutput.WriteDone();
+        consoleHelper.WriteDone();
     }
 
     private static List<int> GenerateHistogramData(List<List<int>> seriesData)

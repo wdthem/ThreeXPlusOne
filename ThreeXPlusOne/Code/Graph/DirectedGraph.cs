@@ -7,10 +7,12 @@ using ThreeXPlusOne.Models;
 namespace ThreeXPlusOne.Code.Graph;
 
 public abstract class DirectedGraph(IOptions<Settings> settings,
-                                    IFileHelper fileHelper)
+                                    IFileHelper fileHelper,
+                                    IConsoleHelper consoleHelper)
 {
     protected readonly IOptions<Settings> _settings = settings;
     protected readonly IFileHelper _fileHelper = fileHelper;
+    protected readonly IConsoleHelper _consoleHelper = consoleHelper;
     protected readonly Random _random = new();
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
 
@@ -81,7 +83,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void Draw()
     {
-        Console.WriteLine("Drawing connections and nodes... ");
+        _consoleHelper.WriteLine("Drawing connections and nodes... ");
 
         using var surface = SKSurface.Create(new SKImageInfo(_settings.Value.CanvasWidth, _settings.Value.CanvasHeight));
 
@@ -102,12 +104,12 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             {
                 DrawConnection(canvas, node.Value);
 
-                Console.Write($"    \r{lcv} connections drawn");
+                _consoleHelper.Write($"    \r{lcv} connections drawn");
 
                 lcv += node.Value.Children.Count;
             }
 
-            Console.WriteLine();
+            _consoleHelper.WriteLine("");
         }
 
         lcv = 1;
@@ -115,38 +117,32 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             DrawNode(canvas, node.Value);
 
-            Console.Write($"    \r{lcv} nodes drawn");
+            _consoleHelper.Write($"    \r{lcv} nodes drawn");
 
             lcv = lcv + 1 + node.Value.Children.Count;
         }
 
-        Console.WriteLine();
-        ConsoleOutput.WriteDone();
+        _consoleHelper.WriteLine("");
+        _consoleHelper.WriteDone();
 
         if (_settings.Value.GenerateGraph)
         {
-            Console.WriteLine();
-            Console.Write($"Generate {_settings.Value.GraphDimensions}D visualization? (y/n): ");
+            bool confirmed = _consoleHelper.ReadYKeyToProceed($"Generate {_settings.Value.GraphDimensions}D visualization?");
 
-            ConsoleKeyInfo keyInfo = Console.ReadKey();
-
-            if (keyInfo.Key != ConsoleKey.Y)
+            if (!confirmed)
             {
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine("Graph generation cancelled");
-                Console.WriteLine();
+                _consoleHelper.WriteLine("\nGraph generation cancelled");
 
                 return;
             }
 
-            Console.WriteLine();
+            _consoleHelper.WriteLine("");
 
             SaveCanvas(surface);
         }
         else
         {
-            Console.WriteLine("Graph generation disabled");
+            _consoleHelper.WriteLine("Graph generation disabled");
         }
     }
 
@@ -512,8 +508,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="surface"></param>
     protected void SaveCanvas(SKSurface surface)
     {
-        Console.WriteLine();
-        Console.Write("Saving image... ");
+        _consoleHelper.WriteLine("");
+        _consoleHelper.Write("Saving image... ");
 
         string path = _fileHelper.GenerateDirectedGraphFilePath();
 
@@ -524,9 +520,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             data.SaveTo(stream);
         }
 
-        Console.WriteLine();
+        _consoleHelper.WriteLine("");
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Saved to: {path}");
+        _consoleHelper.WriteLine($"Saved to: {path}");
         Console.ForegroundColor = ConsoleColor.White;
     }
 }

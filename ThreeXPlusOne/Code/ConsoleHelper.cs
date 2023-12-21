@@ -1,10 +1,22 @@
-﻿using ThreeXPlusOne.Config;
+﻿using Microsoft.Extensions.Options;
+using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public static class ConsoleOutput
+public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 {
-    public static void WriteAsciiArtLogo()
+    public void Write(string message)
+    {
+        Console.Write(message);
+    }
+
+    public void WriteLine(string message)
+    {
+        Console.WriteLine(message);
+    }
+
+    public void WriteAsciiArtLogo()
     {
         WriteSeparator();
         Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -20,7 +32,7 @@ public static class ConsoleOutput
         WriteSeparator();
     }
 
-    public static void WriteSettings(Settings settings)
+    public void WriteSettings()
     {
         WriteHeading("Settings");
 
@@ -29,7 +41,7 @@ public static class ConsoleOutput
 
         foreach (var property in settingsProperties)
         {
-            var value = property.GetValue(settings, null);
+            var value = property.GetValue(settings.Value, null);
 
             Console.ForegroundColor = ConsoleColor.Blue;
 
@@ -41,10 +53,10 @@ public static class ConsoleOutput
             Console.WriteLine();
         }
 
-        if (settings.GraphDimensions != settings.SanitizedGraphDimensions)
+        if (settings.Value.GraphDimensions != settings.Value.SanitizedGraphDimensions)
         {
             Console.WriteLine();
-            Console.WriteLine($"Invalid GraphDimensions ({settings.GraphDimensions}). Defaulted to {settings.SanitizedGraphDimensions}.");
+            Console.WriteLine($"Invalid GraphDimensions ({settings.Value.GraphDimensions}). Defaulted to {settings.Value.SanitizedGraphDimensions}.");
         }
 
         if (!settingsFileExists)
@@ -56,7 +68,7 @@ public static class ConsoleOutput
         WriteSeparator();
     }
 
-    public static void WriteError(string message)
+    public void WriteError(string message)
     {
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine();
@@ -66,7 +78,7 @@ public static class ConsoleOutput
         Console.WriteLine();
     }
 
-    public static void WriteDone()
+    public void WriteDone()
     {
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("Done");
@@ -74,7 +86,17 @@ public static class ConsoleOutput
         Console.WriteLine();
     }
 
-    public static void WriteHelpText()
+    public bool ReadYKeyToProceed(string message)
+    {
+        Console.Write($"{message} (y/n): ");
+
+        ConsoleKeyInfo keyInfo = Console.ReadKey();
+        Console.WriteLine();
+
+        return keyInfo.Key == ConsoleKey.Y;
+    }
+
+    public void WriteHelpText()
     {
         WriteAsciiArtLogo();
 
@@ -230,14 +252,14 @@ public static class ConsoleOutput
         Console.WriteLine();
     }
 
-    public static void WriteSeparator()
+    public void WriteSeparator()
     {
         Console.WriteLine();
         Console.WriteLine("----------------------------------------------");
         Console.WriteLine();
     }
 
-    public static void WriteHeading(string headerText)
+    public void WriteHeading(string headerText)
     {
         Console.ForegroundColor = ConsoleColor.DarkYellow;
 

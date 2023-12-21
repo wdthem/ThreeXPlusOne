@@ -5,25 +5,26 @@ using ThreeXPlusOne.Config;
 namespace ThreeXPlusOne.Code;
 
 public class Metadata(IOptions<Settings> settings,
-                      IFileHelper fileHelper) : IMetadata
+                      IFileHelper fileHelper,
+                      IConsoleHelper consoleHelper) : IMetadata
 {
     public void GenerateMedatadataFile(List<List<int>> seriesData)
     {
-        ConsoleOutput.WriteHeading("Metadata");
+        consoleHelper.WriteHeading("Metadata");
 
         if (settings.Value.GenerateMetadataFile)
         {
-            Console.Write("Generating metadata... ");
+            consoleHelper.Write("Generating metadata... ");
 
             GenerateNumberSeriesMetadata(seriesData);
             GenerateTop10LongestSeriesMetadata(seriesData);
             GenerateFullSeriesData(seriesData);
 
-            ConsoleOutput.WriteDone();
+            consoleHelper.WriteDone();
         }
         else
         {
-            Console.WriteLine("Metadata generation disabled");
+            consoleHelper.WriteLine("Metadata generation disabled");
         }
     }
 

@@ -9,7 +9,9 @@ public class Process(IOptions<Settings> settings,
                      IAlgorithm algorithm,
                      IEnumerable<IDirectedGraph> directedGraphs,
                      IHistogram histogram,
-                     IMetadata metadata) : IProcess
+                     IMetadata metadata,
+                     IFileHelper fileHelper,
+                     IConsoleHelper consoleHelper) : IProcess
 {
     /// <summary>
     /// Run the algorithm and data generation based on the user-provided settings
@@ -19,20 +21,20 @@ public class Process(IOptions<Settings> settings,
         Stopwatch stopwatch = new();
         stopwatch.Start();
 
-        ConsoleOutput.WriteAsciiArtLogo();
-        ConsoleOutput.WriteSettings(settings.Value);
+        consoleHelper.WriteAsciiArtLogo();
+        consoleHelper.WriteSettings();
 
-        ConsoleOutput.WriteHeading("Series data");
+        consoleHelper.WriteHeading("Series data");
 
         List<int> inputValues = GenerateInputValues(stopwatch);
 
-        ConsoleOutput.WriteHeading("Algorithm execution");
+        consoleHelper.WriteHeading("Algorithm execution");
 
-        Console.Write($"Running 3x+1 algorithm on {inputValues.Count} numbers... ");
+        consoleHelper.Write($"Running 3x+1 algorithm on {inputValues.Count} numbers... ");
 
         List<List<int>> seriesData = algorithm.Run(inputValues);
 
-        ConsoleOutput.WriteDone();
+        consoleHelper.WriteDone();
 
         IDirectedGraph graph = directedGraphs.ToList()
                                              .Where(graph => graph.Dimensions == settings.Value.SanitizedGraphDimensions)
@@ -43,7 +45,7 @@ public class Process(IOptions<Settings> settings,
             graph.AddSeries(series);
         }
 
-        ConsoleOutput.WriteHeading("Directed graph");
+        consoleHelper.WriteHeading("Directed graph");
 
         graph.PositionNodes();
         graph.DrawGraph();
@@ -51,13 +53,22 @@ public class Process(IOptions<Settings> settings,
         histogram.GenerateHistogram(seriesData);
         metadata.GenerateMedatadataFile(seriesData);
 
+        consoleHelper.WriteHeading("Save settings");
+
+        bool confirmed = consoleHelper.ReadYKeyToProceed($"Save generated number series to 'settings.json' for reuse?");
+
+        if (confirmed)
+        {
+            fileHelper.WriteSettingsToFile();
+        }
+
         stopwatch.Stop();
         TimeSpan ts = stopwatch.Elapsed;
 
         string elapsedTime = string.Format("{0:00}:{1:00}.{2:000}",
                                            ts.Minutes, ts.Seconds, ts.Milliseconds);
 
-        ConsoleOutput.WriteHeading($"Process completed. Execution time: {elapsedTime}");
+        consoleHelper.WriteHeading($"Process completed. Execution time: {elapsedTime}");
     }
 
     /// <summary>
@@ -75,7 +86,7 @@ public class Process(IOptions<Settings> settings,
 
         if (string.IsNullOrWhiteSpace(settings.Value.UseTheseNumbers))
         {
-            Console.Write($"Generating {settings.Value.NumberOfSeries} random numbers from 1 to {settings.Value.MaxStartingNumber}... ");
+            consoleHelper.Write($"Generating {settings.Value.NumberOfSeries} random numbers from 1 to {settings.Value.MaxStartingNumber}... ");
 
             while (inputValues.Count < settings.Value.NumberOfSeries)
             {
@@ -86,9 +97,9 @@ public class Process(IOptions<Settings> settings,
                         throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(settings.Value.ExcludeTheseNumbers)}");
                     }
 
-                    Console.WriteLine();
-                    Console.WriteLine($"Gave up generating {settings.Value.NumberOfSeries} random numbers. Generated {inputValues.Count}");
-                    Console.WriteLine();
+                    consoleHelper.WriteLine("");
+                    consoleHelper.WriteLine($"Gave up generating {settings.Value.NumberOfSeries} random numbers. Generated {inputValues.Count}");
+                    consoleHelper.WriteLine("");
 
                     break;
                 }
@@ -109,7 +120,7 @@ public class Process(IOptions<Settings> settings,
             //populate the property as the number list is used to generate a hash value for the directory name
             settings.Value.UseTheseNumbers = string.Join(", ", inputValues);
 
-            ConsoleOutput.WriteDone();
+            consoleHelper.WriteDone();
         }
         else
         {
@@ -122,8 +133,8 @@ public class Process(IOptions<Settings> settings,
                 throw new Exception("No numbers provided on which to run the algorithm");
             }
 
-            Console.WriteLine($"Using series numbers defined in {nameof(settings.Value.UseTheseNumbers)} apart from any excluded in {nameof(settings.Value.ExcludeTheseNumbers)}");
-            Console.WriteLine();
+            consoleHelper.WriteLine($"Using series numbers defined in {nameof(settings.Value.UseTheseNumbers)} apart from any excluded in {nameof(settings.Value.ExcludeTheseNumbers)}");
+            consoleHelper.WriteLine("");
         }
 
         return inputValues;

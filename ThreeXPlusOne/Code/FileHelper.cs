@@ -1,12 +1,15 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Text.Json;
+using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;
 
-public class FileHelper(IOptions<Settings> settings) : IFileHelper
+public class FileHelper(IOptions<Settings> settings,
+                        IConsoleHelper consoleHelper) : IFileHelper
 {
     private readonly string _prefix = "ThreeXPlusOne";
+    private readonly JsonSerializerOptions _serializerOptions = new() { WriteIndented = true };
 
     private string GenerateFullFilePath(string uniqueId, string? path, string fileName)
     {
@@ -32,6 +35,13 @@ public class FileHelper(IOptions<Settings> settings) : IFileHelper
         return DateTime.Now.ToString("yyyyMMdd-HHmmss");
     }
 
+    public void WriteSettingsToFile()
+    {
+        string jsonString = JsonSerializer.Serialize(settings.Value, _serializerOptions);
+
+        File.WriteAllText("settings.json", jsonString);
+    }
+
     public void WriteMetadataToFile(string content, string filePath)
     {
         try
@@ -42,7 +52,7 @@ public class FileHelper(IOptions<Settings> settings) : IFileHelper
         }
         catch (Exception ex)
         {
-            ConsoleOutput.WriteError(ex.Message);
+            consoleHelper.WriteError(ex.Message);
         }
     }
 

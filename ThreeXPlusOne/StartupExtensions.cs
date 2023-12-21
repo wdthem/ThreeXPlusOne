@@ -45,6 +45,8 @@ public static class StartupExtensions
         services.AddScoped<IMetadata, Metadata>();
         services.AddScoped<IFileHelper, FileHelper>();
 
+        services.AddSingleton<IConsoleHelper, ConsoleHelper>();
+
         return services;
     }
 }
