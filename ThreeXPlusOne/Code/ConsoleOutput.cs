@@ -78,8 +78,12 @@ public static class ConsoleOutput
     {
         WriteAsciiArtLogo();
 
-        WriteHeading("Usage information");
+        WriteHeading("GitHub repository");
+        Console.WriteLine();
+        Console.WriteLine("https://github.com/wdthem/ThreeXPlusOne");
+        Console.WriteLine();
 
+        WriteHeading("Usage information");
         Console.WriteLine();
         Console.WriteLine("To apply custom settings, ensure that a 'settings.json' file exists in the same folder as the executable. It must have the following content:");
         Console.WriteLine("");
