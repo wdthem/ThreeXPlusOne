@@ -31,7 +31,7 @@ public class ProcessTests
     }
 
     [Fact]
-    public void AddSeries_Success00()
+    public void Run_Success00()
     {
         // Arrange
         _algorithmMock.Setup(algorithm => algorithm.Run(It.IsAny<List<int>>())).Returns([[32, 16, 8, 4, 2, 1]]);
