@@ -5,7 +5,7 @@ namespace ThreeXPlusOne.Code;
 public class Algorithm : IAlgorithm
 {
     /// <summary>
-    /// The the 3x+1 algorithm for all numbers either supplied by the user or generated randomly
+    /// Execute the the 3x+1 algorithm for all numbers either supplied by the user or generated randomly
     /// </summary>
     /// <param name="inputValues"></param>
     /// <returns></returns>
@@ -18,7 +18,7 @@ public class Algorithm : IAlgorithm
 
         List<List<int>> returnValues = [];
 
-        foreach (var value in inputValues)
+        foreach (int value in inputValues)
         {
             if (value <= 0)
             {
@@ -35,13 +35,14 @@ public class Algorithm : IAlgorithm
             //avoid the infinite loop of 4, 2, 1 by stopping when the algorithm hits 1
             while (calculatedValue > 1)
             {
-                if (calculatedValue % 2 != 0)
+                //perform the two rules of the Collatz Conjecture
+                if (calculatedValue % 2 == 0)
                 {
-                    calculatedValue = (calculatedValue * 3) + 1;
+                    calculatedValue /= 2;
                 }
                 else
                 {
-                    calculatedValue /= 2;
+                    calculatedValue = (calculatedValue * 3) + 1;
                 }
 
                 outputValues.Add(calculatedValue);

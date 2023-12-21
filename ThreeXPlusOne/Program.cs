@@ -22,7 +22,7 @@ try
 {
     using IServiceScope scope = host.Services.CreateScope();
 
-    var process = scope.ServiceProvider.GetRequiredService<IProcess>();
+    IProcess process = scope.ServiceProvider.GetRequiredService<IProcess>();
 
     process.Run();
 }
