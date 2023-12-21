@@ -162,7 +162,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
-    /// For the pseduo-three-dimensional graph, apply depth to the given node based on the Z coordinate.
+    /// For the pseudo-three-dimensional graph, apply depth to the given node based on the Z coordinate.
     /// The Z-coordinate is set to the reverse of the depth value of the node in the AddSeries() method
     /// </summary>
     /// <param name="node"></param>
