@@ -6,6 +6,8 @@ namespace ThreeXPlusOne.Code;
 
 public class FileHelper(IOptions<Settings> settings) : IFileHelper
 {
+    private readonly string _prefix = "ThreeXPlusOne";
+
     private string GenerateFullFilePath(string uniqueId, string? path, string fileName)
     {
         if (!string.IsNullOrWhiteSpace(path))
@@ -18,7 +20,7 @@ public class FileHelper(IOptions<Settings> settings) : IFileHelper
             }
         }
 
-        string newDirectoryName = $"ThreeXPlusOne-{uniqueId}";
+        string newDirectoryName = $"{_prefix}-{uniqueId}";
 
         Directory.CreateDirectory(Path.Combine(path ?? "", newDirectoryName));
 
@@ -46,21 +48,21 @@ public class FileHelper(IOptions<Settings> settings) : IFileHelper
 
     public string GenerateDirectedGraphFilePath()
     {
-        var fileName = $"ThreeXPlusOne-{settings.Value.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
+        var fileName = $"{_prefix}-{settings.Value.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
         return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
     }
 
     public string GenerateHistogramFilePath()
     {
-        var fileName = $"ThreeXPlusOne-Histogram-{GetFilenameTimestamp()}.png";
+        var fileName = $"{_prefix}-Histogram-{GetFilenameTimestamp()}.png";
 
         return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
     }
 
     public string GenerateMetadataFilePath()
     {
-        var fileName = $"ThreeXPlusOne-Metadata-{GetFilenameTimestamp()}.txt";
+        var fileName = $"{_prefix}-Metadata-{GetFilenameTimestamp()}.txt";
 
         return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
     }

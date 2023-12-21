@@ -26,8 +26,10 @@ public class Histogram(IOptions<Settings> settings,
 
         int width = 500;
         int height = 400;
+
         using SKBitmap bitmap = new(width, height);
         using SKCanvas canvas = new(bitmap);
+
         canvas.Clear(SKColors.White);
 
         var digitCounts = GenerateHistogramData(seriesData);
@@ -39,7 +41,7 @@ public class Histogram(IOptions<Settings> settings,
 
         string fullPath = fileHelper.GenerateHistogramFilePath();
 
-        using var stream = File.OpenWrite($"{fullPath}");
+        using var stream = File.OpenWrite(fullPath);
 
         data.SaveTo(stream);
 
@@ -55,6 +57,7 @@ public class Histogram(IOptions<Settings> settings,
             foreach (var number in list)
             {
                 string numberStr = number.ToString();
+
                 int firstDigit = int.Parse(numberStr[0].ToString());
 
                 if (firstDigit >= 1 && firstDigit <= 9)
@@ -89,7 +92,7 @@ public class Histogram(IOptions<Settings> settings,
         float scaleFactor = (float)(effectiveCanvasHeight - xAxisLabelHeight - topPadding) / adjustedMaxCount;
 
         // Determine the number of Y-axis labels (every 500 units)
-        int maxYAxisValue = ((adjustedMaxCount + 499) / 500) * 500;
+        int maxYAxisValue = (adjustedMaxCount + 499) / 500 * 500;
         int yAxisLabels = maxYAxisValue / 500;
 
         // Draw Y-axis labels and horizontal lines
@@ -98,14 +101,13 @@ public class Histogram(IOptions<Settings> settings,
             int labelValue = i * 500;
             if (labelValue <= adjustedMaxCount) // Ensure label doesn't exceed the adjusted max
             {
-                float y = (effectiveCanvasHeight - xAxisLabelHeight - topPadding) - (labelValue * scaleFactor);
+                float y = effectiveCanvasHeight - xAxisLabelHeight - topPadding - (labelValue * scaleFactor);
 
                 canvas.DrawLine(yAxisLabelSpace, y, canvasWidth, y, new SKPaint { Color = SKColors.Gray, IsAntialias = true, StrokeWidth = 1 });
-                canvas.DrawText(
-                    labelValue.ToString(),
-                    yAxisLabelSpace - 10, // Position to the left of the first bar
-                    y,
-                    new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Right });
+                canvas.DrawText(labelValue.ToString(),
+                                 yAxisLabelSpace - 10, // Position to the left of the first bar
+                                 y,
+                                 new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Right });
             }
         }
 
@@ -114,40 +116,38 @@ public class Histogram(IOptions<Settings> settings,
         {
             int count = counts[i];
             int barHeight = (int)(count * scaleFactor);
-            var bar = new SKRect(
-                yAxisLabelSpace + i * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
-                (effectiveCanvasHeight - xAxisLabelHeight - topPadding) - barHeight,
-                yAxisLabelSpace + (i + 1) * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
-                effectiveCanvasHeight - xAxisLabelHeight);
+            var bar = new SKRect(yAxisLabelSpace + i * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
+                                 effectiveCanvasHeight - xAxisLabelHeight - topPadding - barHeight,
+                                 yAxisLabelSpace + (i + 1) * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
+                                 effectiveCanvasHeight - xAxisLabelHeight);
 
             canvas.DrawRect(bar, new SKPaint { Color = SKColors.Blue, IsAntialias = true });
 
             // Draw X-axis labels
-            canvas.DrawText(
-                (i + 1).ToString(),
-                yAxisLabelSpace + i * barWidth + i * spacing + barWidth / 2, // Adjust position for spacing and Y-axis labels
-                effectiveCanvasHeight - 5, // Position below the graph
-                new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Center });
+            canvas.DrawText((i + 1).ToString(),
+                            yAxisLabelSpace + i * barWidth + i * spacing + barWidth / 2, // Adjust position for spacing and Y-axis labels
+                            effectiveCanvasHeight - 5, // Position below the graph
+                            new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Center });
 
             // Draw bar totals inside the bars near the top
             var textPaint = new SKPaint { Color = SKColors.White, IsAntialias = true, TextAlign = SKTextAlign.Center };
-            float textYPosition = (effectiveCanvasHeight - xAxisLabelHeight - topPadding) - barHeight + 15; // Adjust for the height of the bar
+            float textYPosition = effectiveCanvasHeight - xAxisLabelHeight - topPadding - barHeight + 15; // Adjust for the height of the bar
+
             if (barHeight > 30) // Check if there's enough space to draw inside the bar
             {
-                canvas.DrawText(
-                    count.ToString(),
-                    yAxisLabelSpace + i * barWidth + i * spacing + barWidth / 2, // Position within the bar
-                    textYPosition,
-                    textPaint);
+                canvas.DrawText(count.ToString(),
+                                yAxisLabelSpace + i * barWidth + i * spacing + barWidth / 2, // Position within the bar
+                                textYPosition,
+                                textPaint);
             }
         }
 
         // Draw the title below the X-axis labels
         var titlePaint = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Center, TextSize = 20 };
-        canvas.DrawText(
-            title,
-            canvasWidth / 2,
-            canvasHeight - 10, // Position at the bottom
-            titlePaint);
+
+        canvas.DrawText(title,
+                        canvasWidth / 2,
+                        canvasHeight - 10, // Position at the bottom
+                        titlePaint);
     }
 }

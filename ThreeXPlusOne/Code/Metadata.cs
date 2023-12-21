@@ -29,10 +29,10 @@ public class Metadata(IOptions<Settings> settings,
 
     private static List<(int FirstNumber, int Count)> GenerateTop10Series(List<List<int>> series)
     {
-        return series.Where(list => list.Any()).Select(list => (list.First(), list.Count))
-                                               .OrderByDescending(item => item.Count)
-                                               .Take(10)
-                                               .ToList();
+        return series.Where(list => list.Count != 0).Select(list => (list.First(), list.Count))
+                                                    .OrderByDescending(item => item.Count)
+                                                    .Take(10)
+                                                    .ToList();
     }
 
     private void GenerateNumberSeriesMetadata(List<List<int>> seriesData)
@@ -50,7 +50,7 @@ public class Metadata(IOptions<Settings> settings,
                 content += "\n";
             }
 
-            content += ($"{values[0]}, ");
+            content += $"{values[0]}, ";
 
             lcv++;
         }

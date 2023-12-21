@@ -64,7 +64,7 @@ public class Process(IOptions<Settings> settings,
     /// Get the list of numbers to use to run through the algorithm
     /// Either:
     ///     Random numbers - the amount specified in settings; or
-    ///     The list specified by the user in settings (this take priority)
+    ///     The list specified by the user in settings (this takes priority)
     /// </summary>
     /// <param name="stopwatch"></param>
     /// <returns></returns>
