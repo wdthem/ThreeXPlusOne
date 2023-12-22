@@ -23,7 +23,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="seriesLists"></param>
     public void AddSeries(List<List<int>> seriesLists)
     {
-        _consoleHelper.Write("Adding series to graph...");
+        _consoleHelper.Write("Adding series to graph... ");
 
         foreach (List<int> series in seriesLists)
         {
