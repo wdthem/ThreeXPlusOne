@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 
-namespace ThreeXPlusOne.Code;
+namespace ThreeXPlusOne.Code.Helpers;
 
 public class FileHelper(IOptions<Settings> settings,
                         IConsoleHelper consoleHelper) : IFileHelper

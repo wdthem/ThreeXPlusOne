@@ -2,7 +2,7 @@
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 
-namespace ThreeXPlusOne.Code;
+namespace ThreeXPlusOne.Code.Helpers;
 
 public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 {
