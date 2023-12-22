@@ -526,7 +526,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.WriteLine("");
         Console.ForegroundColor = ConsoleColor.Green;
-        _consoleHelper.WriteLine($"Saved to: {path}");
+        _consoleHelper.WriteLine($"Saved to: {path}\n");
         Console.ForegroundColor = ConsoleColor.White;
     }
 }
