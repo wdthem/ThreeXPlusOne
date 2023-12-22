@@ -19,7 +19,7 @@ public class FileHelper(IOptions<Settings> settings,
 
             if (!Directory.Exists(directory))
             {
-                throw new Exception($"Invalid {nameof(settings.Value.OutputPath)}. Check 'settings.json'");
+                throw new Exception($"Invalid {nameof(settings.Value.OutputPath)}. Check '{settings.Value.SettingsFileName}'");
             }
         }
 
@@ -39,7 +39,7 @@ public class FileHelper(IOptions<Settings> settings,
     {
         string jsonString = JsonSerializer.Serialize(settings.Value, _serializerOptions);
 
-        File.WriteAllText("settings.json", jsonString);
+        File.WriteAllText(settings.Value.SettingsFileName, jsonString);
     }
 
     public void WriteMetadataToFile(string content, string filePath)

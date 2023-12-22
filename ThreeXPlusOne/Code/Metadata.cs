@@ -24,7 +24,7 @@ public class Metadata(IOptions<Settings> settings,
         }
         else
         {
-            consoleHelper.WriteLine("Metadata generation disabled");
+            consoleHelper.WriteLine("Metadata generation disabled\n");
         }
     }
 

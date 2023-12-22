@@ -19,7 +19,7 @@ public class Histogram(IOptions<Settings> settings,
         }
         else
         {
-            consoleHelper.WriteLine("Histogram generation disabled");
+            consoleHelper.WriteLine("Histogram generation disabled\n");
 
             return;
         }

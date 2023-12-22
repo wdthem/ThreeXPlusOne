@@ -13,6 +13,8 @@ public class Process(IOptions<Settings> settings,
                      IFileHelper fileHelper,
                      IConsoleHelper consoleHelper) : IProcess
 {
+    private bool _generatedRandomNumbers = false;
+
     /// <summary>
     /// Run the algorithm and data generation based on the user-provided settings
     /// </summary>
@@ -55,12 +57,15 @@ public class Process(IOptions<Settings> settings,
 
         consoleHelper.WriteHeading("Save settings");
 
-        bool confirmed = consoleHelper.ReadYKeyToProceed($"Save generated number series to 'settings.json' for reuse?");
+        bool confirmedSaveSettings = _generatedRandomNumbers &&
+                                     consoleHelper.ReadYKeyToProceed($"Save generated number series to '{settings.Value.SettingsFileName}' for reuse?");
 
-        if (confirmed)
+        if (confirmedSaveSettings)
         {
             fileHelper.WriteSettingsToFile();
         }
+
+        consoleHelper.WriteSettingsSavedMessage(confirmedSaveSettings);
 
         stopwatch.Stop();
         TimeSpan ts = stopwatch.Elapsed;
@@ -120,6 +125,8 @@ public class Process(IOptions<Settings> settings,
             //populate the property as the number list is used to generate a hash value for the directory name
             settings.Value.UseTheseNumbers = string.Join(", ", inputValues);
 
+            _generatedRandomNumbers = true;
+
             consoleHelper.WriteDone();
         }
         else
@@ -133,8 +140,9 @@ public class Process(IOptions<Settings> settings,
                 throw new Exception("No numbers provided on which to run the algorithm");
             }
 
-            consoleHelper.WriteLine($"Using series numbers defined in {nameof(settings.Value.UseTheseNumbers)} apart from any excluded in {nameof(settings.Value.ExcludeTheseNumbers)}");
-            consoleHelper.WriteLine("");
+            _generatedRandomNumbers = false;
+
+            consoleHelper.WriteLine($"Using series numbers defined in {nameof(settings.Value.UseTheseNumbers)} apart from any excluded in {nameof(settings.Value.ExcludeTheseNumbers)}\n");
         }
 
         return inputValues;

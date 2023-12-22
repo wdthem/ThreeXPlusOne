@@ -127,11 +127,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         if (_settings.Value.GenerateGraph)
         {
-            bool confirmed = _consoleHelper.ReadYKeyToProceed($"Generate {_settings.Value.GraphDimensions}D visualization?");
+            bool confirmedGenerateGraph = _consoleHelper.ReadYKeyToProceed($"Generate {_settings.Value.GraphDimensions}D visualization?");
 
-            if (!confirmed)
+            if (!confirmedGenerateGraph)
             {
-                _consoleHelper.WriteLine("\nGraph generation cancelled");
+                _consoleHelper.WriteLine("\nGraph generation cancelled\n");
 
                 return;
             }
@@ -142,7 +142,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         }
         else
         {
-            _consoleHelper.WriteLine("Graph generation disabled");
+            _consoleHelper.WriteLine("Graph generation disabled\n");
         }
     }
 
@@ -508,7 +508,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="surface"></param>
     protected void SaveCanvas(SKSurface surface)
     {
-        _consoleHelper.WriteLine("");
         _consoleHelper.Write("Saving image... ");
 
         string path = _fileHelper.GenerateDirectedGraphFilePath();

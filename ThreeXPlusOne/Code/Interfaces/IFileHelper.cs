@@ -3,7 +3,7 @@
 public interface IFileHelper
 {
     /// <summary>
-    /// Save the Settings object values back to settings.json
+    /// Save the Settings object values back to the settings file
     /// </summary>
     void WriteSettingsToFile();
 

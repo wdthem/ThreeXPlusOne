@@ -10,6 +10,8 @@ namespace ThreeXPlusOne;
 
 public static class StartupExtensions
 {
+    private static readonly string _settingsFileName = "settings.json";
+
     /// <summary>
     /// Set up the host required for dependency injection
     /// </summary>
@@ -19,7 +21,7 @@ public static class StartupExtensions
     {
         return builder.ConfigureAppConfiguration((context, configBuilder) =>
                             {
-                                configBuilder.AddJsonFile("settings.json", optional: true, reloadOnChange: true);
+                                configBuilder.AddJsonFile(_settingsFileName, optional: true, reloadOnChange: true);
                             })
                             .ConfigureServices((context, services) =>
                             {

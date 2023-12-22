@@ -6,12 +6,15 @@ namespace ThreeXPlusOne.Config;
 
 /// <summary>
 /// Run --help command for additional property documentation
-/// If no 'settings.json' file is supplied, the defaults set here would be used
+/// If no settings file is supplied, the defaults set here would be used
 /// </summary>
 public class Settings
 {
     [JsonIgnore]
     private string? _uniqueExecutionId;
+
+    [JsonIgnore]
+    private readonly string _settingsFileName = "settings.json";
 
     [JsonIgnore]
     private static readonly char[] _separator = [','];
@@ -119,6 +122,18 @@ public class Settings
     /// The directory in which the process will create a unique execution folder with generated output
     /// </summary>
     public string OutputPath { get; set; } = "";
+
+    /// <summary>
+    /// The name of the file in which these settings are stored
+    /// </summary>
+    [JsonIgnore]
+    public string SettingsFileName
+    {
+        get
+        {
+            return _settingsFileName;
+        }
+    }
 
     /// <summary>
     /// An MD5 hash used to name a directory to store the output for the run of the given number series

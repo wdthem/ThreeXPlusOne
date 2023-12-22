@@ -36,7 +36,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         WriteHeading("Settings");
 
-        var settingsFileExists = File.Exists("settings.json");
+        var settingsFileExists = File.Exists(settings.Value.SettingsFileName);
         var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
 
         foreach (var property in settingsProperties)
@@ -55,35 +55,42 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
         if (settings.Value.GraphDimensions != settings.Value.SanitizedGraphDimensions)
         {
-            Console.WriteLine();
-            Console.WriteLine($"Invalid GraphDimensions ({settings.Value.GraphDimensions}). Defaulted to {settings.Value.SanitizedGraphDimensions}.");
+            Console.WriteLine($"\nInvalid GraphDimensions ({settings.Value.GraphDimensions}). Defaulted to {settings.Value.SanitizedGraphDimensions}.");
         }
 
         if (!settingsFileExists)
         {
-            Console.WriteLine();
-            Console.WriteLine("File 'settings.json' not found. Used defaults.");
+            Console.WriteLine($"\nFile '{settings.Value.SettingsFileName}' not found. Used defaults.");
         }
 
         WriteSeparator();
     }
 
+    public void WriteSettingsSavedMessage(bool savedSettings)
+    {
+        if (savedSettings)
+        {
+            Console.WriteLine($"Saved generated numbers to '{settings.Value.SettingsFileName}'.\n");
+        }
+        else
+        {
+            Console.WriteLine("Settings left unchanged.\n");
+        }
+    }
+
     public void WriteError(string message)
     {
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine();
-        Console.Write("ERROR: ");
+        Console.Write("\nERROR: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine(message);
-        Console.WriteLine();
+        Console.WriteLine($"{message}\n");
     }
 
     public void WriteDone()
     {
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Done");
+        Console.WriteLine("Done\n");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine();
     }
 
     public bool ReadYKeyToProceed(string message)
@@ -101,14 +108,10 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteAsciiArtLogo();
 
         WriteHeading("GitHub repository");
-        Console.WriteLine();
-        Console.WriteLine("https://github.com/wdthem/ThreeXPlusOne");
-        Console.WriteLine();
+        Console.WriteLine("\nhttps://github.com/wdthem/ThreeXPlusOne\n");
 
         WriteHeading("Usage information");
-        Console.WriteLine();
-        Console.WriteLine("To apply custom settings, ensure that a 'settings.json' file exists in the same folder as the executable. It must have the following content:");
-        Console.WriteLine("");
+        Console.WriteLine($"\nTo apply custom settings, ensure that a '{settings.Value.SettingsFileName}' file exists in the same folder as the executable. It must have the following content:\n");
         Console.WriteLine("{");
 
         var lcv = 1;
@@ -141,10 +144,8 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("}");
 
-        Console.WriteLine("");
-        Console.WriteLine("A useful starting point for settings:");
+        Console.WriteLine("\nA useful starting point for settings:\n");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.CanvasWidth)}: ");
@@ -244,28 +245,21 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.OutputPath)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder where the output files should be placed)");
-        Console.WriteLine("");
+        Console.WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder where the output files should be placed)\n");
 
-        Console.WriteLine("Note: Increasing settings may cause the program to fail. It depends on the capabilities of the machine running it.");
-        Console.WriteLine();
-        Console.WriteLine();
+        Console.WriteLine("Note: Increasing settings may cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
     }
 
     public void WriteSeparator()
     {
-        Console.WriteLine();
-        Console.WriteLine("----------------------------------------------");
-        Console.WriteLine();
+        Console.WriteLine("\n----------------------------------------------\n");
     }
 
     public void WriteHeading(string headerText)
     {
         Console.ForegroundColor = ConsoleColor.DarkYellow;
 
-        Console.WriteLine();
-        Console.WriteLine(headerText);
-        Console.WriteLine();
+        Console.WriteLine($"\n{headerText}\n");
 
         Console.ForegroundColor = ConsoleColor.White;
     }

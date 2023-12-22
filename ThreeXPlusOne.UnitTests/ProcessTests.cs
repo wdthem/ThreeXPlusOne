@@ -58,5 +58,7 @@ public class ProcessTests
         _directedGraph.Verify(graph => graph.DrawGraph(), Times.Once);
         _histogramMock.Verify(histogram => histogram.GenerateHistogram(It.IsAny<List<List<int>>>()), Times.Once);
         _metadataMock.Verify(metadata => metadata.GenerateMedatadataFile(It.IsAny<List<List<int>>>()), Times.Once);
+        _consoleHelperMock.Verify(helper => helper.ReadYKeyToProceed(It.IsAny<string>()), Times.Once);
+        _consoleHelperMock.Verify(helper => helper.WriteSettingsSavedMessage(It.IsAny<bool>()), Times.Once);
     }
 }
