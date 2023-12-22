@@ -15,9 +15,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     /// <summary>
     /// Generate a 2D visual representation of the directed graph
     /// </summary>
-    public void DrawGraph()
+    public void Draw()
     {
-        Draw();
+        DrawGraph();
     }
 
     /// <summary>

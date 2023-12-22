@@ -15,9 +15,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     /// <summary>
     /// Generate a 3D visual representation of the directed graph
     /// </summary>
-    public void DrawGraph()
+    public void Draw()
     {
-        Draw();
+        DrawGraph();
     }
 
     /// <summary>

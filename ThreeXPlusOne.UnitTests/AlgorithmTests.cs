@@ -1,18 +1,27 @@
 using FluentAssertions;
+using Moq;
 using ThreeXPlusOne.Code;
+using ThreeXPlusOne.Code.Interfaces;
 using Xunit;
 
 namespace ThreeXPlusOne.UnitTests;
 
 public class AlgorithmTests
 {
-    private readonly Algorithm _algorithm = new();
+    private readonly Mock<IConsoleHelper> _consoleHelperMock;
+    private readonly Algorithm _algorithm;
+
+    public AlgorithmTests()
+    {
+        _consoleHelperMock = new Mock<IConsoleHelper>();
+        _algorithm = new Algorithm(_consoleHelperMock.Object);
+    }
 
     /// <summary>
     /// For non-root numbers (not 4, 2, 1)
     /// </summary>
     [Fact]
-    public void AlgorithmReturnsSeriesWithExpectedEnd_Success00()
+    public void AlgorithmReturnsSeriesWithExpectedEnd_00()
     {
         // Arrange
         List<int> startingNumbers = [5, 7, 12, 33, 179];
@@ -35,7 +44,7 @@ public class AlgorithmTests
     /// For root numbers (4, 2, 1)
     /// </summary>
     [Fact]
-    public void AlgorithmReturnsSeriesWithExpectedEnd_Success01()
+    public void AlgorithmReturnsSeriesWithExpectedEnd_01()
     {
         // Arrange
         List<int> startingNumbers = [4, 2, 1];
@@ -59,7 +68,7 @@ public class AlgorithmTests
     /// For negative numbers
     /// </summary>
     [Fact]
-    public void AlgorithmReturnsEmptyList_Success00()
+    public void AlgorithmReturnsEmptyList()
     {
         // Arrange
         List<int> startingNumbers = [-3, -29, -824];
@@ -72,5 +81,18 @@ public class AlgorithmTests
         {
             series.Count.Should().Be(0);
         }
+    }
+
+    /// <summary>
+    /// For empty input list
+    /// </summary>
+    [Fact]
+    public void AlgorithmThrowsExceptionForEmptyInput()
+    {
+        // Arrange
+        List<int> startingNumbers = [];
+
+        // Act + Assert
+        _algorithm.Invoking(algorithm => algorithm.Run(startingNumbers)).Should().Throw<Exception>();
     }
 }

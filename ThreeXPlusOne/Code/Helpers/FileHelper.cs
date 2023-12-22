@@ -35,8 +35,13 @@ public class FileHelper(IOptions<Settings> settings,
         return DateTime.Now.ToString("yyyyMMdd-HHmmss");
     }
 
-    public void WriteSettingsToFile()
+    public void WriteSettingsToFile(bool userConfirmedSave)
     {
+        if (!userConfirmedSave)
+        {
+            return;
+        }
+
         string jsonString = JsonSerializer.Serialize(settings.Value, _serializerOptions);
 
         File.WriteAllText(settings.Value.SettingsFileName, jsonString);

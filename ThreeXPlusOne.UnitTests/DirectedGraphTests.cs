@@ -27,11 +27,11 @@ public class DirectedGraphTests
     public void AddSeries_Success00()
     {
         // Arrange
-        List<int> series = [64, 32, 16, 8, 4, 2, 1];
+        List<List<int>> seriesLists = [[64, 32, 16, 8, 4, 2, 1], [5, 16, 8, 4, 2, 1]];
 
         TwoDimensionalDirectedGraph twoDimensionalGraph = new(_settings, _fileHelperMock.Object, _consoleHelperMock.Object);
 
         // Act + Assert
-        twoDimensionalGraph.Invoking(graph => graph.AddSeries(series)).Should().NotThrow();
+        twoDimensionalGraph.Invoking(graph => graph.AddSeries(seriesLists)).Should().NotThrow();
     }
 }

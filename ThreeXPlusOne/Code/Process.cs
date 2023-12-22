@@ -25,46 +25,33 @@ public class Process(IOptions<Settings> settings,
 
         consoleHelper.WriteAsciiArtLogo();
         consoleHelper.WriteSettings();
-
         consoleHelper.WriteHeading("Series data");
 
         List<int> inputValues = GenerateInputValues(stopwatch);
 
         consoleHelper.WriteHeading("Algorithm execution");
 
-        consoleHelper.Write($"Running 3x+1 algorithm on {inputValues.Count} numbers... ");
+        List<List<int>> seriesLists = algorithm.Run(inputValues);
 
-        List<List<int>> seriesData = algorithm.Run(inputValues);
-
-        consoleHelper.WriteDone();
+        consoleHelper.WriteHeading("Directed graph");
 
         IDirectedGraph graph = directedGraphs.ToList()
                                              .Where(graph => graph.Dimensions == settings.Value.SanitizedGraphDimensions)
                                              .First();
 
-        foreach (List<int> series in seriesData)
-        {
-            graph.AddSeries(series);
-        }
-
-        consoleHelper.WriteHeading("Directed graph");
-
+        graph.AddSeries(seriesLists);
         graph.PositionNodes();
-        graph.DrawGraph();
+        graph.Draw();
 
-        histogram.GenerateHistogram(seriesData);
-        metadata.GenerateMedatadataFile(seriesData);
+        histogram.GenerateHistogram(seriesLists);
+        metadata.GenerateMedatadataFile(seriesLists);
 
         consoleHelper.WriteHeading("Save settings");
 
         bool confirmedSaveSettings = _generatedRandomNumbers &&
                                      consoleHelper.ReadYKeyToProceed($"Save generated number series to '{settings.Value.SettingsFileName}' for reuse?");
 
-        if (confirmedSaveSettings)
-        {
-            fileHelper.WriteSettingsToFile();
-        }
-
+        fileHelper.WriteSettingsToFile(confirmedSaveSettings);
         consoleHelper.WriteSettingsSavedMessage(confirmedSaveSettings);
 
         stopwatch.Stop();
@@ -102,9 +89,7 @@ public class Process(IOptions<Settings> settings,
                         throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(settings.Value.ExcludeTheseNumbers)}");
                     }
 
-                    consoleHelper.WriteLine("");
-                    consoleHelper.WriteLine($"Gave up generating {settings.Value.NumberOfSeries} random numbers. Generated {inputValues.Count}");
-                    consoleHelper.WriteLine("");
+                    consoleHelper.WriteLine($"\nGave up generating {settings.Value.NumberOfSeries} random numbers. Generated {inputValues.Count}\n");
 
                     break;
                 }
@@ -124,7 +109,6 @@ public class Process(IOptions<Settings> settings,
 
             //populate the property as the number list is used to generate a hash value for the directory name
             settings.Value.UseTheseNumbers = string.Join(", ", inputValues);
-
             _generatedRandomNumbers = true;
 
             consoleHelper.WriteDone();
@@ -132,7 +116,6 @@ public class Process(IOptions<Settings> settings,
         else
         {
             inputValues = settings.Value.ListOfSeriesNumbers;
-
             inputValues.RemoveAll(settings.Value.ListOfNumbersToExclude.Contains);
 
             if (inputValues.Count == 0)

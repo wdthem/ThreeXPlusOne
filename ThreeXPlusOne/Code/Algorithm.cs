@@ -2,7 +2,7 @@
 
 namespace ThreeXPlusOne.Code;
 
-public class Algorithm : IAlgorithm
+public class Algorithm(IConsoleHelper consoleHelper) : IAlgorithm
 {
     /// <summary>
     /// Execute the the 3x+1 algorithm for all numbers either supplied by the user or generated randomly
@@ -13,8 +13,10 @@ public class Algorithm : IAlgorithm
     {
         if (inputValues.Count == 0)
         {
-            return [];
+            throw new Exception("No input provided to the algorithm");
         }
+
+        consoleHelper.Write($"Running 3x+1 algorithm on {inputValues.Count} numbers... ");
 
         List<List<int>> returnValues = [];
 
@@ -50,6 +52,8 @@ public class Algorithm : IAlgorithm
 
             returnValues.Add(outputValues);
         }
+
+        consoleHelper.WriteDone();
 
         return returnValues;
     }
