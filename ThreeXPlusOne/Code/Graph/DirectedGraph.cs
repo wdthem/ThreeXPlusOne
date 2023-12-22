@@ -88,7 +88,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void DrawGraph()
     {
-        _consoleHelper.WriteLine("Drawing connections and nodes... ");
+        var connectionsMessage = _settings.Value.DrawConnections ? "connection and " : "";
+
+        _consoleHelper.WriteLine($"Drawing {connectionsMessage}nodes... ");
 
         using var surface = SKSurface.Create(new SKImageInfo(_settings.Value.CanvasWidth, _settings.Value.CanvasHeight));
 
