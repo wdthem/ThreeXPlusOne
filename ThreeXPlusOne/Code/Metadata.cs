@@ -8,11 +8,13 @@ public class Metadata(IOptions<Settings> settings,
                       IFileHelper fileHelper,
                       IConsoleHelper consoleHelper) : IMetadata
 {
+    private readonly Settings _settings = settings.Value;
+
     public void GenerateMedatadataFile(List<List<int>> seriesData)
     {
         consoleHelper.WriteHeading("Metadata");
 
-        if (settings.Value.GenerateMetadataFile)
+        if (_settings.GenerateMetadataFile)
         {
             consoleHelper.Write("Generating metadata... ");
 

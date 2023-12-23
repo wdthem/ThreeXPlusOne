@@ -99,6 +99,11 @@ public class Settings
     public bool DrawConnections { get; set; } = true;
 
     /// <summary>
+    /// Whether or not to draw the number at the center of the node that the node represents
+    /// </summary>
+    public bool DrawNumbersOnNodes { get; set; } = true;
+
+    /// <summary>
     /// Whether or not to generate the directed graph
     /// </summary>
     public bool GenerateGraph { get; set; }

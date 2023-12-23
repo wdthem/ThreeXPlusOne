@@ -28,9 +28,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
         _consoleHelper.Write("Positioning nodes... ");
 
         // Set up the base nodes' positions
-        var base1 = new SKPoint(_settings.Value.CanvasWidth / 2, _settings.Value.CanvasHeight - 100);         // Node '1' at the bottom
-        var base2 = new SKPoint(_settings.Value.CanvasWidth / 2, base1.Y - _settings.Value.YNodeSpacer);      // Node '2' just above '1'
-        var base4 = new SKPoint(_settings.Value.CanvasWidth / 2, base2.Y - _settings.Value.YNodeSpacer);      // Node '4' above '2'
+        var base1 = new SKPoint(_settings.CanvasWidth / 2, _settings.CanvasHeight - 100);         // Node '1' at the bottom
+        var base2 = new SKPoint(_settings.CanvasWidth / 2, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
+        var base4 = new SKPoint(_settings.CanvasWidth / 2, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
@@ -61,7 +61,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
     {
-        node.Radius = _settings.Value.NodeRadius;
+        node.Radius = _settings.NodeRadius;
 
         if (!node.IsPositioned)
         {
@@ -72,7 +72,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                 _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
 
             float xOffset = node.Parent == null
-                                    ? _settings.Value.CanvasWidth / 2
+                                    ? _settings.CanvasWidth / 2
                                     : node.Parent.Position.X;
 
             if (allNodesAtDepth > 1)
@@ -94,25 +94,25 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                         addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth;
                     }
 
-                    xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.Value.XNodeSpacer)) + (_settings.Value.XNodeSpacer * addedWidth);
+                    xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.XNodeSpacer)) + (_settings.XNodeSpacer * addedWidth);
                 }
             }
 
-            var yOffset = node.Parent!.Position.Y - _settings.Value.YNodeSpacer;
+            var yOffset = node.Parent!.Position.Y - _settings.YNodeSpacer;
 
             node.Position = new SKPoint(xOffset, yOffset);
 
-            if (_settings.Value.NodeRotationAngle != 0)
+            if (_settings.NodeRotationAngle != 0)
             {
                 (double x, double y) rotatedPosition;
 
                 if (node.Value % 2 == 0)
                 {
-                    rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.Value.NodeRotationAngle);
+                    rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
                 }
                 else
                 {
-                    rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.Value.NodeRotationAngle);
+                    rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.NodeRotationAngle);
                 }
 
                 node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);

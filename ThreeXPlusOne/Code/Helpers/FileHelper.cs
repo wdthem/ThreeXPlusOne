@@ -8,6 +8,7 @@ namespace ThreeXPlusOne.Code.Helpers;
 public class FileHelper(IOptions<Settings> settings,
                         IConsoleHelper consoleHelper) : IFileHelper
 {
+    private readonly Settings _settings = settings.Value;
     private readonly string _prefix = "ThreeXPlusOne";
     private readonly JsonSerializerOptions _serializerOptions = new() { WriteIndented = true };
 
@@ -19,7 +20,7 @@ public class FileHelper(IOptions<Settings> settings,
 
             if (!Directory.Exists(directory))
             {
-                throw new Exception($"Invalid {nameof(settings.Value.OutputPath)}. Check '{settings.Value.SettingsFileName}'");
+                throw new Exception($"Invalid {nameof(_settings.OutputPath)}. Check '{_settings.SettingsFileName}'");
             }
         }
 
@@ -42,9 +43,9 @@ public class FileHelper(IOptions<Settings> settings,
             return;
         }
 
-        string jsonString = JsonSerializer.Serialize(settings.Value, _serializerOptions);
+        string jsonString = JsonSerializer.Serialize(_settings, _serializerOptions);
 
-        File.WriteAllText(settings.Value.SettingsFileName, jsonString);
+        File.WriteAllText(_settings.SettingsFileName, jsonString);
     }
 
     public void WriteMetadataToFile(string content, string filePath)
@@ -63,22 +64,22 @@ public class FileHelper(IOptions<Settings> settings,
 
     public string GenerateDirectedGraphFilePath()
     {
-        var fileName = $"{_prefix}-{settings.Value.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
+        var fileName = $"{_prefix}-{_settings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
-        return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
+        return GenerateFullFilePath(_settings.UniqueExecutionId, _settings.OutputPath, fileName);
     }
 
     public string GenerateHistogramFilePath()
     {
         var fileName = $"{_prefix}-Histogram-{GetFilenameTimestamp()}.png";
 
-        return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
+        return GenerateFullFilePath(_settings.UniqueExecutionId, _settings.OutputPath, fileName);
     }
 
     public string GenerateMetadataFilePath()
     {
         var fileName = $"{_prefix}-Metadata-{GetFilenameTimestamp()}.txt";
 
-        return GenerateFullFilePath(settings.Value.UniqueExecutionId, settings.Value.OutputPath, fileName);
+        return GenerateFullFilePath(_settings.UniqueExecutionId, _settings.OutputPath, fileName);
     }
 }

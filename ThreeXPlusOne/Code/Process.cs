@@ -13,6 +13,7 @@ public class Process(IOptions<Settings> settings,
                      IFileHelper fileHelper,
                      IConsoleHelper consoleHelper) : IProcess
 {
+    private readonly Settings _settings = settings.Value;
     private bool _generatedRandomNumbers = false;
 
     /// <summary>
@@ -36,7 +37,7 @@ public class Process(IOptions<Settings> settings,
         consoleHelper.WriteHeading("Directed graph");
 
         IDirectedGraph graph = directedGraphs.ToList()
-                                             .Where(graph => graph.Dimensions == settings.Value.SanitizedGraphDimensions)
+                                             .Where(graph => graph.Dimensions == _settings.SanitizedGraphDimensions)
                                              .First();
 
         graph.AddSeries(seriesLists);
@@ -49,7 +50,7 @@ public class Process(IOptions<Settings> settings,
         consoleHelper.WriteHeading("Save settings");
 
         bool confirmedSaveSettings = _generatedRandomNumbers &&
-                                     consoleHelper.ReadYKeyToProceed($"Save generated number series to '{settings.Value.SettingsFileName}' for reuse?");
+                                     consoleHelper.ReadYKeyToProceed($"Save generated number series to '{_settings.SettingsFileName}' for reuse?");
 
         fileHelper.WriteSettingsToFile(confirmedSaveSettings);
         consoleHelper.WriteSettingsSavedMessage(confirmedSaveSettings);
@@ -76,27 +77,27 @@ public class Process(IOptions<Settings> settings,
         var random = new Random();
         var inputValues = new List<int>();
 
-        if (string.IsNullOrWhiteSpace(settings.Value.UseTheseNumbers))
+        if (string.IsNullOrWhiteSpace(_settings.UseTheseNumbers))
         {
-            consoleHelper.Write($"Generating {settings.Value.NumberOfSeries} random numbers from 1 to {settings.Value.MaxStartingNumber}... ");
+            consoleHelper.Write($"Generating {_settings.NumberOfSeries} random numbers from 1 to {_settings.MaxStartingNumber}... ");
 
-            while (inputValues.Count < settings.Value.NumberOfSeries)
+            while (inputValues.Count < _settings.NumberOfSeries)
             {
                 if (stopwatch.Elapsed.TotalSeconds >= 10)
                 {
                     if (inputValues.Count == 0)
                     {
-                        throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(settings.Value.ExcludeTheseNumbers)}");
+                        throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_settings.ExcludeTheseNumbers)}");
                     }
 
-                    consoleHelper.WriteLine($"\nGave up generating {settings.Value.NumberOfSeries} random numbers. Generated {inputValues.Count}\n");
+                    consoleHelper.WriteLine($"\nGave up generating {_settings.NumberOfSeries} random numbers. Generated {inputValues.Count}\n");
 
                     break;
                 }
 
-                int randomValue = random.Next(0, settings.Value.MaxStartingNumber) + 1;
+                int randomValue = random.Next(0, _settings.MaxStartingNumber) + 1;
 
-                if (settings.Value.ListOfNumbersToExclude.Contains(randomValue))
+                if (_settings.ListOfNumbersToExclude.Contains(randomValue))
                 {
                     continue;
                 }
@@ -108,15 +109,15 @@ public class Process(IOptions<Settings> settings,
             }
 
             //populate the property as the number list is used to generate a hash value for the directory name
-            settings.Value.UseTheseNumbers = string.Join(", ", inputValues);
+            _settings.UseTheseNumbers = string.Join(", ", inputValues);
             _generatedRandomNumbers = true;
 
             consoleHelper.WriteDone();
         }
         else
         {
-            inputValues = settings.Value.ListOfSeriesNumbers;
-            inputValues.RemoveAll(settings.Value.ListOfNumbersToExclude.Contains);
+            inputValues = _settings.ListOfSeriesNumbers;
+            inputValues.RemoveAll(_settings.ListOfNumbersToExclude.Contains);
 
             if (inputValues.Count == 0)
             {
@@ -125,7 +126,7 @@ public class Process(IOptions<Settings> settings,
 
             _generatedRandomNumbers = false;
 
-            consoleHelper.WriteLine($"Using series numbers defined in {nameof(settings.Value.UseTheseNumbers)} apart from any excluded in {nameof(settings.Value.ExcludeTheseNumbers)}\n");
+            consoleHelper.WriteLine($"Using series numbers defined in {nameof(_settings.UseTheseNumbers)} apart from any excluded in {nameof(_settings.ExcludeTheseNumbers)}\n");
         }
 
         return inputValues;

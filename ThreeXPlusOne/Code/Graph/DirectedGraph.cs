@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using SkiaSharp;
-using ThreeXPlusOne.Code.Helpers;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 using ThreeXPlusOne.Models;
@@ -11,7 +10,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                                     IFileHelper fileHelper,
                                     IConsoleHelper consoleHelper)
 {
-    protected readonly IOptions<Settings> _settings = settings;
+    protected readonly Settings _settings = settings.Value;
     protected readonly IFileHelper _fileHelper = fileHelper;
     protected readonly IConsoleHelper _consoleHelper = consoleHelper;
     protected readonly Random _random = new();
@@ -88,24 +87,24 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void DrawGraph()
     {
-        var connectionsMessage = _settings.Value.DrawConnections ? "connection and " : "";
+        var connectionsMessage = _settings.DrawConnections ? "connection and " : "";
 
         _consoleHelper.WriteLine($"Drawing {connectionsMessage}nodes... ");
 
-        using var surface = SKSurface.Create(new SKImageInfo(_settings.Value.CanvasWidth, _settings.Value.CanvasHeight));
+        using var surface = SKSurface.Create(new SKImageInfo(_settings.CanvasWidth, _settings.CanvasHeight));
 
         SKCanvas canvas = surface.Canvas;
 
         canvas.Clear(SKColors.Black);
 
-        if (_settings.Value.GenerateBackgroundStars)
+        if (_settings.GenerateBackgroundStars)
         {
             GenerateBackgroundStars(canvas, 100);
         }
 
         var lcv = 1;
 
-        if (_settings.Value.DrawConnections)
+        if (_settings.DrawConnections)
         {
             foreach (var node in _nodes)
             {
@@ -132,9 +131,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         _consoleHelper.WriteLine("");
         _consoleHelper.WriteDone();
 
-        if (_settings.Value.GenerateGraph)
+        if (_settings.GenerateGraph)
         {
-            bool confirmedGenerateGraph = _consoleHelper.ReadYKeyToProceed($"Generate {_settings.Value.GraphDimensions}D visualization?");
+            bool confirmedGenerateGraph = _consoleHelper.ReadYKeyToProceed($"Generate {_settings.GraphDimensions}D visualization?");
 
             if (!confirmedGenerateGraph)
             {
@@ -197,12 +196,12 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             FakeBoldText = true,
         };
 
-        if (_settings.Value.DistortNodes)
+        if (_settings.DistortNodes)
         {
             DrawDistortedPath(canvas,
                               node.Position,
                               node.Radius,
-                              _settings.Value.RadiusDistortion,
+                              _settings.RadiusDistortion,
                               paint);
         }
         else
@@ -212,11 +211,14 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                               paint);
         }
 
-        // Draw the text
-        // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
-        float textY = node.Position.Y + 8;
+        if (_settings.DrawNumbersOnNodes)
+        {
+            // Draw the text
+            // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
+            float textY = node.Position.Y + 8;
 
-        canvas.DrawText(node.Value.ToString(), node.Position.X, textY, textPaint);
+            canvas.DrawText(node.Value.ToString(), node.Position.X, textY, textPaint);
+        }
     }
 
     /// <summary>
@@ -267,8 +269,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         for (int i = 0; i < count; i++)
         {
-            float x = (float)_random.NextDouble() * _settings.Value.CanvasWidth;
-            float y = (float)_random.NextDouble() * _settings.Value.CanvasHeight;
+            float x = (float)_random.NextDouble() * _settings.CanvasWidth;
+            float y = (float)_random.NextDouble() * _settings.CanvasHeight;
 
             points.Add(new SKPoint(x, y));
         }
@@ -407,8 +409,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         //TODO: Instead of random x,y movement, do the angle rotation to a random angle
         foreach (var node in nodesWithSamePosition)
         {
-            var randomX = _random.Next(1, _settings.Value.XNodeSpacer / 2);
-            var randomY = _random.Next(1, _settings.Value.YNodeSpacer / 2);
+            var randomX = _random.Next(1, _settings.XNodeSpacer / 2);
+            var randomY = _random.Next(1, _settings.YNodeSpacer / 2);
 
             node.Position = new SKPoint(node.Position.X + randomX, node.Parent!.Position.Y - randomY);
         }

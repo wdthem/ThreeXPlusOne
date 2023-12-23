@@ -9,11 +9,13 @@ public class Histogram(IOptions<Settings> settings,
                        IFileHelper fileHelper,
                        IConsoleHelper consoleHelper) : IHistogram
 {
+    private readonly Settings _settings = settings.Value;
+
     public void GenerateHistogram(List<List<int>> seriesData)
     {
         consoleHelper.WriteHeading("Histogram");
 
-        if (settings.Value.GenerateHistogram)
+        if (_settings.GenerateHistogram)
         {
             consoleHelper.Write("Generating histogram...");
         }

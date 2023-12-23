@@ -6,6 +6,8 @@ namespace ThreeXPlusOne.Code.Helpers;
 
 public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 {
+    private readonly Settings _settings = settings.Value;
+
     public void Write(string message)
     {
         Console.Write(message);
@@ -36,12 +38,12 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         WriteHeading("Settings");
 
-        var settingsFileExists = File.Exists(settings.Value.SettingsFileName);
+        var settingsFileExists = File.Exists(_settings.SettingsFileName);
         var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
 
         foreach (var property in settingsProperties)
         {
-            var value = property.GetValue(settings.Value, null);
+            var value = property.GetValue(_settings, null);
 
             Console.ForegroundColor = ConsoleColor.Blue;
 
@@ -53,14 +55,14 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
             Console.WriteLine();
         }
 
-        if (settings.Value.GraphDimensions != settings.Value.SanitizedGraphDimensions)
+        if (_settings.GraphDimensions != _settings.SanitizedGraphDimensions)
         {
-            Console.WriteLine($"\nInvalid GraphDimensions ({settings.Value.GraphDimensions}). Defaulted to {settings.Value.SanitizedGraphDimensions}.");
+            Console.WriteLine($"\nInvalid GraphDimensions ({_settings.GraphDimensions}). Defaulted to {_settings.SanitizedGraphDimensions}.");
         }
 
         if (!settingsFileExists)
         {
-            Console.WriteLine($"\nFile '{settings.Value.SettingsFileName}' not found. Used defaults.");
+            Console.WriteLine($"\nFile '{_settings.SettingsFileName}' not found. Used defaults.");
         }
 
         WriteSeparator();
@@ -70,7 +72,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         if (savedSettings)
         {
-            Console.WriteLine($"Saved generated numbers to '{settings.Value.SettingsFileName}'\n");
+            Console.WriteLine($"Saved generated numbers to '{_settings.SettingsFileName}'\n");
         }
         else
         {
@@ -111,7 +113,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.WriteLine("\nhttps://github.com/wdthem/ThreeXPlusOne\n");
 
         WriteHeading("Usage information");
-        Console.WriteLine($"\nTo apply custom settings, ensure that a '{settings.Value.SettingsFileName}' file exists in the same folder as the executable. It must have the following content:\n");
+        Console.WriteLine($"\nTo apply custom settings, ensure that a '{_settings.SettingsFileName}' file exists in the same folder as the executable. It must have the following content:\n");
         Console.WriteLine("{");
 
         var lcv = 1;
@@ -221,6 +223,11 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.Write($"     {nameof(Settings.DrawConnections)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("true (whether or not to draw connections between the nodes in the graph - if true can increase image file size substantially)");
+
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"     {nameof(Settings.DrawNumbersOnNodes)}: ");
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine("true (whether or not to draw the numbers at the center of the node that the node represents)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.GenerateGraph)}: ");
