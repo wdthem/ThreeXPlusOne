@@ -18,22 +18,6 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.WriteLine(message);
     }
 
-    public void WriteAsciiArtLogo()
-    {
-        WriteSeparator();
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.WriteLine(" .d8888b.                              d888   ");
-        Console.WriteLine("d88P  Y88b                            d8888   ");
-        Console.WriteLine("     .d88P                              888   ");
-        Console.WriteLine("    8888\"  888  888        888          888   ");
-        Console.WriteLine("     \"Y8b. `Y8bd8P'      8888888        888   ");
-        Console.WriteLine("888    888   X88K          888          888   ");
-        Console.WriteLine("Y88b  d88P .d8\"\"8b.                     888   ");
-        Console.WriteLine(" \"Y8888P\"  888  888                   8888888 ");
-        Console.ForegroundColor = ConsoleColor.White;
-        WriteSeparator();
-    }
-
     public void WriteSettings()
     {
         WriteHeading("Settings");
@@ -64,8 +48,6 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         {
             Console.WriteLine($"\nFile '{_settings.SettingsFileName}' not found. Used defaults.");
         }
-
-        WriteSeparator();
     }
 
     public void WriteSettingsSavedMessage(bool savedSettings)
@@ -103,6 +85,22 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.WriteLine();
 
         return keyInfo.Key == ConsoleKey.Y;
+    }
+
+    public void WriteSeparator()
+    {
+        Console.WriteLine("\n------------------------------------------------------------------------------------");
+    }
+
+    public void WriteHeading(string headerText)
+    {
+        WriteSeparator();
+
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+        Console.WriteLine($"\n{headerText}\n");
+
+        Console.ForegroundColor = ConsoleColor.White;
     }
 
     public void WriteHelpText()
@@ -257,16 +255,172 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.WriteLine("Note: Increasing settings may cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
     }
 
-    public void WriteSeparator()
+    public void WriteAsciiArtLogo()
     {
-        Console.WriteLine("\n----------------------------------------------\n");
-    }
+        Console.ForegroundColor = ConsoleColor.Blue;
 
-    public void WriteHeading(string headerText)
-    {
+        //line 1
+        Console.Write("\n\n_____");
         Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\\\\\\\\\\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_______________________________________________________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("_        ");
 
-        Console.WriteLine($"\n{headerText}\n");
+        //line 2
+        Console.Write(" ___");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\///////\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("__________________________________________________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\\\\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("_       ");
+
+        //line 3
+        Console.Write("  __");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\///");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("______");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_______________________________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_______________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/////\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("_      ");
+
+        //line 4
+        Console.Write("   _________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\//");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("____");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("____");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_______________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("___________________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("_     ");
+
+        //line 5
+        Console.Write("    ________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\////\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("__");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\///\\\\\\/\\\\\\/");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_____________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\\\\\\\\\\\\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_______________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("_    ");
+
+        //line 6
+        Console.Write("     ___________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\//\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("___");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\///\\\\\\/");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("______________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/////\\\\\\///");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("________________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("_   ");
+
+        //line 7
+        Console.Write("      __");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("______");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_____");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_________________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("___________________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("_  ");
+
+        //line 8
+        Console.Write("       _");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\///\\\\\\\\\\\\\\\\\\/");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("____");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("/\\\\\\/\\///\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_______________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\///");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("____________________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/\\\\\\");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("_ ");
+
+        //line 9
+        Console.Write("        ___");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\/////////");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("_____");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\///");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("____");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\///");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write("________________________________________");
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("\\///");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("_ ");
 
         Console.ForegroundColor = ConsoleColor.White;
     }
