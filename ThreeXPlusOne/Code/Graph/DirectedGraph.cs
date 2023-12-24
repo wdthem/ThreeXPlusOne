@@ -22,7 +22,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="seriesLists"></param>
     public void AddSeries(List<List<int>> seriesLists)
     {
-        _consoleHelper.Write("Adding series to graph... ");
+        _consoleHelper.Write($"Adding {seriesLists.Count} series to the graph... ");
 
         foreach (List<int> series in seriesLists)
         {
@@ -87,9 +87,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void DrawGraph()
     {
-        var connectionsMessage = _settings.DrawConnections ? "connection and " : "";
-
-        _consoleHelper.WriteLine($"Drawing {connectionsMessage}nodes... ");
+        var connectionsMessage = _settings.DrawConnections ? "connections and " : "";
 
         using var surface = SKSurface.Create(new SKImageInfo(_settings.CanvasWidth, _settings.CanvasHeight));
 
@@ -110,12 +108,12 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             {
                 DrawConnection(canvas, node.Value);
 
-                _consoleHelper.Write($"    \r{lcv} connections drawn");
+                _consoleHelper.Write($"\rDrawing {lcv} connections... ");
 
                 lcv += node.Value.Children.Count;
             }
 
-            _consoleHelper.WriteLine("");
+            _consoleHelper.WriteDone();
         }
 
         lcv = 1;
@@ -123,12 +121,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             DrawNode(canvas, node.Value);
 
-            _consoleHelper.Write($"    \r{lcv} nodes drawn");
+            _consoleHelper.Write($"\rDrawing {lcv} nodes... ");
 
             lcv = lcv + 1 + node.Value.Children.Count;
         }
 
-        _consoleHelper.WriteLine("");
         _consoleHelper.WriteDone();
 
         if (_settings.GenerateGraph)
@@ -517,9 +514,15 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="surface"></param>
     protected void SaveCanvas(SKSurface surface)
     {
-        _consoleHelper.Write("Saving image... ");
-
         string path = _fileHelper.GenerateDirectedGraphFilePath();
+
+        var cancellationTokenSource = new CancellationTokenSource();
+        var token = cancellationTokenSource.Token;
+
+        _consoleHelper.WriteLine($"Saving image to: {path}\n");
+        _consoleHelper.Write("Please wait... ");
+
+        Task spinner = Task.Run(() => _consoleHelper.WriteSpinner(token));
 
         using (var image = surface.Snapshot())
         using (var data = image.Encode(SKEncodedImageFormat.Png, 25))
@@ -528,9 +531,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             data.SaveTo(stream);
         }
 
-        _consoleHelper.WriteLine("");
-        Console.ForegroundColor = ConsoleColor.Green;
-        _consoleHelper.WriteLine($"Saved to: {path}\n");
-        Console.ForegroundColor = ConsoleColor.White;
+        cancellationTokenSource.Cancel();
+
+        spinner.Wait();
     }
 }

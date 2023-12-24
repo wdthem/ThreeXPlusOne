@@ -26,26 +26,22 @@ public class Process(IOptions<Settings> settings,
 
         consoleHelper.WriteAsciiArtLogo();
         consoleHelper.WriteSettings();
-        consoleHelper.WriteHeading("Series data");
 
         List<int> inputValues = GenerateInputValues(stopwatch);
-
-        consoleHelper.WriteHeading("Algorithm execution");
-
         List<List<int>> seriesLists = algorithm.Run(inputValues);
 
-        consoleHelper.WriteHeading("Directed graph");
+        metadata.GenerateMedatadataFile(seriesLists);
+        histogram.GenerateHistogram(seriesLists);
 
         IDirectedGraph graph = directedGraphs.ToList()
                                              .Where(graph => graph.Dimensions == _settings.SanitizedGraphDimensions)
                                              .First();
 
+        consoleHelper.WriteHeading($"Directed graph ({graph.Dimensions}D)");
+
         graph.AddSeries(seriesLists);
         graph.PositionNodes();
         graph.Draw();
-
-        histogram.GenerateHistogram(seriesLists);
-        metadata.GenerateMedatadataFile(seriesLists);
 
         consoleHelper.WriteHeading("Save settings");
 
@@ -61,7 +57,8 @@ public class Process(IOptions<Settings> settings,
         string elapsedTime = string.Format("{0:00}:{1:00}.{2:000}",
                                            ts.Minutes, ts.Seconds, ts.Milliseconds);
 
-        consoleHelper.WriteHeading($"Process completed. Execution time: {elapsedTime}");
+        consoleHelper.WriteHeading($"Process completed");
+        consoleHelper.WriteLine($"Execution time: {elapsedTime}\n\n");
     }
 
     /// <summary>
@@ -74,6 +71,8 @@ public class Process(IOptions<Settings> settings,
     /// <returns></returns>
     private List<int> GenerateInputValues(Stopwatch stopwatch)
     {
+        consoleHelper.WriteHeading("Series data");
+
         var random = new Random();
         var inputValues = new List<int>();
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Text;
+using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 
@@ -35,7 +36,13 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
             Console.ForegroundColor = ConsoleColor.White;
 
+            if ((value?.ToString() ?? "").Length > 100)
+            {
+                value = TruncateLongSettings(value?.ToString() ?? "");
+            }
+
             Console.Write($"{value}");
+
             Console.WriteLine();
         }
 
@@ -423,5 +430,62 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.WriteLine("_ ");
 
         Console.ForegroundColor = ConsoleColor.White;
+    }
+
+    public void WriteSpinner(CancellationToken token)
+    {
+        var spinner = new string[] { "|", "/", "-", "\\" };
+        int counter = 0;
+
+        Console.CursorVisible = false;
+
+        while (!token.IsCancellationRequested)
+        {
+            Console.Write($"{spinner[counter]}");
+
+            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+
+            counter = (counter + 1) % spinner.Length;
+
+            Thread.Sleep(85);
+        }
+
+        WriteDone();
+        Console.CursorVisible = true;
+    }
+
+    private string TruncateLongSettings(string input, int maxLength = 100)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return input;
+        }
+
+        string[] numbers = input.Split(',');
+        var truncated = new StringBuilder();
+        string ellipsis = $" ...see {_settings.SettingsFileName} for full value";
+
+        int lengthWithEllipsis = maxLength - ellipsis.Length;
+
+        foreach (var number in numbers)
+        {
+            // Check if adding this number exceeds the maximum length
+            // +1 for the comma, except for the first number
+            if (truncated.Length + number.Length + (truncated.Length > 0 ? 1 : 0) > lengthWithEllipsis)
+            {
+                truncated.Append(ellipsis);
+
+                break;
+            }
+
+            if (truncated.Length > 0)
+            {
+                truncated.Append(',');
+            }
+
+            truncated.Append(number);
+        }
+
+        return truncated.ToString();
     }
 }

@@ -11,12 +11,14 @@ public class Algorithm(IConsoleHelper consoleHelper) : IAlgorithm
     /// <returns></returns>
     public List<List<int>> Run(List<int> inputValues)
     {
+        consoleHelper.WriteHeading("Algorithm execution");
+
         if (inputValues.Count == 0)
         {
             throw new Exception("No input provided to the algorithm");
         }
 
-        consoleHelper.Write($"Running 3x+1 algorithm on {inputValues.Count} numbers... ");
+        consoleHelper.Write($"Running 3x + 1 algorithm on {inputValues.Count} numbers... ");
 
         List<List<int>> returnValues = [];
 

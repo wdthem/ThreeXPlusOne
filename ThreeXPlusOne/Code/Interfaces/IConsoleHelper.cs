@@ -15,11 +15,6 @@ public interface IConsoleHelper
     void WriteLine(string message);
 
     /// <summary>
-    /// Output the 3x+1 console app ascii art logo
-    /// </summary>
-    void WriteAsciiArtLogo();
-
-    /// <summary>
     /// Output the settings from the settings file, or defaults
     /// </summary>
     void WriteSettings();
@@ -49,11 +44,6 @@ public interface IConsoleHelper
     bool ReadYKeyToProceed(string message);
 
     /// <summary>
-    /// Output the help text for the app
-    /// </summary>
-    void WriteHelpText();
-
-    /// <summary>
     /// Output a separator line
     /// </summary>
     void WriteSeparator();
@@ -63,4 +53,20 @@ public interface IConsoleHelper
     /// </summary>
     /// <param name="headerText"></param>
     void WriteHeading(string headerText);
+
+    /// <summary>
+    /// Output the help text for the app
+    /// </summary>
+    void WriteHelpText();
+
+    /// <summary>
+    /// Output the 3x+1 console app ascii art logo
+    /// </summary>
+    void WriteAsciiArtLogo();
+
+    /// <summary>
+    /// Output a visual indication that the process is doing work
+    /// </summary>
+    /// <param name="token"></param>
+    void WriteSpinner(CancellationToken token);
 }
