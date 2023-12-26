@@ -114,11 +114,15 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         WriteAsciiArtLogo();
 
+        WriteHeading("Credits");
+        Console.WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
+        Console.WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display\n");
+
         WriteHeading("GitHub repository");
-        Console.WriteLine("\nhttps://github.com/wdthem/ThreeXPlusOne\n");
+        Console.WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
 
         WriteHeading("Usage information");
-        Console.WriteLine($"\nTo apply custom settings, ensure that a '{_settings.SettingsFileName}' file exists in the same folder as the executable. It must have the following content:\n");
+        Console.WriteLine($"To apply custom settings, ensure that a '{_settings.SettingsFileName}' file exists in the same folder as the executable. It must have the following content:\n");
         Console.WriteLine("{");
 
         var lcv = 1;
@@ -151,7 +155,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("}");
 
-        Console.WriteLine("\nA useful starting point for settings:\n");
+        Console.WriteLine("\nA good starting point for settings:\n");
         Console.ForegroundColor = ConsoleColor.White;
 
         Console.ForegroundColor = ConsoleColor.Blue;

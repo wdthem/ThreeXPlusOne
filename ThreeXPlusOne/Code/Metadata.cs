@@ -48,11 +48,6 @@ public class Metadata(IOptions<Settings> settings,
 
         foreach (List<int> values in seriesData)
         {
-            if (lcv % 20 == 0)
-            {
-                content += "\n";
-            }
-
             content += $"{values[0]}, ";
 
             lcv++;
