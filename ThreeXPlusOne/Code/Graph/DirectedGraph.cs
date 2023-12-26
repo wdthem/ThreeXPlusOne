@@ -108,7 +108,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             {
                 DrawConnection(canvas, node.Value);
 
-                _consoleHelper.Write($"\rDrawing {lcv} connections... ");
+                _consoleHelper.Write($"\r{lcv} connections drawn... ");
 
                 lcv += node.Value.Children.Count;
             }
@@ -121,7 +121,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             DrawNode(canvas, node.Value);
 
-            _consoleHelper.Write($"\rDrawing {lcv} nodes... ");
+            _consoleHelper.Write($"\r{lcv} nodes drawn... ");
 
             lcv = lcv + 1 + node.Value.Children.Count;
         }
