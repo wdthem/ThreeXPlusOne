@@ -85,11 +85,10 @@ public class Histogram(IOptions<Settings> settings,
         int spacing = 10; // Spacing between bars
         int totalSpacing = spacing * (numberOfBars - 1); // Total spacing for all gaps
 
-        // Reserve space for Y-axis, X-axis labels, and the title
-        int yAxisLabelSpace = 50; // Adjust this as needed
-        int xAxisLabelHeight = 20; // Space for X-axis labels
-        int titleHeight = 30; // Space for the title
-        int topPadding = 30; // Additional space at the top
+        int yAxisLabelSpace = 50;
+        int xAxisLabelHeight = 20;
+        int titleHeight = 30;
+        int topPadding = 30;
 
         int effectiveCanvasHeight = canvasHeight - titleHeight; // Adjust height for title space
 
