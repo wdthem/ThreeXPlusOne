@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Text;
+using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 
@@ -18,9 +19,15 @@ public class Metadata(IOptions<Settings> settings,
         {
             consoleHelper.Write("Generating metadata... ");
 
-            GenerateNumberSeriesMetadata(seriesData);
-            GenerateTop10LongestSeriesMetadata(seriesData);
-            GenerateFullSeriesData(seriesData);
+            string filePath = fileHelper.GenerateMetadataFilePath();
+
+            StringBuilder content = new();
+
+            content.Append(GenerateNumberSeriesMetadata(seriesData));
+            content.Append(GenerateTop10LongestSeriesMetadata(seriesData));
+            content.Append(GenerateFullSeriesData(seriesData));
+
+            fileHelper.WriteMetadataToFile(content.ToString(), filePath);
 
             consoleHelper.WriteDone();
         }
@@ -38,50 +45,44 @@ public class Metadata(IOptions<Settings> settings,
                                                     .ToList();
     }
 
-    private void GenerateNumberSeriesMetadata(List<List<int>> seriesData)
+    private static string GenerateNumberSeriesMetadata(List<List<int>> seriesData)
     {
-        var filePath = fileHelper.GenerateMetadataFilePath();
+        StringBuilder content = new("\nSeries run for the following numbers: \n");
 
-        string content = "\nSeries run for the following numbers: \n";
-
-        var lcv = 1;
+        int lcv = 1;
 
         foreach (List<int> values in seriesData)
         {
-            content += $"{values[0]}, ";
+            content.Append($"{values[0]}, ");
 
             lcv++;
         }
 
-        fileHelper.WriteMetadataToFile(content, filePath);
+        return content.ToString();
     }
 
-    private void GenerateTop10LongestSeriesMetadata(List<List<int>> seriesData)
+    private static string GenerateTop10LongestSeriesMetadata(List<List<int>> seriesData)
     {
-        var filePath = fileHelper.GenerateMetadataFilePath();
-
-        string content = "\nTop 10 longest series:\n";
+        StringBuilder content = new("\n\nTop 10 longest series:\n");
 
         foreach ((int FirstNumber, int Count) in GenerateTop10Series(seriesData))
         {
-            content += $"{FirstNumber}: {Count} in series\n";
+            content.Append($"{FirstNumber}: {Count} in series\n");
         }
 
-        fileHelper.WriteMetadataToFile(content, filePath);
+        return content.ToString();
     }
 
-    private void GenerateFullSeriesData(List<List<int>> seriesData)
+    private static string GenerateFullSeriesData(List<List<int>> seriesData)
     {
-        var filePath = fileHelper.GenerateMetadataFilePath();
-
-        string content = "\nFull series data:\n";
+        StringBuilder content = new("\nFull series data:\n");
 
         foreach (List<int> series in seriesData)
         {
-            content += string.Join(", ", series);
-            content += "\n\n";
+            content.Append(string.Join(", ", series));
+            content.Append("\n\n");
         }
 
-        fileHelper.WriteMetadataToFile(content, filePath);
+        return content.ToString();
     }
 }

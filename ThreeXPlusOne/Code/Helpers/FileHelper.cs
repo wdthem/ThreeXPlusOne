@@ -50,6 +50,11 @@ public class FileHelper(IOptions<Settings> settings,
 
     public void WriteMetadataToFile(string content, string filePath)
     {
+        if (File.Exists(filePath))
+        {
+            return;
+        }
+
         try
         {
             using StreamWriter writer = new(filePath, true);
