@@ -30,7 +30,7 @@ public class Histogram(IOptions<Settings> settings,
 
         if (fileHelper.FileExists(filePath))
         {
-            consoleHelper.WriteLine("already exists\n\n");
+            consoleHelper.WriteLine("already exists\n");
 
             return;
         }
