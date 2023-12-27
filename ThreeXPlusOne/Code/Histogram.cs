@@ -17,11 +17,20 @@ public class Histogram(IOptions<Settings> settings,
 
         if (_settings.GenerateHistogram)
         {
-            consoleHelper.Write("Generating histogram...");
+            consoleHelper.Write("Generating histogram... ");
         }
         else
         {
             consoleHelper.WriteLine("Histogram generation disabled\n");
+
+            return;
+        }
+
+        string filePath = fileHelper.GenerateHistogramFilePath();
+
+        if (fileHelper.FileExists(filePath))
+        {
+            consoleHelper.WriteLine("already exists\n\n");
 
             return;
         }
@@ -41,9 +50,7 @@ public class Histogram(IOptions<Settings> settings,
         using SKImage image = SKImage.FromBitmap(bitmap);
         using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
 
-        string fullPath = fileHelper.GenerateHistogramFilePath();
-
-        using var stream = File.OpenWrite(fullPath);
+        using var stream = File.OpenWrite(filePath);
 
         data.SaveTo(stream);
 
