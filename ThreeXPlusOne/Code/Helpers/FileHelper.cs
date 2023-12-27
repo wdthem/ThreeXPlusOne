@@ -48,16 +48,16 @@ public class FileHelper(IOptions<Settings> settings,
         File.WriteAllText(_settings.SettingsFileName, jsonString);
     }
 
+    public bool FileExists(string filePath)
+    {
+        return File.Exists(filePath);
+    }
+
     public void WriteMetadataToFile(string content, string filePath)
     {
-        if (File.Exists(filePath))
-        {
-            return;
-        }
-
         try
         {
-            using StreamWriter writer = new(filePath, true);
+            using StreamWriter writer = new(filePath, false);
 
             writer.WriteLine(content);
         }

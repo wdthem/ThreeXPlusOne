@@ -21,6 +21,13 @@ public class Metadata(IOptions<Settings> settings,
 
             string filePath = fileHelper.GenerateMetadataFilePath();
 
+            if (fileHelper.FileExists(filePath))
+            {
+                consoleHelper.WriteLine("already exists\n");
+
+                return;
+            }
+
             StringBuilder content = new();
 
             content.Append(GenerateNumberSeriesMetadata(seriesData));
