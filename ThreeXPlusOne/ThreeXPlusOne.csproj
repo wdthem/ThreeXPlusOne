@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <RuntimeIdentifiers>win-x64;osx-x64</RuntimeIdentifiers>
     <PublishReadyToRun>true</PublishReadyToRun>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
