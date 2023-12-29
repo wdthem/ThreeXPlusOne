@@ -159,16 +159,6 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.White;
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.CanvasWidth)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("30000 (the width of the drawing canvas in pixels)");
-
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.CanvasHeight)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("35000 (the height of the drawing canvas in pixels)");
-
-        Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.NumberOfSeries)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("200 (the total number of series that will run)");

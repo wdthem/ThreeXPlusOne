@@ -20,16 +20,6 @@ public class Settings
     private static readonly char[] _separator = [','];
 
     /// <summary>
-    /// The width of the SkiaSharp canvas in pixels
-    /// </summary>
-    public int CanvasWidth { get; set; } = 30000;
-
-    /// <summary>
-    /// The height of the SkiaSharp canvas in pixels
-    /// </summary>
-    public int CanvasHeight { get; set; } = 35000;
-
-    /// <summary>
     /// The amount of numbers to randomly generate to run through the algorithm
     /// </summary>
     public int NumberOfSeries { get; set; } = 200;

@@ -27,22 +27,22 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        var base1 = new SKPoint(_settings.CanvasWidth / 2, _settings.CanvasHeight - 100);         // Node '1' at the bottom
-        var base2 = new SKPoint(_settings.CanvasWidth / 2, base1.Y - (_settings.YNodeSpacer * 2));      // Node '2' just above '1'
-        var base4 = new SKPoint(_settings.CanvasWidth / 2, base2.Y - (_settings.YNodeSpacer * 2));      // Node '4' above '2'
+        var base1 = new SKPoint(0, 100);         // Node '1' at the bottom
+        var base2 = new SKPoint(0, base1.Y - (_settings.YNodeSpacer * 4));      // Node '2' just above '1'
+        var base4 = new SKPoint(0, base2.Y - (_settings.YNodeSpacer * 4));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
-        _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.DistanceFromViewer);
+        //_nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.DistanceFromViewer);
         _nodes[1].Radius = _settings.NodeRadius;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
-        _nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], _settings.DistanceFromViewer);
+        //_nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], _settings.DistanceFromViewer);
         _nodes[2].Radius = _settings.NodeRadius;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
-        _nodes[4].Position = ApplyPerspectiveTransform(_nodes[4], _settings.DistanceFromViewer);
+        //_nodes[4].Position = ApplyPerspectiveTransform(_nodes[4], _settings.DistanceFromViewer);
         _nodes[4].Radius = _settings.NodeRadius;
         _nodes[4].IsPositioned = true;
 
@@ -87,13 +87,13 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         }
 
         float maxZ = _nodes.Max(node => node.Value.Z);
-        float depthFactor = (node.Z / maxZ);
+        float depthFactor = node.Z / maxZ;
         float scale = 0.98f - depthFactor * 0.1f;
         float minScale = (float)0.3;
         float nodeRadius = baseRadius * Math.Max(scale - 0.02f, minScale);
 
         float xOffset = node.Parent == null
-                                ? _settings.CanvasWidth / 2
+                                ? 0
                                 : node.Parent.Position.X;
 
 
@@ -140,11 +140,11 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (node.Value % 2 == 0)
             {
-                rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
+                rotatedPosition = RotatePointAntiClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
             }
             else
             {
-                rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.NodeRotationAngle);
+                rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
             }
 
             node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
@@ -175,11 +175,11 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     /// <returns></returns>
     private SKPoint ApplyPerspectiveTransform(DirectedGraphNode node, float d)
     {
-        float xCentered = node.Position.X - _settings.CanvasWidth / 2;
-        float yCentered = node.Position.Y - _settings.CanvasHeight / 2;
+        float xCentered = node.Position.X - 0;
+        float yCentered = node.Position.Y - 0;
 
-        float xPrime = xCentered / (1 + node.Z / d) + _settings.CanvasWidth / 2;
-        float yPrime = yCentered / (1 + node.Z / d) + _settings.CanvasHeight / 2;
+        float xPrime = xCentered / (1 + node.Z / d) + 0;
+        float yPrime = yCentered / (1 + node.Z / d) - (_settings.YNodeSpacer * 3);
 
         return new SKPoint(xPrime, yPrime);
     }
