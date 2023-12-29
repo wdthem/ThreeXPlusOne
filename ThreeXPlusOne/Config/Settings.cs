@@ -32,7 +32,7 @@ public class Settings
     /// <summary>
     /// If supplied, the algorithm will be run only on these numbers
     /// </summary>
-    public string UseTheseNumbers { get; set; } = "32,16,8,4,2,1";
+    public string UseTheseNumbers { get; set; } = "";
 
     /// <summary>
     /// If supplied, these numbers will be excluded from either random number selection or from the UseTheseNumbers property
@@ -45,7 +45,7 @@ public class Settings
     /// <remarks>
     /// If the node value is even, it is rotated clockwise. If odd, anti-clockwise
     /// </remarks>
-    public double NodeRotationAngle { get; set; } = 0.8;
+    public double NodeRotationAngle { get; set; } = 0;
 
     /// <summary>
     /// The radius of the node
