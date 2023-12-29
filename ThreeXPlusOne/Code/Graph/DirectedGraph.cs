@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
@@ -86,40 +85,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
-    /// Adjust the X,Y value of all nodes if nodes are being cut off on the left, right or top of the canvas,
-    /// and increase the canvas width as required
-    /// </summary>
-    private void AdjustNodes()
-    {
-        _consoleHelper.Write("Adjusting node positions to fit on canvas... ");
-
-        var minX = _nodes.Min(node => node.Value.Position.X);
-        var minY = _nodes.Min(node => node.Value.Position.Y);
-
-        var translationX = minX < 0 ? -minX + 500 : 0;
-        var translationY = minY < 0 ? -minY + 500 : 0;
-
-        foreach (var node in _nodes)
-        {
-            node.Value.Position = new SKPoint(node.Value.Position.X + translationX,
-                                              node.Value.Position.Y + translationY);
-        }
-
-
-
-        _consoleHelper.WriteDone();
-    }
-
-    private void SetCanvasSize()
-    {
-        var maxX = _nodes.Max(node => node.Value.Position.X);
-        var maxY = _nodes.Max(node => node.Value.Position.Y);
-
-        _canvasWidth = (int)maxX + 500;
-        _canvasHeight = (int)maxY + 500;
-    }
-
-    /// <summary>
     /// Draw the graph
     /// </summary>
     protected void DrawGraph()
@@ -184,6 +149,41 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             _consoleHelper.WriteLine("Graph generation disabled\n");
         }
+    }
+
+    /// <summary>
+    /// The graph starts out at 0,0 with 0 width and 0 height. This means that nodes go into negative space, so all 
+    /// coordinates need to be shifted to make sure all are in positive space
+    /// </summary>
+    private void AdjustNodes()
+    {
+        _consoleHelper.Write("Adjusting node positions to fit on canvas... ");
+
+        var minX = _nodes.Min(node => node.Value.Position.X);
+        var minY = _nodes.Min(node => node.Value.Position.Y);
+
+        var translationX = minX < 0 ? -minX + 500 : 0;
+        var translationY = minY < 0 ? -minY + 500 : 0;
+
+        foreach (var node in _nodes)
+        {
+            node.Value.Position = new SKPoint(node.Value.Position.X + translationX,
+                                              node.Value.Position.Y + translationY);
+        }
+
+        _consoleHelper.WriteDone();
+    }
+
+    /// <summary>
+    /// Set the canvas width to a bit more than the bounding box of all the nodes
+    /// </summary>
+    private void SetCanvasSize()
+    {
+        var maxX = _nodes.Max(node => node.Value.Position.X);
+        var maxY = _nodes.Max(node => node.Value.Position.Y);
+
+        _canvasWidth = (int)maxX + 500;
+        _canvasHeight = (int)maxY + 500;
     }
 
     /// <summary>
