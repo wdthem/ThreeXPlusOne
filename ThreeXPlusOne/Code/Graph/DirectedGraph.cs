@@ -280,9 +280,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             float radiusVariation = _random.Next(4, distortionLevel) + 1;
             float radius = baseRadius + radiusVariation;
 
-            var point = new SKPoint(
-                center.X + radius * (float)Math.Cos(angle),
-                center.Y + radius * (float)Math.Sin(angle));
+            var point = new SKPoint(center.X + radius * (float)Math.Cos(angle),
+                                    center.Y + radius * (float)Math.Sin(angle));
 
             path.LineTo(point);
         }
