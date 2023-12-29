@@ -100,8 +100,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             GenerateBackgroundStars(canvas, 100);
         }
 
-        var lcv = 1;
-
+        var lcv = 0;
         if (_settings.DrawConnections)
         {
             foreach (var node in _nodes)
@@ -110,7 +109,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
                 _consoleHelper.Write($"\r{lcv} connections drawn... ");
 
-                lcv += node.Value.Children.Count;
+                lcv += 1;
             }
 
             _consoleHelper.WriteDone();
@@ -123,7 +122,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
             _consoleHelper.Write($"\r{lcv} nodes drawn... ");
 
-            lcv = lcv + 1 + node.Value.Children.Count;
+            lcv += 1;
         }
 
         _consoleHelper.WriteDone();
@@ -180,7 +179,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             IsAntialias = true,
             Style = SKPaintStyle.Fill,
-            Color = GetRandomNodeColor(128)
+            Color = GetRandomNodeColor((byte)_random.Next(0, 256))
         };
 
         var textPaint = new SKPaint

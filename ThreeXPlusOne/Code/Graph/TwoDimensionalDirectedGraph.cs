@@ -11,6 +11,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                                          IConsoleHelper consoleHelper) : DirectedGraph(settings, fileHelper, consoleHelper), IDirectedGraph
 {
     public int Dimensions => 2;
+    private int _nodesPositioned = 0;
 
     /// <summary>
     /// Generate a 2D visual representation of the directed graph
@@ -25,8 +26,6 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     /// </summary>
     public void PositionNodes()
     {
-        _consoleHelper.Write("Positioning nodes... ");
-
         // Set up the base nodes' positions
         var base1 = new SKPoint(_settings.CanvasWidth / 2, _settings.CanvasHeight - 100);         // Node '1' at the bottom
         var base2 = new SKPoint(_settings.CanvasWidth / 2, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
@@ -44,6 +43,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
         List<DirectedGraphNode> nodesToDraw = _nodes.Where(n => n.Value.Depth == _nodes[4].Depth + 1)
                                                     .Select(n => n.Value)
                                                     .ToList();
+        _nodesPositioned = 3;
 
         foreach (var node in nodesToDraw)
         {
@@ -119,6 +119,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
             }
 
             node.IsPositioned = true;
+            _nodesPositioned += 1;
+
+            _consoleHelper.Write($"\r{_nodesPositioned} nodes positioned... ");
 
             foreach (var childNode in node.Children)
             {
