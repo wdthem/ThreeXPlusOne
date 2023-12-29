@@ -81,7 +81,7 @@ public class Settings
     /// The number of dimensions to render in the graph
     /// </summary>
     /// <remarks>2 or 3</remarks>
-    public int GraphDimensions { get; set; } = 3;
+    public int GraphDimensions { get; set; } = 2;
 
     /// <summary>
     /// Whether or not to draw the connections between nodes on the graph
