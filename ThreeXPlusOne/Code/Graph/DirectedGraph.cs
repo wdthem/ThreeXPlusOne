@@ -179,7 +179,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             IsAntialias = true,
             Style = SKPaintStyle.Fill,
-            Color = GetRandomNodeColor((byte)_random.Next(0, 256))
+            Color = GetRandomNodeColor((byte)_random.Next(50, 256))
         };
 
         var textPaint = new SKPaint
