@@ -27,9 +27,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        var base1 = new SKPoint(_settings.CanvasWidth / 2, _settings.CanvasHeight - 100);         // Node '1' at the bottom
-        var base2 = new SKPoint(_settings.CanvasWidth / 2, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
-        var base4 = new SKPoint(_settings.CanvasWidth / 2, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
+        var base1 = new SKPoint(0, 0);                                    // Node '1' at the bottom
+        var base2 = new SKPoint(0, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
+        var base4 = new SKPoint(0, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
@@ -72,7 +72,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                 _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
 
             float xOffset = node.Parent == null
-                                    ? _settings.CanvasWidth / 2
+                                    ? 0
                                     : node.Parent.Position.X;
 
             if (allNodesAtDepth > 1)
@@ -108,11 +108,11 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
                 if (node.Value % 2 == 0)
                 {
-                    rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
+                    rotatedPosition = RotatePointAntiClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
                 }
                 else
                 {
-                    rotatedPosition = RotatePointAntiClockWise(xOffset, yOffset, _settings.NodeRotationAngle);
+                    rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
                 }
 
                 node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);

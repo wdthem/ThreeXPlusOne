@@ -20,16 +20,6 @@ public class Settings
     private static readonly char[] _separator = [','];
 
     /// <summary>
-    /// The width of the SkiaSharp canvas in pixels
-    /// </summary>
-    public int CanvasWidth { get; set; } = 30000;
-
-    /// <summary>
-    /// The height of the SkiaSharp canvas in pixels
-    /// </summary>
-    public int CanvasHeight { get; set; } = 35000;
-
-    /// <summary>
     /// The amount of numbers to randomly generate to run through the algorithm
     /// </summary>
     public int NumberOfSeries { get; set; } = 200;
@@ -42,7 +32,7 @@ public class Settings
     /// <summary>
     /// If supplied, the algorithm will be run only on these numbers
     /// </summary>
-    public string UseTheseNumbers { get; set; } = "";
+    public string UseTheseNumbers { get; set; } = "32,16,8,4,2,1";
 
     /// <summary>
     /// If supplied, these numbers will be excluded from either random number selection or from the UseTheseNumbers property
@@ -55,7 +45,7 @@ public class Settings
     /// <remarks>
     /// If the node value is even, it is rotated clockwise. If odd, anti-clockwise
     /// </remarks>
-    public double NodeRotationAngle { get; set; } = 0;
+    public double NodeRotationAngle { get; set; } = 0.8;
 
     /// <summary>
     /// The radius of the node
