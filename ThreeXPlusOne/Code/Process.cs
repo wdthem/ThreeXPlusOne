@@ -33,11 +33,36 @@ public class Process(IOptions<Settings> settings,
         metadata.GenerateMedatadataFile(seriesLists);
         histogram.GenerateHistogram(seriesLists);
 
+        GenerateGraph(seriesLists);
+
+        stopwatch.Stop();
+        TimeSpan ts = stopwatch.Elapsed;
+
+        string elapsedTime = string.Format("{0:00}:{1:00}.{2:000}",
+                                           ts.Minutes, ts.Seconds, ts.Milliseconds);
+
+        consoleHelper.WriteHeading($"Process completed");
+        consoleHelper.WriteLine($"Execution time: {elapsedTime}\n\n");
+    }
+
+    /// <summary>
+    /// Generate the correct graph based on settings
+    /// </summary>
+    /// <param name="seriesLists"></param>
+    private void GenerateGraph(List<List<int>> seriesLists)
+    {
         IDirectedGraph graph = directedGraphs.ToList()
                                              .Where(graph => graph.Dimensions == _settings.SanitizedGraphDimensions)
                                              .First();
 
         consoleHelper.WriteHeading($"Directed graph ({graph.Dimensions}D)");
+
+        if (!_settings.GenerateGraph)
+        {
+            consoleHelper.WriteLine("Graph generation disabled\n");
+
+            return;
+        }
 
         graph.AddSeries(seriesLists);
         graph.PositionNodes();
@@ -50,15 +75,6 @@ public class Process(IOptions<Settings> settings,
 
         fileHelper.WriteSettingsToFile(confirmedSaveSettings);
         consoleHelper.WriteSettingsSavedMessage(confirmedSaveSettings);
-
-        stopwatch.Stop();
-        TimeSpan ts = stopwatch.Elapsed;
-
-        string elapsedTime = string.Format("{0:00}:{1:00}.{2:000}",
-                                           ts.Minutes, ts.Seconds, ts.Milliseconds);
-
-        consoleHelper.WriteHeading($"Process completed");
-        consoleHelper.WriteLine($"Execution time: {elapsedTime}\n\n");
     }
 
     /// <summary>
