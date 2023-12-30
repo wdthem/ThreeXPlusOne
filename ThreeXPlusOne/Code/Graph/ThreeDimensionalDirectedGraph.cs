@@ -28,8 +28,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     {
         // Set up the base nodes' positions
         var base1 = new SKPoint(0, 100);         // Node '1' at the bottom
-        var base2 = new SKPoint(0, base1.Y - (_settings.YNodeSpacer * 4));      // Node '2' just above '1'
-        var base4 = new SKPoint(0, base2.Y - (_settings.YNodeSpacer * 4));      // Node '4' above '2'
+        var base2 = new SKPoint(0, base1.Y - (_settings.YNodeSpacer * 5));      // Node '2' just above '1'
+        var base4 = new SKPoint(0, base2.Y - (_settings.YNodeSpacer * 5));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         //_nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.DistanceFromViewer);
@@ -175,8 +175,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     /// <returns></returns>
     private SKPoint ApplyPerspectiveTransform(DirectedGraphNode node, float d)
     {
-        float xCentered = node.Position.X - 0;
-        float yCentered = node.Position.Y - 0;
+        float xCentered = node.Position.X;
+        float yCentered = node.Position.Y;
 
         float xPrime = xCentered / (1 + node.Z / d) + 0;
         float yPrime = yCentered / (1 + node.Z / d) - (_settings.YNodeSpacer * 3);

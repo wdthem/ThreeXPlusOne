@@ -96,7 +96,7 @@ public class Settings
     /// <summary>
     /// Whether or not to generate the directed graph
     /// </summary>
-    public bool GenerateGraph { get; set; }
+    public bool GenerateGraph { get; set; } = true;
 
     /// <summary>
     /// Whether or not to generate the histogram illustrating Benford's law

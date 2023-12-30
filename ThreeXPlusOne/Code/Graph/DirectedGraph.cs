@@ -130,25 +130,18 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.WriteDone();
 
-        if (_settings.GenerateGraph)
+        bool confirmedGenerateGraph = _consoleHelper.ReadYKeyToProceed($"Generate {_settings.GraphDimensions}D visualization?");
+
+        if (!confirmedGenerateGraph)
         {
-            bool confirmedGenerateGraph = _consoleHelper.ReadYKeyToProceed($"Generate {_settings.GraphDimensions}D visualization?");
+            _consoleHelper.WriteLine("\nGraph generation cancelled\n");
 
-            if (!confirmedGenerateGraph)
-            {
-                _consoleHelper.WriteLine("\nGraph generation cancelled\n");
-
-                return;
-            }
-
-            _consoleHelper.WriteLine("");
-
-            SaveCanvas(surface);
+            return;
         }
-        else
-        {
-            _consoleHelper.WriteLine("Graph generation disabled\n");
-        }
+
+        _consoleHelper.WriteLine("");
+
+        SaveCanvas(surface);
     }
 
     /// <summary>
@@ -184,6 +177,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         _canvasWidth = (int)maxX + 500;
         _canvasHeight = (int)maxY + 500;
+
+        _consoleHelper.WriteLine($"Set canvas size to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
     }
 
     /// <summary>
