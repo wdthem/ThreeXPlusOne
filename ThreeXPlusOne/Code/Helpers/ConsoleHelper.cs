@@ -61,11 +61,11 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         if (savedSettings)
         {
-            Console.WriteLine($"Saved generated numbers to '{_settings.SettingsFileName}'\n");
+            Console.WriteLine($"\nSaved generated numbers to '{_settings.SettingsFileName}'\n");
         }
         else
         {
-            Console.WriteLine("Settings left unchanged\n");
+            Console.WriteLine("\nSettings left unchanged\n");
         }
     }
 

@@ -33,12 +33,15 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
+        _nodes[1].Radius = _settings.NodeRadius;
 
         _nodes[2].Position = base2;
         _nodes[2].IsPositioned = true;
+        _nodes[2].Radius = _settings.NodeRadius;
 
         _nodes[4].Position = base4;
         _nodes[4].IsPositioned = true;
+        _nodes[4].Radius = _settings.NodeRadius;
 
         List<DirectedGraphNode> nodesToDraw = _nodes.Where(n => n.Value.Depth == _nodes[4].Depth + 1)
                                                     .Select(n => n.Value)

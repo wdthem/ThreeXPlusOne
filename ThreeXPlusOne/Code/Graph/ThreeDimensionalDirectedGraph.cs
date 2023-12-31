@@ -27,22 +27,22 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        var base1 = new SKPoint(0, 100);         // Node '1' at the bottom
-        var base2 = new SKPoint(0, base1.Y - (_settings.YNodeSpacer * 5));      // Node '2' just above '1'
+        var base1 = new SKPoint(0, 0);         // Node '1' at the bottom
+        var base2 = new SKPoint(0, base1.Y - (_settings.YNodeSpacer * 6));      // Node '2' just above '1'
         var base4 = new SKPoint(0, base2.Y - (_settings.YNodeSpacer * 5));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
-        //_nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.DistanceFromViewer);
+        _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.DistanceFromViewer);
         _nodes[1].Radius = _settings.NodeRadius;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
-        //_nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], _settings.DistanceFromViewer);
+        _nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], _settings.DistanceFromViewer);
         _nodes[2].Radius = _settings.NodeRadius;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
-        //_nodes[4].Position = ApplyPerspectiveTransform(_nodes[4], _settings.DistanceFromViewer);
+        _nodes[4].Position = ApplyPerspectiveTransform(_nodes[4], _settings.DistanceFromViewer);
         _nodes[4].Radius = _settings.NodeRadius;
         _nodes[4].IsPositioned = true;
 
@@ -91,6 +91,14 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         float scale = 0.98f - depthFactor * 0.1f;
         float minScale = (float)0.3;
         float nodeRadius = baseRadius * Math.Max(scale - 0.02f, minScale);
+        float xNodeSpacer = _settings.XNodeSpacer;
+        float yNodeSpacer = _settings.YNodeSpacer;
+
+        if (node.Depth < 10)
+        {
+            xNodeSpacer *= node.Depth;
+            yNodeSpacer *= node.Depth;
+        }
 
         float xOffset = node.Parent == null
                                 ? 0
@@ -117,22 +125,22 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (node.IsFirstChild)
             {
-                xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.XNodeSpacer)) - (_settings.XNodeSpacer * addedWidth);
+                xOffset = (xOffset - ((allNodesAtDepth / 2) * xNodeSpacer)) - (xNodeSpacer * addedWidth);
                 node.Z -= 25;
                 nodeRadius = node.Parent.Radius * Math.Max(scale, minScale);
             }
             else
             {
-                xOffset = (xOffset + ((allNodesAtDepth / 2) * _settings.XNodeSpacer)) + (_settings.XNodeSpacer * addedWidth);
+                xOffset = (xOffset + ((allNodesAtDepth / 2) * xNodeSpacer)) + (xNodeSpacer * addedWidth);
                 node.Z += 10;
                 nodeRadius = node.Parent.Radius * Math.Max(scale - 0.02f, minScale);
             }
         }
 
-        var yOffset = node.Parent!.Position.Y - _settings.YNodeSpacer;
+        var yOffset = node.Parent!.Position.Y - (yNodeSpacer + yNodeSpacer / node.Depth + (positionedNodesAtDepth * (yNodeSpacer / 30)));
 
         node.Radius = nodeRadius;
-        node.Position = new SKPoint(xOffset, yOffset);
+        node.Position = new SKPoint(xOffset, (float)yOffset);
 
         if (_settings.NodeRotationAngle != 0)
         {
@@ -175,11 +183,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     /// <returns></returns>
     private SKPoint ApplyPerspectiveTransform(DirectedGraphNode node, float d)
     {
-        float xCentered = node.Position.X;
-        float yCentered = node.Position.Y;
-
-        float xPrime = xCentered / (1 + node.Z / d) + 0;
-        float yPrime = yCentered / (1 + node.Z / d) - (_settings.YNodeSpacer * 3);
+        float xPrime = node.Position.X / (1 + node.Z / d) + 0;
+        float yPrime = node.Position.Y / (1 + node.Z / d) - (_settings.YNodeSpacer * 4);
 
         return new SKPoint(xPrime, yPrime);
     }
