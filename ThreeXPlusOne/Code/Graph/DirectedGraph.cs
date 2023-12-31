@@ -212,7 +212,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             IsAntialias = true,
             Style = SKPaintStyle.Fill,
-            Color = GetRandomNodeColor((byte)_random.Next(50, 256))
+            Color = GetRandomNodeColor((byte)_random.Next(30, 211))
         };
 
         var textPaint = new SKPaint
@@ -265,7 +265,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                                    SKPaint paint)
     {
         var path = new SKPath();
-        var randomPointsCount = _random.Next(1, 9); //from 1 to 8
+        var randomPointsCount = _random.Next(3, 11); //from 3 to 10
 
         path.MoveTo(center.X + baseRadius, center.Y);
 
@@ -459,7 +459,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             green = (byte)_random.Next(256);
             blue = (byte)_random.Next(256);
         }
-        while (red == 0 && green == 0 && blue == 0); // Repeat if the color is black
+        while (red <= 10 || green <= 10 || blue <= 10); //avoid very dark colours
 
         return new SKColor(red, green, blue, alpha);
     }
