@@ -234,7 +234,10 @@ public class Settings
     /// <returns></returns>
     private string ComputeHashFromSeriesData()
     {
-        byte[] bytes = MD5.HashData(Encoding.UTF8.GetBytes(string.Join("", ListOfSeriesNumbers.OrderBy(x => x))));
+        List<int> copyOfSeriesNumbers = ListOfSeriesNumbers;
+        copyOfSeriesNumbers.RemoveAll(ListOfNumbersToExclude.Contains);
+
+        byte[] bytes = MD5.HashData(Encoding.UTF8.GetBytes(string.Join("", copyOfSeriesNumbers.OrderBy(x => x))));
 
         StringBuilder builder = new();
 
