@@ -34,7 +34,11 @@ All output can be toggled on and off, and a variety of items can be configured v
 
 ## Performance
 
-* Note that the app needs to create a large canvas in order to plot the points. This can be resource intensive. The app could fail on machines with low GPU specs.
+* The app creates a canvas large enough to put a bounding box around the maximum x and y node coordinates, and this is influenced by the `MaxStartingNumber`, `NodeRadius`, `XNodeSpacer`, and `YNodeSpacer` values in `settings.json`
+* The higher the value given to `MaxStartingNumber` in `settings.json`, the more likely you will get a very high y-axis maximum, which can make the canvas size very large, and therefore result in large PNG file sizes
+*  Generally a `MaxStartingNumber` of under 3000 is manageable, but may still generate a y-axis maximum of ~50,000 pixels
+* The app will show you in the console output the size of the canvas it will generate. If it is too large, you can cancel the image creation.
+* Machines with lower-spec GPUs may fail to render large canvas sizes; your mileage may vary.
 
 ## Example output
 <table>
