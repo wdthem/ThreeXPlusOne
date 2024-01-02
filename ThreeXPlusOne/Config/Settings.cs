@@ -50,7 +50,7 @@ public class Settings
     /// <summary>
     /// The radius of the node
     /// </summary>
-    public float NodeRadius { get; set; } = 40;
+    public float NodeRadius { get; set; } = 50;
 
     /// <summary>
     /// Whether or not to distort nodes into various shapes and sizes
@@ -60,7 +60,7 @@ public class Settings
     /// <summary>
     /// The max amount in pixels by which to distort the node's radius
     /// </summary>
-    public int RadiusDistortion { get; set; } = 30;
+    public int RadiusDistortion { get; set; } = 25;
 
     /// <summary>
     /// The amount of x-axis space in pixels by which to separate nodes
@@ -75,7 +75,7 @@ public class Settings
     /// <summary>
     /// For pseudo-3D graphs, the distance from the viewer (to create perspective)
     /// </summary>
-    public float DistanceFromViewer { get; set; } = 200;
+    public float DistanceFromViewer { get; set; } = 300;
 
     /// <summary>
     /// The number of dimensions to render in the graph

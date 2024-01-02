@@ -15,6 +15,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     protected readonly IConsoleHelper _consoleHelper = consoleHelper;
     protected readonly Random _random = new();
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
+    private readonly Dictionary<(int, int), List<SKPoint>> _nodeGrid = [];
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;
 
@@ -89,7 +90,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void DrawGraph()
     {
-        AdjustNodes();
+        MoveNodesToPositiveCoordinates();
         SetCanvasSize();
 
         using var surface = SKSurface.Create(new SKImageInfo(_canvasWidth, _canvasHeight));
@@ -145,10 +146,79 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
+    /// Determine if the node that was just positioned is too close to neighbouring nodes (and thus overlapping)
+    /// </summary>
+    /// <param name="newNode"></param>
+    /// <param name="minDistance"></param>
+    /// <returns></returns>
+    protected bool NodeIsTooCloseToNeighbours(DirectedGraphNode newNode, float minDistance)
+    {
+        var cell = GetGridCellForNode(newNode, minDistance);
+
+        // Check this cell and perhaps adjacent cells
+        foreach (var offset in new[] { (0, 0), (1, 0), (0, 1), (-1, 0), (0, -1) })
+        {
+            var checkCell = (cell.Item1 + offset.Item1, cell.Item2 + offset.Item2);
+
+            if (_nodeGrid.TryGetValue(checkCell, out var nodesInCell))
+            {
+                foreach (var node in nodesInCell)
+                {
+                    if (Distance(newNode.Position, node) < minDistance)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Add the node to the grid dictionary to keep track of positions in a grid system
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="minDistance"></param>
+    protected void AddNodeToGrid(DirectedGraphNode node, float minDistance)
+    {
+        var cell = GetGridCellForNode(node, minDistance);
+
+        if (!_nodeGrid.TryGetValue(cell, out List<SKPoint>? value))
+        {
+            value = ([]);
+            _nodeGrid[cell] = value;
+        }
+
+        value.Add(node.Position);
+    }
+
+    /// <summary>
+    /// Retrieve the cell in the grid object in which the node is positioned
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="cellSize"></param>
+    /// <returns></returns>
+    private static (int, int) GetGridCellForNode(DirectedGraphNode node, float cellSize)
+    {
+        return ((int)(node.Position.X / cellSize), (int)(node.Position.Y / cellSize));
+    }
+
+    /// <summary>
+    /// Calculate the Euclidean distance between two nodes
+    /// </summary>
+    /// <param name="point1"></param>
+    /// <param name="point2"></param>
+    /// <returns></returns>
+    private static float Distance(SKPoint point1, SKPoint point2)
+    {
+        return (float)Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
+    }
+
+    /// <summary>
     /// The graph starts out at 0,0 with 0 width and 0 height. This means that nodes go into negative space, so all 
     /// coordinates need to be shifted to make sure all are in positive space
     /// </summary>
-    private void AdjustNodes()
+    private void MoveNodesToPositiveCoordinates()
     {
         _consoleHelper.Write("Adjusting node positions to fit on canvas... ");
 
@@ -421,30 +491,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
-    /// Apply a minor position adjustment to nodes that share the same position
-    /// </summary>
-    /// <param name="nodes"></param>
-    protected void AdjustNodesWithSamePosition(List<DirectedGraphNode> nodes)
-    {
-        var allNodes = nodes.SelectMany(FlattenHierarchy).ToList();
-
-        var nodesWithSamePosition = allNodes.GroupBy(node => node.Position)
-                                            .Where(group => group.Count() > 1)
-                                            .SelectMany(group => group)
-                                            .Distinct() // To remove duplicates if a node appears in multiple hierarchies
-                                            .ToList();
-
-        //TODO: Instead of random x,y movement, do the angle rotation to a random angle
-        foreach (var node in nodesWithSamePosition)
-        {
-            var randomX = _random.Next(1, _settings.XNodeSpacer / 2);
-            var randomY = _random.Next(1, _settings.YNodeSpacer / 2);
-
-            node.Position = new SKPoint(node.Position.X + randomX, node.Parent!.Position.Y - randomY);
-        }
-    }
-
-    /// <summary>
     /// Get a random non-black color for the given node
     /// </summary>
     /// <param name="alpha"></param>
@@ -519,24 +565,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         }
 
         return vector;
-    }
-
-    /// <summary>
-    /// Flatten the node and its children to help look across all node properties
-    /// </summary>
-    /// <param name="node"></param>
-    /// <returns></returns>
-    protected static IEnumerable<DirectedGraphNode> FlattenHierarchy(DirectedGraphNode node)
-    {
-        yield return node;
-
-        foreach (var child in node.Children)
-        {
-            foreach (var childNode in FlattenHierarchy(child))
-            {
-                yield return childNode;
-            }
-        }
     }
 
     /// <summary>
