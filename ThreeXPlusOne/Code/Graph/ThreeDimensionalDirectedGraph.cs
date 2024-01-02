@@ -57,8 +57,6 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
             PositionNode(node);
         }
 
-        AdjustNodesWithSamePosition(nodesToDraw);
-
         _consoleHelper.WriteDone();
     }
 

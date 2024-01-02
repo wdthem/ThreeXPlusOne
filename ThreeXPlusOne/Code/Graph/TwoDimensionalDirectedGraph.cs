@@ -53,8 +53,6 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
             PositionNode(node);
         }
 
-        AdjustNodesWithSamePosition(nodesToDraw);
-
         _consoleHelper.WriteDone();
     }
 
@@ -120,6 +118,18 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
                 node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
             }
+
+            float minDistance = _settings.NodeRadius * 2;
+
+            while (NodeIsTooCloseToNeighbours(node, minDistance))
+            {
+                node.Position = new SKPoint((float)node.Position.X + (node.IsFirstChild
+                                                                        ? -_settings.NodeRadius * 2 - 40
+                                                                        : _settings.NodeRadius * 2 + 40),
+                                            (float)node.Position.Y);
+            }
+
+            AddNodeToGrid(node, minDistance);
 
             node.IsPositioned = true;
             _nodesPositioned += 1;
