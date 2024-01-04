@@ -193,6 +193,28 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
+    /// Calculate the Euclidean distance between two nodes
+    /// </summary>
+    /// <param name="point1"></param>
+    /// <param name="point2"></param>
+    /// <returns></returns>
+    protected static float Distance(SKPoint point1, SKPoint point2)
+    {
+        return (float)Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
+    }
+
+    /// <summary>
+    /// Calculate the signed X-axis distance from a parent to a child node
+    /// </summary>
+    /// <param name="child"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
+    protected static float XAxisSignedDistanceFromParent(SKPoint child, SKPoint parent)
+    {
+        return child.X - parent.X;
+    }
+
+    /// <summary>
     /// Retrieve the cell in the grid object in which the node is positioned
     /// </summary>
     /// <param name="node"></param>
@@ -201,17 +223,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     private static (int, int) GetGridCellForNode(DirectedGraphNode node, float cellSize)
     {
         return ((int)(node.Position.X / cellSize), (int)(node.Position.Y / cellSize));
-    }
-
-    /// <summary>
-    /// Calculate the Euclidean distance between two nodes
-    /// </summary>
-    /// <param name="point1"></param>
-    /// <param name="point2"></param>
-    /// <returns></returns>
-    private static float Distance(SKPoint point1, SKPoint point2)
-    {
-        return (float)Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
     }
 
     /// <summary>
@@ -248,7 +259,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         _canvasWidth = (int)maxX + 500;
         _canvasHeight = (int)maxY + 500;
 
-        _consoleHelper.WriteLine($"Set canvas size to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
+        _consoleHelper.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
     }
 
     /// <summary>
