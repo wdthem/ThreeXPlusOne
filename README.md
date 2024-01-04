@@ -23,7 +23,7 @@ The app creates:
 * A histogram showing the distribution of numbers in the generated series that start with 1 - 9, which illustrates that the calculated numbers follow [Benford's law](https://en.wikipedia.org/wiki/Benford%27s_law).
 * A metadata file containing information about the given run of the process
 
-All output can be toggled on and off, and a variety of items can be configured via the app's settings.
+Directed Graphs are drawn via the SkiaSharp library. All output can be toggled on and off, and a variety of items can be configured via the app's settings.
 
 ## Usage
 
