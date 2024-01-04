@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;

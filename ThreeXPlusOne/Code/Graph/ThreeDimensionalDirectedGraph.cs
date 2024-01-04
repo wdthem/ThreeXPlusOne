@@ -123,13 +123,13 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (node.IsFirstChild)
             {
-                xOffset = (xOffset - ((allNodesAtDepth / 2) * xNodeSpacer)) - (xNodeSpacer * addedWidth);
+                xOffset = xOffset - (allNodesAtDepth / 2 * xNodeSpacer) - (xNodeSpacer * addedWidth);
                 node.Z -= 25;
                 nodeRadius = node.Parent.Radius * Math.Max(scale, minScale);
             }
             else
             {
-                xOffset = (xOffset + ((allNodesAtDepth / 2) * xNodeSpacer)) + (xNodeSpacer * addedWidth);
+                xOffset = xOffset + (allNodesAtDepth / 2 * xNodeSpacer) + (xNodeSpacer * addedWidth);
                 node.Z += 10;
                 nodeRadius = node.Parent.Radius * Math.Max(scale - 0.02f, minScale);
             }
