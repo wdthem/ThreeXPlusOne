@@ -33,7 +33,7 @@ public class Process(IOptions<Settings> settings,
         metadata.GenerateMedatadataFile(seriesLists);
         histogram.GenerateHistogram(seriesLists);
 
-        GenerateGraph(seriesLists);
+        GenerateDirectedGraph(seriesLists);
 
         stopwatch.Stop();
         TimeSpan ts = stopwatch.Elapsed;
@@ -46,10 +46,10 @@ public class Process(IOptions<Settings> settings,
     }
 
     /// <summary>
-    /// Generate the correct graph based on settings
+    /// Generate the correct directed graph based on settings
     /// </summary>
     /// <param name="seriesLists"></param>
-    private void GenerateGraph(List<List<int>> seriesLists)
+    private void GenerateDirectedGraph(List<List<int>> seriesLists)
     {
         IDirectedGraph graph = directedGraphs.ToList()
                                              .Where(graph => graph.Dimensions == _settings.SanitizedGraphDimensions)
@@ -89,8 +89,8 @@ public class Process(IOptions<Settings> settings,
     {
         consoleHelper.WriteHeading("Series data");
 
-        var random = new Random();
-        var inputValues = new List<int>();
+        Random random = new();
+        List<int> inputValues = [];
 
         if (string.IsNullOrWhiteSpace(_settings.UseTheseNumbers))
         {

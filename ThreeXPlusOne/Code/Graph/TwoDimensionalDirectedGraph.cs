@@ -18,7 +18,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     /// </summary>
     public void Draw()
     {
-        DrawGraph();
+        DrawDirectedGraph();
     }
 
     /// <summary>
@@ -27,9 +27,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        var base1 = new SKPoint(0, 0);                                    // Node '1' at the bottom
-        var base2 = new SKPoint(0, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
-        var base4 = new SKPoint(0, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
+        SKPoint base1 = new(0, 0);                                    // Node '1' at the bottom
+        SKPoint base2 = new(0, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
+        SKPoint base4 = new(0, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
@@ -103,7 +103,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                 }
             }
 
-            var yOffset = node.Parent!.Position.Y - _settings.YNodeSpacer;
+            float yOffset = node.Parent!.Position.Y - _settings.YNodeSpacer;
 
             node.Position = new SKPoint(xOffset, yOffset);
 
