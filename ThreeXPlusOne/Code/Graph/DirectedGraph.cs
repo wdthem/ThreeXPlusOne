@@ -203,6 +203,12 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         return (float)Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
     }
 
+    /// <summary>
+    /// Calculate the signed X-axis distance from a parent to a child node
+    /// </summary>
+    /// <param name="child"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
     protected static float XAxisSignedDistanceFromParent(SKPoint child, SKPoint parent)
     {
         return child.X - parent.X;
