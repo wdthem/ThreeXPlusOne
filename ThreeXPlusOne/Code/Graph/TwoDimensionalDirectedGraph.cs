@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.ComponentModel;
+using Microsoft.Extensions.Options;
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
@@ -88,14 +89,18 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
                     if (allNodesAtDepth % 2 == 0)
                     {
-                        addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth + 1;
+                        addedWidth = positionedNodesAtDepth == 0
+                                                            ? 0
+                                                            : positionedNodesAtDepth + 1;
                     }
                     else
                     {
-                        addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth;
+                        addedWidth = positionedNodesAtDepth == 0
+                                                            ? 0
+                                                            : positionedNodesAtDepth;
                     }
 
-                    xOffset = (xOffset - ((allNodesAtDepth / 2) * _settings.XNodeSpacer)) + (_settings.XNodeSpacer * addedWidth);
+                    xOffset = xOffset - (allNodesAtDepth / 2 * _settings.XNodeSpacer) + (_settings.XNodeSpacer * addedWidth);
                 }
             }
 
@@ -117,6 +122,24 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                 }
 
                 node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
+            }
+
+            float signedXAxisDistanceFromParent = XAxisSignedDistanceFromParent(node.Position, node.Parent.Position);
+            float absoluteXAxisDistanceFromParent = Math.Abs(signedXAxisDistanceFromParent);
+
+            //limit the x-axis distance between node and parent, because the distance calculated above based on allNodesAtDepth can push
+            //parents and children too far away from each other on the x-axis
+            if (absoluteXAxisDistanceFromParent > _settings.XNodeSpacer * 3)
+            {
+                //if the child node is to the left of the parent
+                if (signedXAxisDistanceFromParent < 0)
+                {
+                    node.Position = new SKPoint((float)node.Position.X + ((absoluteXAxisDistanceFromParent / 3) - _settings.XNodeSpacer), node.Position.Y);
+                }
+                else
+                {
+                    node.Position = new SKPoint((float)node.Position.X - ((absoluteXAxisDistanceFromParent / 3) + _settings.XNodeSpacer), node.Position.Y);
+                }
             }
 
             float minDistance = _settings.NodeRadius * 2;
