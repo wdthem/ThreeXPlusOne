@@ -33,12 +33,12 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _nodes[1].Position = base1;
         _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.DistanceFromViewer);
-        _nodes[1].Radius = _settings.NodeRadius;
+        _nodes[1].Radius = 50;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
         _nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], _settings.DistanceFromViewer);
-        _nodes[2].Radius = _settings.NodeRadius;
+        _nodes[2].Radius = 100;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
@@ -86,8 +86,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         float maxZ = _nodes.Max(node => node.Value.Z);
         float depthFactor = node.Z / maxZ;
-        float scale = 0.98f - depthFactor * 0.1f;
-        float minScale = (float)0.3;
+        float scale = 0.99f - depthFactor * 0.1f;
+        float minScale = (float)0.2;
         float nodeRadius = baseRadius * Math.Max(scale - 0.02f, minScale);
         float xNodeSpacer = _settings.XNodeSpacer;
         float yNodeSpacer = _settings.YNodeSpacer;
@@ -124,13 +124,13 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
             if (node.IsFirstChild)
             {
                 xOffset = xOffset - (allNodesAtDepth / 2 * xNodeSpacer) - (xNodeSpacer * addedWidth);
-                node.Z -= 25;
+                node.Z -= 35;
                 nodeRadius = node.Parent.Radius * Math.Max(scale, minScale);
             }
             else
             {
                 xOffset = xOffset + (allNodesAtDepth / 2 * xNodeSpacer) + (xNodeSpacer * addedWidth);
-                node.Z += 10;
+                node.Z += 15;
                 nodeRadius = node.Parent.Radius * Math.Max(scale - 0.02f, minScale);
             }
         }
