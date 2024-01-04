@@ -116,7 +116,8 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
         WriteHeading("Credits");
         Console.WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
-        Console.WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display\n");
+        Console.WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
+        Console.WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n");
 
         WriteHeading("GitHub repository");
         Console.WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
@@ -181,12 +182,12 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.NodeRotationAngle)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("0 (the size of the rotation angle. 0 is no rotation)");
+        Console.WriteLine("0 (the size of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.NodeRadius)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("40 for 2D, 300 for 3D (the radius of the nodes in pixels)");
+        Console.WriteLine("50 for 2D, 275 for 3D (the radius of the nodes in pixels)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.DistortNodes)}: ");
@@ -196,7 +197,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.RadiusDistortion)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("30 (the max amount by which to distort node radii in pixels)");
+        Console.WriteLine("25 (the max amount by which to distort node radii in pixels)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.XNodeSpacer)}: ");
@@ -206,7 +207,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.YNodeSpacer)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("125 (the space between nodes on the y-axis)");
+        Console.WriteLine("125 for 2D, 225 for 3D (the space between nodes on the y-axis)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.DistanceFromViewer)}: ");
@@ -246,14 +247,14 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.GenerateBackgroundStars)}: ");
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("true (whether or not to generate random stars in the background of the graph)");
+        Console.WriteLine("false (whether or not to generate random stars in the background of the graph)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.OutputPath)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder where the output files should be placed)\n");
 
-        Console.WriteLine("Note: Increasing settings may cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
+        Console.WriteLine("Note: Increasing some settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
     }
 
     public void WriteAsciiArtLogo()

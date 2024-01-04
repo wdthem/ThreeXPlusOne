@@ -75,7 +75,7 @@ public class Settings
     /// <summary>
     /// For pseudo-3D graphs, the distance from the viewer (to create perspective)
     /// </summary>
-    public float DistanceFromViewer { get; set; } = 300;
+    public float DistanceFromViewer { get; set; } = 200;
 
     /// <summary>
     /// The number of dimensions to render in the graph
@@ -101,12 +101,12 @@ public class Settings
     /// <summary>
     /// Whether or not to generate the histogram illustrating Benford's law
     /// </summary>
-    public bool GenerateHistogram { get; set; }
+    public bool GenerateHistogram { get; set; } = true;
 
     /// <summary>
     /// Whether or not to generate the metadata file
     /// </summary>
-    public bool GenerateMetadataFile { get; set; }
+    public bool GenerateMetadataFile { get; set; } = true;
 
     /// <summary>
     /// Whether or not to draw stars on the graph's background
