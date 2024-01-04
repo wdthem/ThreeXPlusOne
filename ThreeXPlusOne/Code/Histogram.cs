@@ -43,20 +43,20 @@ public class Histogram(IOptions<Settings> settings,
 
         canvas.Clear(SKColors.White);
 
-        var digitCounts = GenerateHistogramData(seriesData);
+        List<int> digitCounts = GenerateHistogramData(seriesData);
 
         DrawHistogram(canvas, digitCounts, width, height, "Numbers in series starting from 1-9");
 
-        using SKImage image = SKImage.FromBitmap(bitmap);
-        using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
-
-        using var stream = File.OpenWrite(filePath);
-
-        data.SaveTo(stream);
+        SaveHistogram(bitmap, filePath);
 
         consoleHelper.WriteDone();
     }
 
+    /// <summary>
+    /// Create separate lists for numbers starting from 1 to 9
+    /// </summary>
+    /// <param name="seriesData"></param>
+    /// <returns></returns>
     private static List<int> GenerateHistogramData(List<List<int>> seriesData)
     {
         List<int> digitCounts = Enumerable.Repeat(0, 9).ToList();
@@ -79,6 +79,14 @@ public class Histogram(IOptions<Settings> settings,
         return digitCounts;
     }
 
+    /// <summary>
+    /// Draw the histogram image
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="counts"></param>
+    /// <param name="canvasWidth"></param>
+    /// <param name="canvasHeight"></param>
+    /// <param name="title"></param>
     private static void DrawHistogram(SKCanvas canvas, List<int> counts, int canvasWidth, int canvasHeight, string title)
     {
         int numberOfBars = counts.Count;
@@ -124,10 +132,11 @@ public class Histogram(IOptions<Settings> settings,
         {
             int count = counts[i];
             int barHeight = (int)(count * scaleFactor);
-            var bar = new SKRect(yAxisLabelSpace + i * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
-                                 effectiveCanvasHeight - xAxisLabelHeight - topPadding - barHeight,
-                                 yAxisLabelSpace + (i + 1) * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
-                                 effectiveCanvasHeight - xAxisLabelHeight);
+
+            SKRect bar = new(yAxisLabelSpace + i * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
+                             effectiveCanvasHeight - xAxisLabelHeight - topPadding - barHeight,
+                             yAxisLabelSpace + (i + 1) * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
+                             effectiveCanvasHeight - xAxisLabelHeight);
 
             canvas.DrawRect(bar, new SKPaint { Color = SKColors.Blue, IsAntialias = true });
 
@@ -138,7 +147,13 @@ public class Histogram(IOptions<Settings> settings,
                             new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Center });
 
             // Draw bar totals inside the bars near the top
-            var textPaint = new SKPaint { Color = SKColors.White, IsAntialias = true, TextAlign = SKTextAlign.Center };
+            SKPaint textPaint = new()
+            {
+                Color = SKColors.White,
+                IsAntialias = true,
+                TextAlign = SKTextAlign.Center
+            };
+
             float textYPosition = effectiveCanvasHeight - xAxisLabelHeight - topPadding - barHeight + 15; // Adjust for the height of the bar
 
             if (barHeight > 30) // Check if there's enough space to draw inside the bar
@@ -151,11 +166,32 @@ public class Histogram(IOptions<Settings> settings,
         }
 
         // Draw the title below the X-axis labels
-        var titlePaint = new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Center, TextSize = 20 };
+        SKPaint titlePaint = new()
+        {
+            Color = SKColors.Black,
+            IsAntialias = true,
+            TextAlign = SKTextAlign.Center,
+            TextSize = 20
+        };
 
         canvas.DrawText(title,
                         canvasWidth / 2,
                         canvasHeight - 10, // Position at the bottom
                         titlePaint);
+    }
+
+    /// <summary>
+    /// Save the generated histogram image
+    /// </summary>
+    /// <param name="bitmap"></param>
+    /// <param name="filePath"></param>
+    private static void SaveHistogram(SKBitmap bitmap, string filePath)
+    {
+        using SKImage image = SKImage.FromBitmap(bitmap);
+        using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
+
+        using var stream = File.OpenWrite(filePath);
+
+        data.SaveTo(stream);
     }
 }

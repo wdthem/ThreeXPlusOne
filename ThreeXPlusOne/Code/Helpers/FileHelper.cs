@@ -12,13 +12,21 @@ public class FileHelper(IOptions<Settings> settings,
     private readonly string _prefix = "ThreeXPlusOne";
     private readonly JsonSerializerOptions _serializerOptions = new() { WriteIndented = true };
 
+    /// <summary>
+    /// Generate a full file path in which to store output files
+    /// </summary>
+    /// <param name="uniqueId"></param>
+    /// <param name="path"></param>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     private string GenerateFullFilePath(string uniqueId, string? path, string fileName)
     {
         if (!string.IsNullOrWhiteSpace(path))
         {
-            var directory = Path.GetDirectoryName(path);
+            string? directory = Path.GetDirectoryName(path);
 
-            if (!Directory.Exists(directory))
+            if (directory == null || !Directory.Exists(directory))
             {
                 throw new Exception($"Invalid {nameof(_settings.OutputPath)}. Check '{_settings.SettingsFileName}'");
             }
@@ -31,6 +39,10 @@ public class FileHelper(IOptions<Settings> settings,
         return Path.Combine(path ?? "", newDirectoryName, fileName);
     }
 
+    /// <summary>
+    /// Get a filename-friendly timestamp to append to filenames
+    /// </summary>
+    /// <returns></returns>
     private static string GetFilenameTimestamp()
     {
         return DateTime.Now.ToString("yyyyMMdd-HHmmss");

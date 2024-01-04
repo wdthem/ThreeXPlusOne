@@ -18,7 +18,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     /// </summary>
     public void Draw()
     {
-        DrawGraph();
+        DrawDirectedGraph();
     }
 
     /// <summary>
@@ -27,9 +27,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        var base1 = new SKPoint(0, 0);         // Node '1' at the bottom
-        var base2 = new SKPoint(0, base1.Y - (_settings.YNodeSpacer * 6));      // Node '2' just above '1'
-        var base4 = new SKPoint(0, base2.Y - (_settings.YNodeSpacer * 5));      // Node '4' above '2'
+        SKPoint base1 = new(0, 0);         // Node '1' at the bottom
+        SKPoint base2 = new(0, base1.Y - (_settings.YNodeSpacer * 6));      // Node '2' just above '1'
+        SKPoint base4 = new(0, base2.Y - (_settings.YNodeSpacer * 5));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.DistanceFromViewer);
@@ -77,7 +77,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         int positionedNodesAtDepth =
             _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
 
-        var baseRadius = _settings.NodeRadius;
+        float baseRadius = _settings.NodeRadius;
 
         if (node.Parent != null && node.Parent.Radius > 0)
         {
@@ -135,7 +135,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
             }
         }
 
-        var yOffset = node.Parent!.Position.Y - (yNodeSpacer + yNodeSpacer / node.Depth + (positionedNodesAtDepth * (yNodeSpacer / 30)));
+        float yOffset = node.Parent!.Position.Y - (yNodeSpacer + yNodeSpacer / node.Depth + (positionedNodesAtDepth * (yNodeSpacer / 30)));
 
         node.Radius = nodeRadius;
         node.Position = new SKPoint(xOffset, (float)yOffset);
