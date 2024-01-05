@@ -109,7 +109,7 @@ public class Histogram(IOptions<Settings> settings,
 
         // Determine the number of Y-axis labels (every 500 units)
         int maxYAxisValue = (adjustedMaxCount + 499) / 500 * 500;
-        int yAxisLabels = maxYAxisValue / 500;
+        int yAxisLabels = (maxYAxisValue / 500) - 2;  // subtracting by two appears to make it stop at the right level of y-axis bars
 
         // Draw Y-axis labels and horizontal lines
         for (int i = 0; i <= yAxisLabels; i++)
@@ -136,14 +136,14 @@ public class Histogram(IOptions<Settings> settings,
             SKRect bar = new(yAxisLabelSpace + i * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
                              effectiveCanvasHeight - xAxisLabelHeight - topPadding - barHeight,
                              yAxisLabelSpace + (i + 1) * barWidth + i * spacing, // Adjust position for spacing and Y-axis labels
-                             effectiveCanvasHeight - xAxisLabelHeight);
+                             effectiveCanvasHeight - xAxisLabelHeight - 30); // removing an extra 30 pixels starts the bar at y-axis of 0
 
             canvas.DrawRect(bar, new SKPaint { Color = SKColors.Blue, IsAntialias = true });
 
             // Draw X-axis labels
             canvas.DrawText((i + 1).ToString(),
                             yAxisLabelSpace + i * barWidth + i * spacing + barWidth / 2, // Adjust position for spacing and Y-axis labels
-                            effectiveCanvasHeight - 5, // Position below the graph
+                            effectiveCanvasHeight - 30, // Position below the graph
                             new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Center });
 
             // Draw bar totals inside the bars near the top
