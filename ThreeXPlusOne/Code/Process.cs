@@ -35,6 +35,8 @@ public class Process(IOptions<Settings> settings,
 
         GenerateDirectedGraph(seriesLists);
 
+        SaveSettings();
+
         stopwatch.Stop();
         TimeSpan ts = stopwatch.Elapsed;
 
@@ -66,8 +68,26 @@ public class Process(IOptions<Settings> settings,
 
         graph.AddSeries(seriesLists);
         graph.PositionNodes();
-        graph.Draw();
+        graph.SetCanvasDimensions();
 
+        //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
+        bool confirmedGenerateGraph = consoleHelper.ReadYKeyToProceed($"Generate {_settings.SanitizedGraphDimensions}D visualization?");
+
+        if (!confirmedGenerateGraph)
+        {
+            consoleHelper.WriteLine("\nGraph generation cancelled\n");
+
+            return;
+        }
+
+        graph.Draw();
+    }
+
+    /// <summary>
+    /// Allow the user to save the generated number list to settings for future use
+    /// </summary>
+    private void SaveSettings()
+    {
         consoleHelper.WriteHeading("Save settings");
 
         bool confirmedSaveSettings = _generatedRandomNumbers &&

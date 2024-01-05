@@ -14,6 +14,14 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     private int _nodesPositioned = 0;
 
     /// <summary>
+    /// Assign sizes to the canvas width and height after having positioned the nodes
+    /// </summary>
+    public void SetCanvasDimensions()
+    {
+        SetCanvasSize();
+    }
+
+    /// <summary>
     /// Generate a 2D visual representation of the directed graph
     /// </summary>
     public void Draw()
@@ -54,6 +62,8 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
         }
 
         _consoleHelper.WriteDone();
+
+        MoveNodesToPositiveCoordinates();
     }
 
     /// <summary>

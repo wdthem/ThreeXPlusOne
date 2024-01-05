@@ -19,6 +19,11 @@ public interface IDirectedGraph
     void PositionNodes();
 
     /// <summary>
+    /// Assign sizes to the canvas width and height after having positioned the nodes
+    /// </summary>
+    void SetCanvasDimensions();
+
+    /// <summary>
     /// Generate a visual representation of the directed graph based on the settings
     /// </summary>
     void Draw();

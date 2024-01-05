@@ -39,6 +39,7 @@ public class ProcessTests
     {
         // Arrange
         _algorithmMock.Setup(algorithm => algorithm.Run(It.IsAny<List<int>>())).Returns([[32, 16, 8, 4, 2, 1]]);
+        _consoleHelperMock.Setup(consoleHelper => consoleHelper.ReadYKeyToProceed("Generate 2D visualization?")).Returns(true);
 
         var process = new Process(_settings,
                                   _algorithmMock.Object,
@@ -55,10 +56,11 @@ public class ProcessTests
         _algorithmMock.Verify(algorithm => algorithm.Run(It.IsAny<List<int>>()), Times.Once);
         _directedGraph.Verify(graph => graph.AddSeries(It.IsAny<List<List<int>>>()), Times.AtLeastOnce);
         _directedGraph.Verify(graph => graph.PositionNodes(), Times.Once);
+        _directedGraph.Verify(graph => graph.SetCanvasDimensions(), Times.Once);
         _directedGraph.Verify(graph => graph.Draw(), Times.Once);
         _histogramMock.Verify(histogram => histogram.GenerateHistogram(It.IsAny<List<List<int>>>()), Times.Once);
         _metadataMock.Verify(metadata => metadata.GenerateMedatadataFile(It.IsAny<List<List<int>>>()), Times.Once);
-        _consoleHelperMock.Verify(helper => helper.ReadYKeyToProceed(It.IsAny<string>()), Times.Once);
+        _consoleHelperMock.Verify(helper => helper.ReadYKeyToProceed(It.IsAny<string>()), Times.Exactly(2));
         _fileHelperMock.Verify(helper => helper.WriteSettingsToFile(It.IsAny<bool>()), Times.Once);
         _consoleHelperMock.Verify(helper => helper.WriteSettingsSavedMessage(It.IsAny<bool>()), Times.Once);
     }
