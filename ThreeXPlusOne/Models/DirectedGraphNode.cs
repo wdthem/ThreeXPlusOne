@@ -1,6 +1,4 @@
-﻿using SkiaSharp;
-
-namespace ThreeXPlusOne.Models;
+﻿namespace ThreeXPlusOne.Models;
 
 public class DirectedGraphNode(int value)
 {
@@ -25,9 +23,9 @@ public class DirectedGraphNode(int value)
     public int Depth { get; set; } = -1;
 
     /// <summary>
-    /// The x,y position of the node on the graph, as a SkiaSharp SKPoint
+    /// The x,y position of the node on the graph
     /// </summary>
-    public SKPoint Position { get; set; }
+    public (float X, float Y) Position { get; set; }
 
     /// <summary>
     /// The Z coordinate of the node for use in pseudo 3D graphs
@@ -42,12 +40,8 @@ public class DirectedGraphNode(int value)
     /// <summary>
     /// Whether or not this is the first child node of the given parent node
     /// </summary>
+    /// <remarks>A node can only have two child nodes</remarks>
     public bool IsFirstChild { get; set; }
-
-    /// <summary>
-    /// Whether or not this is the second child node of the given parent node
-    /// </summary>
-    public bool IsSecondChild { get; set; }
 
     /// <summary>
     /// The radius of the node

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 using ThreeXPlusOne.Models;
@@ -10,8 +9,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                                          IFileHelper fileHelper,
                                          IConsoleHelper consoleHelper) : DirectedGraph(settings, fileHelper, consoleHelper), IDirectedGraph
 {
-    public int Dimensions => 2;
     private int _nodesPositioned = 0;
+
+    public int Dimensions => 2;
 
     /// <summary>
     /// Assign sizes to the canvas width and height after having positioned the nodes
@@ -35,9 +35,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        SKPoint base1 = new(0, 0);                                    // Node '1' at the bottom
-        SKPoint base2 = new(0, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
-        SKPoint base4 = new(0, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
+        (float X, float Y) base1 = (0, 0);                                    // Node '1' at the bottom
+        (float X, float Y) base2 = (0, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
+        (float X, float Y) base4 = (0, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
@@ -115,7 +115,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             float yOffset = node.Parent!.Position.Y - _settings.YNodeSpacer;
 
-            node.Position = new SKPoint(xOffset, yOffset);
+            node.Position = (xOffset, yOffset);
 
             if (_settings.NodeRotationAngle != 0)
             {
@@ -130,7 +130,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                     rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
                 }
 
-                node.Position = new SKPoint((float)rotatedPosition.x, (float)rotatedPosition.y);
+                node.Position = ((float)rotatedPosition.x, (float)rotatedPosition.y);
             }
 
             float signedXAxisDistanceFromParent = XAxisSignedDistanceFromParent(node.Position, node.Parent.Position);
@@ -143,11 +143,11 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                 //if the child node is to the left of the parent
                 if (signedXAxisDistanceFromParent < 0)
                 {
-                    node.Position = new SKPoint((float)node.Position.X + ((absoluteXAxisDistanceFromParent / 3) - _settings.XNodeSpacer), node.Position.Y);
+                    node.Position = (node.Position.X + ((absoluteXAxisDistanceFromParent / 3) - _settings.XNodeSpacer), node.Position.Y);
                 }
                 else
                 {
-                    node.Position = new SKPoint((float)node.Position.X - ((absoluteXAxisDistanceFromParent / 3) + _settings.XNodeSpacer), node.Position.Y);
+                    node.Position = (node.Position.X - ((absoluteXAxisDistanceFromParent / 3) + _settings.XNodeSpacer), node.Position.Y);
                 }
             }
 
@@ -155,10 +155,10 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             while (NodeIsTooCloseToNeighbours(node, minDistance))
             {
-                node.Position = new SKPoint((float)node.Position.X + (node.IsFirstChild
-                                                                        ? -_settings.NodeRadius * 2 - 40
-                                                                        : _settings.NodeRadius * 2 + 40),
-                                            (float)node.Position.Y);
+                node.Position = (node.Position.X + (node.IsFirstChild
+                                                                ? -_settings.NodeRadius * 2 - 40
+                                                                : _settings.NodeRadius * 2 + 40),
+                                 node.Position.Y);
             }
 
             AddNodeToGrid(node, minDistance);

@@ -87,7 +87,11 @@ public class Histogram(IOptions<Settings> settings,
     /// <param name="canvasWidth"></param>
     /// <param name="canvasHeight"></param>
     /// <param name="title"></param>
-    private static void DrawHistogram(SKCanvas canvas, List<int> counts, int canvasWidth, int canvasHeight, string title)
+    private static void DrawHistogram(SKCanvas canvas,
+                                      List<int> counts,
+                                      int canvasWidth,
+                                      int canvasHeight,
+                                      string title)
     {
         int numberOfBars = counts.Count;
         int spacing = 10; // Spacing between bars
@@ -119,7 +123,12 @@ public class Histogram(IOptions<Settings> settings,
             {
                 float y = effectiveCanvasHeight - xAxisLabelHeight - topPadding - (labelValue * scaleFactor);
 
-                canvas.DrawLine(yAxisLabelSpace, y, canvasWidth, y, new SKPaint { Color = SKColors.Gray, IsAntialias = true, StrokeWidth = 1 });
+                canvas.DrawLine(yAxisLabelSpace,
+                                y,
+                                canvasWidth,
+                                y,
+                                new SKPaint { Color = SKColors.Gray, IsAntialias = true, StrokeWidth = 1 });
+
                 canvas.DrawText(labelValue.ToString(),
                                  yAxisLabelSpace - 10, // Position to the left of the first bar
                                  y,
