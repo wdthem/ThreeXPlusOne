@@ -90,9 +90,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void DrawDirectedGraph()
     {
-        MoveNodesToPositiveCoordinates();
-        SetCanvasSize();
-
         using var surface = SKSurface.Create(new SKImageInfo(_canvasWidth, _canvasHeight));
 
         SKCanvas canvas = surface.Canvas;
@@ -103,6 +100,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             GenerateBackgroundStars(canvas, 100);
         }
+
+        _consoleHelper.WriteLine("");
 
         var lcv = 0;
         if (_settings.DrawConnections)
@@ -131,17 +130,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.WriteDone();
 
-        bool confirmedGenerateGraph = _consoleHelper.ReadYKeyToProceed($"Generate {_settings.GraphDimensions}D visualization?");
-
-        if (!confirmedGenerateGraph)
-        {
-            _consoleHelper.WriteLine("\nGraph generation cancelled\n");
-
-            return;
-        }
-
-        _consoleHelper.WriteLine("");
-
         SaveCanvas(surface);
     }
 
@@ -149,7 +137,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// The graph starts out at 0,0 with 0 width and 0 height. This means that nodes go into negative space as they are initially positioned, 
     /// so all coordinates need to be shifted to make sure all are in positive space
     /// </summary>
-    private void MoveNodesToPositiveCoordinates()
+    protected void MoveNodesToPositiveCoordinates()
     {
         _consoleHelper.Write("Adjusting node positions to fit on canvas... ");
 
@@ -171,7 +159,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <summary>
     /// Set the canvas dimensions to a bit more than the bounding box of all the nodes
     /// </summary>
-    private void SetCanvasSize()
+    protected void SetCanvasSize()
     {
         float maxX = _nodes.Max(node => node.Value.Position.X);
         float maxY = _nodes.Max(node => node.Value.Position.Y);
