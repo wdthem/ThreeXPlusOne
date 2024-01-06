@@ -71,7 +71,7 @@ public class Process(IOptions<Settings> settings,
         graph.SetCanvasDimensions();
 
         //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
-        bool confirmedGenerateGraph = consoleHelper.ReadYKeyToProceed($"Generate {_settings.SanitizedGraphDimensions}D visualization?");
+        bool confirmedGenerateGraph = consoleHelper.ReadYKeyToProceed($"Generate {graph.Dimensions}D visualization?");
 
         if (!confirmedGenerateGraph)
         {

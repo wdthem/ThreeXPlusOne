@@ -1,5 +1,5 @@
-using System.Drawing;
 using SkiaSharp;
+using System.Drawing;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Models;
 
@@ -114,9 +114,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <summary>
     /// Optionally generate white points in the background to mimic stars
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="count"></param>
-    public void GenerateBackgroundStars(int count)
+    /// <param name="starCount"></param>
+    public void GenerateBackgroundStars(int starCount)
     {
         if (_canvas == null)
         {
@@ -125,7 +124,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         List<SKPoint> points = [];
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < starCount; i++)
         {
             float x = (float)_random.NextDouble() * _canvas.LocalClipBounds.Width;
             float y = (float)_random.NextDouble() * _canvas.LocalClipBounds.Height;
