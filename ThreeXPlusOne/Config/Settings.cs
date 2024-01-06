@@ -120,6 +120,7 @@ public class Settings
     /// <summary>
     /// The graph provider to use to render the graph image
     /// </summary>
+    [JsonIgnore]
     public GraphProvider GraphProvider
     {
         get

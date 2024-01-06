@@ -48,7 +48,6 @@ public static class StartupExtensions
         services.AddScoped<IHistogram, Histogram>();
         services.AddScoped<IMetadata, Metadata>();
         services.AddScoped<IFileHelper, FileHelper>();
-
         services.AddScoped<IGraphService, SkiaSharpGraphService>();
 
         services.AddSingleton<IConsoleHelper, ConsoleHelper>();
