@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
-using ThreeXPlusOne.Code.Graph.GraphProviders;
+using ThreeXPlusOne.Code.Graph.Services;
 
 namespace ThreeXPlusOne.Config;
 

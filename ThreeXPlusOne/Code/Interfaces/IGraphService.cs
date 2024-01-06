@@ -1,4 +1,4 @@
-using ThreeXPlusOne.Code.Graph.GraphProviders;
+using ThreeXPlusOne.Code.Graph.Services;
 using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Interfaces;
