@@ -2,7 +2,7 @@ using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Models;
 
-namespace ThreeXPlusOne.Code.Graph;
+namespace ThreeXPlusOne.Code.Graph.GraphProviders;
 
 public class SkiaSharpGraphService(IFileHelper fileHelper,
                                    IConsoleHelper consoleHelper) : IGraphService
@@ -10,6 +10,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     private SKSurface? _surface;
     private SKCanvas? _canvas;
     private readonly Random _random = new();
+
+    public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
 
     /// <summary>
     /// Initialize an SKSurface and SKCanvas based on the provided dimensions
@@ -59,8 +61,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <param name="node"></param>
     public void DrawNode(DirectedGraphNode node,
                          bool drawNumbersOnNodes,
-                         bool distortNodes,
-                         int radiusDistortion)
+                         bool distortNodes)
     {
         if (_canvas == null)
         {
@@ -86,9 +87,9 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         if (distortNodes)
         {
-            DrawDistortedPath(new SKPoint(node.Position.X, node.Position.Y),
+            DrawDistortedPath(_canvas,
+                              new SKPoint(node.Position.X, node.Position.Y),
                               node.Radius,
-                              radiusDistortion,
                               paint);
         }
         else
@@ -132,7 +133,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         foreach (SKPoint point in points)
         {
-            DrawStarWithBlur(point);
+            DrawStarWithBlur(_canvas, point);
         }
     }
 
@@ -179,16 +180,11 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <param name="baseRadius"></param>
     /// <param name="distortionLevel"></param>
     /// <param name="paint"></param>
-    private void DrawDistortedPath(SKPoint center,
+    private void DrawDistortedPath(SKCanvas canvas,
+                                   SKPoint center,
                                    float baseRadius,
-                                   int distortionLevel,
                                    SKPaint paint)
     {
-        if (_canvas == null)
-        {
-            throw new Exception("Could not draw distorted path. Canvas object was null");
-        }
-
         SKPath path = new();
         int randomPointsCount = _random.Next(3, 11); //from 3 to 10
 
@@ -197,7 +193,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         for (int i = 1; i <= randomPointsCount; i++)
         {
             float angle = (float)(2 * Math.PI / randomPointsCount * i);
-            float radiusVariation = _random.Next(4, distortionLevel) + 1;
+            float radiusVariation = _random.Next(4, 25) + 1;
             float radius = baseRadius + radiusVariation;
 
             SKPoint point = new(center.X + radius * (float)Math.Cos(angle),
@@ -208,7 +204,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         path.Close();
 
-        _canvas.DrawPath(path, paint);
+        canvas.DrawPath(path, paint);
     }
 
     /// <summary>
@@ -216,13 +212,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="point"></param>
-    private void DrawStarWithBlur(SKPoint point)
+    private void DrawStarWithBlur(SKCanvas canvas, SKPoint point)
     {
-        if (_canvas == null)
-        {
-            throw new Exception("Could not draw star with blur. Canvas object was null");
-        }
-
         float starSize = _random.Next(20, 40);
         float blurRadius = 9.0f;
 
@@ -238,10 +229,15 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
             Color = SKColors.White
         };
 
-        _canvas.DrawCircle(point, starSize, blurPaint);
-        _canvas.DrawCircle(point, starSize, starPaint);
+        canvas.DrawCircle(point, starSize, blurPaint);
+        canvas.DrawCircle(point, starSize, starPaint);
     }
 
+    /// <summary>
+    /// Get a random colour for the node
+    /// </summary>
+    /// <param name="alpha"></param>
+    /// <returns></returns>
     private SKColor GetRandomNodeColor(byte alpha = 255)
     {
         byte red, green, blue;

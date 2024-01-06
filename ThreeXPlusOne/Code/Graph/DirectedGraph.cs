@@ -6,7 +6,7 @@ using ThreeXPlusOne.Models;
 namespace ThreeXPlusOne.Code.Graph;
 
 public abstract class DirectedGraph(IOptions<Settings> settings,
-                                    IGraphService graphService,
+                                    IEnumerable<IGraphService> graphServices,
                                     IFileHelper fileHelper,
                                     IConsoleHelper consoleHelper)
 {
@@ -90,6 +90,10 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void DrawDirectedGraph()
     {
+        IGraphService graphService = graphServices.ToList()
+                                                  .Where(graphService => graphService.GraphProvider == _settings.GraphProvider)
+                                                  .First();
+
         graphService.InitializeGraph(_canvasWidth, _canvasHeight);
 
         if (_settings.GenerateBackgroundStars)
@@ -119,8 +123,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             graphService.DrawNode(node.Value,
                                   _settings.DrawNumbersOnNodes,
-                                  _settings.DistortNodes,
-                                  _settings.RadiusDistortion);
+                                  _settings.DistortNodes);
 
             _consoleHelper.Write($"\r{lcv} nodes drawn... ");
 

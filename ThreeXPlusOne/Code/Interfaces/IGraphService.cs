@@ -1,3 +1,4 @@
+using ThreeXPlusOne.Code.Graph.GraphProviders;
 using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Interfaces;
@@ -5,7 +6,12 @@ namespace ThreeXPlusOne.Code.Interfaces;
 public interface IGraphService
 {
     /// <summary>
-    /// Initialize an SKSurface and SKCanvas based on the provided dimensions
+    /// The graph provider implementing the interface
+    /// </summary>
+    GraphProvider GraphProvider { get; }
+
+    /// <summary>
+    /// Initialize the graph based on the provided dimensions
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
@@ -22,7 +28,7 @@ public interface IGraphService
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
-    void DrawNode(DirectedGraphNode node, bool drawNumbersOnNodes, bool distortNodes, int radiusDistortion);
+    void DrawNode(DirectedGraphNode node, bool drawNumbersOnNodes, bool distortNodes);
 
     /// <summary>
     /// Optionally generate white points in the background to mimic stars

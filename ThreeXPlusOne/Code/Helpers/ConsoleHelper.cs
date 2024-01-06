@@ -195,11 +195,6 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.WriteLine("false (whether or not to use circles or distorted shapes as graph nodes)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.RadiusDistortion)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("25 (the max amount by which to distort node radii in pixels)");
-
-        Console.ForegroundColor = ConsoleColor.Blue;
         Console.Write($"     {nameof(Settings.XNodeSpacer)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("125 for 2D, 250 for 3D (the space between nodes on the x-axis)");
