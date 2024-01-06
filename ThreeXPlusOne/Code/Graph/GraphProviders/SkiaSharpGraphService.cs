@@ -1,3 +1,4 @@
+using System.Drawing;
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Models;
@@ -57,8 +58,9 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <summary>
     /// Draw the node at its defined position
     /// </summary>
-    /// <param name="canvas"></param>
     /// <param name="node"></param>
+    /// <param name="drawNumbersOnNodes"></param>
+    /// <param name="distortNodes"></param>
     public void DrawNode(DirectedGraphNode node,
                          bool drawNumbersOnNodes,
                          bool distortNodes)
@@ -72,7 +74,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         {
             IsAntialias = true,
             Style = SKPaintStyle.Fill,
-            Color = GetRandomNodeColor((byte)_random.Next(30, 211))
+            Color = GetNodeSKColor(node.Color)
         };
 
         SKPaint textPaint = new()
@@ -151,12 +153,11 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         string path = fileHelper.GenerateDirectedGraphFilePath();
 
         CancellationTokenSource cancellationTokenSource = new();
-        CancellationToken token = cancellationTokenSource.Token;
 
         consoleHelper.WriteLine($"Saving image to: {path}\n");
         consoleHelper.Write("Please wait... ");
 
-        Task spinner = Task.Run(() => consoleHelper.WriteSpinner(token));
+        Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
 
         using (SKImage image = _surface.Snapshot())
         using (SKData data = image.Encode(SKEncodedImageFormat.Png, 25))
@@ -178,7 +179,6 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <param name="canvas"></param>
     /// <param name="center"></param>
     /// <param name="baseRadius"></param>
-    /// <param name="distortionLevel"></param>
     /// <param name="paint"></param>
     private void DrawDistortedPath(SKCanvas canvas,
                                    SKPoint center,
@@ -193,7 +193,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         for (int i = 1; i <= randomPointsCount; i++)
         {
             float angle = (float)(2 * Math.PI / randomPointsCount * i);
-            float radiusVariation = _random.Next(4, 25) + 1;
+            float radiusVariation = _random.Next(5, 26);  //from 5 to 25
             float radius = baseRadius + radiusVariation;
 
             SKPoint point = new(center.X + radius * (float)Math.Cos(angle),
@@ -214,7 +214,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <param name="point"></param>
     private void DrawStarWithBlur(SKCanvas canvas, SKPoint point)
     {
-        float starSize = _random.Next(20, 40);
+        float starSize = _random.Next(20, 41); //from 20 to 40
         float blurRadius = 9.0f;
 
         SKPaint blurPaint = new()
@@ -238,19 +238,21 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// </summary>
     /// <param name="alpha"></param>
     /// <returns></returns>
-    private SKColor GetRandomNodeColor(byte alpha = 255)
+    private static SKColor GetNodeSKColor(Color color)
     {
-        byte red, green, blue;
-
-        do
+        if (color != Color.Empty)
         {
-            red = (byte)_random.Next(256);
-            green = (byte)_random.Next(256);
-            blue = (byte)_random.Next(256);
+            return new SKColor(color.R,
+                               color.G,
+                               color.B,
+                               color.A);
         }
-        while (red <= 10 || green <= 10 || blue <= 10); //avoid very dark colours
 
-        return new SKColor(red, green, blue, alpha);
+        //default to white
+        return new SKColor(Color.White.R,
+                           Color.White.G,
+                           Color.White.B,
+                           Color.White.A);
     }
 
     /// <summary>

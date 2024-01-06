@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Drawing;
+using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 using ThreeXPlusOne.Models;
@@ -121,6 +122,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         lcv = 1;
         foreach (var node in _nodes)
         {
+            node.Value.Color = GenerateNodeColor();
+
             graphService.DrawNode(node.Value,
                                   _settings.DrawNumbersOnNodes,
                                   _settings.DistortNodes);
@@ -295,5 +298,25 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     private static (int, int) GetGridCellForNode(DirectedGraphNode node, float cellSize)
     {
         return ((int)(node.Position.X / cellSize), (int)(node.Position.Y / cellSize));
+    }
+
+    /// <summary>
+    /// Generate a random colour for the node
+    /// </summary>
+    /// <returns></returns>
+    private Color GenerateNodeColor()
+    {
+        byte alpha = (byte)_random.Next(30, 211);
+        byte red, green, blue;
+
+        do
+        {
+            red = (byte)_random.Next(256);
+            green = (byte)_random.Next(256);
+            blue = (byte)_random.Next(256);
+        }
+        while (red <= 10 || green <= 10 || blue <= 10); //avoid very dark colours
+
+        return Color.FromArgb(alpha, red, green, blue);
     }
 }
