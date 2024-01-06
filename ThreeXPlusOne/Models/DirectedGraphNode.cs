@@ -1,4 +1,6 @@
-﻿namespace ThreeXPlusOne.Models;
+﻿using System.Drawing;
+
+namespace ThreeXPlusOne.Models;
 
 public class DirectedGraphNode(int value)
 {
@@ -47,4 +49,9 @@ public class DirectedGraphNode(int value)
     /// The radius of the node
     /// </summary>
     public float Radius { get; set; }
+
+    /// <summary>
+    /// The colour of the node
+    /// </summary>
+    public Color Color { get; set; } = Color.Empty;
 }
