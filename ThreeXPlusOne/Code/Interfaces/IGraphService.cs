@@ -1,4 +1,3 @@
-using System.Drawing;
 using ThreeXPlusOne.Code.Graph.GraphProviders;
 using ThreeXPlusOne.Models;
 
@@ -27,16 +26,16 @@ public interface IGraphService
     /// <summary>
     /// Draw the node at its defined position
     /// </summary>
-    /// <param name="canvas"></param>
     /// <param name="node"></param>
+    /// <param name="drawNumbersOnNodes"></param>
+    /// <param name="distortNodes"></param>
     void DrawNode(DirectedGraphNode node, bool drawNumbersOnNodes, bool distortNodes);
 
     /// <summary>
     /// Optionally generate white points in the background to mimic stars
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="count"></param>
-    void GenerateBackgroundStars(int count);
+    /// <param name="starCount"></param>
+    void GenerateBackgroundStars(int starCount);
 
     /// <summary>
     /// Save the generated graph as a png
