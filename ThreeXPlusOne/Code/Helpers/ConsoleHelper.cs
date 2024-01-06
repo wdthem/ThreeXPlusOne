@@ -160,97 +160,92 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.White;
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.NumberOfSeries)}: ");
+        Console.Write($"    {nameof(Settings.NumberOfSeries)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("200 (the total number of series that will run)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.MaxStartingNumber)}: ");
+        Console.Write($"    {nameof(Settings.MaxStartingNumber)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("1000 (the highest number any given series can start with)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.UseTheseNumbers)}: ");
+        Console.Write($"    {nameof(Settings.UseTheseNumbers)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine($"\"\" (comma-separated list of numbers to run the program with. Overrides {nameof(Settings.NumberOfSeries)} and {nameof(Settings.MaxStartingNumber)})");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.ExcludeTheseNumbers)}: ");
+        Console.Write($"    {nameof(Settings.ExcludeTheseNumbers)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("\"\" (comma-separated list of numbers not to use)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.NodeRotationAngle)}: ");
+        Console.Write($"    {nameof(Settings.NodeRotationAngle)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("0 (the size of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.NodeRadius)}: ");
+        Console.Write($"    {nameof(Settings.NodeRadius)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("50 for 2D, 275 for 3D (the radius of the nodes in pixels)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.DistortNodes)}: ");
+        Console.Write($"    {nameof(Settings.DistortNodes)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("false (whether or not to use circles or distorted shapes as graph nodes)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.RadiusDistortion)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("25 (the max amount by which to distort node radii in pixels)");
-
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.XNodeSpacer)}: ");
+        Console.Write($"    {nameof(Settings.XNodeSpacer)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("125 for 2D, 250 for 3D (the space between nodes on the x-axis)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.YNodeSpacer)}: ");
+        Console.Write($"    {nameof(Settings.YNodeSpacer)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("125 for 2D, 225 for 3D (the space between nodes on the y-axis)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.DistanceFromViewer)}: ");
+        Console.Write($"    {nameof(Settings.DistanceFromViewer)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("200 (for the 3D graph, the distance from the view when applying the perspective transformation)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.GraphDimensions)}: ");
+        Console.Write($"    {nameof(Settings.GraphDimensions)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("2 (the number of dimensions to render in the graph - 2 or 3)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.DrawConnections)}: ");
+        Console.Write($"    {nameof(Settings.DrawConnections)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("true (whether or not to draw connections between the nodes in the graph - if true can increase image file size substantially)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.DrawNumbersOnNodes)}: ");
+        Console.Write($"    {nameof(Settings.DrawNumbersOnNodes)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("true (whether or not to draw the numbers at the center of the node that the node represents)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.GenerateGraph)}: ");
+        Console.Write($"    {nameof(Settings.GenerateGraph)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("true (whether or not to generate the visualization of the data)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.GenerateHistogram)}: ");
+        Console.Write($"    {nameof(Settings.GenerateHistogram)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("true (whether or not to generate a histogram of the distribution of numbers starting from 1-9)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.GenerateMetadataFile)}: ");
+        Console.Write($"    {nameof(Settings.GenerateMetadataFile)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("true (whether or not to generate a file with metadata about the run)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.GenerateBackgroundStars)}: ");
+        Console.Write($"    {nameof(Settings.GenerateBackgroundStars)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("false (whether or not to generate random stars in the background of the graph)");
 
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"     {nameof(Settings.OutputPath)}: ");
+        Console.Write($"    {nameof(Settings.OutputPath)}: ");
         Console.ForegroundColor = ConsoleColor.White;
         Console.WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder where the output files should be placed)\n");
 

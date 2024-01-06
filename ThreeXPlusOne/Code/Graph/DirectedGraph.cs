@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 using ThreeXPlusOne.Models;
@@ -7,6 +6,7 @@ using ThreeXPlusOne.Models;
 namespace ThreeXPlusOne.Code.Graph;
 
 public abstract class DirectedGraph(IOptions<Settings> settings,
+                                    IEnumerable<IGraphService> graphServices,
                                     IFileHelper fileHelper,
                                     IConsoleHelper consoleHelper)
 {
@@ -59,6 +59,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                     {
                         previousNode.IsFirstChild = true;
 
+                        //if this node already has a child, turn off the flag
                         if (currentNode.Children.Count == 1)
                         {
                             previousNode.IsFirstChild = false;
@@ -89,15 +90,15 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void DrawDirectedGraph()
     {
-        using var surface = SKSurface.Create(new SKImageInfo(_canvasWidth, _canvasHeight));
+        IGraphService graphService = graphServices.ToList()
+                                                  .Where(graphService => graphService.GraphProvider == _settings.GraphProvider)
+                                                  .First();
 
-        SKCanvas canvas = surface.Canvas;
-
-        canvas.Clear(SKColors.Black);
+        graphService.InitializeGraph(_canvasWidth, _canvasHeight);
 
         if (_settings.GenerateBackgroundStars)
         {
-            GenerateBackgroundStars(canvas, 100);
+            graphService.GenerateBackgroundStars(100);
         }
 
         _consoleHelper.WriteLine("");
@@ -107,7 +108,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             foreach (var node in _nodes)
             {
-                DrawConnection(canvas, node.Value);
+                graphService.DrawConnection(node.Value);
 
                 _consoleHelper.Write($"\r{lcv} connections drawn... ");
 
@@ -120,7 +121,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         lcv = 1;
         foreach (var node in _nodes)
         {
-            DrawNode(canvas, node.Value);
+            graphService.DrawNode(node.Value,
+                                  _settings.DrawNumbersOnNodes,
+                                  _settings.DistortNodes);
 
             _consoleHelper.Write($"\r{lcv} nodes drawn... ");
 
@@ -129,7 +132,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.WriteDone();
 
-        SaveCanvas(surface);
+        graphService.SaveGraphImage();
     }
 
     /// <summary>
@@ -292,209 +295,5 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     private static (int, int) GetGridCellForNode(DirectedGraphNode node, float cellSize)
     {
         return ((int)(node.Position.X / cellSize), (int)(node.Position.Y / cellSize));
-    }
-
-    /// <summary>
-    /// Draw the lines connecting nodes to their parent/children
-    /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    private static void DrawConnection(SKCanvas canvas, DirectedGraphNode node)
-    {
-        SKPaint paint = new()
-        {
-            Color = new SKColor(255, 255, 255, 128),
-            StrokeWidth = 2,
-            IsAntialias = true
-        };
-
-        foreach (DirectedGraphNode childNode in node.Children)
-        {
-            canvas.DrawLine(new SKPoint(node.Position.X, node.Position.Y),
-                            new SKPoint(childNode.Position.X, childNode.Position.Y),
-                            paint);
-        }
-    }
-
-    /// <summary>
-    /// Draw the node at its defined position
-    /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    private void DrawNode(SKCanvas canvas, DirectedGraphNode node)
-    {
-        SKPaint paint = new()
-        {
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            Color = GetRandomNodeColor((byte)_random.Next(30, 211))
-        };
-
-        SKPaint textPaint = new()
-        {
-            Color = SKColors.White,
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            TextAlign = SKTextAlign.Center,
-            TextSize = 20,
-            FakeBoldText = true,
-        };
-
-        if (_settings.DistortNodes)
-        {
-            DrawDistortedPath(canvas,
-                              new SKPoint(node.Position.X, node.Position.Y),
-                              node.Radius,
-                              _settings.RadiusDistortion,
-                              paint);
-        }
-        else
-        {
-            canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
-                              node.Radius,
-                              paint);
-        }
-
-        if (_settings.DrawNumbersOnNodes)
-        {
-            // Draw the text
-            // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
-            float textY = node.Position.Y + 8;
-
-            canvas.DrawText(node.Value.ToString(), node.Position.X, textY, textPaint);
-        }
-    }
-
-    /// <summary>
-    /// Get a random non-black color for the given node
-    /// </summary>
-    /// <param name="alpha"></param>
-    /// <returns></returns>
-    private SKColor GetRandomNodeColor(byte alpha = 255)
-    {
-        byte red, green, blue;
-
-        do
-        {
-            red = (byte)_random.Next(256);
-            green = (byte)_random.Next(256);
-            blue = (byte)_random.Next(256);
-        }
-        while (red <= 10 || green <= 10 || blue <= 10); //avoid very dark colours
-
-        return new SKColor(red, green, blue, alpha);
-    }
-
-    /// <summary>
-    /// Instead of a circular node, draw a node of a distorted shape based on the user-defined distortion level
-    /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="center"></param>
-    /// <param name="baseRadius"></param>
-    /// <param name="distortionLevel"></param>
-    /// <param name="paint"></param>
-    private void DrawDistortedPath(SKCanvas canvas,
-                                   SKPoint center,
-                                   float baseRadius,
-                                   int distortionLevel,
-                                   SKPaint paint)
-    {
-        SKPath path = new();
-        int randomPointsCount = _random.Next(3, 11); //from 3 to 10
-
-        path.MoveTo(center.X + baseRadius, center.Y);
-
-        for (int i = 1; i <= randomPointsCount; i++)
-        {
-            float angle = (float)(2 * Math.PI / randomPointsCount * i);
-            float radiusVariation = _random.Next(4, distortionLevel) + 1;
-            float radius = baseRadius + radiusVariation;
-
-            SKPoint point = new(center.X + radius * (float)Math.Cos(angle),
-                                center.Y + radius * (float)Math.Sin(angle));
-
-            path.LineTo(point);
-        }
-
-        path.Close();
-
-        canvas.DrawPath(path, paint);
-    }
-
-    /// <summary>
-    /// Optionally generate white points in the background to mimic stars
-    /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="count"></param>
-    private void GenerateBackgroundStars(SKCanvas canvas, int count)
-    {
-        List<SKPoint> points = [];
-
-        for (int i = 0; i < count; i++)
-        {
-            float x = (float)_random.NextDouble() * _canvasWidth;
-            float y = (float)_random.NextDouble() * _canvasHeight;
-
-            points.Add(new SKPoint(x, y));
-        }
-
-        foreach (SKPoint point in points)
-        {
-            DrawStarWithBlur(canvas, point);
-        }
-    }
-
-    /// <summary>
-    /// Apply a blur effect to the stars
-    /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="point"></param>
-    private void DrawStarWithBlur(SKCanvas canvas, SKPoint point)
-    {
-        float starSize = _random.Next(20, 40);
-        float blurRadius = 9.0f;
-
-        SKPaint blurPaint = new()
-        {
-            IsAntialias = true,
-            MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, blurRadius)
-        };
-
-        SKPaint starPaint = new()
-        {
-            IsAntialias = true,
-            Color = SKColors.White
-        };
-
-        canvas.DrawCircle(point, starSize, blurPaint);
-        canvas.DrawCircle(point, starSize, starPaint);
-    }
-
-    /// <summary>
-    /// Save the generated canvas
-    /// </summary>
-    /// <param name="surface"></param>
-    private void SaveCanvas(SKSurface surface)
-    {
-        string path = _fileHelper.GenerateDirectedGraphFilePath();
-
-        CancellationTokenSource cancellationTokenSource = new();
-        CancellationToken token = cancellationTokenSource.Token;
-
-        _consoleHelper.WriteLine($"Saving image to: {path}\n");
-        _consoleHelper.Write("Please wait... ");
-
-        Task spinner = Task.Run(() => _consoleHelper.WriteSpinner(token));
-
-        using (SKImage image = surface.Snapshot())
-        using (SKData data = image.Encode(SKEncodedImageFormat.Png, 25))
-        using (FileStream stream = File.OpenWrite(path))
-        {
-            data.SaveTo(stream);
-        }
-
-        cancellationTokenSource.Cancel();
-
-        spinner.Wait();
     }
 }

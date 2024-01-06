@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
+using ThreeXPlusOne.Code.Graph.GraphProviders;
 
 namespace ThreeXPlusOne.Config;
 
@@ -15,6 +16,9 @@ public class Settings
 
     [JsonIgnore]
     private readonly string _settingsFileName = "settings.json";
+
+    [JsonIgnore]
+    private readonly GraphProvider _graphProvider = GraphProvider.SkiaSharp;
 
     [JsonIgnore]
     private static readonly char[] _separator = [','];
@@ -56,11 +60,6 @@ public class Settings
     /// Whether or not to distort nodes into various shapes and sizes
     /// </summary>
     public bool DistortNodes { get; set; }
-
-    /// <summary>
-    /// The max amount in pixels by which to distort the node's radius
-    /// </summary>
-    public int RadiusDistortion { get; set; } = 25;
 
     /// <summary>
     /// The amount of x-axis space in pixels by which to separate nodes
@@ -117,6 +116,18 @@ public class Settings
     /// The directory in which the process will create a unique execution folder with generated output
     /// </summary>
     public string OutputPath { get; set; } = "";
+
+    /// <summary>
+    /// The graph provider to use to render the graph image
+    /// </summary>
+    [JsonIgnore]
+    public GraphProvider GraphProvider
+    {
+        get
+        {
+            return _graphProvider;
+        }
+    }
 
     /// <summary>
     /// The name of the file in which these settings are stored
