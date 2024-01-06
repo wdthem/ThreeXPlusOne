@@ -3,7 +3,7 @@ using System.Drawing;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Models;
 
-namespace ThreeXPlusOne.Code.Graph.GraphProviders;
+namespace ThreeXPlusOne.Code.Graph.Services;
 
 public class SkiaSharpGraphService(IFileHelper fileHelper,
                                    IConsoleHelper consoleHelper) : IGraphService
