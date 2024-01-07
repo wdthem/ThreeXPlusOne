@@ -1,0 +1,15 @@
+name: Branch Name Check - Pull Request
+
+on: [pull_request]
+
+jobs:
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Branch Name Format
+        run: |
+          branch_name=${GITHUB_HEAD_REF}
+          if [[ ! "$branch_name" =~ ^(feature|bugfix)/[0-9]+-.* ]]; then
+            echo "Error: Branch name '$branch_name' does not follow the 'feature/0000-feature-name' or 'bugfix/0000-bugfix-name' format (where 0000 is the Issue Id)."
+            exit 1
+          fi
