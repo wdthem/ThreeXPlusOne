@@ -7,6 +7,10 @@ using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph.Services.OpenTK;
 
+
+//TODO: Find a way to use the IGraphService interface
+//TODO: this class needs to receive the list of nodes for use in the OnLoad, however OnLoad must just access them from a property or private variable
+
 public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameWindowSettings.Default,
                                                                            new NativeWindowSettings()
                                                                            {
@@ -16,10 +20,10 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
 {
     private int _vertexArray;
     private int _vertexBuffer;
-    private OpenTKShader? _shader; // Assume Shader is a custom class for handling shaders
-
+    private OpenTKShader? _shader;
     public GraphProvider GraphProvider => GraphProvider.OpenTK;
 
+    //IGraphService methods
     public void InitializeGraph(int width, int height)
     {
         consoleHelper.WriteLine("");
@@ -46,6 +50,7 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
     }
 
 
+    //GameWindow overrides
     protected override void OnLoad()
     {
         base.OnLoad();
@@ -58,13 +63,23 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
         GL.BindVertexArray(_vertexArray);
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBuffer);
 
-        // Set up vertex data (and buffer(s)) and configure vertex attributes
-        float[] vertices = {
+        //convert node color to openGL color
+        //float[] glColor = ColorToOpenGL(node.Color);
+
+        //TODO: you would need to add in the glColor values here, like:
+
+        /*
+        //Vertex 1
+        1.0f, 2.0f, 3.0f, // Position
+        1.0f, 0.0f, 0.0f, 1.0f, // Color (Red)
+        */
+
+        float[] vertices = [
             // Vertex coordinates
             1.0f, 1.0f, 0.0f, // Point 1
             2.0f, 2.0f, 0.0f, // Point 2
             // Add as many points as needed
-        };
+        ];
 
         GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
@@ -105,4 +120,16 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
         _shader?.Dispose();
         _shader = null;
     }
+
+    private static float[] ColorToOpenGL(System.Drawing.Color color)
+    {
+        return
+        [
+            color.R / 255.0f, // Red
+            color.G / 255.0f, // Green
+            color.B / 255.0f, // Blue
+            color.A / 255.0f  // Alpha
+        ];
+    }
+
 }
