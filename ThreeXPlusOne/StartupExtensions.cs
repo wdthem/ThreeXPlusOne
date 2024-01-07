@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using ThreeXPlusOne.Code;
 using ThreeXPlusOne.Code.Graph;
 using ThreeXPlusOne.Code.Graph.Services;
+using ThreeXPlusOne.Code.Graph.Services.OpenTK;
 using ThreeXPlusOne.Code.Helpers;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
