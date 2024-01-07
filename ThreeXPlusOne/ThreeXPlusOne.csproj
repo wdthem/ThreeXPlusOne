@@ -25,6 +25,7 @@
     <Folder Include="Code\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="OpenTK" Version="4.8.2" />
     <PackageReference Include="SkiaSharp" Version="2.88.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
