@@ -31,10 +31,10 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Code\Graph\Services\OpenTK\VertexShader.glsl">
+    <None Update="Code\Graph\Services\OpenTK\GLSL\VertexShader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Code\Graph\Services\OpenTK\FragmentShader.glsl">
+    <None Update="Code\Graph\Services\OpenTK\GLSL\FragmentShader.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
