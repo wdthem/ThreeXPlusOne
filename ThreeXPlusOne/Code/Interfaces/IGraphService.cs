@@ -13,23 +13,18 @@ public interface IGraphService
     /// <summary>
     /// Initialize the graph based on the provided dimensions
     /// </summary>
+    /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    void InitializeGraph(int width, int height);
+    void InitializeGraph(List<DirectedGraphNode> nodes, int width, int height);
 
     /// <summary>
-    /// Draw the lines connecting nodes to their parent/children
+    /// Draw the graph based on provided settings
     /// </summary>
-    /// <param name="node"></param>
-    void DrawConnection(DirectedGraphNode node);
-
-    /// <summary>
-    /// Draw the node at its defined position
-    /// </summary>
-    /// <param name="node"></param>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="distortNodes"></param>
-    void DrawNode(DirectedGraphNode node, bool drawNumbersOnNodes, bool distortNodes);
+    /// <param name="drawConnections"></param>
+    void Draw(bool drawNumbersOnNodes, bool distortNodes, bool drawConnections);
 
     /// <summary>
     /// Optionally generate white points in the background to mimic stars

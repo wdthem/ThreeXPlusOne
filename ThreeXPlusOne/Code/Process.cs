@@ -80,6 +80,8 @@ public class Process(IOptions<Settings> settings,
             return;
         }
 
+        consoleHelper.WriteLine("");
+
         graph.Draw();
     }
 
