@@ -18,7 +18,7 @@ public class Settings
     private readonly string _settingsFileName = "settings.json";
 
     [JsonIgnore]
-    private readonly GraphProvider _graphProvider = GraphProvider.SkiaSharp;
+    private readonly GraphProvider _graphProvider = GraphProvider.OpenTK;
 
     [JsonIgnore]
     private static readonly char[] _separator = [','];

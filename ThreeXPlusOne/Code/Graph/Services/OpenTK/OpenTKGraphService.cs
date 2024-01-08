@@ -33,7 +33,7 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
 
     public void Draw(bool drawNumbersOnNodes, bool distortNodes, bool drawConnections)
     {
-        throw new NotImplementedException();
+        Run();
     }
 
     public void GenerateBackgroundStars(int starCount)
@@ -57,7 +57,7 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
 
         base.OnLoad();
 
-        _shader = new OpenTKShader("VertexShader.glsl", "FragmentShader.glsl");
+        _shader = new OpenTKShader("Code/Graph/Services/OpenTK/GLSL/VertexShader.glsl", "Code/Graph/Services/OpenTK/GLSL/FragmentShader.glsl");
         _vertexArray = GL.GenVertexArray();
         _vertexBuffer = GL.GenBuffer();
 
@@ -99,11 +99,10 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
         base.OnRenderFrame(e);
 
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        GL.PointSize(10.0f);
 
-        // Use shader program
         _shader.Use();
 
-        // Bind vertex array and draw
         GL.BindVertexArray(_vertexArray);
         GL.DrawArrays(PrimitiveType.Points, 0, 2); // Adjust the count as needed
 
