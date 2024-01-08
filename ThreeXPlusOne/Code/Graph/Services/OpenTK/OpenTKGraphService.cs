@@ -64,13 +64,6 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
         GL.BindVertexArray(_vertexArray);
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBuffer);
 
-        //TODO: you would need to add in the glColor values here, like:
-        /*
-        //Vertex 1
-        1.0f, 2.0f, 3.0f, // Position
-        1.0f, 0.0f, 0.0f, 1.0f, // Color (Red)
-        */
-
         List<float> verticesList = [];
 
         foreach (DirectedGraphNode node in _nodes)
@@ -90,10 +83,8 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
         float[] vertices = [.. verticesList];
 
         GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
-
         GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         GL.BindVertexArray(0);
     }
@@ -125,6 +116,7 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
 
         GL.DeleteVertexArray(_vertexArray);
         GL.DeleteBuffer(_vertexBuffer);
+
         _shader?.Dispose();
         _shader = null;
         _nodes = null;
