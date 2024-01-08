@@ -41,7 +41,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     {
         if (_canvas == null || _nodes == null)
         {
-            throw new Exception("Could not draw node. Canvas object or Nodes object was null");
+            throw new Exception("Could not draw the graph. Canvas object or Nodes object was null");
         }
 
         var lcv = 0;
