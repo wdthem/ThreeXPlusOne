@@ -131,8 +131,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         float minX = _nodes.Min(node => node.Value.Position.X);
         float minY = _nodes.Min(node => node.Value.Position.Y);
 
-        float translationX = minX < 0 ? -minX + 500 : 0;
-        float translationY = minY < 0 ? -minY + 500 : 0;
+        float translationX = minX < 0 ? -minX + _settings.XNodeSpacer + (int)_settings.NodeRadius : 0;
+        float translationY = minY < 0 ? -minY + _settings.YNodeSpacer + (int)_settings.NodeRadius : 0;
 
         foreach (var node in _nodes)
         {
@@ -151,8 +151,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         float maxX = _nodes.Max(node => node.Value.Position.X);
         float maxY = _nodes.Max(node => node.Value.Position.Y);
 
-        _canvasWidth = (int)maxX + 500;
-        _canvasHeight = (int)maxY + 500;
+        _canvasWidth = (int)maxX + _settings.XNodeSpacer + (int)_settings.NodeRadius;
+        _canvasHeight = (int)maxY + _settings.YNodeSpacer + (int)_settings.NodeRadius;
 
         _consoleHelper.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
     }
