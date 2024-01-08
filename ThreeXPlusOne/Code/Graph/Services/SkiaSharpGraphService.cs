@@ -8,6 +8,7 @@ namespace ThreeXPlusOne.Code.Graph.Services;
 public class SkiaSharpGraphService(IFileHelper fileHelper,
                                    IConsoleHelper consoleHelper) : IGraphService
 {
+    private List<DirectedGraphNode>? _nodes;
     private SKSurface? _surface;
     private SKCanvas? _canvas;
     private readonly Random _random = new();
@@ -19,10 +20,11 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    public void InitializeGraph(int width, int height)
+    public void InitializeGraph(List<DirectedGraphNode> nodes, int width, int height)
     {
         DisposeGraphResources();
 
+        _nodes = nodes;
         _surface = SKSurface.Create(new SKImageInfo(width, height));
         _canvas = _surface.Canvas;
 
@@ -30,84 +32,44 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     }
 
     /// <summary>
-    /// Draw the lines connecting nodes to their parent/children
-    /// </summary>
-    /// <param name="node"></param>
-    public void DrawConnection(DirectedGraphNode node)
-    {
-        if (_canvas == null)
-        {
-            throw new Exception("Could not draw connection. Canvas object was null");
-        }
-
-        SKPaint paint = new()
-        {
-            Color = new SKColor(255, 255, 255, 128),
-            StrokeWidth = 2,
-            IsAntialias = true
-        };
-
-        foreach (DirectedGraphNode childNode in node.Children)
-        {
-            _canvas.DrawLine(new SKPoint(node.Position.X, node.Position.Y),
-                             new SKPoint(childNode.Position.X, childNode.Position.Y),
-                             paint);
-        }
-    }
-
-    /// <summary>
-    /// Draw the node at its defined position
+    /// Draw the graph based on the provided settings
     /// </summary>
     /// <param name="node"></param>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="distortNodes"></param>
-    public void DrawNode(DirectedGraphNode node,
-                         bool drawNumbersOnNodes,
-                         bool distortNodes)
+    public void Draw(bool drawNumbersOnNodes, bool distortNodes, bool drawConnections)
     {
-        if (_canvas == null)
+        if (_canvas == null || _nodes == null)
         {
-            throw new Exception("Could not draw node. Canvas object was null");
+            throw new Exception("Could not draw the graph. Canvas object or Nodes object was null");
         }
 
-        SKPaint paint = new()
+        var lcv = 0;
+        if (drawConnections)
         {
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            Color = GetNodeSKColor(node.Color)
-        };
+            foreach (var node in _nodes)
+            {
+                DrawConnection(node);
 
-        SKPaint textPaint = new()
-        {
-            Color = SKColors.White,
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            TextAlign = SKTextAlign.Center,
-            TextSize = 20,
-            FakeBoldText = true,
-        };
+                consoleHelper.Write($"\r{lcv} connections drawn... ");
 
-        if (distortNodes)
-        {
-            DrawDistortedPath(_canvas,
-                              new SKPoint(node.Position.X, node.Position.Y),
-                              node.Radius,
-                              paint);
-        }
-        else
-        {
-            _canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
-                               node.Radius,
-                               paint);
+                lcv += 1;
+            }
+
+            consoleHelper.WriteDone();
         }
 
-        if (drawNumbersOnNodes)
+        lcv = 1;
+        foreach (var node in _nodes)
         {
-            // Draw the text
-            // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
-            float textY = node.Position.Y + 8;
+            DrawNode(_canvas,
+                     node,
+                     drawNumbersOnNodes,
+                     distortNodes);
 
-            _canvas.DrawText(node.Value.ToString(), node.Position.X, textY, textPaint);
+            consoleHelper.Write($"\r{lcv} nodes drawn... ");
+
+            lcv += 1;
         }
     }
 
@@ -136,6 +98,9 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         {
             DrawStarWithBlur(_canvas, point);
         }
+
+        consoleHelper.Write($"{starCount} background stars drawn... ");
+        consoleHelper.WriteDone();
     }
 
     /// <summary>
@@ -173,6 +138,56 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     }
 
     /// <summary>
+    /// Draw in individual node
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    /// <param name="drawNumbersOnNodes"></param>
+    /// <param name="distortNodes"></param>
+    private void DrawNode(SKCanvas canvas, DirectedGraphNode node, bool drawNumbersOnNodes, bool distortNodes)
+    {
+        SKPaint paint = new()
+        {
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill,
+            Color = GetNodeSKColor(node.Color)
+        };
+
+        SKPaint textPaint = new()
+        {
+            Color = SKColors.White,
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill,
+            TextAlign = SKTextAlign.Center,
+            TextSize = 20,
+            FakeBoldText = true,
+        };
+
+        if (distortNodes)
+        {
+            DrawDistortedPath(canvas,
+                              new SKPoint(node.Position.X, node.Position.Y),
+                              node.Radius,
+                              paint);
+        }
+        else
+        {
+            canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
+                              node.Radius,
+                              paint);
+        }
+
+        if (drawNumbersOnNodes)
+        {
+            // Draw the text
+            // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
+            float textY = node.Position.Y + 8;
+
+            canvas.DrawText(node.Value.ToString(), node.Position.X, textY, textPaint);
+        }
+    }
+
+    /// <summary>
     /// Instead of a circular node, draw a node of a distorted shape based on the user-defined distortion level
     /// </summary>
     /// <param name="canvas"></param>
@@ -204,6 +219,32 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         path.Close();
 
         canvas.DrawPath(path, paint);
+    }
+
+    /// <summary>
+    /// Draw the lines connecting nodes to their parent/children
+    /// </summary>
+    /// <param name="node"></param>
+    private void DrawConnection(DirectedGraphNode node)
+    {
+        if (_canvas == null)
+        {
+            throw new Exception("Could not draw connection. Canvas object was null");
+        }
+
+        SKPaint paint = new()
+        {
+            Color = new SKColor(255, 255, 255, 128),
+            StrokeWidth = 2,
+            IsAntialias = true
+        };
+
+        foreach (DirectedGraphNode childNode in node.Children)
+        {
+            _canvas.DrawLine(new SKPoint(node.Position.X, node.Position.Y),
+                             new SKPoint(childNode.Position.X, childNode.Position.Y),
+                             paint);
+        }
     }
 
     /// <summary>
@@ -264,5 +305,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         _surface?.Dispose();
         _surface = null;
+
+        _nodes = null;
     }
 }
