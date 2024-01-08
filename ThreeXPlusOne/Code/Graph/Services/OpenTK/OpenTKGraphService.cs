@@ -18,30 +18,27 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
                                                                                Title = "OpenTK Example",
                                                                            }), IGraphService
 {
+    private List<DirectedGraphNode>? _nodes;
     private int _vertexArray;
     private int _vertexBuffer;
     private OpenTKShader? _shader;
     public GraphProvider GraphProvider => GraphProvider.OpenTK;
 
     //IGraphService methods
-    public void InitializeGraph(int width, int height)
+    public void InitializeGraph(List<DirectedGraphNode> nodes, int width, int height)
     {
+        _nodes = nodes;
         consoleHelper.WriteLine("");
     }
 
-    public void DrawConnection(DirectedGraphNode node)
+    public void Draw(bool drawNumbersOnNodes, bool distortNodes, bool drawConnections)
     {
-
-    }
-
-    public void DrawNode(DirectedGraphNode node, bool drawNumbersOnNodes, bool distortNodes)
-    {
-
+        throw new NotImplementedException();
     }
 
     public void GenerateBackgroundStars(int starCount)
     {
-
+        throw new NotImplementedException();
     }
 
     public void SaveGraphImage()
@@ -119,6 +116,7 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
         GL.DeleteBuffer(_vertexBuffer);
         _shader?.Dispose();
         _shader = null;
+        _nodes = null;
     }
 
     private static float[] ColorToOpenGL(System.Drawing.Color color)
