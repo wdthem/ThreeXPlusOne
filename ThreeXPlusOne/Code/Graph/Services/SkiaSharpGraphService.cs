@@ -1,4 +1,5 @@
 using SkiaSharp;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Models;
@@ -14,6 +15,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     private readonly Random _random = new();
 
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
+
+    public ReadOnlyCollection<int> SupportedDimensions => new(new List<int> { 2, 3 });
 
     /// <summary>
     /// Initialize an SKSurface and SKCanvas based on the provided dimensions
