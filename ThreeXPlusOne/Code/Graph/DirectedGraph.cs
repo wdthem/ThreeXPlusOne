@@ -97,6 +97,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                                                   .Where(graphService => graphService.GraphProvider == _settings.GraphProvider)
                                                   .First();
 
+        if (!graphService.SupportedDimensions.Contains(_settings.SanitizedGraphDimensions))
+        {
+            throw new Exception($"Graph provider {_settings.GraphProvider} does not support graphs in {_settings.SanitizedGraphDimensions} dimensions.");
+        }
+
         graphService.InitializeGraph([.. _nodes.Values],
                                      _canvasWidth,
                                      _canvasHeight);
