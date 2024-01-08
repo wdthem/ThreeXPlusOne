@@ -2,14 +2,12 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph.Services.OpenTK;
-
-
-//TODO: Find a way to use the IGraphService interface
-//TODO: this class needs to receive the list of nodes for use in the OnLoad, however OnLoad must just access them from a property or private variable
 
 public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameWindowSettings.Default,
                                                                            new NativeWindowSettings()
@@ -22,7 +20,9 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
     private int _vertexArray;
     private int _vertexBuffer;
     private OpenTKShader? _shader;
+
     public GraphProvider GraphProvider => GraphProvider.OpenTK;
+    public ReadOnlyCollection<int> SupportedDimensions => new(new List<int> { 3 });
 
     //IGraphService methods
     public void InitializeGraph(List<DirectedGraphNode> nodes, int width, int height)
@@ -50,9 +50,13 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
     //GameWindow overrides
     protected override void OnLoad()
     {
+        if (_nodes == null)
+        {
+            throw new Exception("Could not render graph - Nodes object was null");
+        }
+
         base.OnLoad();
 
-        // Initialize shaders, vertex buffer, etc.
         _shader = new OpenTKShader("VertexShader.glsl", "FragmentShader.glsl");
         _vertexArray = GL.GenVertexArray();
         _vertexBuffer = GL.GenBuffer();
@@ -60,23 +64,30 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
         GL.BindVertexArray(_vertexArray);
         GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBuffer);
 
-        //convert node color to openGL color
-        //float[] glColor = ColorToOpenGL(node.Color);
-
         //TODO: you would need to add in the glColor values here, like:
-
         /*
         //Vertex 1
         1.0f, 2.0f, 3.0f, // Position
         1.0f, 0.0f, 0.0f, 1.0f, // Color (Red)
         */
 
-        float[] vertices = [
-            // Vertex coordinates
-            1.0f, 1.0f, 0.0f, // Point 1
-            2.0f, 2.0f, 0.0f, // Point 2
-            // Add as many points as needed
-        ];
+        List<float> verticesList = [];
+
+        foreach (DirectedGraphNode node in _nodes)
+        {
+            float[] glColor = GetOpenGLColor(node.Color);
+
+            verticesList.Add(node.Position.X);
+            verticesList.Add(node.Position.Y);
+            verticesList.Add(node.Z);
+
+            verticesList.Add(glColor[0]);
+            verticesList.Add(glColor[1]);
+            verticesList.Add(glColor[2]);
+            verticesList.Add(glColor[3]);
+        }
+
+        float[] vertices = [.. verticesList];
 
         GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
 
@@ -119,7 +130,7 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
         _nodes = null;
     }
 
-    private static float[] ColorToOpenGL(System.Drawing.Color color)
+    private static float[] GetOpenGLColor(Color color)
     {
         return
         [
@@ -129,5 +140,4 @@ public class OpenTKGraphService(IConsoleHelper consoleHelper) : GameWindow(GameW
             color.A / 255.0f  // Alpha
         ];
     }
-
 }
