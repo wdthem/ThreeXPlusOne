@@ -70,6 +70,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                     }
                 }
 
+                currentNode.Color = GenerateNodeColor();
+
                 previousNode = currentNode;
 
                 currentDepth--;
@@ -95,43 +97,18 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                                                   .Where(graphService => graphService.GraphProvider == _settings.GraphProvider)
                                                   .First();
 
-        graphService.InitializeGraph(_canvasWidth, _canvasHeight);
+        graphService.InitializeGraph([.. _nodes.Values],
+                                     _canvasWidth,
+                                     _canvasHeight);
 
         if (_settings.GenerateBackgroundStars)
         {
             graphService.GenerateBackgroundStars(100);
         }
 
-        _consoleHelper.WriteLine("");
-
-        var lcv = 0;
-        if (_settings.DrawConnections)
-        {
-            foreach (var node in _nodes)
-            {
-                graphService.DrawConnection(node.Value);
-
-                _consoleHelper.Write($"\r{lcv} connections drawn... ");
-
-                lcv += 1;
-            }
-
-            _consoleHelper.WriteDone();
-        }
-
-        lcv = 1;
-        foreach (var node in _nodes)
-        {
-            node.Value.Color = GenerateNodeColor();
-
-            graphService.DrawNode(node.Value,
-                                  _settings.DrawNumbersOnNodes,
-                                  _settings.DistortNodes);
-
-            _consoleHelper.Write($"\r{lcv} nodes drawn... ");
-
-            lcv += 1;
-        }
+        graphService.Draw(drawNumbersOnNodes: _settings.DrawNumbersOnNodes,
+                          distortNodes: _settings.DistortNodes,
+                          drawConnections: _settings.DrawConnections);
 
         _consoleHelper.WriteDone();
 
