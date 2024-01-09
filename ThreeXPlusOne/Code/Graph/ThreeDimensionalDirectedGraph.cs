@@ -153,18 +153,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         if (_settings.NodeRotationAngle != 0)
         {
-            (double x, double y) rotatedPosition;
+            (float x, float y) = RotateNode(node.Value, xOffset, yOffset);
 
-            if (node.Value % 2 == 0)
-            {
-                rotatedPosition = RotatePointAntiClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
-            }
-            else
-            {
-                rotatedPosition = RotatePointClockwise(xOffset, yOffset, _settings.NodeRotationAngle);
-            }
-
-            node.Position = ((float)rotatedPosition.x, (float)rotatedPosition.y);
+            node.Position = (x, y);
         }
 
         if (node.Parent != null && node.Parent.Children.Count == 2)
