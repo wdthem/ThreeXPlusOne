@@ -277,7 +277,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     }
 
     /// <summary>
-    /// Get a random colour for the node
+    /// Convert the node's color object to an SKColor object
     /// </summary>
     /// <param name="alpha"></param>
     /// <returns></returns>

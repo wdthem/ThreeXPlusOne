@@ -232,13 +232,34 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
+    /// Rotate a node's x,y coordinate position based on whether the node's integer value is even or odd
+    /// </summary>
+    /// <param name="nodeValue"></param>
+    /// <returns></returns>
+    protected (float X, float Y) RotateNode(int nodeValue, float x, float y)
+    {
+        (float x, float y) rotatedPosition;
+
+        if (nodeValue % 2 == 0)
+        {
+            rotatedPosition = RotatePointAntiClockwise(x, y, _settings.NodeRotationAngle);
+        }
+        else
+        {
+            rotatedPosition = RotatePointClockwise(x, y, _settings.NodeRotationAngle);
+        }
+
+        return rotatedPosition;
+    }
+
+    /// <summary>
     /// Rotate the node's position anti-clockwise based on the angle provided by the user. This gives a more artistic feel to the generated graph.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <param name="angleDegrees"></param>
     /// <returns></returns>
-    protected static (double x, double y) RotatePointAntiClockwise(double x, double y, double angleDegrees)
+    private static (float x, float y) RotatePointAntiClockwise(float x, float y, double angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 
@@ -248,7 +269,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         double xNew = cosTheta * x - sinTheta * y;
         double yNew = sinTheta * x + cosTheta * y;
 
-        return (xNew, yNew);
+        return ((float)xNew, (float)yNew);
     }
 
     /// <summary>
@@ -258,7 +279,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="y"></param>
     /// <param name="angleDegrees"></param>
     /// <returns></returns>
-    protected static (double x, double y) RotatePointClockwise(double x, double y, double angleDegrees)
+    private static (float x, float y) RotatePointClockwise(float x, float y, double angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 
@@ -268,7 +289,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         double xNew = cosTheta * x + sinTheta * y;
         double yNew = -sinTheta * x + cosTheta * y;
 
-        return (xNew, yNew);
+        return ((float)xNew, (float)yNew);
     }
 
     /// <summary>
