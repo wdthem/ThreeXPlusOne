@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "program": "${workspaceFolder}/ThreeXPlusOne/bin/Debug/net8.0/ThreeXPlusOne.dll",
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "cwd": "${workspaceFolder}/ThreeXPlusOne/bin/Debug/net8.0",
+        }
+    ]
+}
