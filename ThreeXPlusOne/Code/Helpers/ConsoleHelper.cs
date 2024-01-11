@@ -422,6 +422,15 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.ForegroundColor = ConsoleColor.White;
     }
 
+    public void WriteProcessEnd(TimeSpan timespan)
+    {
+        string elapsedTime = string.Format("{0:00}:{1:00}.{2:000}",
+                                           timespan.Minutes, timespan.Seconds, timespan.Milliseconds);
+
+        WriteHeading($"Process completed");
+        WriteLine($"Execution time: {elapsedTime}\n\n");
+    }
+
     public void WriteSpinner(CancellationToken token)
     {
         var spinner = new string[] { "|", "/", "-", "\\" };
