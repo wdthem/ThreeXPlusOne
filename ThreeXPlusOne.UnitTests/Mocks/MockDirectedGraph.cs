@@ -23,8 +23,8 @@ public class MockDirectedGraph(IOptions<Settings> settings,
     {
     }
 
-    public (float x, float y) RotateNode_Base(int nodeValue, float x, float y)
+    public (float x, float y) RotateNode_Base(int nodeValue, float rotationAngle, float x, float y)
     {
-        return RotateNode(nodeValue, x, y);
+        return RotateNode(nodeValue, rotationAngle, x, y);
     }
 }

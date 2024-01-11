@@ -49,7 +49,7 @@ public class Settings
     /// <remarks>
     /// If the node value is even, it is rotated clockwise. If odd, anti-clockwise
     /// </remarks>
-    public double NodeRotationAngle { get; set; } = 0;
+    public float NodeRotationAngle { get; set; } = 0;
 
     /// <summary>
     /// The radius of the node

@@ -57,14 +57,13 @@ public class DirectedGraphTests
                                      float expectedYPrime)
     {
         // Arrange
-        _settings.Value.NodeRotationAngle = rotationAngle;
 
         MockDirectedGraph mockDirectedGraph = new(_settings,
                                                   _graphServicesList,
                                                   _consoleHelperMock.Object);
 
         // Act
-        (float xPrime, float yPrime) = mockDirectedGraph.RotateNode_Base(nodeValue, xCoordinate, yCoordinate);
+        (float xPrime, float yPrime) = mockDirectedGraph.RotateNode_Base(nodeValue, rotationAngle, xCoordinate, yCoordinate);
 
         // Assert
         xPrime.Should().Be(expectedXPrime);

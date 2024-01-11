@@ -119,7 +119,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (_settings.NodeRotationAngle != 0)
             {
-                (float x, float y) = RotateNode(node.Value, xOffset, yOffset);
+                (float x, float y) = RotateNode(node.Value, _settings.NodeRotationAngle, xOffset, yOffset);
 
                 node.Position = (x, y);
             }
