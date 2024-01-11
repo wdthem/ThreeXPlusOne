@@ -1,5 +1,5 @@
-﻿using System.Text;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
+using System.Text;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 

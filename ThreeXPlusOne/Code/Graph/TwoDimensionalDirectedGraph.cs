@@ -7,8 +7,7 @@ namespace ThreeXPlusOne.Code.Graph;
 
 public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                                          IEnumerable<IGraphService> graphServices,
-                                         IFileHelper fileHelper,
-                                         IConsoleHelper consoleHelper) : DirectedGraph(settings, graphServices, fileHelper, consoleHelper), IDirectedGraph
+                                         IConsoleHelper consoleHelper) : DirectedGraph(settings, graphServices, consoleHelper), IDirectedGraph
 {
     private int _nodesPositioned = 0;
 
