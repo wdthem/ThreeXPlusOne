@@ -10,7 +10,6 @@ namespace ThreeXPlusOne.UnitTests;
 
 public class DirectedGraphTests
 {
-    private readonly Mock<IFileHelper> _fileHelperMock;
     private readonly Mock<IConsoleHelper> _consoleHelperMock;
     private readonly IEnumerable<IGraphService> _graphServicesList;
     private readonly IOptions<Settings> _settings = new OptionsWrapper<Settings>
@@ -20,9 +19,8 @@ public class DirectedGraphTests
 
     public DirectedGraphTests()
     {
-        _fileHelperMock = new Mock<IFileHelper>();
         _consoleHelperMock = new Mock<IConsoleHelper>();
-        _graphServicesList = new List<IGraphService>() { new Mock<IGraphService>().Object };
+        _graphServicesList = [new Mock<IGraphService>().Object];
     }
 
     [Fact]
@@ -33,7 +31,6 @@ public class DirectedGraphTests
 
         TwoDimensionalDirectedGraph twoDimensionalGraph = new(_settings,
                                                               _graphServicesList,
-                                                              _fileHelperMock.Object,
                                                               _consoleHelperMock.Object);
 
         // Act + Assert

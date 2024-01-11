@@ -21,9 +21,12 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <summary>
     /// Initialize an SKSurface and SKCanvas based on the provided dimensions
     /// </summary>
+    /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    public void InitializeGraph(List<DirectedGraphNode> nodes, int width, int height)
+    public void InitializeGraph(List<DirectedGraphNode> nodes,
+                                int width,
+                                int height)
     {
         DisposeGraphResources();
 
@@ -37,10 +40,12 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <summary>
     /// Draw the graph based on the provided settings
     /// </summary>
-    /// <param name="node"></param>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="distortNodes"></param>
-    public void Draw(bool drawNumbersOnNodes, bool distortNodes, bool drawConnections)
+    /// <param name="drawConnections"></param>
+    public void Draw(bool drawNumbersOnNodes,
+                     bool distortNodes,
+                     bool drawConnections)
     {
         if (_canvas == null || _nodes == null)
         {
@@ -52,7 +57,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         {
             foreach (var node in _nodes)
             {
-                DrawConnection(node);
+                DrawConnection(_canvas, node);
 
                 consoleHelper.Write($"\r{lcv} connections drawn... ");
 
@@ -147,7 +152,10 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <param name="node"></param>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="distortNodes"></param>
-    private void DrawNode(SKCanvas canvas, DirectedGraphNode node, bool drawNumbersOnNodes, bool distortNodes)
+    private void DrawNode(SKCanvas canvas,
+                          DirectedGraphNode node,
+                          bool drawNumbersOnNodes,
+                          bool distortNodes)
     {
         SKPaint paint = new()
         {
@@ -227,14 +235,11 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <summary>
     /// Draw the lines connecting nodes to their parent/children
     /// </summary>
+    /// <param name="canvas"></param>
     /// <param name="node"></param>
-    private void DrawConnection(DirectedGraphNode node)
+    private static void DrawConnection(SKCanvas canvas,
+                                       DirectedGraphNode node)
     {
-        if (_canvas == null)
-        {
-            throw new Exception("Could not draw connection. Canvas object was null");
-        }
-
         SKPaint paint = new()
         {
             Color = new SKColor(255, 255, 255, 128),
@@ -244,9 +249,9 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         foreach (DirectedGraphNode childNode in node.Children)
         {
-            _canvas.DrawLine(new SKPoint(node.Position.X, node.Position.Y),
-                             new SKPoint(childNode.Position.X, childNode.Position.Y),
-                             paint);
+            canvas.DrawLine(new SKPoint(node.Position.X, node.Position.Y),
+                            new SKPoint(childNode.Position.X, childNode.Position.Y),
+                            paint);
         }
     }
 
@@ -255,7 +260,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="point"></param>
-    private void DrawStarWithBlur(SKCanvas canvas, SKPoint point)
+    private void DrawStarWithBlur(SKCanvas canvas,
+                                  SKPoint point)
     {
         float starSize = _random.Next(20, 41); //from 20 to 40
         float blurRadius = 9.0f;

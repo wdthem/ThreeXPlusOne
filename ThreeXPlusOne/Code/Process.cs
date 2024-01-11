@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
+using System.Diagnostics;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
 
