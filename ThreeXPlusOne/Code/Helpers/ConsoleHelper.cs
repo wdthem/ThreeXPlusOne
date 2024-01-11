@@ -19,6 +19,21 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Console.WriteLine(message);
     }
 
+    public void SetForegroundColor(ConsoleColor color)
+    {
+        Console.ForegroundColor = color;
+    }
+
+    public void SetCursorVisibility(bool visible)
+    {
+        Console.CursorVisible = visible;
+    }
+
+    public void SetCursorPosition(int left, int top)
+    {
+        Console.SetCursorPosition(left, top);
+    }
+
     public void WriteSettings()
     {
         WriteHeading("Settings");
@@ -30,30 +45,30 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         {
             var value = property.GetValue(_settings, null);
 
-            Console.ForegroundColor = ConsoleColor.Blue;
+            SetForegroundColor(ConsoleColor.Blue);
 
-            Console.Write($"    {property.Name}: ");
+            Write($"    {property.Name}: ");
 
-            Console.ForegroundColor = ConsoleColor.White;
+            SetForegroundColor(ConsoleColor.White);
 
             if ((value?.ToString() ?? "").Length > 100)
             {
                 value = TruncateLongSettings(value?.ToString() ?? "");
             }
 
-            Console.Write($"{value}");
+            Write($"{value}");
 
-            Console.WriteLine();
+            WriteLine("");
         }
 
         if (_settings.GraphDimensions != _settings.SanitizedGraphDimensions)
         {
-            Console.WriteLine($"\nInvalid GraphDimensions ({_settings.GraphDimensions}). Defaulted to {_settings.SanitizedGraphDimensions}.");
+            WriteLine($"\nInvalid GraphDimensions ({_settings.GraphDimensions}). Defaulted to {_settings.SanitizedGraphDimensions}.");
         }
 
         if (!settingsFileExists)
         {
-            Console.WriteLine($"\nFile '{_settings.SettingsFileName}' not found. Used defaults.");
+            WriteLine($"\nFile '{_settings.SettingsFileName}' not found. Used defaults.");
         }
     }
 
@@ -61,53 +76,53 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         if (savedSettings)
         {
-            Console.WriteLine($"\nSaved generated numbers to '{_settings.SettingsFileName}'\n");
+            WriteLine($"\nSaved generated numbers to '{_settings.SettingsFileName}'\n");
         }
         else
         {
-            Console.WriteLine("\nSettings left unchanged\n");
+            WriteLine("\nSettings left unchanged\n");
         }
     }
 
     public void WriteError(string message)
     {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.Write("\nERROR: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine($"{message}\n");
+        SetForegroundColor(ConsoleColor.Red);
+        Write("\nERROR: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine($"{message}\n");
     }
 
     public void WriteDone()
     {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Done\n");
-        Console.ForegroundColor = ConsoleColor.White;
+        SetForegroundColor(ConsoleColor.Green);
+        WriteLine("Done\n");
+        SetForegroundColor(ConsoleColor.White);
     }
 
     public bool ReadYKeyToProceed(string message)
     {
-        Console.Write($"{message} (y/n): ");
+        Write($"{message} (y/n): ");
 
         ConsoleKeyInfo keyInfo = Console.ReadKey();
-        Console.WriteLine();
+        WriteLine("");
 
         return keyInfo.Key == ConsoleKey.Y;
     }
 
     public void WriteSeparator()
     {
-        Console.WriteLine("\n------------------------------------------------------------------------------------");
+        WriteLine("\n------------------------------------------------------------------------------------");
     }
 
     public void WriteHeading(string headerText)
     {
         WriteSeparator();
 
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        SetForegroundColor(ConsoleColor.DarkYellow);
 
-        Console.WriteLine($"\n{headerText}\n");
+        WriteLine($"\n{headerText}\n");
 
-        Console.ForegroundColor = ConsoleColor.White;
+        SetForegroundColor(ConsoleColor.White);
     }
 
     public void WriteHelpText()
@@ -115,311 +130,311 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteAsciiArtLogo();
 
         WriteHeading("Credits");
-        Console.WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
-        Console.WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
-        Console.WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n");
+        WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
+        WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
+        WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n");
 
         WriteHeading("GitHub repository");
-        Console.WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
+        WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
 
         WriteHeading("Usage information");
-        Console.WriteLine($"To apply custom settings, ensure that a '{_settings.SettingsFileName}' file exists in the same folder as the executable. It must have the following content:\n");
-        Console.WriteLine("{");
+        WriteLine($"To apply custom settings, ensure that a '{_settings.SettingsFileName}' file exists in the same folder as the executable. It must have the following content:\n");
+        WriteLine("{");
 
         var lcv = 1;
         var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
 
-        Console.ForegroundColor = ConsoleColor.White;
+        SetForegroundColor(ConsoleColor.White);
 
         foreach (var property in settingsProperties)
         {
             var comma = lcv != settingsProperties.Count ? "," : "";
 
-            Console.ForegroundColor = ConsoleColor.Blue;
+            SetForegroundColor(ConsoleColor.Blue);
 
-            Console.Write($"    {property.Name}: ");
+            Write($"    {property.Name}: ");
 
-            Console.ForegroundColor = ConsoleColor.White;
+            SetForegroundColor(ConsoleColor.White);
 
             if (property.PropertyType == typeof(string))
             {
-                Console.WriteLine("\"[value]\"");
+                WriteLine("\"[value]\"");
             }
             else
             {
-                Console.WriteLine("[value]");
+                WriteLine("[value]");
             }
 
             lcv++;
         }
 
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("}");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("}");
 
-        Console.WriteLine("\nA good starting point for settings:\n");
-        Console.ForegroundColor = ConsoleColor.White;
+        WriteLine("\nA good starting point for settings:\n");
+        SetForegroundColor(ConsoleColor.White);
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.NumberOfSeries)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("200 (the total number of series that will run)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.NumberOfSeries)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("200 (the total number of series that will run)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.MaxStartingNumber)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("1000 (the highest number any given series can start with)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.MaxStartingNumber)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("1000 (the highest number any given series can start with)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.UseTheseNumbers)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine($"\"\" (comma-separated list of numbers to run the program with. Overrides {nameof(Settings.NumberOfSeries)} and {nameof(Settings.MaxStartingNumber)})");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.UseTheseNumbers)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine($"\"\" (comma-separated list of numbers to run the program with. Overrides {nameof(Settings.NumberOfSeries)} and {nameof(Settings.MaxStartingNumber)})");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.ExcludeTheseNumbers)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("\"\" (comma-separated list of numbers not to use)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.ExcludeTheseNumbers)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("\"\" (comma-separated list of numbers not to use)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.NodeRotationAngle)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("0 (the size of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.NodeRotationAngle)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("0 (the size of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.NodeRadius)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("50 for 2D, 275 for 3D (the radius of the nodes in pixels)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.NodeRadius)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("50 for 2D, 275 for 3D (the radius of the nodes in pixels)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.DistortNodes)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("false (whether or not to use circles or distorted shapes as graph nodes)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.DistortNodes)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("false (whether or not to use circles or distorted shapes as graph nodes)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.XNodeSpacer)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("125 for 2D, 250 for 3D (the space between nodes on the x-axis)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.XNodeSpacer)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("125 for 2D, 250 for 3D (the space between nodes on the x-axis)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.YNodeSpacer)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("125 for 2D, 225 for 3D (the space between nodes on the y-axis)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.YNodeSpacer)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("125 for 2D, 225 for 3D (the space between nodes on the y-axis)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.DistanceFromViewer)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("200 (for the 3D graph, the distance from the view when applying the perspective transformation)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.DistanceFromViewer)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("200 (for the 3D graph, the distance from the view when applying the perspective transformation)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.GraphDimensions)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("2 (the number of dimensions to render in the graph - 2 or 3)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.GraphDimensions)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("2 (the number of dimensions to render in the graph - 2 or 3)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.DrawConnections)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("true (whether or not to draw connections between the nodes in the graph - if true can increase image file size substantially)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.DrawConnections)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("true (whether or not to draw connections between the nodes in the graph - if true can increase image file size substantially)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.DrawNumbersOnNodes)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("true (whether or not to draw the numbers at the center of the node that the node represents)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.DrawNumbersOnNodes)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("true (whether or not to draw the numbers at the center of the node that the node represents)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.GenerateGraph)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("true (whether or not to generate the visualization of the data)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.GenerateGraph)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("true (whether or not to generate the visualization of the data)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.GenerateHistogram)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("true (whether or not to generate a histogram of the distribution of numbers starting from 1-9)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.GenerateHistogram)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("true (whether or not to generate a histogram of the distribution of numbers starting from 1-9)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.GenerateMetadataFile)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("true (whether or not to generate a file with metadata about the run)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.GenerateMetadataFile)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("true (whether or not to generate a file with metadata about the run)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.GenerateBackgroundStars)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("false (whether or not to generate random stars in the background of the graph)");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.GenerateBackgroundStars)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("false (whether or not to generate random stars in the background of the graph)");
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"    {nameof(Settings.OutputPath)}: ");
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder where the output files should be placed)\n");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.OutputPath)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder where the output files should be placed)\n");
 
-        Console.WriteLine("Note: Increasing some settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
+        WriteLine("Note: Increasing some settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
     }
 
     public void WriteAsciiArtLogo()
     {
-        Console.ForegroundColor = ConsoleColor.Blue;
+        SetForegroundColor(ConsoleColor.Blue);
 
         //line 1
-        Console.Write("\n\n_____");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\\\\\\\\\\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_______________________________________________________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("_        ");
+        Write("\n\n_____");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\\\\\\\\\\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_______________________________________________________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteLine("_        ");
 
         //line 2
-        Console.Write(" ___");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\///////\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("__________________________________________________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\\\\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("_       ");
+        Write(" ___");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\///////\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("__________________________________________________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\\\\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteLine("_       ");
 
         //line 3
-        Console.Write("  __");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\///");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("______");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_______________________________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_______________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/////\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("_      ");
+        Write("  __");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\///");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("______");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_______________________________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_______________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/////\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteLine("_      ");
 
         //line 4
-        Console.Write("   _________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\//");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("____");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("____");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_______________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("___________________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("_     ");
+        Write("   _________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\//");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("____");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("____");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_______________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("___________________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteLine("_     ");
 
         //line 5
-        Console.Write("    ________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\////\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("__");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\///\\\\\\/\\\\\\/");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_____________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\\\\\\\\\\\\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_______________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("_    ");
+        Write("    ________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\////\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("__");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\///\\\\\\/\\\\\\/");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_____________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\\\\\\\\\\\\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_______________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteLine("_    ");
 
         //line 6
-        Console.Write("     ___________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\//\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("___");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\///\\\\\\/");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("______________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/////\\\\\\///");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("________________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("_   ");
+        Write("     ___________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\//\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("___");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\///\\\\\\/");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("______________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/////\\\\\\///");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("________________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteLine("_   ");
 
         //line 7
-        Console.Write("      __");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("______");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_____");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_________________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("___________________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("_  ");
+        Write("      __");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("______");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_____");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_________________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("___________________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteLine("_  ");
 
         //line 8
-        Console.Write("       _");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\///\\\\\\\\\\\\\\\\\\/");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("____");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("/\\\\\\/\\///\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_______________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\///");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("____________________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/\\\\\\");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("_ ");
+        Write("       _");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\///\\\\\\\\\\\\\\\\\\/");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("____");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("/\\\\\\/\\///\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_______________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\///");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("____________________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/\\\\\\");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteLine("_ ");
 
         //line 9
-        Console.Write("        ___");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\/////////");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("_____");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\///");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("____");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\///");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write("________________________________________");
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("\\///");
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.WriteLine("_ ");
+        Write("        ___");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\/////////");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("_____");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\///");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("____");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\///");
+        SetForegroundColor(ConsoleColor.Blue);
+        Write("________________________________________");
+        SetForegroundColor(ConsoleColor.DarkYellow);
+        Write("\\///");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteLine("_ ");
 
-        Console.ForegroundColor = ConsoleColor.White;
+        SetForegroundColor(ConsoleColor.White);
     }
 
     public void WriteProcessEnd(TimeSpan timespan)
@@ -436,13 +451,13 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         var spinner = new string[] { "|", "/", "-", "\\" };
         int counter = 0;
 
-        Console.CursorVisible = false;
+        SetCursorVisibility(false);
 
         while (!token.IsCancellationRequested)
         {
-            Console.Write($"{spinner[counter]}");
+            Write($"{spinner[counter]}");
 
-            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+            SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
 
             counter = (counter + 1) % spinner.Length;
 
@@ -450,7 +465,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         }
 
         WriteDone();
-        Console.CursorVisible = true;
+        SetCursorVisibility(true);
     }
 
     private string TruncateLongSettings(string input, int maxLength = 100)

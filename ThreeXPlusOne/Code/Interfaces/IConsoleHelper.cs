@@ -15,6 +15,25 @@ public interface IConsoleHelper
     void WriteLine(string message);
 
     /// <summary>
+    /// Set the out color of the console
+    /// </summary>
+    /// <param name="color"></param>
+    void SetForegroundColor(ConsoleColor color);
+
+    /// <summary>
+    /// Set the visibility of the cursor
+    /// </summary>
+    /// <param name="visible"></param>
+    void SetCursorVisibility(bool visible);
+
+    /// <summary>
+    /// Set the cursor position
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="top"></param>
+    void SetCursorPosition(int left, int top);
+
+    /// <summary>
     /// Output the settings from the settings file, or defaults
     /// </summary>
     void WriteSettings();
