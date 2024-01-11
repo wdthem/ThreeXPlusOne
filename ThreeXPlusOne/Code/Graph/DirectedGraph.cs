@@ -239,12 +239,14 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// If even, rotate clockwise. If odd, rotate anti-clockwise. But if the coordinates are in negative space, reverse this.
     /// </summary>
     /// <param name="nodeValue"></param>
+    /// <param name="rotationAngle"></param>
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <returns></returns>
-    protected (float X, float Y) RotateNode(int nodeValue,
-                                            float x,
-                                            float y)
+    protected static (float X, float Y) RotateNode(int nodeValue,
+                                                   float rotationAngle,
+                                                   float x,
+                                                   float y)
     {
         (float x, float y) rotatedPosition;
 
@@ -253,11 +255,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         if ((nodeValue % 2 == 0 && !isInNegativeSpace) || (nodeValue % 2 != 0 && isInNegativeSpace))
         {
-            rotatedPosition = RotatePointClockwise(x, y, _settings.NodeRotationAngle);
+            rotatedPosition = RotatePointClockwise(x, y, rotationAngle);
         }
         else
         {
-            rotatedPosition = RotatePointAntiClockwise(x, y, _settings.NodeRotationAngle);
+            rotatedPosition = RotatePointAntiClockwise(x, y, rotationAngle);
         }
 
         return rotatedPosition;
@@ -272,7 +274,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <returns></returns>
     private static (float x, float y) RotatePointClockwise(float x,
                                                            float y,
-                                                           double angleDegrees)
+                                                           float angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 
@@ -294,7 +296,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <returns></returns>
     private static (float x, float y) RotatePointAntiClockwise(float x,
                                                                float y,
-                                                               double angleDegrees)
+                                                               float angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 
