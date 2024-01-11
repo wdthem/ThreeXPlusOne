@@ -65,6 +65,12 @@ public interface IConsoleHelper
     void WriteAsciiArtLogo();
 
     /// <summary>
+    /// Output a message to end the process, with details about the total execution time
+    /// </summary>
+    /// <param name="timespan"></param>
+    void WriteProcessEnd(TimeSpan timespan);
+
+    /// <summary>
     /// Output a visual indication that the process is doing work
     /// </summary>
     /// <param name="token"></param>

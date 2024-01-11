@@ -38,13 +38,8 @@ public class Process(IOptions<Settings> settings,
         SaveSettings();
 
         stopwatch.Stop();
-        TimeSpan ts = stopwatch.Elapsed;
 
-        string elapsedTime = string.Format("{0:00}:{1:00}.{2:000}",
-                                           ts.Minutes, ts.Seconds, ts.Milliseconds);
-
-        consoleHelper.WriteHeading($"Process completed");
-        consoleHelper.WriteLine($"Execution time: {elapsedTime}\n\n");
+        consoleHelper.WriteProcessEnd(stopwatch.Elapsed);
     }
 
     /// <summary>
