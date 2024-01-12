@@ -35,6 +35,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         _canvas = _surface.Canvas;
 
         _canvas.Clear(SKColors.Black);
+
+        AddLightSource();
     }
 
     /// <summary>
@@ -302,6 +304,37 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
                            Color.White.G,
                            Color.White.B,
                            Color.White.A);
+    }
+
+    private void AddLightSource()
+    {
+        if (_canvas == null)
+        {
+            throw new Exception("Could not add light source. Canvas object was null.");
+        }
+
+        SKPoint startPoint = new(0, 0); // Top left corner
+        SKPoint endPoint = new(_canvas.LocalClipBounds.Width, _canvas.LocalClipBounds.Height);
+
+        SKColor startColor = SKColors.LightYellow; // Bright color for the light source
+        SKColor endColor = SKColors.Gray;
+
+        SKShader shader = SKShader.CreateLinearGradient(startPoint,
+                                                        endPoint,
+                                                        [startColor, endColor],
+                                                        [0, 1], // Corresponding to start and end colors
+                                                        SKShaderTileMode.Clamp);
+
+        SKPaint paint = new()
+        {
+            Shader = shader
+        };
+
+        _canvas.DrawRect(0,
+                         0,
+                         _canvas.LocalClipBounds.Width,
+                         _canvas.LocalClipBounds.Height,
+                         paint);
     }
 
     /// <summary>
