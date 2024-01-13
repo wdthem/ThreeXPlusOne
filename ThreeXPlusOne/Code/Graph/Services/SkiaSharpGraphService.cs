@@ -37,6 +37,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         _canvas.Clear(SKColors.Black);
 
         AddLightSource();
+        //AddLensEffect();
     }
 
     /// <summary>
@@ -317,12 +318,12 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         SKPoint endPoint = new(_canvas.LocalClipBounds.Width, _canvas.LocalClipBounds.Height);
 
         SKColor startColor = SKColors.LightYellow; // Bright color for the light source
-        SKColor endColor = SKColors.Gray;
+        SKColor endColor = SKColors.Black;
 
         SKShader shader = SKShader.CreateLinearGradient(startPoint,
                                                         endPoint,
                                                         [startColor, endColor],
-                                                        [0, 1], // Corresponding to start and end colors
+                                                        [0, 0.75f], // Corresponding to start and end colors
                                                         SKShaderTileMode.Clamp);
 
         SKPaint paint = new()
@@ -335,6 +336,43 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
                          _canvas.LocalClipBounds.Width,
                          _canvas.LocalClipBounds.Height,
                          paint);
+    }
+
+    private void AddLensEffect()
+    {
+        if (_canvas == null)
+        {
+            throw new Exception("Could not add lens effect. Canvas object was null.");
+        }
+
+        // Primary light source - a bright radial gradient
+        SKPoint lightSourceCenter = new(_canvas.LocalClipBounds.Width / 2, _canvas.LocalClipBounds.Height / 2); // Position of the light source
+
+        float lightRadius = 750; // Radius of the bright spot
+
+        SKShader lightShader = SKShader.CreateRadialGradient(lightSourceCenter,
+                                                             lightRadius,
+                                                             new[] { SKColors.LightYellow, SKColors.Transparent },
+                                                             null,
+                                                             SKShaderTileMode.Clamp);
+
+        _canvas.DrawCircle(lightSourceCenter.X, lightSourceCenter.Y, lightRadius, new SKPaint { Shader = lightShader });
+
+        // Simple halo - an ellipse with a gradient
+        SKPoint haloCenter = new(_canvas.LocalClipBounds.Width / 2, _canvas.LocalClipBounds.Height / 2); // Same as light source, or slightly offset
+
+        float haloWidth = 1500;
+        float haloHeight = 750;
+
+        SKRect haloRect = new(haloCenter.X - haloWidth, haloCenter.Y - haloHeight, haloCenter.X + haloWidth, haloCenter.Y + haloHeight);
+
+        SKShader haloShader = SKShader.CreateRadialGradient(haloCenter,
+                                                            haloWidth,
+                                                            new[] { SKColors.Transparent, SKColors.Yellow.WithAlpha(128), SKColors.Transparent },
+                                                            null,
+                                                            SKShaderTileMode.Clamp);
+
+        _canvas.DrawOval(haloRect, new SKPaint { Shader = haloShader });
     }
 
     /// <summary>
