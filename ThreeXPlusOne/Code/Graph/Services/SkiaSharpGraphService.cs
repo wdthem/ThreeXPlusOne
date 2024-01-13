@@ -94,7 +94,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         CancellationTokenSource cancellationTokenSource = new();
 
-        consoleHelper.Write("Adding light source... ");
+        consoleHelper.Write("Generating light source... ");
 
         Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
 
@@ -137,7 +137,6 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="distortNodes"></param>
     /// <param name="drawConnections"></param>
-    /// <param name="addLightSource"></param>
     /// <exception cref="Exception"></exception>
     public void Draw(bool drawNumbersOnNodes,
                      bool distortNodes,
@@ -488,6 +487,9 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     {
         if (disposing)
         {
+            _image?.Dispose();
+            _image = null;
+
             _canvas?.Dispose();
             _canvas = null;
 
