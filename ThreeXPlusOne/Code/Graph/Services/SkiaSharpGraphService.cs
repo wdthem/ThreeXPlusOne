@@ -12,11 +12,12 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     private List<DirectedGraphNode>? _nodes;
     private SKSurface? _surface;
     private SKCanvas? _canvas;
+    private SKImage? _image;
     private readonly Random _random = new();
 
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
 
-    public ReadOnlyCollection<int> SupportedDimensions => new(new List<int> { 2, 3 });
+    public ReadOnlyCollection<int> SupportedDimensions => new([2, 3]);
 
     /// <summary>
     /// Initialize an SKSurface and SKCanvas based on the provided dimensions
@@ -24,12 +25,10 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    public void InitializeGraph(List<DirectedGraphNode> nodes,
+    public void Initialize(List<DirectedGraphNode> nodes,
                                 int width,
                                 int height)
     {
-        DisposeGraphResources();
-
         _nodes = nodes;
         _surface = SKSurface.Create(new SKImageInfo(width, height));
         _canvas = _surface.Canvas;
@@ -79,6 +78,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
             lcv += 1;
         }
+
+        consoleHelper.WriteDone();
     }
 
     /// <summary>
@@ -112,14 +113,31 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     }
 
     /// <summary>
-    /// Save the generated graph as a png
+    /// Render the graph
     /// </summary>
-    /// <exception cref="Exception"></exception>
-    public void SaveGraphImage()
+    public void Render()
     {
         if (_surface == null)
         {
-            throw new Exception("Could not save SkiaSharp graph. Surface object was null");
+            throw new Exception("Could not render graph. Surface object was null");
+        }
+
+        consoleHelper.Write($"Rendering graph with {GraphProvider}... ");
+
+        _image = _surface.Snapshot();
+
+        consoleHelper.WriteDone();
+    }
+
+    /// <summary>
+    /// Save the generated graph as a PNG
+    /// </summary>
+    /// <exception cref="Exception"></exception>
+    public void SaveImage()
+    {
+        if (_image == null)
+        {
+            throw new Exception("Could not save graph. Image object was null");
         }
 
         string path = fileHelper.GenerateDirectedGraphFilePath();
@@ -131,8 +149,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
 
-        using (SKImage image = _surface.Snapshot())
-        using (SKData data = image.Encode(SKEncodedImageFormat.Png, 25))
+        using (SKData data = _image.Encode(SKEncodedImageFormat.Png, 25))
         using (FileStream stream = File.OpenWrite(path))
         {
             data.SaveTo(stream);
@@ -142,7 +159,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         spinner.Wait();
 
-        DisposeGraphResources();
+        consoleHelper.WriteDone();
     }
 
     /// <summary>
@@ -304,17 +321,42 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
                            Color.White.A);
     }
 
+    #region IDisposable
+
     /// <summary>
-    /// Manually dispose of the graph resources given they are not used in the context of Using statements
+    /// IDisposable Dispose method
     /// </summary>
-    private void DisposeGraphResources()
+    public void Dispose()
     {
-        _canvas?.Dispose();
-        _canvas = null;
-
-        _surface?.Dispose();
-        _surface = null;
-
-        _nodes = null;
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
+
+    /// <summary>
+    /// Method to handle disposing resources
+    /// </summary>
+    /// <param name="disposing"></param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _canvas?.Dispose();
+            _canvas = null;
+
+            _surface?.Dispose();
+            _surface = null;
+
+            _nodes = null;
+        }
+    }
+
+    /// <summary>
+    /// IDisposable finalizer
+    /// </summary>
+    ~SkiaSharpGraphService()
+    {
+        Dispose(false);
+    }
+
+    #endregion
 }
