@@ -13,6 +13,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     private SKSurface? _surface;
     private SKCanvas? _canvas;
     private SKImage? _image;
+    private bool _lightSourceInPlace = false;
+    private (float X, float Y) _lightSourceOrigin;
     private readonly Random _random = new();
 
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
@@ -26,17 +28,107 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <param name="width"></param>
     /// <param name="height"></param>
     public void Initialize(List<DirectedGraphNode> nodes,
-                                int width,
-                                int height)
+                           int width,
+                           int height)
     {
+        CancellationTokenSource cancellationTokenSource = new();
+
+        consoleHelper.Write($"Initializing {GraphProvider} graph... ");
+
+        Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
+
         _nodes = nodes;
         _surface = SKSurface.Create(new SKImageInfo(width, height));
         _canvas = _surface.Canvas;
 
         _canvas.Clear(SKColors.Black);
 
-        AddLightSource();
-        //AddLensEffect();
+        cancellationTokenSource.Cancel();
+
+        spinner.Wait();
+
+        consoleHelper.WriteDone();
+    }
+
+    /// <summary>
+    /// Optionally generate white points in the background to mimic stars
+    /// </summary>
+    /// <param name="starCount"></param>
+    /// <exception cref="Exception"></exception>
+    public void GenerateBackgroundStars(int starCount)
+    {
+        if (_canvas == null)
+        {
+            throw new Exception("Could not generate background stars. Surface or Canvas object was null");
+        }
+
+        List<SKPoint> points = [];
+
+        for (int i = 0; i < starCount; i++)
+        {
+            float x = (float)_random.NextDouble() * _canvas.LocalClipBounds.Width;
+            float y = (float)_random.NextDouble() * _canvas.LocalClipBounds.Height;
+
+            points.Add(new SKPoint(x, y));
+        }
+
+        foreach (SKPoint point in points)
+        {
+            DrawStarWithBlur(_canvas, point);
+        }
+
+        consoleHelper.Write($"{starCount} background stars drawn... ");
+        consoleHelper.WriteDone();
+    }
+
+    /// <summary>
+    /// Add a light source from the top left
+    /// </summary>
+    /// <exception cref="Exception"></exception>
+    public void GenerateLightSource()
+    {
+        if (_canvas == null)
+        {
+            throw new Exception("Could not add light source. Canvas object was null.");
+        }
+
+        CancellationTokenSource cancellationTokenSource = new();
+
+        consoleHelper.Write("Adding light source... ");
+
+        Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
+
+        _lightSourceOrigin = (0, 0);
+        _lightSourceInPlace = true;
+
+        SKPoint startPoint = new(_lightSourceOrigin.X, _lightSourceOrigin.Y);
+        SKPoint endPoint = new(_canvas.LocalClipBounds.Width, _canvas.LocalClipBounds.Height);
+
+        SKColor startColor = SKColors.LightYellow.WithAlpha(200);
+        SKColor endColor = SKColors.Black;
+
+        SKShader shader = SKShader.CreateLinearGradient(startPoint,
+                                                        endPoint,
+                                                        [startColor, endColor],
+                                                        [0, 0.75f], // Corresponding to start and end colors
+                                                        SKShaderTileMode.Clamp);
+
+        SKPaint paint = new()
+        {
+            Shader = shader
+        };
+
+        _canvas.DrawRect(0,
+                         0,
+                         _canvas.LocalClipBounds.Width,
+                         _canvas.LocalClipBounds.Height,
+                         paint);
+
+        cancellationTokenSource.Cancel();
+
+        spinner.Wait();
+
+        consoleHelper.WriteDone();
     }
 
     /// <summary>
@@ -45,6 +137,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="distortNodes"></param>
     /// <param name="drawConnections"></param>
+    /// <param name="addLightSource"></param>
+    /// <exception cref="Exception"></exception>
     public void Draw(bool drawNumbersOnNodes,
                      bool distortNodes,
                      bool drawConnections)
@@ -86,38 +180,9 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     }
 
     /// <summary>
-    /// Optionally generate white points in the background to mimic stars
-    /// </summary>
-    /// <param name="starCount"></param>
-    public void GenerateBackgroundStars(int starCount)
-    {
-        if (_canvas == null)
-        {
-            throw new Exception("Could not generate background stars. Surface or Canvas object was null");
-        }
-
-        List<SKPoint> points = [];
-
-        for (int i = 0; i < starCount; i++)
-        {
-            float x = (float)_random.NextDouble() * _canvas.LocalClipBounds.Width;
-            float y = (float)_random.NextDouble() * _canvas.LocalClipBounds.Height;
-
-            points.Add(new SKPoint(x, y));
-        }
-
-        foreach (SKPoint point in points)
-        {
-            DrawStarWithBlur(_canvas, point);
-        }
-
-        consoleHelper.Write($"{starCount} background stars drawn... ");
-        consoleHelper.WriteDone();
-    }
-
-    /// <summary>
     /// Render the graph
     /// </summary>
+    /// <exception cref="Exception"></exception>
     public void Render()
     {
         if (_surface == null)
@@ -125,7 +190,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
             throw new Exception("Could not render graph. Surface object was null");
         }
 
-        consoleHelper.Write($"Rendering graph with {GraphProvider}... ");
+        consoleHelper.Write($"Rendering graph... ");
 
         _image = _surface.Snapshot();
 
@@ -147,8 +212,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
 
         CancellationTokenSource cancellationTokenSource = new();
 
-        consoleHelper.WriteLine($"Saving image to: {path}\n");
-        consoleHelper.Write("Please wait... ");
+        consoleHelper.Write($"Saving image... ");
 
         Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
 
@@ -163,6 +227,8 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
         spinner.Wait();
 
         consoleHelper.WriteDone();
+
+        consoleHelper.WriteLine($"Image saved to {path}\n");
     }
 
     /// <summary>
@@ -177,12 +243,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
                           bool drawNumbersOnNodes,
                           bool distortNodes)
     {
-        SKPaint paint = new()
-        {
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            Color = GetNodeSKColor(node.Color)
-        };
+        SKPaint paint = GenerateNodePaint(node);
 
         SKPaint textPaint = new()
         {
@@ -303,93 +364,109 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     }
 
     /// <summary>
-    /// Convert the node's color object to an SKColor object
+    /// Get the node SKPaint applying a light source as appropriate
     /// </summary>
     /// <param name="alpha"></param>
     /// <returns></returns>
-    private static SKColor GetNodeSKColor(Color color)
+    private SKPaint GenerateNodePaint(DirectedGraphNode node)
     {
-        if (color != Color.Empty)
-        {
-            return new SKColor(color.R,
-                               color.G,
-                               color.B,
-                               color.A);
-        }
-
         //default to white
-        return new SKColor(Color.White.R,
-                           Color.White.G,
-                           Color.White.B,
-                           Color.White.A);
-    }
+        SKColor nodeBaseColor = new(Color.White.R,
+                                    Color.White.G,
+                                    Color.White.B,
+                                    Color.White.A);
 
-    private void AddLightSource()
-    {
-        if (_canvas == null)
+        if (node.Color != Color.Empty)
         {
-            throw new Exception("Could not add light source. Canvas object was null.");
+            nodeBaseColor = new SKColor(node.Color.R,
+                                        node.Color.G,
+                                        node.Color.B,
+                                        node.Color.A);
         }
 
-        SKPoint startPoint = new(0, 0); // Top left corner
-        SKPoint endPoint = new(_canvas.LocalClipBounds.Width, _canvas.LocalClipBounds.Height);
+        SKColor nodeColor = nodeBaseColor;
 
-        SKColor startColor = SKColors.LightYellow; // Bright color for the light source
-        SKColor endColor = SKColors.Black;
-
-        SKShader shader = SKShader.CreateLinearGradient(startPoint,
-                                                        endPoint,
-                                                        [startColor, endColor],
-                                                        [0, 0.75f], // Corresponding to start and end colors
-                                                        SKShaderTileMode.Clamp);
-
-        SKPaint paint = new()
+        if (_lightSourceInPlace)
         {
-            Shader = shader
+            nodeColor = ApplyLightSourceToNodeColor(node, nodeBaseColor);
+        }
+
+        return new SKPaint()
+        {
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill,
+            Color = nodeColor
         };
-
-        _canvas.DrawRect(0,
-                         0,
-                         _canvas.LocalClipBounds.Width,
-                         _canvas.LocalClipBounds.Height,
-                         paint);
     }
 
-    private void AddLensEffect()
+    /// <summary>
+    /// If a light source is in place, it should impact the colour of nodes.
+    /// The closer to the source, the more the impact.
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="nodeBaseColor"></param>
+    /// <returns></returns>
+    private SKColor ApplyLightSourceToNodeColor(DirectedGraphNode node,
+                                                SKColor nodeBaseColor)
     {
-        if (_canvas == null)
+        SKColor nodeColor;
+        float distance = Distance(new SKPoint(node.Position.X, node.Position.Y),
+                                  new SKPoint(_lightSourceOrigin.X, _lightSourceOrigin.Y));
+
+
+        float additionalOpacityFactor;
+        float maxDistance = _canvas!.LocalClipBounds.Height / (float)1.2;
+
+        float lightIntensity = 0.5f; // Adjust this value between 0 and 1 to control the light's power
+
+
+        if (distance < maxDistance)
         {
-            throw new Exception("Could not add lens effect. Canvas object was null.");
+            additionalOpacityFactor = distance / maxDistance;
+            additionalOpacityFactor = Math.Clamp(additionalOpacityFactor, 0, 1);
+
+            // Apply the light intensity to the blend factor
+            float blendFactor = additionalOpacityFactor * lightIntensity;
+            nodeColor = BlendColor(nodeBaseColor, SKColors.LightYellow, 1 - blendFactor);
+        }
+        else
+        {
+            nodeColor = nodeBaseColor;
+            additionalOpacityFactor = 1.0f;
         }
 
-        // Primary light source - a bright radial gradient
-        SKPoint lightSourceCenter = new(_canvas.LocalClipBounds.Width / 2, _canvas.LocalClipBounds.Height / 2); // Position of the light source
+        byte finalAlpha = (byte)(nodeBaseColor.Alpha * additionalOpacityFactor);
 
-        float lightRadius = 750; // Radius of the bright spot
+        return nodeColor.WithAlpha(finalAlpha);
+    }
 
-        SKShader lightShader = SKShader.CreateRadialGradient(lightSourceCenter,
-                                                             lightRadius,
-                                                             new[] { SKColors.LightYellow, SKColors.Transparent },
-                                                             null,
-                                                             SKShaderTileMode.Clamp);
+    /// <summary>
+    /// Calculate the Euclidean distance between two node positions
+    /// </summary>
+    /// <param name="position1"></param>
+    /// <param name="position2"></param>
+    /// <returns></returns>
+    private static float Distance(SKPoint position1, SKPoint position2)
+    {
+        return (float)Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
+    }
 
-        _canvas.DrawCircle(lightSourceCenter.X, lightSourceCenter.Y, lightRadius, new SKPaint { Shader = lightShader });
+    /// <summary>
+    /// Blend the node's colour with the light source, adjusted for distance from the light source
+    /// </summary>
+    /// <param name="baseColor"></param>
+    /// <param name="blendColor"></param>
+    /// <param name="blendFactor"></param>
+    /// <returns></returns>
+    private static SKColor BlendColor(SKColor baseColor,
+                                      SKColor blendColor,
+                                      float blendFactor)
+    {
+        byte r = (byte)((baseColor.Red * (1 - blendFactor)) + (blendColor.Red * blendFactor));
+        byte g = (byte)((baseColor.Green * (1 - blendFactor)) + (blendColor.Green * blendFactor));
+        byte b = (byte)((baseColor.Blue * (1 - blendFactor)) + (blendColor.Blue * blendFactor));
 
-        // Simple halo - an ellipse with a gradient
-        SKPoint haloCenter = new(_canvas.LocalClipBounds.Width / 2, _canvas.LocalClipBounds.Height / 2); // Same as light source, or slightly offset
-
-        float haloWidth = 1500;
-        float haloHeight = 750;
-
-        SKRect haloRect = new(haloCenter.X - haloWidth, haloCenter.Y - haloHeight, haloCenter.X + haloWidth, haloCenter.Y + haloHeight);
-
-        SKShader haloShader = SKShader.CreateRadialGradient(haloCenter,
-                                                            haloWidth,
-                                                            new[] { SKColors.Transparent, SKColors.Yellow.WithAlpha(128), SKColors.Transparent },
-                                                            null,
-                                                            SKShaderTileMode.Clamp);
-
-        _canvas.DrawOval(haloRect, new SKPaint { Shader = haloShader });
+        return new SKColor(r, g, b);
     }
 
     #region IDisposable

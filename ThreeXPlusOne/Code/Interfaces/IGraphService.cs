@@ -25,18 +25,23 @@ public interface IGraphService : IDisposable
     void Initialize(List<DirectedGraphNode> nodes, int width, int height);
 
     /// <summary>
+    /// Optionally generate white points in the background to mimic stars
+    /// </summary>
+    /// <param name="starCount"></param>
+    void GenerateBackgroundStars(int starCount);
+
+    /// <summary>
+    /// Add a light source to the graph from the top left
+    /// </summary>
+    void GenerateLightSource();
+
+    /// <summary>
     /// Draw the graph based on provided settings
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="distortNodes"></param>
     /// <param name="drawConnections"></param>
     void Draw(bool drawNumbersOnNodes, bool distortNodes, bool drawConnections);
-
-    /// <summary>
-    /// Optionally generate white points in the background to mimic stars
-    /// </summary>
-    /// <param name="starCount"></param>
-    void GenerateBackgroundStars(int starCount);
 
     /// <summary>
     /// Render the graph

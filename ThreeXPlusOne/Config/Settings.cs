@@ -108,6 +108,11 @@ public class Settings
     public bool GenerateMetadataFile { get; set; } = true;
 
     /// <summary>
+    /// Whether or not to add a light source to the top left of the graph
+    /// </summary>
+    public bool GenerateLightSource { get; set; }
+
+    /// <summary>
     /// Whether or not to draw stars on the graph's background
     /// </summary>
     public bool GenerateBackgroundStars { get; set; }
