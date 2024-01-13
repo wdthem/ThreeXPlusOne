@@ -110,6 +110,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             graphService.GenerateBackgroundStars(100);
         }
 
+        if (_settings.GenerateLightSource)
+        {
+            graphService.GenerateLightSource();
+        }
+
         graphService.Draw(drawNumbersOnNodes: _settings.DrawNumbersOnNodes,
                           distortNodes: _settings.DistortNodes,
                           drawConnections: _settings.DrawConnections);
