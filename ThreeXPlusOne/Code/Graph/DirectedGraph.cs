@@ -101,9 +101,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             throw new Exception($"Graph provider {_settings.GraphProvider} does not support graphs in {_settings.SanitizedGraphDimensions} dimensions.");
         }
 
-        graphService.InitializeGraph([.. _nodes.Values],
-                                     _canvasWidth,
-                                     _canvasHeight);
+        graphService.Initialize([.. _nodes.Values],
+                                _canvasWidth,
+                                _canvasHeight);
 
         if (_settings.GenerateBackgroundStars)
         {
@@ -114,9 +114,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                           distortNodes: _settings.DistortNodes,
                           drawConnections: _settings.DrawConnections);
 
-        _consoleHelper.WriteDone();
-
-        graphService.SaveGraphImage();
+        graphService.Render();
+        graphService.SaveImage();
+        graphService.Dispose();
     }
 
     /// <summary>

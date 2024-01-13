@@ -4,7 +4,7 @@ using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Interfaces;
 
-public interface IGraphService
+public interface IGraphService : IDisposable
 {
     /// <summary>
     /// The graph provider implementing the interface
@@ -22,7 +22,7 @@ public interface IGraphService
     /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    void InitializeGraph(List<DirectedGraphNode> nodes, int width, int height);
+    void Initialize(List<DirectedGraphNode> nodes, int width, int height);
 
     /// <summary>
     /// Draw the graph based on provided settings
@@ -39,8 +39,13 @@ public interface IGraphService
     void GenerateBackgroundStars(int starCount);
 
     /// <summary>
+    /// Render the graph
+    /// </summary>
+    void Render();
+
+    /// <summary>
     /// Save the generated graph as a png
     /// </summary>
     /// <exception cref="Exception"></exception>
-    void SaveGraphImage();
+    void SaveImage();
 }

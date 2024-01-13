@@ -448,8 +448,8 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
     public void WriteSpinner(CancellationToken token)
     {
-        var spinner = new string[] { "|", "/", "-", "\\" };
         int counter = 0;
+        string[] spinner = ["|", "/", "-", "\\"];
 
         SetCursorVisibility(false);
 
@@ -464,7 +464,6 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
             Thread.Sleep(85);
         }
 
-        WriteDone();
         SetCursorVisibility(true);
     }
 
@@ -476,7 +475,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         }
 
         string[] numbers = input.Split(',');
-        var truncated = new StringBuilder();
+        StringBuilder truncated = new();
         string ellipsis = $" ...see {_settings.SettingsFileName} for full value";
 
         int lengthWithEllipsis = maxLength - ellipsis.Length;
