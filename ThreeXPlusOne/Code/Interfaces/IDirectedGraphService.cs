@@ -4,7 +4,7 @@ using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Interfaces;
 
-public interface IGraphService : IDisposable
+public interface IDirectedGraphService : IDisposable
 {
     /// <summary>
     /// The graph provider implementing the interface

@@ -15,8 +15,8 @@ namespace ThreeXPlusOne.UnitTests;
 public class DirectedGraphTests
 {
     private readonly Mock<IConsoleHelper> _consoleHelperMock;
-    private readonly IEnumerable<IGraphService> _graphServicesList;
-    private readonly Mock<IGraphService> _graphServiceMock;
+    private readonly IEnumerable<IDirectedGraphService> _graphServicesList;
+    private readonly Mock<IDirectedGraphService> _graphServiceMock;
     private readonly IOptions<Settings> _settings = new OptionsWrapper<Settings>
     (
         new Settings { }
@@ -25,7 +25,7 @@ public class DirectedGraphTests
     public DirectedGraphTests()
     {
         _consoleHelperMock = new Mock<IConsoleHelper>();
-        _graphServiceMock = new Mock<IGraphService>();
+        _graphServiceMock = new Mock<IDirectedGraphService>();
         _graphServicesList = [_graphServiceMock.Object];
     }
 
