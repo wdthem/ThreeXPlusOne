@@ -19,6 +19,7 @@ Use the following settings to achieve the results shown in the Example Output im
   "GenerateGraph": true,
   "GenerateHistogram": false,
   "GenerateMetadataFile": true,
+  "GenerateLightSource": false,
   "GenerateBackgroundStars": false,
   "OutputPath": ""
 }
@@ -41,6 +42,7 @@ Use the following settings to achieve the results shown in the Example Output im
   "GenerateGraph": true,
   "GenerateHistogram": false,
   "GenerateMetadataFile": true,
+  "GenerateLightSource": false,
   "GenerateBackgroundStars": false,
   "OutputPath": ""
 }
@@ -63,6 +65,7 @@ Use the following settings to achieve the results shown in the Example Output im
   "GenerateGraph": true,
   "GenerateHistogram": false,
   "GenerateMetadataFile": true,
+  "GenerateLightSource": false,
   "GenerateBackgroundStars": false,
   "OutputPath": ""
 }
