@@ -6,7 +6,7 @@ using ThreeXPlusOne.Models;
 namespace ThreeXPlusOne.Code.Graph;
 
 public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
-                                         IEnumerable<IGraphService> graphServices,
+                                         IEnumerable<IDirectedGraphService> graphServices,
                                          IConsoleHelper consoleHelper) : DirectedGraph(settings, graphServices, consoleHelper), IDirectedGraph
 {
     private int _nodesPositioned = 0;

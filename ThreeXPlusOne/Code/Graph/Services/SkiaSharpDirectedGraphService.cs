@@ -6,8 +6,8 @@ using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph.Services;
 
-public class SkiaSharpGraphService(IFileHelper fileHelper,
-                                   IConsoleHelper consoleHelper) : IGraphService
+public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
+                                           IConsoleHelper consoleHelper) : IDirectedGraphService
 {
     private List<DirectedGraphNode>? _nodes;
     private SKSurface? _surface;
@@ -503,7 +503,7 @@ public class SkiaSharpGraphService(IFileHelper fileHelper,
     /// <summary>
     /// IDisposable finalizer
     /// </summary>
-    ~SkiaSharpGraphService()
+    ~SkiaSharpDirectedGraphService()
     {
         Dispose(false);
     }

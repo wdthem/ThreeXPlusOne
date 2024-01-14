@@ -7,7 +7,7 @@ using ThreeXPlusOne.Models;
 namespace ThreeXPlusOne.Code.Graph;
 
 public abstract class DirectedGraph(IOptions<Settings> settings,
-                                    IEnumerable<IGraphService> graphServices,
+                                    IEnumerable<IDirectedGraphService> graphServices,
                                     IConsoleHelper consoleHelper)
 {
     private int _canvasWidth = 0;
@@ -92,7 +92,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void DrawDirectedGraph()
     {
-        IGraphService graphService = graphServices.ToList()
+        IDirectedGraphService graphService = graphServices.ToList()
                                                   .Where(graphService => graphService.GraphProvider == _settings.GraphProvider)
                                                   .First();
 
