@@ -43,6 +43,7 @@ public class Histogram(IOptions<Settings> settings,
         histogramService.Initialize(width, height);
         histogramService.Draw(digitCounts, "Numbers in series starting from 1-9");
         histogramService.SaveImage(filePath);
+        histogramService.Dispose();
 
         consoleHelper.WriteDone();
     }
