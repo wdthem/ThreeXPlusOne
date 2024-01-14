@@ -255,6 +255,11 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteLine("true (whether or not to generate a file with metadata about the run)");
 
         SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.GenerateLightSource)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine("true (whether or not to generate a light source from the top left of the graph that interacts with nodes)");
+
+        SetForegroundColor(ConsoleColor.Blue);
         Write($"    {nameof(Settings.GenerateBackgroundStars)}: ");
         SetForegroundColor(ConsoleColor.White);
         WriteLine("false (whether or not to generate random stars in the background of the graph)");
@@ -262,7 +267,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         SetForegroundColor(ConsoleColor.Blue);
         Write($"    {nameof(Settings.OutputPath)}: ");
         SetForegroundColor(ConsoleColor.White);
-        WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder where the output files should be placed)\n");
+        WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder in which the output files should be placed)\n");
 
         WriteLine("Note: Increasing some settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
     }

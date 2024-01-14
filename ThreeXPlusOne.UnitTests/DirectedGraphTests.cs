@@ -1,9 +1,12 @@
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
+using System.Collections.ObjectModel;
 using ThreeXPlusOne.Code.Graph;
+using ThreeXPlusOne.Code.Graph.Services;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
+using ThreeXPlusOne.Models;
 using ThreeXPlusOne.UnitTests.Mocks;
 using Xunit;
 
@@ -13,6 +16,7 @@ public class DirectedGraphTests
 {
     private readonly Mock<IConsoleHelper> _consoleHelperMock;
     private readonly IEnumerable<IGraphService> _graphServicesList;
+    private readonly Mock<IGraphService> _graphServiceMock;
     private readonly IOptions<Settings> _settings = new OptionsWrapper<Settings>
     (
         new Settings { }
@@ -21,7 +25,8 @@ public class DirectedGraphTests
     public DirectedGraphTests()
     {
         _consoleHelperMock = new Mock<IConsoleHelper>();
-        _graphServicesList = [new Mock<IGraphService>().Object];
+        _graphServiceMock = new Mock<IGraphService>();
+        _graphServicesList = [_graphServiceMock.Object];
     }
 
     [Fact]
@@ -57,7 +62,6 @@ public class DirectedGraphTests
                                      float expectedYPrime)
     {
         // Arrange
-
         MockDirectedGraph mockDirectedGraph = new(_settings,
                                                   _graphServicesList,
                                                   _consoleHelperMock.Object);
@@ -68,5 +72,32 @@ public class DirectedGraphTests
         // Assert
         xPrime.Should().Be(expectedXPrime);
         yPrime.Should().Be(expectedYPrime);
+    }
+
+    /// <summary>
+    /// Ensure all expected methods on the IGraphService interface are called (crucially, IGraphService.Dispose())
+    /// </summary>
+    [Fact]
+    public void DrawDirectedGraph_Success00()
+    {
+        // Arrange
+        _graphServiceMock.Setup(service => service.GraphProvider).Returns(GraphProvider.SkiaSharp);
+        _graphServiceMock.Setup(service => service.SupportedDimensions).Returns(new ReadOnlyCollection<int>([2]));
+
+        MockDirectedGraph mockDirectedGraph = new(_settings,
+                                                  _graphServicesList,
+                                                  _consoleHelperMock.Object);
+
+        // Act
+        mockDirectedGraph.DrawDirectedGraph_Base();
+
+        // Assert
+        _graphServiceMock.Verify(service => service.Initialize(It.IsAny<List<DirectedGraphNode>>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+        _graphServiceMock.Verify(service => service.GenerateBackgroundStars(It.IsAny<int>()), Times.AtMost(1));
+        _graphServiceMock.Verify(service => service.GenerateLightSource(), Times.AtMost(1));
+        _graphServiceMock.Verify(service => service.Draw(It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
+        _graphServiceMock.Verify(service => service.Render(), Times.Once);
+        _graphServiceMock.Verify(service => service.SaveImage(), Times.AtMost(1));
+        _graphServiceMock.Verify(service => service.Dispose(), Times.Once);
     }
 }
