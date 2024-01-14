@@ -12,6 +12,11 @@ public class SkiaSharpHistogramService() : IHistogramService
 
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
 
+    /// <summary>
+    /// Initialize the histogram
+    /// </summary>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
     public void Initialize(int width, int height)
     {
         _canvasWidth = width;
