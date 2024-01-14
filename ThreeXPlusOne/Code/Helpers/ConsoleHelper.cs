@@ -257,7 +257,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         SetForegroundColor(ConsoleColor.Blue);
         Write($"    {nameof(Settings.GenerateLightSource)}: ");
         SetForegroundColor(ConsoleColor.White);
-        WriteLine("true (whether or not to generate a light source from the top left of the graph that interacts with nodes)");
+        WriteLine("false (whether or not to generate a light source from the top left of the graph that interacts with nodes)");
 
         SetForegroundColor(ConsoleColor.Blue);
         Write($"    {nameof(Settings.GenerateBackgroundStars)}: ");
