@@ -26,7 +26,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     /// </summary>
     public void Draw()
     {
-        DrawDirectedGraph(dimensions: 3);
+        DrawDirectedGraph();
     }
 
     /// <summary>

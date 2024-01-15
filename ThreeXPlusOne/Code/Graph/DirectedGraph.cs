@@ -90,8 +90,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <summary>
     /// Draw the directed graph
     /// </summary>
-    /// <param name="dimensions"></param>
-    protected void DrawDirectedGraph(int dimensions)
+    protected void DrawDirectedGraph()
     {
         IDirectedGraphService graphService = graphServices.ToList()
                                                           .Where(graphService => graphService.GraphProvider == _settings.GraphProvider)
@@ -105,7 +104,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         graphService.Initialize([.. _nodes.Values],
                                 _canvasWidth,
                                 _canvasHeight,
-                                dimensions);
+                                _settings.SanitizedGraphDimensions);
 
         if (_settings.GenerateBackgroundStars)
         {

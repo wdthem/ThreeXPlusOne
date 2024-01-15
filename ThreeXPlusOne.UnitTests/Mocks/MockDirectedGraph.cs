@@ -36,6 +36,6 @@ public class MockDirectedGraph(IOptions<Settings> settings,
 
     public void DrawDirectedGraph_Base()
     {
-        DrawDirectedGraph(2);
+        DrawDirectedGraph();
     }
 }

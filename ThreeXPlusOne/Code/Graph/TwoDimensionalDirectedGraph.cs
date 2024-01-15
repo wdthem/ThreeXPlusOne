@@ -26,7 +26,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     /// </summary>
     public void Draw()
     {
-        DrawDirectedGraph(dimensions: 2);
+        DrawDirectedGraph();
     }
 
     /// <summary>
