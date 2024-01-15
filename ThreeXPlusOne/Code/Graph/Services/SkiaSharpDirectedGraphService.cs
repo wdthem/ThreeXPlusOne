@@ -13,6 +13,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     private SKSurface? _surface;
     private SKCanvas? _canvas;
     private SKImage? _image;
+    private int _dimensions;
     private bool _lightSourceInPlace = false;
     private (float X, float Y) _lightSourceOrigin;
     private readonly Random _random = new();
@@ -27,9 +28,11 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
+    /// <param name="dimensions"></param>
     public void Initialize(List<DirectedGraphNode> nodes,
                            int width,
-                           int height)
+                           int height,
+                           int dimensions)
     {
         CancellationTokenSource cancellationTokenSource = new();
 
@@ -40,6 +43,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
         _nodes = nodes;
         _surface = SKSurface.Create(new SKImageInfo(width, height));
         _canvas = _surface.Canvas;
+        _dimensions = dimensions;
 
         _canvas.Clear(SKColors.Black);
 
@@ -135,11 +139,11 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// Draw the graph based on the provided settings
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
-    /// <param name="distortNodes"></param>
+    /// <param name="usePolygonsAsNodes"></param>
     /// <param name="drawConnections"></param>
     /// <exception cref="Exception"></exception>
     public void Draw(bool drawNumbersOnNodes,
-                     bool distortNodes,
+                     bool usePolygonsAsNodes,
                      bool drawConnections)
     {
         if (_canvas == null || _nodes == null)
@@ -168,7 +172,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             DrawNode(_canvas,
                      node,
                      drawNumbersOnNodes,
-                     distortNodes);
+                     usePolygonsAsNodes);
 
             consoleHelper.Write($"\r{lcv} nodes drawn... ");
 
@@ -236,11 +240,11 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// <param name="canvas"></param>
     /// <param name="node"></param>
     /// <param name="drawNumbersOnNodes"></param>
-    /// <param name="distortNodes"></param>
+    /// <param name="usePolygonsAsNodes"></param>
     private void DrawNode(SKCanvas canvas,
                           DirectedGraphNode node,
                           bool drawNumbersOnNodes,
-                          bool distortNodes)
+                          bool usePolygonsAsNodes)
     {
         SKPaint paint = GenerateNodePaint(node);
 
@@ -254,19 +258,10 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             FakeBoldText = true,
         };
 
-        if (distortNodes)
-        {
-            DrawDistortedPath(canvas,
-                              new SKPoint(node.Position.X, node.Position.Y),
-                              node.Radius,
-                              paint);
-        }
-        else
-        {
-            canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
-                              node.Radius,
-                              paint);
-        }
+        DrawShape(canvas,
+                  node,
+                  paint,
+                  usePolygonsAsNodes);
 
         if (drawNumbersOnNodes)
         {
@@ -279,36 +274,60 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     }
 
     /// <summary>
-    /// Instead of a circular node, draw a node of a distorted shape based on the user-defined distortion level
+    /// Draw either a circle or a polygon for the node based on settings
     /// </summary>
     /// <param name="canvas"></param>
-    /// <param name="center"></param>
-    /// <param name="baseRadius"></param>
+    /// <param name="node"></param>
     /// <param name="paint"></param>
-    private void DrawDistortedPath(SKCanvas canvas,
-                                   SKPoint center,
-                                   float baseRadius,
-                                   SKPaint paint)
+    /// <param name="usePolygonsAsNodes"></param>
+    private void DrawShape(SKCanvas canvas,
+                           DirectedGraphNode node,
+                           SKPaint paint,
+                           bool usePolygonsAsNodes)
     {
-        SKPath path = new();
-        int randomPointsCount = _random.Next(3, 11); //from 3 to 10
+        int polygonSides = _random.Next(0, 11);
 
-        path.MoveTo(center.X + baseRadius, center.Y);
-
-        for (int i = 1; i <= randomPointsCount; i++)
+        if (!usePolygonsAsNodes || polygonSides == 0)
         {
-            float angle = (float)(2 * Math.PI / randomPointsCount * i);
-            float radiusVariation = _random.Next(5, 26);  //from 5 to 25
-            float radius = baseRadius + radiusVariation;
+            node.Shape.ShapeType = ShapeType.Circle;
 
-            SKPoint point = new(center.X + radius * (float)Math.Cos(angle),
-                                center.Y + radius * (float)Math.Sin(angle));
+            canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
+                              node.Shape.Radius,
+                              paint);
 
-            path.LineTo(point);
+            return;
+        }
+
+        float rotationAngle = (float)(_random.NextDouble() * 2 * Math.PI);
+
+        if (polygonSides == 1 || polygonSides == 2)
+        {
+            polygonSides = _random.Next(3, 11); // cannot have 1 or 2 sides, so re-select
+        }
+
+        SKPath path = new();
+        node.Shape.ShapeType = ShapeType.Polygon;
+
+        for (int i = 0; i < polygonSides; i++)
+        {
+            float angle = (float)(2 * Math.PI / polygonSides * i) + rotationAngle;
+
+            SKPoint point = new(node.Position.X + node.Shape.Radius * (float)Math.Cos(angle),
+                                node.Position.Y + node.Shape.Radius * (float)Math.Sin(angle));
+
+            if (i == 0)
+            {
+                path.MoveTo(point);
+            }
+            else
+            {
+                path.LineTo(point);
+            }
+
+            node.Shape.Vertices.Add((point.X, point.Y));
         }
 
         path.Close();
-
         canvas.DrawPath(path, paint);
     }
 
@@ -375,12 +394,12 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
                                     Color.White.B,
                                     Color.White.A);
 
-        if (node.Color != Color.Empty)
+        if (node.Shape.Color != Color.Empty)
         {
-            nodeBaseColor = new SKColor(node.Color.R,
-                                        node.Color.G,
-                                        node.Color.B,
-                                        node.Color.A);
+            nodeBaseColor = new SKColor(node.Shape.Color.R,
+                                        node.Shape.Color.G,
+                                        node.Shape.Color.B,
+                                        node.Shape.Color.A);
         }
 
         SKColor nodeColor = nodeBaseColor;

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Data;
 using ThreeXPlusOne.Code.Graph.Services;
 using ThreeXPlusOne.Models;
 
@@ -22,7 +23,8 @@ public interface IDirectedGraphService : IDisposable
     /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    void Initialize(List<DirectedGraphNode> nodes, int width, int height);
+    /// <param name="dimensions"></param>
+    void Initialize(List<DirectedGraphNode> nodes, int width, int height, int dimensions);
 
     /// <summary>
     /// Optionally generate white points in the background to mimic stars
@@ -39,9 +41,9 @@ public interface IDirectedGraphService : IDisposable
     /// Draw the graph based on provided settings
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
-    /// <param name="distortNodes"></param>
+    /// <param name="usePolygonsAsNodes"></param>
     /// <param name="drawConnections"></param>
-    void Draw(bool drawNumbersOnNodes, bool distortNodes, bool drawConnections);
+    void Draw(bool drawNumbersOnNodes, bool usePolygonsAsNodes, bool drawConnections);
 
     /// <summary>
     /// Render the graph
