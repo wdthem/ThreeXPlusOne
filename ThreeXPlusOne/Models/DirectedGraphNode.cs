@@ -13,7 +13,7 @@ public class DirectedGraphNode(int value)
     public DirectedGraphNode? Parent { get; set; }
 
     /// <summary>
-    /// The nodes child nodes (max of 2)
+    /// The node's child nodes (max of 2)
     /// </summary>
     public List<DirectedGraphNode> Children { get; set; } = [];
 
@@ -33,7 +33,7 @@ public class DirectedGraphNode(int value)
     public float Z { get; set; }
 
     /// <summary>
-    /// Whether or not the node's coordinates has been calculated
+    /// Whether or not the node's coordinates have been calculated
     /// </summary>
     public bool IsPositioned { get; set; }
 
@@ -44,7 +44,7 @@ public class DirectedGraphNode(int value)
     public bool IsFirstChild { get; set; }
 
     /// <summary>
-    /// An object to store information about the node shape
+    /// An object to store information about the node's rendered shape
     /// </summary>
     public Shape Shape { get; set; } = new Shape();
 }

@@ -302,7 +302,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
 
         if (polygonSides == 1 || polygonSides == 2)
         {
-            polygonSides = _random.Next(3, 11); // cannot have 1 or 2 sides, so re-select
+            polygonSides = _random.Next(3, 11); //cannot have 1 or 2 sides, so re-select
         }
 
         SKPath path = new();

@@ -10,7 +10,7 @@ public class Shape()
     public ShapeType ShapeType { get; set; }
 
     /// <summary>
-    /// The radius of the node
+    /// The radius of the shape, if it's a circle
     /// </summary>
     public float Radius { get; set; }
 
@@ -20,7 +20,7 @@ public class Shape()
     public List<(float X, float Y)> Vertices { get; set; } = [];
 
     /// <summary>
-    /// The colour of the node
+    /// The colour of the shape
     /// </summary>
     public Color Color { get; set; } = Color.Empty;
 }
