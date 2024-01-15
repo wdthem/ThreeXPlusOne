@@ -69,7 +69,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                     }
                 }
 
-                currentNode.Color = GenerateNodeColor();
+                currentNode.Shape.Color = GenerateNodeColor();
 
                 previousNode = currentNode;
 
@@ -90,11 +90,12 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <summary>
     /// Draw the directed graph
     /// </summary>
-    protected void DrawDirectedGraph()
+    /// <param name="dimensions"></param>
+    protected void DrawDirectedGraph(int dimensions)
     {
         IDirectedGraphService graphService = graphServices.ToList()
-                                                  .Where(graphService => graphService.GraphProvider == _settings.GraphProvider)
-                                                  .First();
+                                                          .Where(graphService => graphService.GraphProvider == _settings.GraphProvider)
+                                                          .First();
 
         if (!graphService.SupportedDimensions.Contains(_settings.SanitizedGraphDimensions))
         {
@@ -103,7 +104,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         graphService.Initialize([.. _nodes.Values],
                                 _canvasWidth,
-                                _canvasHeight);
+                                _canvasHeight,
+                                dimensions);
 
         if (_settings.GenerateBackgroundStars)
         {
@@ -116,7 +118,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         }
 
         graphService.Draw(drawNumbersOnNodes: _settings.DrawNumbersOnNodes,
-                          distortNodes: _settings.DistortNodes,
+                          usePolygonsAsNodes: _settings.UsePolygonsAsNodes,
                           drawConnections: _settings.DrawConnections);
 
         graphService.Render();

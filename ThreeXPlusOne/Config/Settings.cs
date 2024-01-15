@@ -57,9 +57,9 @@ public class Settings
     public float NodeRadius { get; set; } = 50;
 
     /// <summary>
-    /// Whether or not to distort nodes into various shapes and sizes
+    /// Whether or not to draw polygons as nodes in addition to circles
     /// </summary>
-    public bool DistortNodes { get; set; }
+    public bool UsePolygonsAsNodes { get; set; }
 
     /// <summary>
     /// The amount of x-axis space in pixels by which to separate nodes

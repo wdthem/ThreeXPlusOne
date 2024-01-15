@@ -26,7 +26,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     /// </summary>
     public void Draw()
     {
-        DrawDirectedGraph();
+        DrawDirectedGraph(dimensions: 3);
     }
 
     /// <summary>
@@ -41,17 +41,17 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _nodes[1].Position = base1;
         _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.DistanceFromViewer);
-        _nodes[1].Radius = 50;
+        _nodes[1].Shape.Radius = 50;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
         _nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], _settings.DistanceFromViewer);
-        _nodes[2].Radius = 100;
+        _nodes[2].Shape.Radius = 100;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
         _nodes[4].Position = ApplyPerspectiveTransform(_nodes[4], _settings.DistanceFromViewer);
-        _nodes[4].Radius = _settings.NodeRadius;
+        _nodes[4].Shape.Radius = _settings.NodeRadius;
         _nodes[4].IsPositioned = true;
 
         List<DirectedGraphNode> nodesToDraw = _nodes.Where(n => n.Value.Depth == _nodes[4].Depth + 1)
@@ -89,9 +89,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         float baseRadius = _settings.NodeRadius;
 
-        if (node.Parent != null && node.Parent.Radius > 0)
+        if (node.Parent != null && node.Parent.Shape.Radius > 0)
         {
-            baseRadius = node.Parent.Radius;
+            baseRadius = node.Parent.Shape.Radius;
         }
 
         float maxZ = _nodes.Max(node => node.Value.Z);
@@ -116,7 +116,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         if (node.Parent!.Children.Count == 1)
         {
             xOffset = node.Parent.Position.X;
-            nodeRadius = node.Parent.Radius;
+            nodeRadius = node.Parent.Shape.Radius;
         }
         else
         {
@@ -135,19 +135,19 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
             {
                 xOffset = xOffset - (allNodesAtDepth / 2 * xNodeSpacer) - (xNodeSpacer * addedWidth);
                 node.Z -= 35;
-                nodeRadius = node.Parent.Radius * Math.Max(scale, minScale);
+                nodeRadius = node.Parent.Shape.Radius * Math.Max(scale, minScale);
             }
             else
             {
                 xOffset = xOffset + (allNodesAtDepth / 2 * xNodeSpacer) + (xNodeSpacer * addedWidth);
                 node.Z += 15;
-                nodeRadius = node.Parent.Radius * Math.Max(scale - 0.02f, minScale);
+                nodeRadius = node.Parent.Shape.Radius * Math.Max(scale - 0.02f, minScale);
             }
         }
 
         float yOffset = node.Parent!.Position.Y - (yNodeSpacer + yNodeSpacer / node.Depth + (positionedNodesAtDepth * (yNodeSpacer / 30)));
 
-        node.Radius = nodeRadius;
+        node.Shape.Radius = nodeRadius;
         node.Position = (xOffset, (float)yOffset);
 
         if (_settings.NodeRotationAngle != 0)

@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace ThreeXPlusOne.Models;
+﻿namespace ThreeXPlusOne.Models;
 
 public class DirectedGraphNode(int value)
 {
@@ -46,12 +44,7 @@ public class DirectedGraphNode(int value)
     public bool IsFirstChild { get; set; }
 
     /// <summary>
-    /// The radius of the node
+    /// An object to store information about the node shape
     /// </summary>
-    public float Radius { get; set; }
-
-    /// <summary>
-    /// The colour of the node
-    /// </summary>
-    public Color Color { get; set; } = Color.Empty;
+    public Shape Shape { get; set; } = new Shape();
 }
