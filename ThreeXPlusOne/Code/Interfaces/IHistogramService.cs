@@ -1,4 +1,4 @@
-using ThreeXPlusOne.Code.Graph.Services;
+using ThreeXPlusOne.Enums;
 
 namespace ThreeXPlusOne.Code.Interfaces;
 

@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
-using System.Data;
-using ThreeXPlusOne.Code.Graph.Services;
+using ThreeXPlusOne.Enums;
 using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Interfaces;

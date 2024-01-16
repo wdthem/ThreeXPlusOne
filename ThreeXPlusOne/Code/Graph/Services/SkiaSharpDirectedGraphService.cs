@@ -2,6 +2,7 @@ using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Enums;
 using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph.Services;
@@ -122,8 +123,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             Shader = shader
         };
 
-        _canvas.DrawRect(0,
-                         0,
+        _canvas.DrawRect(_lightSourceOrigin.X,
+                         _lightSourceOrigin.Y,
                          _canvas.LocalClipBounds.Width,
                          _canvas.LocalClipBounds.Height,
                          paint);
