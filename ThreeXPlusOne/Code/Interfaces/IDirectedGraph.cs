@@ -19,6 +19,11 @@ public interface IDirectedGraph
     void PositionNodes();
 
     /// <summary>
+    /// Set the shape of each node to either circle or polygon, depending on settings
+    /// </summary>
+    void SetNodeShapes();
+
+    /// <summary>
     /// Assign sizes to the canvas width and height after having positioned the nodes
     /// </summary>
     void SetCanvasDimensions();

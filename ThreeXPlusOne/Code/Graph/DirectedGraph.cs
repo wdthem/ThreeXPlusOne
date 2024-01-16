@@ -2,6 +2,7 @@
 using System.Drawing;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
+using ThreeXPlusOne.Enums;
 using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
@@ -12,9 +13,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 {
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;
-    private readonly Random _random = new();
     private readonly Dictionary<(int, int), List<(float X, float Y)>> _nodeGrid = [];
 
+    protected readonly Random _random = new();
     protected readonly Settings _settings = settings.Value;
     protected readonly IConsoleHelper _consoleHelper = consoleHelper;
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
@@ -103,8 +104,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         graphService.Initialize([.. _nodes.Values],
                                 _canvasWidth,
-                                _canvasHeight,
-                                _settings.SanitizedGraphDimensions);
+                                _canvasHeight);
 
         if (_settings.GenerateBackgroundStars)
         {
@@ -117,8 +117,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         }
 
         graphService.Draw(drawNumbersOnNodes: _settings.DrawNumbersOnNodes,
-                          usePolygonsAsNodes: _settings.UsePolygonsAsNodes,
-                          drawConnections: _settings.DrawConnections);
+                          drawNodeConnections: _settings.DrawConnections);
 
         graphService.Render();
         graphService.SaveImage();
@@ -269,6 +268,44 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         }
 
         return rotatedPosition;
+    }
+
+    /// <summary>
+    /// Assign a ShapeType to the node and vertices if applicable
+    /// </summary>
+    /// <param name="node"></param>
+    protected void SetNodeShape(DirectedGraphNode node)
+    {
+        if (node.Shape.Radius == 0)
+        {
+            node.Shape.Radius = _settings.NodeRadius;
+        }
+
+        int numberOfSides = _random.Next(0, 11);
+
+        if (!_settings.IncludePolygonsAsNodes || numberOfSides == 0)
+        {
+            node.Shape.ShapeType = ShapeType.Circle;
+
+            return;
+        }
+
+        if (numberOfSides == 1 || numberOfSides == 2)
+        {
+            numberOfSides = _random.Next(3, 11); //cannot have 1 or 2 sides, so re-select
+        }
+
+        node.Shape.ShapeType = ShapeType.Polygon;
+
+        float rotationAngle = (float)(_random.NextDouble() * 2 * Math.PI);
+
+        for (int i = 0; i < numberOfSides; i++)
+        {
+            float angle = (float)(2 * Math.PI / numberOfSides * i) + rotationAngle;
+
+            node.Shape.Vertices.Add((node.Position.X + node.Shape.Radius * (float)Math.Cos(angle),
+                                     node.Position.Y + node.Shape.Radius * (float)Math.Sin(angle)));
+        }
     }
 
     /// <summary>

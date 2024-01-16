@@ -22,8 +22,7 @@ public interface IDirectedGraphService : IDisposable
     /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    /// <param name="dimensions"></param>
-    void Initialize(List<DirectedGraphNode> nodes, int width, int height, int dimensions);
+    void Initialize(List<DirectedGraphNode> nodes, int width, int height);
 
     /// <summary>
     /// Optionally generate white points in the background to mimic stars
@@ -40,9 +39,8 @@ public interface IDirectedGraphService : IDisposable
     /// Draw the graph based on provided settings
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
-    /// <param name="usePolygonsAsNodes"></param>
-    /// <param name="drawConnections"></param>
-    void Draw(bool drawNumbersOnNodes, bool usePolygonsAsNodes, bool drawConnections);
+    /// <param name="drawNodeConnections"></param>
+    void Draw(bool drawNumbersOnNodes, bool drawNodeConnections);
 
     /// <summary>
     /// Render the graph

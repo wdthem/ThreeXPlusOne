@@ -205,7 +205,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteLine("50 for 2D, 275 for 3D (the radius of the nodes in pixels)");
 
         SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.UsePolygonsAsNodes)}: ");
+        Write($"    {nameof(Settings.IncludePolygonsAsNodes)}: ");
         SetForegroundColor(ConsoleColor.White);
         WriteLine("false (whether or not to use circles or polygons + circles as graph nodes)");
 

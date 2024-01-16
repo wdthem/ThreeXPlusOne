@@ -67,12 +67,23 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
+    /// Set the shapes of the positioned nodes
+    /// </summary>
+    public void SetNodeShapes()
+    {
+        foreach (var node in _nodes.Where(node => node.Value.IsPositioned))
+        {
+            SetNodeShape(node.Value);
+        }
+    }
+
+    /// <summary>
     /// Recursive method to position node and all its children down the tree
     /// </summary>
     /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
     {
-        node.Shape.Radius = _settings.NodeRadius;
+        float nodeRadius = _settings.NodeRadius;
 
         if (!node.IsPositioned)
         {
@@ -142,18 +153,19 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                 }
             }
 
-            float minDistance = _settings.NodeRadius * 2;
+            float minDistance = nodeRadius * 2;
 
             while (NodeIsTooCloseToNeighbours(node, minDistance))
             {
                 node.Position = (node.Position.X + (node.IsFirstChild
-                                                                ? -_settings.NodeRadius * 2 - 40
-                                                                : _settings.NodeRadius * 2 + 40),
+                                                                ? -nodeRadius * 2 - 40
+                                                                : nodeRadius * 2 + 40),
                                  node.Position.Y);
             }
 
             AddNodeToGrid(node, minDistance);
 
+            node.Shape.Radius = nodeRadius;
             node.IsPositioned = true;
             _nodesPositioned += 1;
 

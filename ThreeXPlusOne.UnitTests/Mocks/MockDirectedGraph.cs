@@ -23,6 +23,10 @@ public class MockDirectedGraph(IOptions<Settings> settings,
     {
     }
 
+    public void SetNodeShapes()
+    {
+    }
+
     //ignore warning because this is called from a unit test instance
 #pragma warning disable CA1822 // Mark members as static
 

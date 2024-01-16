@@ -63,6 +63,7 @@ public class Process(IOptions<Settings> settings,
 
         graph.AddSeries(seriesLists);
         graph.PositionNodes();
+        graph.SetNodeShapes();
         graph.SetCanvasDimensions();
 
         //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
