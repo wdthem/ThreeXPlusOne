@@ -59,7 +59,7 @@ public class Settings
     /// <summary>
     /// Whether or not to draw polygons as nodes in addition to circles
     /// </summary>
-    public bool UsePolygonsAsNodes { get; set; }
+    public bool IncludePolygonsAsNodes { get; set; }
 
     /// <summary>
     /// The amount of x-axis space in pixels by which to separate nodes

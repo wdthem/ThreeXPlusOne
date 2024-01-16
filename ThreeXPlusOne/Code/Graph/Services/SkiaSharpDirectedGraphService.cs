@@ -14,7 +14,6 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     private SKSurface? _surface;
     private SKCanvas? _canvas;
     private SKImage? _image;
-    private int _dimensions;
     private bool _lightSourceInPlace = false;
     private (float X, float Y) _lightSourceOrigin;
     private readonly Random _random = new();
@@ -29,11 +28,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    /// <param name="dimensions"></param>
     public void Initialize(List<DirectedGraphNode> nodes,
                            int width,
-                           int height,
-                           int dimensions)
+                           int height)
     {
         CancellationTokenSource cancellationTokenSource = new();
 
@@ -44,7 +41,6 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
         _nodes = nodes;
         _surface = SKSurface.Create(new SKImageInfo(width, height));
         _canvas = _surface.Canvas;
-        _dimensions = dimensions;
 
         _canvas.Clear(SKColors.Black);
 
@@ -140,12 +136,10 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// Draw the graph based on the provided settings
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
-    /// <param name="usePolygonsAsNodes"></param>
-    /// <param name="drawConnections"></param>
+    /// <param name="drawNodeConnections"></param>
     /// <exception cref="Exception"></exception>
     public void Draw(bool drawNumbersOnNodes,
-                     bool usePolygonsAsNodes,
-                     bool drawConnections)
+                     bool drawNodeConnections)
     {
         if (_canvas == null || _nodes == null)
         {
@@ -153,11 +147,11 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
         }
 
         var lcv = 0;
-        if (drawConnections)
+        if (drawNodeConnections)
         {
             foreach (var node in _nodes)
             {
-                DrawConnection(_canvas, node);
+                DrawNodeConnection(_canvas, node);
 
                 consoleHelper.Write($"\r{lcv} connections drawn... ");
 
@@ -172,8 +166,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
         {
             DrawNode(_canvas,
                      node,
-                     drawNumbersOnNodes,
-                     usePolygonsAsNodes);
+                     drawNumbersOnNodes);
 
             consoleHelper.Write($"\r{lcv} nodes drawn... ");
 
@@ -241,11 +234,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// <param name="canvas"></param>
     /// <param name="node"></param>
     /// <param name="drawNumbersOnNodes"></param>
-    /// <param name="usePolygonsAsNodes"></param>
     private void DrawNode(SKCanvas canvas,
                           DirectedGraphNode node,
-                          bool drawNumbersOnNodes,
-                          bool usePolygonsAsNodes)
+                          bool drawNumbersOnNodes)
     {
         SKPaint paint = GenerateNodePaint(node);
 
@@ -261,8 +252,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
 
         DrawShape(canvas,
                   node,
-                  paint,
-                  usePolygonsAsNodes);
+                  paint);
 
         if (drawNumbersOnNodes)
         {
@@ -280,18 +270,12 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// <param name="canvas"></param>
     /// <param name="node"></param>
     /// <param name="paint"></param>
-    /// <param name="usePolygonsAsNodes"></param>
-    private void DrawShape(SKCanvas canvas,
-                           DirectedGraphNode node,
-                           SKPaint paint,
-                           bool usePolygonsAsNodes)
+    private static void DrawShape(SKCanvas canvas,
+                                  DirectedGraphNode node,
+                                  SKPaint paint)
     {
-        int polygonSides = _random.Next(0, 11);
-
-        if (!usePolygonsAsNodes || polygonSides == 0)
+        if (node.Shape.ShapeType == ShapeType.Circle)
         {
-            node.Shape.ShapeType = ShapeType.Circle;
-
             canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
                               node.Shape.Radius,
                               paint);
@@ -299,33 +283,20 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             return;
         }
 
-        float rotationAngle = (float)(_random.NextDouble() * 2 * Math.PI);
-
-        if (polygonSides == 1 || polygonSides == 2)
-        {
-            polygonSides = _random.Next(3, 11); //cannot have 1 or 2 sides, so re-select
-        }
-
         SKPath path = new();
-        node.Shape.ShapeType = ShapeType.Polygon;
 
-        for (int i = 0; i < polygonSides; i++)
+        for (int i = 0; i < node.Shape.Vertices.Count; i++)
         {
-            float angle = (float)(2 * Math.PI / polygonSides * i) + rotationAngle;
-
-            SKPoint point = new(node.Position.X + node.Shape.Radius * (float)Math.Cos(angle),
-                                node.Position.Y + node.Shape.Radius * (float)Math.Sin(angle));
+            (float x, float y) = node.Shape.Vertices[i];
 
             if (i == 0)
             {
-                path.MoveTo(point);
+                path.MoveTo(new SKPoint(x, y));
             }
             else
             {
-                path.LineTo(point);
+                path.LineTo(new SKPoint(x, y));
             }
-
-            node.Shape.Vertices.Add((point.X, point.Y));
         }
 
         path.Close();
@@ -337,8 +308,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
-    private static void DrawConnection(SKCanvas canvas,
-                                       DirectedGraphNode node)
+    private static void DrawNodeConnection(SKCanvas canvas,
+                                           DirectedGraphNode node)
     {
         SKPaint paint = new()
         {

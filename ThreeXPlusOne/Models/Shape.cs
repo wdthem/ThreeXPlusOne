@@ -11,7 +11,7 @@ public class Shape()
     public ShapeType ShapeType { get; set; }
 
     /// <summary>
-    /// The radius of the shape, if it's a circle
+    /// The radius of the shape, used for both circles and polygons
     /// </summary>
     public float Radius { get; set; }
 

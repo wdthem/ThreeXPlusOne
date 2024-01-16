@@ -71,6 +71,32 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
+    /// Set the shapes of the positioned nodes
+    /// </summary>
+    public void SetNodeShapes()
+    {
+        //float depth = 0.99f + (float)_random.NextDouble() * 0.02f; // Very subtle depth
+        //float tiltAngle = -0.0175f + (float)_random.NextDouble() * 0.035f; // Very subtle tilt angle
+
+        foreach (var node in _nodes.Where(node => node.Value.IsPositioned))
+        {
+            SetNodeShape(node.Value);
+
+            /*
+            if (node.Value.Shape.ShapeType == Enums.ShapeType.Circle)
+            {
+                continue;
+            }
+
+            for (int i = 0; i < node.Value.Shape.Vertices.Count; i++)
+            {
+                node.Value.Shape.Vertices[i] = ApplySubtleTransformation(node.Value.Shape.Vertices[i], node.Value.Position, depth, tiltAngle);
+            }
+            */
+        }
+    }
+
+    /// <summary>
     /// Recursive method to position node and all its children down the tree
     /// </summary>
     /// <param name="node"></param>
@@ -147,7 +173,6 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         float yOffset = node.Parent!.Position.Y - (yNodeSpacer + yNodeSpacer / node.Depth + (positionedNodesAtDepth * (yNodeSpacer / 30)));
 
-        node.Shape.Radius = nodeRadius;
         node.Position = (xOffset, (float)yOffset);
 
         if (_settings.NodeRotationAngle != 0)
@@ -162,6 +187,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
             node.Position = ApplyPerspectiveTransform(node, _settings.DistanceFromViewer);
         }
 
+        node.Shape.Radius = nodeRadius;
         node.IsPositioned = true;
         _nodesPositioned += 1;
 
@@ -186,5 +212,18 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         float yPrime = node.Position.Y / (1 + node.Z / d) - (_settings.YNodeSpacer * 4);
 
         return (xPrime, yPrime);
+    }
+
+    private (float X, float Y) ApplySubtleTransformation((float X, float Y) vertex, (float X, float Y) center, float depthFactor, float tiltRadians)
+    {
+        // Apply uniform depth scaling
+        float dx = (vertex.X - center.X) * depthFactor;
+        float dy = (vertex.Y - center.Y) * depthFactor;
+
+        // Apply a subtle tilt
+        float rotatedX = dx * (float)Math.Cos(tiltRadians) - dy * (float)Math.Sin(tiltRadians);
+        float rotatedY = dx * (float)Math.Sin(tiltRadians) + dy * (float)Math.Cos(tiltRadians);
+
+        return (center.X + rotatedX, center.Y + rotatedY);
     }
 }
