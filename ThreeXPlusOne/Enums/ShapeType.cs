@@ -1,4 +1,4 @@
-namespace ThreeXPlusOne.Models;
+namespace ThreeXPlusOne.Enums;
 
 public enum ShapeType
 {

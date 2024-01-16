@@ -10,6 +10,6 @@ jobs:
         run: |
           branch_name=${GITHUB_HEAD_REF}
           if [[ ! "$branch_name" =~ ^(feature|bugfix|refactor)/[0-9]+-.* ]]; then
-            echo "Error: Branch name '$branch_name' does not follow the 'feature/0000-feature-name' or 'bugfix/0000-bugfix-name' or 'refactor/0000-bugfix-name' format (where 0000 is the Issue Id)."
+            echo "Error: Branch name '$branch_name' does not follow the 'feature/0000-feature-name' or 'bugfix/0000-bugfix-name' or 'refactor/0000-refactor-name' format (where 0000 is the Issue Id)."
             exit 1
           fi

@@ -1,4 +1,4 @@
-namespace ThreeXPlusOne.Code.Graph.Services;
+namespace ThreeXPlusOne.Enums;
 
 public enum GraphProvider
 {

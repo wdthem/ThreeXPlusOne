@@ -1,5 +1,6 @@
 using SkiaSharp;
 using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Enums;
 
 namespace ThreeXPlusOne.Code.Graph.Services;
 
