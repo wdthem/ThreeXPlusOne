@@ -21,8 +21,7 @@ public class Process(IOptions<Settings> settings,
     /// </summary>
     public void Run()
     {
-        Stopwatch stopwatch = new();
-        stopwatch.Start();
+        Stopwatch stopwatch = Stopwatch.StartNew();
 
         consoleHelper.WriteAsciiArtLogo();
         consoleHelper.WriteSettings();

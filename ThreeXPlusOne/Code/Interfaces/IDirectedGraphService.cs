@@ -8,6 +8,16 @@ namespace ThreeXPlusOne.Code.Interfaces;
 public interface IDirectedGraphService : IDisposable
 {
     /// <summary>
+    /// Action to perform when the service starts a task
+    /// </summary>
+    Action<string>? OnStart { get; set; }
+
+    /// <summary>
+    /// Action to perform when the service ends a task
+    /// </summary>
+    Action? OnComplete { get; set; }
+
+    /// <summary>
     /// The graph provider implementing the interface
     /// </summary>
     GraphProvider GraphProvider { get; }

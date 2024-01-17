@@ -7,8 +7,7 @@ using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Services;
 
-public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
-                                           IConsoleHelper consoleHelper) : IDirectedGraphService
+public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGraphService
 {
     private List<DirectedGraphNode>? _nodes;
     private SKSurface? _surface;
@@ -16,6 +15,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     private SKImage? _image;
     private SKColor _canvasBackgroundColor;
     private readonly Random _random = new();
+
+    public Action<string>? OnStart { get; set; }
+    public Action? OnComplete { get; set; }
 
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
 
@@ -33,11 +35,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
                            int height,
                            Color backgroundColor)
     {
-        CancellationTokenSource cancellationTokenSource = new();
 
-        consoleHelper.Write($"Initializing {GraphProvider} graph... ");
-
-        Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
+        OnStart?.Invoke($"Initializing {GraphProvider} graph... ");
 
         _nodes = nodes;
         _surface = SKSurface.Create(new SKImageInfo(width, height));
@@ -46,11 +45,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
 
         _canvas.Clear(_canvasBackgroundColor);
 
-        cancellationTokenSource.Cancel();
-
-        spinner.Wait();
-
-        consoleHelper.WriteDone();
+        OnComplete?.Invoke();
     }
 
     /// <summary>
@@ -64,6 +59,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
         {
             throw new Exception("Could not generate background stars. Surface or Canvas object was null");
         }
+
+        OnStart?.Invoke($"Drawing {starCount} background stars... ");
 
         List<SKPoint> points = [];
 
@@ -80,8 +77,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             DrawStarWithBlur(_canvas, point);
         }
 
-        consoleHelper.Write($"{starCount} background stars drawn... ");
-        consoleHelper.WriteDone();
+        OnComplete?.Invoke();
     }
 
     /// <summary>
@@ -100,11 +96,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             throw new Exception("Could not add light source. Canvas object was null.");
         }
 
-        CancellationTokenSource cancellationTokenSource = new();
-
-        consoleHelper.Write("Generating light source... ");
-
-        Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
+        OnStart?.Invoke($"Generating light source... ");
 
         SKColor startColor = GenerateSKColor(color);
         SKColor endColor = _canvasBackgroundColor;
@@ -124,11 +116,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
         // Draw the rectangle over the entire canvas
         _canvas.DrawRect(_canvas.LocalClipBounds, paint);
 
-        cancellationTokenSource.Cancel();
-
-        spinner.Wait();
-
-        consoleHelper.WriteDone();
+        OnComplete?.Invoke();
     }
 
     /// <summary>
@@ -145,34 +133,24 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             throw new Exception("Could not draw the graph. Canvas object or Nodes object was null");
         }
 
-        var lcv = 0;
+        OnStart?.Invoke($"Drawing nodes and connections... ");
+
         if (drawNodeConnections)
         {
             foreach (var node in _nodes)
             {
                 DrawNodeConnection(_canvas, node);
-
-                consoleHelper.Write($"\r{lcv} connections drawn... ");
-
-                lcv += 1;
             }
-
-            consoleHelper.WriteDone();
         }
 
-        lcv = 1;
         foreach (var node in _nodes)
         {
             DrawNode(_canvas,
                      node,
                      drawNumbersOnNodes);
-
-            consoleHelper.Write($"\r{lcv} nodes drawn... ");
-
-            lcv += 1;
         }
 
-        consoleHelper.WriteDone();
+        OnComplete?.Invoke();
     }
 
     /// <summary>
@@ -186,11 +164,11 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             throw new Exception("Could not render graph. Surface object was null");
         }
 
-        consoleHelper.Write($"Rendering graph... ");
+        OnStart?.Invoke($"Rendering graph... ");
 
         _image = _surface.Snapshot();
 
-        consoleHelper.WriteDone();
+        OnComplete?.Invoke();
     }
 
     /// <summary>
@@ -206,11 +184,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
 
         string path = fileHelper.GenerateDirectedGraphFilePath();
 
-        CancellationTokenSource cancellationTokenSource = new();
-
-        consoleHelper.Write($"Saving image... ");
-
-        Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
+        OnStart?.Invoke($"Saving image to {path}... ");
 
         using (SKData data = _image.Encode(SKEncodedImageFormat.Png, 25))
         using (FileStream stream = File.OpenWrite(path))
@@ -218,13 +192,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             data.SaveTo(stream);
         }
 
-        cancellationTokenSource.Cancel();
-
-        spinner.Wait();
-
-        consoleHelper.WriteDone();
-
-        consoleHelper.WriteLine($"Image saved to {path}\n");
+        OnComplete?.Invoke();
     }
 
     /// <summary>
