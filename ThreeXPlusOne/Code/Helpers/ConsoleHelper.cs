@@ -255,7 +255,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteLine("true (whether or not to generate a file with metadata about the run)");
 
         SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.GenerateLightSource)}: ");
+        Write($"    {nameof(Settings.LightSourcePosition)}: ");
         SetForegroundColor(ConsoleColor.White);
         WriteLine("false (whether or not to generate a light source from the top left of the graph that interacts with nodes)");
 

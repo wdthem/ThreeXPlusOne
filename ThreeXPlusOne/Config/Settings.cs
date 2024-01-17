@@ -83,6 +83,11 @@ public class Settings
     public int GraphDimensions { get; set; } = 2;
 
     /// <summary>
+    /// The position of the light source. Use "None" to not generate the light source.
+    /// </summary>
+    public string LightSourcePosition { get; set; } = "None";
+
+    /// <summary>
     /// Whether or not to draw the connections between nodes on the graph
     /// </summary>
     public bool DrawConnections { get; set; } = true;
@@ -106,11 +111,6 @@ public class Settings
     /// Whether or not to generate the metadata file
     /// </summary>
     public bool GenerateMetadataFile { get; set; } = true;
-
-    /// <summary>
-    /// Whether or not to add a light source to the top left of the graph
-    /// </summary>
-    public bool GenerateLightSource { get; set; }
 
     /// <summary>
     /// Whether or not to draw stars on the graph's background

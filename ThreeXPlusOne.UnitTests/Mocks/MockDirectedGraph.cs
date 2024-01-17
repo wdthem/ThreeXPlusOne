@@ -7,7 +7,8 @@ namespace ThreeXPlusOne.UnitTests.Mocks;
 
 public class MockDirectedGraph(IOptions<Settings> settings,
                                IEnumerable<IDirectedGraphService> graphServices,
-                               IConsoleHelper consoleHelper) : DirectedGraph(settings, graphServices, consoleHelper), IDirectedGraph
+                               ILightSourceService lightSourceService,
+                               IConsoleHelper consoleHelper) : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper), IDirectedGraph
 {
     public int Dimensions => 2;
 

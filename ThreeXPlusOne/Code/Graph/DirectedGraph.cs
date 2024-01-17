@@ -9,6 +9,7 @@ namespace ThreeXPlusOne.Code.Graph;
 
 public abstract class DirectedGraph(IOptions<Settings> settings,
                                     IEnumerable<IDirectedGraphService> graphServices,
+                                    ILightSourceService lightSourceService,
                                     IConsoleHelper consoleHelper)
 {
     private int _canvasWidth = 0;
@@ -70,8 +71,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                     }
                 }
 
-                currentNode.Shape.Color = GenerateNodeColor();
-
                 previousNode = currentNode;
 
                 currentDepth--;
@@ -104,16 +103,39 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         graphService.Initialize([.. _nodes.Values],
                                 _canvasWidth,
-                                _canvasHeight);
+                                _canvasHeight,
+                                Color.Black);
 
         if (_settings.GenerateBackgroundStars)
         {
             graphService.GenerateBackgroundStars(100);
         }
 
-        if (_settings.GenerateLightSource)
+        lightSourceService.CanvasDimensions = (_canvasWidth, _canvasHeight);
+        lightSourceService.GraphDimensions = _settings.SanitizedGraphDimensions;
+        LightSourcePosition lightSourcePosition = lightSourceService.ParseLightSourcePosition(_settings.LightSourcePosition);
+
+        if (lightSourcePosition != LightSourcePosition.None)
         {
-            graphService.GenerateLightSource();
+            graphService.GenerateLightSource(lightSourceService.GetLightSourceCoordinates(lightSourcePosition),
+                                             lightSourceService.Radius,
+                                             lightSourceService.LightSourceColor);
+        }
+
+        foreach (var node in _nodes)
+        {
+            Color nodeColor = GenerateNodeColor();
+
+            if (lightSourcePosition == LightSourcePosition.None)
+            {
+                node.Value.Shape.Color = nodeColor;
+            }
+            else
+            {
+                node.Value.Shape.Color = ApplyLightSourceToNodeColor(node.Value,
+                                                                     nodeColor,
+                                                                     lightSourceService.GetLightSourceCoordinates(lightSourcePosition));
+            }
         }
 
         graphService.Draw(drawNumbersOnNodes: _settings.DrawNumbersOnNodes,
@@ -253,7 +275,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                                                    float x,
                                                    float y)
     {
-        (float x, float y) rotatedPosition;
+        (float X, float Y) rotatedPosition;
 
         // Check if either coordinate is negative to know how to rotate
         bool isInNegativeSpace = x < 0 || y < 0;
@@ -382,5 +404,65 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         while (red <= 10 || green <= 10 || blue <= 10); //avoid very dark colours
 
         return Color.FromArgb(alpha, red, green, blue);
+    }
+
+    /// <summary>
+    /// If a light source is in place, it should impact the colour of nodes.
+    /// The closer to the source, the more the impact.
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="nodeBaseColor"></param>
+    /// <param name="lightSourceCoordinates"></param>
+    /// <returns></returns>
+    private Color ApplyLightSourceToNodeColor(DirectedGraphNode node,
+                                              Color nodeBaseColor,
+                                              (float X, float Y) lightSourceCoordinates)
+    {
+        Color nodeColor;
+        float distance = Distance((node.Position.X, node.Position.Y),
+                                  (lightSourceCoordinates.X, lightSourceCoordinates.Y));
+
+
+        float additionalOpacityFactor;
+        float maxDistance = _canvasHeight / (float)1.2;
+
+        float lightIntensity = 0.5f; // Adjust this value between 0 and 1 to control the light's power
+
+        if (distance < maxDistance)
+        {
+            additionalOpacityFactor = distance / maxDistance;
+            additionalOpacityFactor = Math.Clamp(additionalOpacityFactor, 0, 1);
+
+            // Apply the light intensity to the blend factor
+            float blendFactor = additionalOpacityFactor * lightIntensity;
+            nodeColor = BlendColor(nodeBaseColor, Color.LightYellow, 1 - blendFactor);
+        }
+        else
+        {
+            nodeColor = nodeBaseColor;
+            additionalOpacityFactor = 1.0f;
+        }
+
+        byte finalAlpha = (byte)(nodeBaseColor.A * additionalOpacityFactor);
+
+        return Color.FromArgb(finalAlpha, nodeColor.R, nodeColor.G, nodeColor.B);
+    }
+
+    /// <summary>
+    /// Blend the node's colour with the light source, adjusted for distance from the light source
+    /// </summary>
+    /// <param name="baseColor"></param>
+    /// <param name="blendColor"></param>
+    /// <param name="blendFactor"></param>
+    /// <returns></returns>
+    private static Color BlendColor(Color baseColor,
+                                    Color blendColor,
+                                    float blendFactor)
+    {
+        byte r = (byte)((baseColor.R * (1 - blendFactor)) + (blendColor.R * blendFactor));
+        byte g = (byte)((baseColor.G * (1 - blendFactor)) + (blendColor.G * blendFactor));
+        byte b = (byte)((baseColor.B * (1 - blendFactor)) + (blendColor.B * blendFactor));
+
+        return Color.FromArgb(255, r, g, b);
     }
 }
