@@ -14,8 +14,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     private SKSurface? _surface;
     private SKCanvas? _canvas;
     private SKImage? _image;
-    private bool _lightSourceInPlace = false;
-    private (float X, float Y) _lightSourceOrigin;
+    private SKColor _canvasBackgroundColor;
     private readonly Random _random = new();
 
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
@@ -28,9 +27,11 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
+    /// <param name="backgroundColor"></param>
     public void Initialize(List<DirectedGraphNode> nodes,
                            int width,
-                           int height)
+                           int height,
+                           Color backgroundColor)
     {
         CancellationTokenSource cancellationTokenSource = new();
 
@@ -41,8 +42,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
         _nodes = nodes;
         _surface = SKSurface.Create(new SKImageInfo(width, height));
         _canvas = _surface.Canvas;
+        _canvasBackgroundColor = GenerateSKColor(backgroundColor);
 
-        _canvas.Clear(SKColors.Black);
+        _canvas.Clear(_canvasBackgroundColor);
 
         cancellationTokenSource.Cancel();
 
@@ -85,8 +87,13 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// <summary>
     /// Add a light source from the top left
     /// </summary>
+    /// <param name="lightSourceCoordinates"></param>
+    /// <param name="radius"></param>
+    /// <param name="color"></param>
     /// <exception cref="Exception"></exception>
-    public void GenerateLightSource()
+    public void GenerateLightSource((float X, float Y) lightSourceCoordinates,
+                                    float radius,
+                                    Color color)
     {
         if (_canvas == null)
         {
@@ -99,20 +106,14 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
 
         Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
 
-        _lightSourceOrigin = (_canvas.LocalClipBounds.Width / 2, 0);
-        _lightSourceInPlace = true;
-
-        // Calculate the radius to cover the entire canvas
-        float radius = (float)Math.Sqrt(Math.Pow(_canvas.LocalClipBounds.Width, 2) + Math.Pow(_canvas.LocalClipBounds.Height, 2)) / 2;
-
-        SKColor startColor = SKColors.LightYellow.WithAlpha(200);
-        SKColor endColor = SKColors.Black;
+        SKColor startColor = GenerateSKColor(color);
+        SKColor endColor = _canvasBackgroundColor;
 
         // Create a radial gradient from the specified origin
-        SKShader shader = SKShader.CreateRadialGradient(new SKPoint(_lightSourceOrigin.X, _lightSourceOrigin.Y),
+        SKShader shader = SKShader.CreateRadialGradient(new SKPoint(lightSourceCoordinates.X, lightSourceCoordinates.Y),
                                                         radius,
                                                         [startColor, endColor],
-                                                        [0, 1], // Gradient stops
+                                                        [0, 0.75f], // Gradient stops
                                                         SKShaderTileMode.Clamp);
 
         SKPaint paint = new()
@@ -232,11 +233,16 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     /// <param name="canvas"></param>
     /// <param name="node"></param>
     /// <param name="drawNumbersOnNodes"></param>
-    private void DrawNode(SKCanvas canvas,
-                          DirectedGraphNode node,
-                          bool drawNumbersOnNodes)
+    private static void DrawNode(SKCanvas canvas,
+                                 DirectedGraphNode node,
+                                 bool drawNumbersOnNodes)
     {
-        SKPaint paint = GenerateNodePaint(node);
+        SKPaint paint = new()
+        {
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill,
+            Color = GenerateSKColor(node.Shape.Color)
+        };
 
         SKPaint textPaint = new()
         {
@@ -352,109 +358,27 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
     }
 
     /// <summary>
-    /// Get the node SKPaint applying a light source as appropriate
-    /// </summary>
-    /// <param name="alpha"></param>
-    /// <returns></returns>
-    private SKPaint GenerateNodePaint(DirectedGraphNode node)
-    {
-        //default to white
-        SKColor nodeBaseColor = new(Color.White.R,
-                                    Color.White.G,
-                                    Color.White.B,
-                                    Color.White.A);
-
-        if (node.Shape.Color != Color.Empty)
-        {
-            nodeBaseColor = new SKColor(node.Shape.Color.R,
-                                        node.Shape.Color.G,
-                                        node.Shape.Color.B,
-                                        node.Shape.Color.A);
-        }
-
-        SKColor nodeColor = nodeBaseColor;
-
-        if (_lightSourceInPlace)
-        {
-            nodeColor = ApplyLightSourceToNodeColor(node, nodeBaseColor);
-        }
-
-        return new SKPaint()
-        {
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            Color = nodeColor
-        };
-    }
-
-    /// <summary>
-    /// If a light source is in place, it should impact the colour of nodes.
-    /// The closer to the source, the more the impact.
+    /// Get the node SKColor from a Color object
     /// </summary>
     /// <param name="node"></param>
-    /// <param name="nodeBaseColor"></param>
     /// <returns></returns>
-    private SKColor ApplyLightSourceToNodeColor(DirectedGraphNode node,
-                                                SKColor nodeBaseColor)
+    private static SKColor GenerateSKColor(Color color)
     {
-        SKColor nodeColor;
-        float distance = Distance(new SKPoint(node.Position.X, node.Position.Y),
-                                  new SKPoint(_lightSourceOrigin.X, _lightSourceOrigin.Y));
+        //default to white
+        SKColor nodeColor = new(Color.White.R,
+                                Color.White.G,
+                                Color.White.B,
+                                Color.White.A);
 
-
-        float additionalOpacityFactor;
-        float maxDistance = _canvas!.LocalClipBounds.Height / (float)1.2;
-
-        float lightIntensity = 0.5f; // Adjust this value between 0 and 1 to control the light's power
-
-
-        if (distance < maxDistance)
+        if (color != Color.Empty)
         {
-            additionalOpacityFactor = distance / maxDistance;
-            additionalOpacityFactor = Math.Clamp(additionalOpacityFactor, 0, 1);
-
-            // Apply the light intensity to the blend factor
-            float blendFactor = additionalOpacityFactor * lightIntensity;
-            nodeColor = BlendColor(nodeBaseColor, SKColors.LightYellow, 1 - blendFactor);
-        }
-        else
-        {
-            nodeColor = nodeBaseColor;
-            additionalOpacityFactor = 1.0f;
+            nodeColor = new SKColor(color.R,
+                                    color.G,
+                                    color.B,
+                                    color.A);
         }
 
-        byte finalAlpha = (byte)(nodeBaseColor.Alpha * additionalOpacityFactor);
-
-        return nodeColor.WithAlpha(finalAlpha);
-    }
-
-    /// <summary>
-    /// Calculate the Euclidean distance between two node positions
-    /// </summary>
-    /// <param name="position1"></param>
-    /// <param name="position2"></param>
-    /// <returns></returns>
-    private static float Distance(SKPoint position1, SKPoint position2)
-    {
-        return (float)Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
-    }
-
-    /// <summary>
-    /// Blend the node's colour with the light source, adjusted for distance from the light source
-    /// </summary>
-    /// <param name="baseColor"></param>
-    /// <param name="blendColor"></param>
-    /// <param name="blendFactor"></param>
-    /// <returns></returns>
-    private static SKColor BlendColor(SKColor baseColor,
-                                      SKColor blendColor,
-                                      float blendFactor)
-    {
-        byte r = (byte)((baseColor.Red * (1 - blendFactor)) + (blendColor.Red * blendFactor));
-        byte g = (byte)((baseColor.Green * (1 - blendFactor)) + (blendColor.Green * blendFactor));
-        byte b = (byte)((baseColor.Blue * (1 - blendFactor)) + (blendColor.Blue * blendFactor));
-
-        return new SKColor(r, g, b);
+        return nodeColor;
     }
 
     #region IDisposable

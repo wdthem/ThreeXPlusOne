@@ -14,12 +14,12 @@ Use the following settings to achieve the results shown in the Example Output im
   "YNodeSpacer": 125,
   "DistanceFromViewer": 200,
   "GraphDimensions": 2,
+  "LightSourcePosition": "None",
   "DrawConnections": false,
   "DrawNumbersOnNodes": true,
   "GenerateGraph": true,
   "GenerateHistogram": false,
   "GenerateMetadataFile": true,
-  "GenerateLightSource": false,
   "GenerateBackgroundStars": false,
   "OutputPath": ""
 }
@@ -37,12 +37,12 @@ Use the following settings to achieve the results shown in the Example Output im
   "YNodeSpacer": 125,
   "DistanceFromViewer": 200,
   "GraphDimensions": 2,
+  "LightSourcePosition": "None",
   "DrawConnections": false,
   "DrawNumbersOnNodes": true,
   "GenerateGraph": true,
   "GenerateHistogram": false,
   "GenerateMetadataFile": true,
-  "GenerateLightSource": false,
   "GenerateBackgroundStars": false,
   "OutputPath": ""
 }
@@ -60,12 +60,12 @@ Use the following settings to achieve the results shown in the Example Output im
   "YNodeSpacer": 225,
   "DistanceFromViewer": 200,
   "GraphDimensions": 3,
+  "LightSourcePosition": "None",
   "DrawConnections": false,
   "DrawNumbersOnNodes": true,
   "GenerateGraph": true,
   "GenerateHistogram": false,
   "GenerateMetadataFile": true,
-  "GenerateLightSource": false,
   "GenerateBackgroundStars": false,
   "OutputPath": ""
 }

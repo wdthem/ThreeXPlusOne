@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Drawing;
 using ThreeXPlusOne.Enums;
 using ThreeXPlusOne.Models;
 
@@ -22,7 +23,8 @@ public interface IDirectedGraphService : IDisposable
     /// <param name="nodes"></param>
     /// <param name="width"></param>
     /// <param name="height"></param>
-    void Initialize(List<DirectedGraphNode> nodes, int width, int height);
+    /// <param name="backgroundColor"></param>
+    void Initialize(List<DirectedGraphNode> nodes, int width, int height, Color backgroundColor);
 
     /// <summary>
     /// Optionally generate white points in the background to mimic stars
@@ -31,9 +33,12 @@ public interface IDirectedGraphService : IDisposable
     void GenerateBackgroundStars(int starCount);
 
     /// <summary>
-    /// Add a light source to the graph from the top left
+    /// Add a light source to the graph emanating from the supplied coordinates
     /// </summary>
-    void GenerateLightSource();
+    /// <param name="lightSourceCoordinates"></param>
+    /// <param name="radius"></param>
+    /// <param name="color"></param>
+    void GenerateLightSource((float X, float Y) lightSourceCoordinates, float radius, Color color);
 
     /// <summary>
     /// Draw the graph based on provided settings

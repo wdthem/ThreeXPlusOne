@@ -2,6 +2,7 @@ namespace ThreeXPlusOne.Enums;
 
 public enum LightSourcePosition
 {
+    None = 0,
     TopLeft = 1,
     TopCenter = 2,
     TopRight = 3,

@@ -47,6 +47,7 @@ public static class StartupExtensions
         services.AddScoped<IMetadata, Metadata>();
         services.AddScoped<IFileHelper, FileHelper>();
         services.AddScoped<IHistogramService, SkiaSharpHistogramService>();
+        services.AddScoped<ILightSourceService, LightSourceService>();
 
         services.AddScoped<IDirectedGraph, TwoDimensionalDirectedGraph>();
         services.AddScoped<IDirectedGraph, ThreeDimensionalDirectedGraph>();
