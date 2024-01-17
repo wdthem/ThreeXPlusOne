@@ -5,7 +5,7 @@ using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Enums;
 using ThreeXPlusOne.Models;
 
-namespace ThreeXPlusOne.Code.Graph.Services;
+namespace ThreeXPlusOne.Code.Services;
 
 public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
                                            IConsoleHelper consoleHelper) : IDirectedGraphService
@@ -99,19 +99,20 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
 
         Task spinner = Task.Run(() => consoleHelper.WriteSpinner(cancellationTokenSource.Token));
 
-        _lightSourceOrigin = (0, 0);
+        _lightSourceOrigin = (_canvas.LocalClipBounds.Width / 2, 0);
         _lightSourceInPlace = true;
 
-        SKPoint startPoint = new(_lightSourceOrigin.X, _lightSourceOrigin.Y);
-        SKPoint endPoint = new(_canvas.LocalClipBounds.Width, _canvas.LocalClipBounds.Height);
+        // Calculate the radius to cover the entire canvas
+        float radius = (float)Math.Sqrt(Math.Pow(_canvas.LocalClipBounds.Width, 2) + Math.Pow(_canvas.LocalClipBounds.Height, 2)) / 2;
 
         SKColor startColor = SKColors.LightYellow.WithAlpha(200);
         SKColor endColor = SKColors.Black;
 
-        SKShader shader = SKShader.CreateLinearGradient(startPoint,
-                                                        endPoint,
+        // Create a radial gradient from the specified origin
+        SKShader shader = SKShader.CreateRadialGradient(new SKPoint(_lightSourceOrigin.X, _lightSourceOrigin.Y),
+                                                        radius,
                                                         [startColor, endColor],
-                                                        [0, 0.75f], // Corresponding to start and end colors
+                                                        [0, 1], // Gradient stops
                                                         SKShaderTileMode.Clamp);
 
         SKPaint paint = new()
@@ -119,11 +120,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper,
             Shader = shader
         };
 
-        _canvas.DrawRect(_lightSourceOrigin.X,
-                         _lightSourceOrigin.Y,
-                         _canvas.LocalClipBounds.Width,
-                         _canvas.LocalClipBounds.Height,
-                         paint);
+        // Draw the rectangle over the entire canvas
+        _canvas.DrawRect(_canvas.LocalClipBounds, paint);
 
         cancellationTokenSource.Cancel();
 
