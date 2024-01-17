@@ -7,31 +7,18 @@ namespace ThreeXPlusOne.Code.Services;
 public class LightSourceService() : ILightSourceService
 {
     private (int Width, int Height) _canvasDimensions;
-    private int _graphDimensions = 2;
+    private int _graphDimensions;
+    private LightSourcePosition _lightSourcePosition = LightSourcePosition.None;
     private Dictionary<LightSourcePosition, (float X, float Y)>? _positionMappings;
 
     /// <summary>
-    /// The dimenions that the current graphs is being rendered in
+    /// The position of the light source
     /// </summary>
-    public int GraphDimensions
+    public LightSourcePosition LightSourcePosition
     {
-        get => _graphDimensions;
-        set
+        get
         {
-            _graphDimensions = value;
-        }
-    }
-
-    /// <summary>
-    /// The dimensions of the canvas used to map to coordinates
-    /// </summary>
-    public (int Width, int Height) CanvasDimensions
-    {
-        get => _canvasDimensions;
-        set
-        {
-            _canvasDimensions = value;
-            InitializePositionMappings();
+            return _lightSourcePosition;
         }
     }
 
@@ -61,18 +48,22 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// Parse the value from settings into a LightSourcePosition enum value
+    /// Initialize the light source service with details about the graph being generated
     /// </summary>
-    /// <param name="settingsValue"></param>
-    /// <returns></returns>
-    public LightSourcePosition ParseLightSourcePosition(string settingsValue)
+    /// <param name="canvasWidth"></param>
+    /// <param name="canvasHeight"></param>
+    /// <param name="graphDimensions"></param>
+    /// <param name="lightSourcePositionSetting"></param>
+    public void Initialize(int canvasWidth,
+                           int canvasHeight,
+                           int graphDimensions,
+                           string lightSourcePositionSetting)
     {
-        if (!Enum.TryParse(settingsValue, out LightSourcePosition position))
-        {
-            return LightSourcePosition.None;
-        }
+        _canvasDimensions = (canvasWidth, canvasHeight);
+        _graphDimensions = graphDimensions;
+        _lightSourcePosition = ParseLightSourcePosition(lightSourcePositionSetting);
 
-        return position;
+        InitializePositionMappings();
     }
 
     /// <summary>
@@ -91,6 +82,21 @@ public class LightSourceService() : ILightSourceService
         {
             throw new KeyNotFoundException($"Coordinates not found for the light source position '{position}'");
         }
+    }
+
+    /// <summary>
+    /// Parse the value from settings into a LightSourcePosition enum value
+    /// </summary>
+    /// <param name="settingsValue"></param>
+    /// <returns></returns>
+    private static LightSourcePosition ParseLightSourcePosition(string settingsValue)
+    {
+        if (!Enum.TryParse(settingsValue, out LightSourcePosition position))
+        {
+            return LightSourcePosition.None;
+        }
+
+        return position;
     }
 
     /// <summary>
