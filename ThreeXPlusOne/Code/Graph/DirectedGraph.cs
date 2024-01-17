@@ -111,13 +111,14 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             graphService.GenerateBackgroundStars(100);
         }
 
-        lightSourceService.CanvasDimensions = (_canvasWidth, _canvasHeight);
-        lightSourceService.GraphDimensions = _settings.SanitizedGraphDimensions;
-        LightSourcePosition lightSourcePosition = lightSourceService.ParseLightSourcePosition(_settings.LightSourcePosition);
+        lightSourceService.Initialize(_canvasWidth,
+                                      _canvasHeight,
+                                      _settings.SanitizedGraphDimensions,
+                                      _settings.LightSourcePosition);
 
-        if (lightSourcePosition != LightSourcePosition.None)
+        if (lightSourceService.LightSourcePosition != LightSourcePosition.None)
         {
-            graphService.GenerateLightSource(lightSourceService.GetLightSourceCoordinates(lightSourcePosition),
+            graphService.GenerateLightSource(lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
                                              lightSourceService.Radius,
                                              lightSourceService.LightSourceColor);
         }
@@ -126,7 +127,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             Color nodeColor = GenerateNodeColor();
 
-            if (lightSourcePosition == LightSourcePosition.None)
+            if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
             {
                 node.Value.Shape.Color = nodeColor;
             }
@@ -134,7 +135,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             {
                 node.Value.Shape.Color = ApplyLightSourceToNodeColor(node.Value,
                                                                      nodeColor,
-                                                                     lightSourceService.GetLightSourceCoordinates(lightSourcePosition));
+                                                                     lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition));
             }
         }
 

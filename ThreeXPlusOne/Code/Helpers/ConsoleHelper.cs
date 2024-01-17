@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
+using ThreeXPlusOne.Enums;
 
 namespace ThreeXPlusOne.Code.Helpers;
 
@@ -230,6 +231,11 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteLine("2 (the number of dimensions to render in the graph - 2 or 3)");
 
         SetForegroundColor(ConsoleColor.Blue);
+        Write($"    {nameof(Settings.LightSourcePosition)}: ");
+        SetForegroundColor(ConsoleColor.White);
+        WriteLine($"None (the position of the light source. Values are: {string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)))})");
+
+        SetForegroundColor(ConsoleColor.Blue);
         Write($"    {nameof(Settings.DrawConnections)}: ");
         SetForegroundColor(ConsoleColor.White);
         WriteLine("true (whether or not to draw connections between the nodes in the graph - if true can increase image file size substantially)");
@@ -253,11 +259,6 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         Write($"    {nameof(Settings.GenerateMetadataFile)}: ");
         SetForegroundColor(ConsoleColor.White);
         WriteLine("true (whether or not to generate a file with metadata about the run)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.LightSourcePosition)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("false (whether or not to generate a light source from the top left of the graph that interacts with nodes)");
 
         SetForegroundColor(ConsoleColor.Blue);
         Write($"    {nameof(Settings.GenerateBackgroundStars)}: ");

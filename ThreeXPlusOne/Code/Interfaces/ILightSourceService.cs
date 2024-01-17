@@ -5,15 +5,7 @@ namespace ThreeXPlusOne.Code.Interfaces;
 
 public interface ILightSourceService
 {
-    /// <summary>
-    /// The dimenions that the current graphs is being rendered in
-    /// </summary>
-    int GraphDimensions { get; set; }
-
-    /// <summary>
-    /// The dimensions of the canvas used to map to coordinates
-    /// </summary>
-    (int Width, int Height) CanvasDimensions { get; set; }
+    LightSourcePosition LightSourcePosition { get; }
 
     /// <summary>
     /// The radius of the light source
@@ -26,11 +18,13 @@ public interface ILightSourceService
     Color LightSourceColor { get; }
 
     /// <summary>
-    /// Parse the value from settings into a LightSourcePosition enum value
+    /// Initialize the light source service with details about the graph being generated
     /// </summary>
-    /// <param name="settingsValue"></param>
-    /// <returns></returns>
-    LightSourcePosition ParseLightSourcePosition(string input);
+    /// <param name="canvasWidth"></param>
+    /// <param name="canvasHeight"></param>
+    /// <param name="graphDimensions"></param>
+    /// <param name="lightSourcePositionSetting"></param>
+    void Initialize(int canvasWidth, int canvasHeight, int graphDimensions, string lightSourcePositionSetting);
 
     /// <summary>
     /// Get canvas coordinates for the light source based on where the user specified that it should exist
