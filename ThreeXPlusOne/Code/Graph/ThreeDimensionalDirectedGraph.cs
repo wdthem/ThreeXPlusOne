@@ -96,6 +96,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (node.Value.Shape.ShapeType == Enums.ShapeType.Circle)
             {
+                /*
                 node.Value.Shape.ShapeType = Enums.ShapeType.Ellipse;
 
                 float horizontalOffset = node.Value.Shape.Radius * (skewFactor * 0.2f);
@@ -107,6 +108,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
                 node.Value.Shape.EllipseCoordinates = ((node.Value.Position.X - horizontalRadius, node.Value.Position.Y - verticalRadius),
                                                        (node.Value.Position.X + horizontalRadius, node.Value.Position.Y + verticalRadius));
 
+                */
                 continue;
             }
 
