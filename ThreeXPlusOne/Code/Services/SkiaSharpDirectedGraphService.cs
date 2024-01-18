@@ -291,7 +291,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     {
         SKPaint paint = new()
         {
-            Color = SKColors.White.WithAlpha(128),
+            Color = SKColors.White.WithAlpha(100),
             StrokeWidth = 2,
             IsAntialias = true
         };
