@@ -92,7 +92,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
             }
             else
             {
-                skewFactor = 0.1f + (float)_random.NextDouble() * 0.8f; // Skew factor between 0.1 and 0.5
+                skewFactor = 0.1f + (float)_random.NextDouble() * 0.8f;
             }
 
             if (node.Value.Shape.ShapeType == Enums.ShapeType.Circle)
