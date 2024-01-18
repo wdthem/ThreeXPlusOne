@@ -41,7 +41,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
         _nodes = nodes;
         _surface = SKSurface.Create(new SKImageInfo(width, height));
         _canvas = _surface.Canvas;
-        _canvasBackgroundColor = GenerateSKColor(backgroundColor);
+        _canvasBackgroundColor = ConvertColorToSKColor(backgroundColor);
 
         _canvas.Clear(_canvasBackgroundColor);
 
@@ -96,9 +96,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             throw new Exception("Could not add light source. Canvas object was null.");
         }
 
-        OnStart?.Invoke($"Generating light source... ");
+        OnStart?.Invoke("Generating light source... ");
 
-        SKColor startColor = GenerateSKColor(color);
+        SKColor startColor = ConvertColorToSKColor(color);
         SKColor endColor = _canvasBackgroundColor;
 
         // Create a radial gradient from the specified origin
@@ -133,10 +133,18 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             throw new Exception("Could not draw the graph. Canvas object or Nodes object was null");
         }
 
-        OnStart?.Invoke($"Drawing nodes and connections... ");
+        var extraMessage = "";
 
         if (drawNodeConnections)
         {
+            extraMessage = " and connections";
+        }
+
+        OnStart?.Invoke($"Drawing {_nodes.Count} nodes{extraMessage}... ");
+
+        if (drawNodeConnections)
+        {
+            //do a separate loop to draw connections to ensure they are drawn under nodes
             foreach (var node in _nodes)
             {
                 DrawNodeConnection(_canvas, node);
@@ -164,7 +172,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             throw new Exception("Could not render graph. Surface object was null");
         }
 
-        OnStart?.Invoke($"Rendering graph... ");
+        OnStart?.Invoke("Rendering graph... ");
 
         _image = _surface.Snapshot();
 
@@ -209,7 +217,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
         {
             IsAntialias = true,
             Style = SKPaintStyle.Fill,
-            Color = GenerateSKColor(node.Shape.Color)
+            Color = ConvertColorToSKColor(node.Shape.Color)
         };
 
         SKPaint textPaint = new()
@@ -222,9 +230,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             FakeBoldText = true,
         };
 
-        DrawShape(canvas,
-                  node,
-                  paint);
+        DrawShape(canvas, node, paint);
 
         if (drawNumbersOnNodes)
         {
@@ -285,7 +291,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     {
         SKPaint paint = new()
         {
-            Color = new SKColor(255, 255, 255, 128),
+            Color = SKColors.White.WithAlpha(128),
             StrokeWidth = 2,
             IsAntialias = true
         };
@@ -295,6 +301,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             canvas.DrawLine(new SKPoint(node.Position.X, node.Position.Y),
                             new SKPoint(childNode.Position.X, childNode.Position.Y),
                             paint);
+
+            canvas.DrawCircle(new SKPoint(childNode.Position.X, childNode.Position.Y), 10, paint);
         }
     }
 
@@ -306,7 +314,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     private void DrawStarWithBlur(SKCanvas canvas,
                                   SKPoint point)
     {
-        float starSize = _random.Next(20, 41); //from 20 to 40
+        float starSize = _random.Next(10, 26); //from 10 to 26
         float blurRadius = 9.0f;
 
         SKPaint blurPaint = new()
@@ -326,11 +334,11 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     }
 
     /// <summary>
-    /// Get the node SKColor from a Color object
+    /// Get an SKColor object from a Color object
     /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
-    private static SKColor GenerateSKColor(Color color)
+    private static SKColor ConvertColorToSKColor(Color color)
     {
         //default to white
         SKColor nodeColor = new(Color.White.R,

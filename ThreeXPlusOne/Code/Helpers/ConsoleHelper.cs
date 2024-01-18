@@ -474,12 +474,14 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
     public void ShowSpinningBar()
     {
-        SetCursorVisibility(false);
-
-        _cancellationTokenSource = new CancellationTokenSource();
-        Stopwatch stopwatch = Stopwatch.StartNew();
         long previousMilliseconds = 0;
         const long updateInterval = 100;
+
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        SetCursorVisibility(false);
 
         Task.Run(() =>
         {

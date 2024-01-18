@@ -90,6 +90,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <summary>
     /// Draw the directed graph
     /// </summary>
+    /// <exception cref="Exception"></exception>
     protected void DrawDirectedGraph()
     {
         IDirectedGraphService graphService = graphServices.ToList()
@@ -156,6 +157,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                                          drawNodeConnections: _settings.DrawConnections)).Wait();
 
         Task.Run(graphService.Render).Wait();
+
+        //saving the image is processing-intensive and can cause threading issues, so start it via Task.Factory
+        //in order to specify that it is expected to be long-running
         Task.Factory.StartNew(graphService.SaveImage,
                               CancellationToken.None,
                               TaskCreationOptions.LongRunning,
