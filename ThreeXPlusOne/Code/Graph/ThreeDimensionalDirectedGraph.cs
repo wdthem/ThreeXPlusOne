@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Drawing;
+using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Code.Models;
 using ThreeXPlusOne.Config;
@@ -96,19 +97,14 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (node.Value.Shape.ShapeType == Enums.ShapeType.Circle)
             {
-                /*
                 node.Value.Shape.ShapeType = Enums.ShapeType.Ellipse;
 
-                float horizontalOffset = node.Value.Shape.Radius * (skewFactor * 0.2f);
-
-                // Calculate the horizontal and vertical radii for the ellipse
+                float horizontalOffset = node.Value.Shape.Radius * (skewFactor * 0.6f);
                 float horizontalRadius = node.Value.Shape.Radius + horizontalOffset;
                 float verticalRadius = node.Value.Shape.Radius;
 
-                node.Value.Shape.EllipseCoordinates = ((node.Value.Position.X - horizontalRadius, node.Value.Position.Y - verticalRadius),
-                                                       (node.Value.Position.X + horizontalRadius, node.Value.Position.Y + verticalRadius));
+                node.Value.Shape.EllipseCoordinates = ((node.Value.Position.X, node.Value.Position.Y), (horizontalRadius, verticalRadius));
 
-                */
                 continue;
             }
 

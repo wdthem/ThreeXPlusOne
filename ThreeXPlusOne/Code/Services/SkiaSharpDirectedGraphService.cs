@@ -264,10 +264,10 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         if (node.Shape.ShapeType == ShapeType.Ellipse)
         {
-            canvas.DrawOval(node.Shape.EllipseCoordinates.PointA.X,
-                            node.Shape.EllipseCoordinates.PointA.Y,
-                            node.Shape.EllipseCoordinates.PointB.X,
-                            node.Shape.EllipseCoordinates.PointB.Y,
+            canvas.DrawOval(node.Shape.EllipseCoordinates.Center.X,
+                            node.Shape.EllipseCoordinates.Center.Y,
+                            node.Shape.EllipseCoordinates.Radius.X,
+                            node.Shape.EllipseCoordinates.Radius.Y,
                             paint);
 
             return;
