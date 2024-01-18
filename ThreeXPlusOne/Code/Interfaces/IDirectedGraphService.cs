@@ -8,6 +8,16 @@ namespace ThreeXPlusOne.Code.Interfaces;
 public interface IDirectedGraphService : IDisposable
 {
     /// <summary>
+    /// Action to perform when the service starts a task
+    /// </summary>
+    Action<string>? OnStart { get; set; }
+
+    /// <summary>
+    /// Action to perform when the service ends a task
+    /// </summary>
+    Action? OnComplete { get; set; }
+
+    /// <summary>
     /// The graph provider implementing the interface
     /// </summary>
     GraphProvider GraphProvider { get; }
@@ -30,6 +40,7 @@ public interface IDirectedGraphService : IDisposable
     /// Optionally generate white points in the background to mimic stars
     /// </summary>
     /// <param name="starCount"></param>
+    /// <exception cref="Exception"></exception>
     void GenerateBackgroundStars(int starCount);
 
     /// <summary>
@@ -38,6 +49,7 @@ public interface IDirectedGraphService : IDisposable
     /// <param name="lightSourceCoordinates"></param>
     /// <param name="radius"></param>
     /// <param name="color"></param>
+    /// <exception cref="Exception"></exception>
     void GenerateLightSource((float X, float Y) lightSourceCoordinates, float radius, Color color);
 
     /// <summary>
@@ -45,11 +57,13 @@ public interface IDirectedGraphService : IDisposable
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="drawNodeConnections"></param>
+    /// <exception cref="Exception"></exception>
     void Draw(bool drawNumbersOnNodes, bool drawNodeConnections);
 
     /// <summary>
     /// Render the graph
     /// </summary>
+    /// <exception cref="Exception"></exception>
     void Render();
 
     /// <summary>

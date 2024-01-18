@@ -93,5 +93,10 @@ public interface IConsoleHelper
     /// Output a visual indication that the process is doing work
     /// </summary>
     /// <param name="token"></param>
-    void WriteSpinner(CancellationToken token);
+    void ShowSpinningBar();
+
+    /// <summary>
+    /// Stop the spinning bar
+    /// </summary>
+    void StopSpinningBar();
 }

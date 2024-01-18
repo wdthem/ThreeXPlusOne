@@ -90,6 +90,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <summary>
     /// Draw the directed graph
     /// </summary>
+    /// <exception cref="Exception"></exception>
     protected void DrawDirectedGraph()
     {
         IDirectedGraphService graphService = graphServices.ToList()
@@ -101,14 +102,27 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             throw new Exception($"Graph provider {_settings.GraphProvider} does not support graphs in {_settings.SanitizedGraphDimensions} dimensions.");
         }
 
-        graphService.Initialize([.. _nodes.Values],
-                                _canvasWidth,
-                                _canvasHeight,
-                                Color.Black);
+        graphService.OnStart = (message) =>
+        {
+            _consoleHelper.Write(message);
+            _consoleHelper.ShowSpinningBar();
+        };
+
+        graphService.OnComplete = () =>
+        {
+            _consoleHelper.StopSpinningBar();
+            _consoleHelper.WriteDone();
+        };
+
+        Task.Run(() => graphService.Initialize([.. _nodes.Values],
+                                               _canvasWidth,
+                                               _canvasHeight,
+                                               Color.Black)).Wait();
+
 
         if (_settings.GenerateBackgroundStars)
         {
-            graphService.GenerateBackgroundStars(100);
+            Task.Run(() => graphService.GenerateBackgroundStars(100)).Wait();
         }
 
         lightSourceService.Initialize(_canvasWidth,
@@ -118,9 +132,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         if (lightSourceService.LightSourcePosition != LightSourcePosition.None)
         {
-            graphService.GenerateLightSource(lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
-                                             lightSourceService.Radius,
-                                             lightSourceService.LightSourceColor);
+            Task.Run(() => graphService.GenerateLightSource(lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
+                                                            lightSourceService.Radius,
+                                                            lightSourceService.LightSourceColor)).Wait();
         }
 
         foreach (var node in _nodes)
@@ -139,12 +153,19 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             }
         }
 
-        graphService.Draw(drawNumbersOnNodes: _settings.DrawNumbersOnNodes,
-                          drawNodeConnections: _settings.DrawConnections);
+        Task.Run(() => graphService.Draw(drawNumbersOnNodes: _settings.DrawNumbersOnNodes,
+                                         drawNodeConnections: _settings.DrawConnections)).Wait();
 
-        graphService.Render();
-        graphService.SaveImage();
-        graphService.Dispose();
+        Task.Run(graphService.Render).Wait();
+
+        //saving the image is processing-intensive and can cause threading issues, so start it via Task.Factory
+        //in order to specify that it is expected to be long-running
+        Task.Factory.StartNew(graphService.SaveImage,
+                              CancellationToken.None,
+                              TaskCreationOptions.LongRunning,
+                              TaskScheduler.Default).Wait();
+
+        Task.Run(graphService.Dispose).Wait();
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
@@ -9,30 +10,49 @@ namespace ThreeXPlusOne.Code.Helpers;
 public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 {
     private readonly Settings _settings = settings.Value;
+    private static readonly object _consoleLock = new object();
+    private CancellationTokenSource? _cancellationTokenSource;
+    private int _spinnerCounter = 0;
+    private readonly string[] _spinner = ["|", "/", "-", "\\"];
 
     public void Write(string message)
     {
-        Console.Write(message);
+        lock (_consoleLock)
+        {
+            Console.Write(message);
+        }
     }
 
     public void WriteLine(string message)
     {
-        Console.WriteLine(message);
+        lock (_consoleLock)
+        {
+            Console.WriteLine(message);
+        }
     }
 
     public void SetForegroundColor(ConsoleColor color)
     {
-        Console.ForegroundColor = color;
+        lock (_consoleLock)
+        {
+            Console.ForegroundColor = color;
+        }
     }
 
     public void SetCursorVisibility(bool visible)
     {
-        Console.CursorVisible = visible;
+        lock (_consoleLock)
+        {
+            Console.CursorVisible = visible;
+        }
     }
 
     public void SetCursorPosition(int left, int top)
     {
-        Console.SetCursorPosition(left, top);
+        lock (_consoleLock)
+        {
+            Console.SetCursorPosition(left, top);
+        }
     }
 
     public void WriteSettings()
@@ -452,23 +472,44 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteLine($"Execution time: {elapsedTime}\n\n");
     }
 
-    public void WriteSpinner(CancellationToken token)
+    public void ShowSpinningBar()
     {
-        int counter = 0;
-        string[] spinner = ["|", "/", "-", "\\"];
+        long previousMilliseconds = 0;
+        const long updateInterval = 100;
+
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        Stopwatch stopwatch = Stopwatch.StartNew();
 
         SetCursorVisibility(false);
 
-        while (!token.IsCancellationRequested)
+        Task.Run(() =>
         {
-            Write($"{spinner[counter]}");
+            while (!_cancellationTokenSource.Token.IsCancellationRequested)
+            {
+                long currentMilliseconds = stopwatch.ElapsedMilliseconds;
 
-            SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                if (currentMilliseconds - previousMilliseconds >= updateInterval)
+                {
+                    Write(_spinner[_spinnerCounter]);
 
-            counter = (counter + 1) % spinner.Length;
+                    SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
 
-            Thread.Sleep(85);
-        }
+                    _spinnerCounter = (_spinnerCounter + 1) % _spinner.Length;
+
+                    previousMilliseconds = currentMilliseconds;
+                }
+
+                Thread.Yield();
+            }
+
+            stopwatch.Stop();
+        });
+    }
+
+    public void StopSpinningBar()
+    {
+        _cancellationTokenSource?.Cancel();
 
         SetCursorVisibility(true);
     }
