@@ -76,24 +76,33 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     /// </summary>
     public void SetNodeShapes()
     {
-        //float depth = 0.99f + (float)_random.NextDouble() * 0.02f; // Very subtle depth
-        //float tiltAngle = -0.0175f + (float)_random.NextDouble() * 0.035f; // Very subtle tilt angle
+        double noSkewProbability = 0.2;
+        float skewFactor;
 
         foreach (var node in _nodes.Where(node => node.Value.IsPositioned))
         {
             SetNodeShape(node.Value);
 
-            /*
             if (node.Value.Shape.ShapeType == Enums.ShapeType.Circle)
             {
                 continue;
             }
 
+            float rotationRadians = -0.2f + (float)_random.NextDouble() * 0.4f;
+
+            if (_random.NextDouble() < noSkewProbability)
+            {
+                skewFactor = 0.0f;
+            }
+            else
+            {
+                skewFactor = 0.1f + (float)_random.NextDouble() * 0.8f; // Skew factor between 0.1 and 0.5
+            }
+
             for (int i = 0; i < node.Value.Shape.Vertices.Count; i++)
             {
-                node.Value.Shape.Vertices[i] = ApplySubtleTransformation(node.Value.Shape.Vertices[i], node.Value.Position, depth, tiltAngle);
+                node.Value.Shape.Vertices[i] = ApplyPerspectiveSkew(node.Value.Shape.Vertices[i], node.Value.Position, skewFactor, rotationRadians);
             }
-            */
         }
     }
 
@@ -215,16 +224,27 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         return (xPrime, yPrime);
     }
 
-    private (float X, float Y) ApplySubtleTransformation((float X, float Y) vertex, (float X, float Y) center, float depthFactor, float tiltRadians)
+    private static (float X, float Y) ApplyPerspectiveSkew((float X, float Y) vertex,
+                                                           (float X, float Y) center,
+                                                           float skewFactor,
+                                                           float rotationRadians)
     {
-        // Apply uniform depth scaling
-        float dx = (vertex.X - center.X) * depthFactor;
-        float dy = (vertex.Y - center.Y) * depthFactor;
+        // Translate vertex to origin
+        float dx = vertex.X - center.X;
+        float dy = vertex.Y - center.Y;
 
-        // Apply a subtle tilt
-        float rotatedX = dx * (float)Math.Cos(tiltRadians) - dy * (float)Math.Sin(tiltRadians);
-        float rotatedY = dx * (float)Math.Sin(tiltRadians) + dy * (float)Math.Cos(tiltRadians);
+        // Apply rotation
+        float rotatedX = dx * (float)Math.Cos(rotationRadians) - dy * (float)Math.Sin(rotationRadians);
+        float rotatedY = dx * (float)Math.Sin(rotationRadians) + dy * (float)Math.Cos(rotationRadians);
 
-        return (center.X + rotatedX, center.Y + rotatedY);
+        // Apply skew
+        float skewedX = rotatedX + skewFactor * rotatedY;
+        float skewedY = rotatedY;
+
+        // Reapply translation to move back to original position
+        return (center.X + skewedX, center.Y + skewedY);
     }
+
+    // You would call this for each vertex of your shape.
+
 }
