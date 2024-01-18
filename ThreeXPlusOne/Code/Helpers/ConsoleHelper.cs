@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Text;
 using Microsoft.Extensions.Options;
+using ThreeXPlusOne.Code.Enums;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Config;
-using ThreeXPlusOne.Enums;
 
 namespace ThreeXPlusOne.Code.Helpers;
 

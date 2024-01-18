@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Models;
 using ThreeXPlusOne.Config;
-using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
 

@@ -1,9 +1,10 @@
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Reflection.Metadata.Ecma335;
+using ThreeXPlusOne.Code.Enums;
 using ThreeXPlusOne.Code.Interfaces;
-using ThreeXPlusOne.Enums;
-using ThreeXPlusOne.Models;
+using ThreeXPlusOne.Code.Models;
 
 namespace ThreeXPlusOne.Code.Services;
 
@@ -261,11 +262,22 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             return;
         }
 
+        if (node.Shape.ShapeType == ShapeType.Ellipse)
+        {
+            canvas.DrawOval(node.Shape.EllipseCoordinates.PointA.X,
+                            node.Shape.EllipseCoordinates.PointA.Y,
+                            node.Shape.EllipseCoordinates.PointB.X,
+                            node.Shape.EllipseCoordinates.PointB.Y,
+                            paint);
+
+            return;
+        }
+
         SKPath path = new();
 
-        for (int i = 0; i < node.Shape.Vertices.Count; i++)
+        for (int i = 0; i < node.Shape.PolygonVertices.Count; i++)
         {
-            (float x, float y) = node.Shape.Vertices[i];
+            (float x, float y) = node.Shape.PolygonVertices[i];
 
             if (i == 0)
             {

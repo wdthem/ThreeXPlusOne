@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Models;
 using ThreeXPlusOne.Config;
-using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
 
@@ -83,11 +83,6 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         {
             SetNodeShape(node.Value);
 
-            if (node.Value.Shape.ShapeType == Enums.ShapeType.Circle)
-            {
-                continue;
-            }
-
             float rotationRadians = -0.2f + (float)_random.NextDouble() * 0.4f;
 
             if (_random.NextDouble() < noSkewProbability)
@@ -99,9 +94,25 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
                 skewFactor = 0.1f + (float)_random.NextDouble() * 0.8f; // Skew factor between 0.1 and 0.5
             }
 
-            for (int i = 0; i < node.Value.Shape.Vertices.Count; i++)
+            if (node.Value.Shape.ShapeType == Enums.ShapeType.Circle)
             {
-                node.Value.Shape.Vertices[i] = ApplyPerspectiveSkew(node.Value.Shape.Vertices[i], node.Value.Position, skewFactor, rotationRadians);
+                node.Value.Shape.ShapeType = Enums.ShapeType.Ellipse;
+
+                float horizontalOffset = node.Value.Shape.Radius * (skewFactor * 0.2f);
+
+                // Calculate the horizontal and vertical radii for the ellipse
+                float horizontalRadius = node.Value.Shape.Radius + horizontalOffset;
+                float verticalRadius = node.Value.Shape.Radius;
+
+                node.Value.Shape.EllipseCoordinates = ((node.Value.Position.X - horizontalRadius, node.Value.Position.Y - verticalRadius),
+                                                       (node.Value.Position.X + horizontalRadius, node.Value.Position.Y + verticalRadius));
+
+                continue;
+            }
+
+            for (int i = 0; i < node.Value.Shape.PolygonVertices.Count; i++)
+            {
+                node.Value.Shape.PolygonVertices[i] = ApplyPerspectiveSkew(node.Value.Shape.PolygonVertices[i], node.Value.Position, skewFactor, rotationRadians);
             }
         }
     }

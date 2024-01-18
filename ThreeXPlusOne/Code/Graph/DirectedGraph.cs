@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Drawing;
+using ThreeXPlusOne.Code.Enums;
 using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Models;
 using ThreeXPlusOne.Config;
-using ThreeXPlusOne.Enums;
-using ThreeXPlusOne.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
 
@@ -347,7 +347,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         {
             float angle = (float)(2 * Math.PI / numberOfSides * i) + rotationAngle;
 
-            node.Shape.Vertices.Add((node.Position.X + node.Shape.Radius * (float)Math.Cos(angle),
+            node.Shape.PolygonVertices.Add((node.Position.X + node.Shape.Radius * (float)Math.Cos(angle),
                                      node.Position.Y + node.Shape.Radius * (float)Math.Sin(angle)));
         }
     }
