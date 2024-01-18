@@ -1,4 +1,4 @@
-﻿namespace ThreeXPlusOne.Models;
+﻿namespace ThreeXPlusOne.Code.Models;
 
 public class DirectedGraphNode(int value)
 {

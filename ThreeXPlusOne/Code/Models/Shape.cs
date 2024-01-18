@@ -1,7 +1,7 @@
 using System.Drawing;
-using ThreeXPlusOne.Enums;
+using ThreeXPlusOne.Code.Enums;
 
-namespace ThreeXPlusOne.Models;
+namespace ThreeXPlusOne.Code.Models;
 
 public class Shape()
 {
@@ -18,7 +18,12 @@ public class Shape()
     /// <summary>
     /// A list of all the vertices of the shape, if it's a polygon
     /// </summary>
-    public List<(float X, float Y)> Vertices { get; set; } = [];
+    public List<(float X, float Y)> PolygonVertices { get; set; } = [];
+
+    /// <summary>
+    /// The coordinates and radii of a circle transformed to an ellipse
+    /// </summary>
+    public ((float X, float Y) Center, (float X, float Y) Radius) EllipseCoordinates { get; set; }
 
     /// <summary>
     /// The colour of the shape

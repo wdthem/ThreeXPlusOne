@@ -1,4 +1,4 @@
-using ThreeXPlusOne.Enums;
+using ThreeXPlusOne.Code.Enums;
 
 namespace ThreeXPlusOne.Code.Interfaces;
 

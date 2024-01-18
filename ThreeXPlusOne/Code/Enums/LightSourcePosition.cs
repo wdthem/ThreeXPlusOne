@@ -1,4 +1,4 @@
-namespace ThreeXPlusOne.Enums;
+namespace ThreeXPlusOne.Code.Enums;
 
 public enum LightSourcePosition
 {

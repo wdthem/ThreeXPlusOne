@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Drawing;
-using ThreeXPlusOne.Enums;
-using ThreeXPlusOne.Models;
+using ThreeXPlusOne.Code.Enums;
+using ThreeXPlusOne.Code.Models;
 
 namespace ThreeXPlusOne.Code.Interfaces;
 

@@ -3,11 +3,11 @@ using Microsoft.Extensions.Options;
 using Moq;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using ThreeXPlusOne.Code.Enums;
 using ThreeXPlusOne.Code.Graph;
 using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Models;
 using ThreeXPlusOne.Config;
-using ThreeXPlusOne.Enums;
-using ThreeXPlusOne.Models;
 using ThreeXPlusOne.UnitTests.Mocks;
 using Xunit;
 
