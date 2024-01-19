@@ -147,9 +147,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             }
             else
             {
-                node.Shape.Color = ApplyLightSourceToNodeColor(node,
-                                                               nodeColor,
-                                                               lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition));
+                node.Shape.Color = ApplyLightSourceToNode(node,
+                                                          nodeColor,
+                                                          lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition));
             }
         }
 
@@ -436,11 +436,12 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="nodeBaseColor"></param>
     /// <param name="lightSourceCoordinates"></param>
     /// <returns></returns>
-    private Color ApplyLightSourceToNodeColor(DirectedGraphNode node,
-                                              Color nodeBaseColor,
-                                              (float X, float Y) lightSourceCoordinates)
+    private Color ApplyLightSourceToNode(DirectedGraphNode node,
+                                         Color nodeBaseColor,
+                                         (float X, float Y) lightSourceCoordinates)
     {
         Color nodeColor;
+        int maxRayLength = 250;
         float distance = Distance((node.Position.X, node.Position.Y),
                                   (lightSourceCoordinates.X, lightSourceCoordinates.Y));
 
@@ -458,6 +459,12 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             // Apply the light intensity to the blend factor
             float blendFactor = additionalOpacityFactor * lightIntensity;
             nodeColor = BlendColor(nodeBaseColor, Color.LightYellow, 1 - blendFactor);
+
+            float rayIntensity = blendFactor * lightIntensity;
+            float rayLength = (1 - blendFactor) * maxRayLength * (float)_random.NextDouble();
+
+            //ADJUST THE ALPHA OF THE LIGHT RAYS
+            PopulateLightRayDataForNode(node, lightSourceCoordinates, rayIntensity, rayLength);
         }
         else
         {
@@ -486,5 +493,104 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         byte b = (byte)((baseColor.B * (1 - blendFactor)) + (blendColor.B * blendFactor));
 
         return Color.FromArgb(255, r, g, b);
+    }
+
+
+
+
+
+
+
+
+    private static void PopulateLightRayDataForNode(DirectedGraphNode node,
+                                                    (float X, float Y) lightSourceCoordinates,
+                                                    float rayIntensity,
+                                                    float rayLength)
+    {
+        Color rayColor = Color.FromArgb((int)(rayIntensity * 255),
+                                        Color.White.R,
+                                        Color.White.G,
+                                        Color.White.B);
+
+        if (node.Shape.ShapeType == ShapeType.Circle)
+        {
+            int numberOfRays = 5;
+
+            // Calculate the angle from the light source to the node's center
+            (float X, float Y) = Normalize((lightSourceCoordinates.X - node.Position.X,
+                                            lightSourceCoordinates.Y - node.Position.Y));
+
+            float centerToLightAngle = (float)Math.Atan2(Y, X);
+
+            for (int i = 0; i < numberOfRays; i++)
+            {
+                // Calculate the angle for each ray, spreading around the center-to-light angle
+                float angle = centerToLightAngle + (i - numberOfRays / 2) * (float)(Math.PI / numberOfRays);
+
+                (float x, float y) start = (node.Position.X + node.Shape.Radius * (float)Math.Cos(angle),
+                                            node.Position.Y + node.Shape.Radius * (float)Math.Sin(angle));
+
+                // Calculate end point, extending the ray away from the light source
+                float endAngle = angle + (float)Math.PI; // Reverse the direction
+                (float x, float y) end = (start.x + rayLength * (float)Math.Cos(endAngle),
+                                          start.y + rayLength * (float)Math.Sin(endAngle));
+
+                node.Shape.LightRayData.Add((start, end, rayColor));
+            }
+        }
+
+        if (node.Shape.ShapeType == ShapeType.Ellipse)
+        {
+            int numberOfRays = 5;
+
+            // Calculate the angle from the ellipse's center to the light source
+            (float X, float Y) = Normalize((lightSourceCoordinates.X - node.Shape.EllipseConfig.Center.X,
+                                            lightSourceCoordinates.Y - node.Shape.EllipseConfig.Center.Y));
+
+            float centerToLightAngle = (float)Math.Atan2(Y, X);
+
+            for (int i = 0; i < numberOfRays; i++)
+            {
+                // Calculate the angle for each ray, spreading around the center-to-light angle
+                float angle = centerToLightAngle + (i - numberOfRays / 2) * (float)(Math.PI / numberOfRays);
+
+                // Adjust angle for ellipse (stretching)
+                float adjustedAngle = (float)Math.Atan2(Math.Sin(angle) * node.Shape.EllipseConfig.RadiusX, Math.Cos(angle) * node.Shape.EllipseConfig.RadiusY);
+
+                (float x, float y) start = (node.Shape.EllipseConfig.Center.X + node.Shape.EllipseConfig.RadiusX * (float)Math.Cos(adjustedAngle),
+                                            node.Shape.EllipseConfig.Center.Y + node.Shape.EllipseConfig.RadiusY * (float)Math.Sin(adjustedAngle));
+
+                // Calculate end point, extending the ray away from the light source
+                float endAngle = adjustedAngle + (float)Math.PI; // Reverse the direction
+                (float x, float y) end = (start.x + rayLength * (float)Math.Cos(endAngle),
+                                          start.y + rayLength * (float)Math.Sin(endAngle));
+
+                node.Shape.LightRayData.Add((start, end, rayColor));
+            }
+        }
+
+        if (node.Shape.ShapeType == ShapeType.Polygon)
+        {
+            foreach (var vertex in node.Shape.PolygonVertices)
+            {
+                // Calculate the direction of the ray from the light source to the vertex (reverse direction)
+                var (X, Y) = Normalize((vertex.X - lightSourceCoordinates.X,
+                                        vertex.Y - lightSourceCoordinates.Y));
+
+                // Determine the end point of the ray
+                (float x, float y) end = (vertex.X + rayLength * X,
+                                          vertex.Y + rayLength * Y);
+
+                node.Shape.LightRayData.Add(((vertex.X, vertex.Y), end, rayColor));
+            }
+        }
+
+    }
+
+    private static (float X, float Y) Normalize((float X, float Y) vector)
+    {
+        float length = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
+
+        return (vector.X / length, vector.Y / length);
     }
 }

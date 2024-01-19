@@ -258,6 +258,15 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                               node.Shape.Radius,
                               paint);
 
+            foreach (var ray in node.Shape.LightRayData)
+            {
+                using var rayPaint = new SKPaint { Color = ConvertColorToSKColor(ray.Color), StrokeWidth = 10, Style = SKPaintStyle.Stroke };
+
+                canvas.DrawLine(new SKPoint(ray.Start.X, ray.Start.Y),
+                                new SKPoint(ray.End.X, ray.End.Y),
+                                rayPaint);
+            }
+
             return;
         }
 
@@ -268,6 +277,15 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                             node.Shape.EllipseConfig.RadiusX,
                             node.Shape.EllipseConfig.RadiusY,
                             paint);
+
+            foreach (var ray in node.Shape.LightRayData)
+            {
+                using var rayPaint = new SKPaint { Color = ConvertColorToSKColor(ray.Color), StrokeWidth = 10, Style = SKPaintStyle.Stroke };
+
+                canvas.DrawLine(new SKPoint(ray.Start.X, ray.Start.Y),
+                                new SKPoint(ray.End.X, ray.End.Y),
+                                rayPaint);
+            }
 
             return;
         }
@@ -290,6 +308,15 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         path.Close();
         canvas.DrawPath(path, paint);
+
+        foreach (var ray in node.Shape.LightRayData)
+        {
+            using var rayPaint = new SKPaint { Color = ConvertColorToSKColor(ray.Color), StrokeWidth = 10, Style = SKPaintStyle.Stroke };
+
+            canvas.DrawLine(new SKPoint(ray.Start.X, ray.Start.Y),
+                            new SKPoint(ray.End.X, ray.End.Y),
+                            rayPaint);
+        }
     }
 
     /// <summary>

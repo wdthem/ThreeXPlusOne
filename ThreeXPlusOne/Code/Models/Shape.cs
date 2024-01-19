@@ -26,6 +26,11 @@ public class Shape()
     public ((float X, float Y) Center, float RadiusX, float RadiusY) EllipseConfig { get; set; }
 
     /// <summary>
+    /// An object to store light ray data for rays of light around nodes close to the light source
+    /// </summary>
+    public List<((float X, float Y) Start, (float X, float Y) End, Color Color)> LightRayData { get; set; } = [];
+
+    /// <summary>
     /// The colour of the shape
     /// </summary>
     public Color Color { get; set; } = Color.Empty;
