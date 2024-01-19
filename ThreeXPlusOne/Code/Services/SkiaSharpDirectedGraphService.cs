@@ -1,7 +1,6 @@
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Reflection.Metadata.Ecma335;
 using ThreeXPlusOne.Code.Enums;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Code.Models;
@@ -134,7 +133,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             throw new Exception("Could not draw the graph. Canvas object or Nodes object was null");
         }
 
-        var extraMessage = "";
+        string extraMessage = "";
 
         if (drawNodeConnections)
         {
@@ -146,13 +145,13 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
         if (drawNodeConnections)
         {
             //do a separate loop to draw connections to ensure they are drawn under nodes
-            foreach (var node in _nodes)
+            foreach (DirectedGraphNode node in _nodes)
             {
                 DrawNodeConnection(_canvas, node);
             }
         }
 
-        foreach (var node in _nodes)
+        foreach (DirectedGraphNode node in _nodes)
         {
             DrawNode(_canvas,
                      node,
@@ -239,7 +238,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
             float textY = node.Position.Y + 8;
 
-            canvas.DrawText(node.Value.ToString(), node.Position.X, textY, textPaint);
+            canvas.DrawText(node.NumberValue.ToString(), node.Position.X, textY, textPaint);
         }
     }
 
@@ -264,10 +263,10 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         if (node.Shape.ShapeType == ShapeType.Ellipse)
         {
-            canvas.DrawOval(node.Shape.EllipseCoordinates.Center.X,
-                            node.Shape.EllipseCoordinates.Center.Y,
-                            node.Shape.EllipseCoordinates.Radius.X,
-                            node.Shape.EllipseCoordinates.Radius.Y,
+            canvas.DrawOval(node.Shape.EllipseConfig.Center.X,
+                            node.Shape.EllipseConfig.Center.Y,
+                            node.Shape.EllipseConfig.RadiusX,
+                            node.Shape.EllipseConfig.RadiusY,
                             paint);
 
             return;

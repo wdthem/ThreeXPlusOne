@@ -68,7 +68,7 @@ public class SkiaSharpHistogramService() : IHistogramService
 
         // Select the most suitable segment size
         int segmentSize = possibleSegmentSizes[0];
-        foreach (var size in possibleSegmentSizes)
+        foreach (int size in possibleSegmentSizes)
         {
             if (adjustedMaxCount / size <= maxSegmentCount)
             {

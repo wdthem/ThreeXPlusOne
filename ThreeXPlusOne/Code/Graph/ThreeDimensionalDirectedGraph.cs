@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Code.Models;
 using ThreeXPlusOne.Config;
@@ -37,32 +36,31 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        (float X, float Y) base1 = (0, 0);         // Node '1' at the bottom
+        (float X, float Y) base1 = (0, 0);                                          // Node '1' at the bottom
         (float X, float Y) base2 = (0, base1.Y - (_settings.YNodeSpacer * 6));      // Node '2' just above '1'
         (float X, float Y) base4 = (0, base2.Y - (_settings.YNodeSpacer * 5));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
-        _nodes[1].Position = ApplyPerspectiveTransform(_nodes[1], _settings.DistanceFromViewer);
+        _nodes[1].Position = ApplyPerspectiveTransformToNodePosition(_nodes[1], _settings.DistanceFromViewer);
         _nodes[1].Shape.Radius = 50;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
-        _nodes[2].Position = ApplyPerspectiveTransform(_nodes[2], _settings.DistanceFromViewer);
+        _nodes[2].Position = ApplyPerspectiveTransformToNodePosition(_nodes[2], _settings.DistanceFromViewer);
         _nodes[2].Shape.Radius = 100;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
-        _nodes[4].Position = ApplyPerspectiveTransform(_nodes[4], _settings.DistanceFromViewer);
+        _nodes[4].Position = ApplyPerspectiveTransformToNodePosition(_nodes[4], _settings.DistanceFromViewer);
         _nodes[4].Shape.Radius = _settings.NodeRadius;
         _nodes[4].IsPositioned = true;
 
-        List<DirectedGraphNode> nodesToDraw = _nodes.Where(n => n.Value.Depth == _nodes[4].Depth + 1)
-                                                    .Select(n => n.Value)
-                                                    .ToList();
+        List<DirectedGraphNode> nodesToDraw = _nodes.Values.Where(n => n.Depth == _nodes[4].Depth + 1)
+                                                           .ToList();
 
         _nodesPositioned = 3;
 
-        foreach (var node in nodesToDraw)
+        foreach (DirectedGraphNode node in nodesToDraw)
         {
             PositionNode(node);
         }
@@ -73,44 +71,47 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
-    /// Set the shapes of the positioned nodes
+    /// Set the shapes of the positioned nodes. Apply pseudo-3D skewing effect to polygons, and make circles become ellipses
+    /// (use random number to determine of the given node is skewed or not)
     /// </summary>
     public void SetNodeShapes()
     {
         double noSkewProbability = 0.2;
         float skewFactor;
 
-        foreach (var node in _nodes.Where(node => node.Value.IsPositioned))
+        foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
-            SetNodeShape(node.Value);
+            SetNodeShape(node);
 
-            float rotationRadians = -0.2f + (float)_random.NextDouble() * 0.4f;
+            float rotationRadians = -0.785f + (float)_random.NextDouble() * 1.57f; // Range of -π/4 to π/4 radians
+            skewFactor = 0.0f;
 
-            if (_random.NextDouble() < noSkewProbability)
+            if (_random.NextDouble() >= noSkewProbability)
             {
-                skewFactor = 0.0f;
-            }
-            else
-            {
-                skewFactor = 0.1f + (float)_random.NextDouble() * 0.8f;
+                skewFactor = (_random.NextDouble() > 0.5 ? 1 : -1) * (0.1f + (float)_random.NextDouble() * 0.8f);
             }
 
-            if (node.Value.Shape.ShapeType == Enums.ShapeType.Circle)
+            if (node.Shape.ShapeType == Enums.ShapeType.Circle)
             {
-                node.Value.Shape.ShapeType = Enums.ShapeType.Ellipse;
+                node.Shape.ShapeType = Enums.ShapeType.Ellipse;
 
-                float horizontalOffset = node.Value.Shape.Radius * (skewFactor * 0.6f);
-                float horizontalRadius = node.Value.Shape.Radius + horizontalOffset;
-                float verticalRadius = node.Value.Shape.Radius;
+                float horizontalOffset = node.Shape.Radius * (skewFactor * 0.6f);     //reduce the skew impact for ellipses
+                float horizontalRadius = node.Shape.Radius + horizontalOffset;
+                float verticalRadius = node.Shape.Radius;
 
-                node.Value.Shape.EllipseCoordinates = ((node.Value.Position.X, node.Value.Position.Y), (horizontalRadius, verticalRadius));
+                node.Shape.EllipseConfig = ((node.Position.X, node.Position.Y),
+                                            horizontalRadius,
+                                            verticalRadius);
 
                 continue;
             }
 
-            for (int i = 0; i < node.Value.Shape.PolygonVertices.Count; i++)
+            for (int i = 0; i < node.Shape.PolygonVertices.Count; i++)
             {
-                node.Value.Shape.PolygonVertices[i] = ApplyPerspectiveSkew(node.Value.Shape.PolygonVertices[i], node.Value.Position, skewFactor, rotationRadians);
+                node.Shape.PolygonVertices[i] = ApplyPerspectiveSkewToVertex(node.Shape.PolygonVertices[i],
+                                                                             node.Position,
+                                                                             skewFactor,
+                                                                             rotationRadians);
             }
         }
     }
@@ -139,10 +140,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
             baseRadius = node.Parent.Shape.Radius;
         }
 
-        float maxZ = _nodes.Max(node => node.Value.Z);
+        float maxZ = _nodes.Values.Max(node => node.Z);
         float depthFactor = node.Z / maxZ;
         float scale = 0.99f - depthFactor * 0.1f;
-        float minScale = (float)0.2;
+        float minScale = 0.2f;
         float nodeRadius = baseRadius * Math.Max(scale - 0.02f, minScale);
         float xNodeSpacer = _settings.XNodeSpacer;
         float yNodeSpacer = _settings.YNodeSpacer;
@@ -192,18 +193,18 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         float yOffset = node.Parent!.Position.Y - (yNodeSpacer + yNodeSpacer / node.Depth + (positionedNodesAtDepth * (yNodeSpacer / 30)));
 
-        node.Position = (xOffset, (float)yOffset);
+        node.Position = (xOffset, yOffset);
 
         if (_settings.NodeRotationAngle != 0)
         {
-            (float x, float y) = RotateNode(node.Value, _settings.NodeRotationAngle, xOffset, yOffset);
+            (float x, float y) = RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
 
             node.Position = (x, y);
         }
 
         if (node.Parent != null && node.Parent.Children.Count == 2)
         {
-            node.Position = ApplyPerspectiveTransform(node, _settings.DistanceFromViewer);
+            node.Position = ApplyPerspectiveTransformToNodePosition(node, _settings.DistanceFromViewer);
         }
 
         node.Shape.Radius = nodeRadius;
@@ -212,48 +213,49 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.Write($"\r{_nodesPositioned} nodes positioned... ");
 
-        foreach (var childNode in node.Children)
+        foreach (DirectedGraphNode childNode in node.Children)
         {
             PositionNode(childNode);
         }
     }
 
     /// <summary>
-    /// For the pseudo-three-dimensional graph, apply depth to the given node based on the Z coordinate.
-    /// The Z-coordinate is set to the reverse of the depth value of the node in the AddSeries() method
+    /// For the pseudo-3D graph, apply depth to the given node based on the Z coordinate.
+    /// The Z-coordinate is set to the reverse of the depth value of the node in the DirectedGraph.AddSeries() method
     /// </summary>
     /// <param name="node"></param>
-    /// <param name="d">The distance to the viewer</param>
+    /// <param name="viewerDistance">The distance to the viewer</param>
     /// <returns></returns>
-    private (float X, float Y) ApplyPerspectiveTransform(DirectedGraphNode node, float d)
+    private (float X, float Y) ApplyPerspectiveTransformToNodePosition(DirectedGraphNode node, float viewerDistance)
     {
-        float xPrime = node.Position.X / (1 + node.Z / d);
-        float yPrime = node.Position.Y / (1 + node.Z / d) - (_settings.YNodeSpacer * 4);
+        float xPrime = node.Position.X / (1 + node.Z / viewerDistance);
+        float yPrime = node.Position.Y / (1 + node.Z / viewerDistance) - (_settings.YNodeSpacer * 4);
 
         return (xPrime, yPrime);
     }
 
-    private static (float X, float Y) ApplyPerspectiveSkew((float X, float Y) vertex,
-                                                           (float X, float Y) center,
-                                                           float skewFactor,
-                                                           float rotationRadians)
+    /// <summary>
+    /// Apply a skew to a vertex of a polygon to give a pseudo-3D effect to the node shape
+    /// </summary>
+    /// <param name="vertex"></param>
+    /// <param name="center"></param>
+    /// <param name="skewFactor"></param>
+    /// <param name="rotationRadians"></param>
+    /// <returns></returns>
+    private static (float X, float Y) ApplyPerspectiveSkewToVertex((float X, float Y) vertex,
+                                                                   (float X, float Y) center,
+                                                                   float skewFactor,
+                                                                   float rotationRadians)
     {
-        // Translate vertex to origin
         float dx = vertex.X - center.X;
         float dy = vertex.Y - center.Y;
 
-        // Apply rotation
         float rotatedX = dx * (float)Math.Cos(rotationRadians) - dy * (float)Math.Sin(rotationRadians);
         float rotatedY = dx * (float)Math.Sin(rotationRadians) + dy * (float)Math.Cos(rotationRadians);
 
-        // Apply skew
         float skewedX = rotatedX + skewFactor * rotatedY;
         float skewedY = rotatedY;
 
-        // Reapply translation to move back to original position
         return (center.X + skewedX, center.Y + skewedY);
     }
-
-    // You would call this for each vertex of your shape.
-
 }

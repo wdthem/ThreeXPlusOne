@@ -21,9 +21,9 @@ public class Shape()
     public List<(float X, float Y)> PolygonVertices { get; set; } = [];
 
     /// <summary>
-    /// The coordinates and radii of a circle transformed to an ellipse
+    /// The coordinates and radii of the ellipse (which was transformed from a circle)
     /// </summary>
-    public ((float X, float Y) Center, (float X, float Y) Radius) EllipseCoordinates { get; set; }
+    public ((float X, float Y) Center, float RadiusX, float RadiusY) EllipseConfig { get; set; }
 
     /// <summary>
     /// The colour of the shape

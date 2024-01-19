@@ -34,7 +34,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             DirectedGraphNode? previousNode = null;
             int currentDepth = series.Count;
 
-            foreach (var number in series)
+            foreach (int number in series)
             {
                 if (!_nodes.TryGetValue(number, out DirectedGraphNode? currentNode))
                 {
@@ -76,11 +76,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                 currentDepth--;
             }
 
-            int maxNodeDepth = _nodes.Max(node => node.Value.Depth);
+            int maxNodeDepth = _nodes.Values.Max(node => node.Depth);
 
-            foreach (var node in _nodes)
+            foreach (DirectedGraphNode node in _nodes.Values)
             {
-                node.Value.Z = maxNodeDepth - node.Value.Depth;
+                node.Z = maxNodeDepth - node.Depth;
             }
         }
 
@@ -137,19 +137,19 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                                                             lightSourceService.LightSourceColor)).Wait();
         }
 
-        foreach (var node in _nodes)
+        foreach (DirectedGraphNode node in _nodes.Values)
         {
             Color nodeColor = GenerateNodeColor();
 
             if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
             {
-                node.Value.Shape.Color = nodeColor;
+                node.Shape.Color = nodeColor;
             }
             else
             {
-                node.Value.Shape.Color = ApplyLightSourceToNodeColor(node.Value,
-                                                                     nodeColor,
-                                                                     lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition));
+                node.Shape.Color = ApplyLightSourceToNodeColor(node,
+                                                               nodeColor,
+                                                               lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition));
             }
         }
 
@@ -176,16 +176,16 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     {
         _consoleHelper.Write("Adjusting node positions to fit on canvas... ");
 
-        float minX = _nodes.Min(node => node.Value.Position.X);
-        float minY = _nodes.Min(node => node.Value.Position.Y);
+        float minX = _nodes.Values.Min(node => node.Position.X);
+        float minY = _nodes.Values.Min(node => node.Position.Y);
 
         float translationX = minX < 0 ? -minX + _settings.XNodeSpacer + (int)_settings.NodeRadius : 0;
         float translationY = minY < 0 ? -minY + _settings.YNodeSpacer + (int)_settings.NodeRadius : 0;
 
-        foreach (var node in _nodes)
+        foreach (DirectedGraphNode node in _nodes.Values)
         {
-            node.Value.Position = (node.Value.Position.X + translationX,
-                                   node.Value.Position.Y + translationY);
+            node.Position = (node.Position.X + translationX,
+                             node.Position.Y + translationY);
         }
 
         _consoleHelper.WriteDone();
@@ -196,8 +196,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void SetCanvasSize()
     {
-        float maxX = _nodes.Max(node => node.Value.Position.X);
-        float maxY = _nodes.Max(node => node.Value.Position.Y);
+        float maxX = _nodes.Values.Max(node => node.Position.X);
+        float maxY = _nodes.Values.Max(node => node.Position.Y);
 
         _canvasWidth = (int)maxX + _settings.XNodeSpacer + (int)_settings.NodeRadius;
         _canvasHeight = (int)maxY + _settings.YNodeSpacer + (int)_settings.NodeRadius;
@@ -224,7 +224,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
             if (_nodeGrid.TryGetValue(checkCell, out var nodesInCell))
             {
-                foreach (var node in nodesInCell)
+                foreach ((float X, float Y) node in nodesInCell)
                 {
                     if (Distance(newNode.Position, node) < minDistance)
                     {

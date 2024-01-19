@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Enums;
@@ -59,12 +60,13 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         WriteHeading("Settings");
 
-        var settingsFileExists = File.Exists(_settings.SettingsFileName);
-        var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
+        bool settingsFileExists = File.Exists(_settings.SettingsFileName);
+        List<PropertyInfo> settingsProperties =
+            typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
 
-        foreach (var property in settingsProperties)
+        foreach (PropertyInfo property in settingsProperties)
         {
-            var value = property.GetValue(_settings, null);
+            object? value = property.GetValue(_settings, null);
 
             SetForegroundColor(ConsoleColor.Blue);
 
@@ -162,14 +164,15 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteLine($"To apply custom settings, ensure that a '{_settings.SettingsFileName}' file exists in the same folder as the executable. It must have the following content:\n");
         WriteLine("{");
 
-        var lcv = 1;
-        var settingsProperties = typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
+        int lcv = 1;
+        List<PropertyInfo> settingsProperties =
+            typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
 
         SetForegroundColor(ConsoleColor.White);
 
-        foreach (var property in settingsProperties)
+        foreach (PropertyInfo property in settingsProperties)
         {
-            var comma = lcv != settingsProperties.Count ? "," : "";
+            string comma = lcv != settingsProperties.Count ? "," : "";
 
             SetForegroundColor(ConsoleColor.Blue);
 
@@ -527,7 +530,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
         int lengthWithEllipsis = maxLength - ellipsis.Length;
 
-        foreach (var number in numbers)
+        foreach (string number in numbers)
         {
             // Check if adding this number exceeds the maximum length
             // +1 for the comma, except for the first number

@@ -31,7 +31,7 @@ public class AlgorithmTests
         List<List<int>> results = _algorithm.Run(startingNumbers);
 
         // Assert
-        foreach (var series in results)
+        foreach (List<int> series in results)
         {
             bool seriesEndMatch = Enumerable.SequenceEqual(series.Skip(series.Count - expectedEndingSeries.Count), expectedEndingSeries);
 
@@ -54,7 +54,7 @@ public class AlgorithmTests
         List<List<int>> results = _algorithm.Run(startingNumbers);
 
         // Assert
-        foreach (var series in results)
+        foreach (List<int> series in results)
         {
             bool hasExpectedCount = expectedEndingSeriesNumberCounts.Contains(series.Count);
             bool hasExpectedNumbers = series.All(item => startingNumbers.Contains(item));
@@ -77,7 +77,7 @@ public class AlgorithmTests
         List<List<int>> results = _algorithm.Run(startingNumbers);
 
         // Assert
-        foreach (var series in results)
+        foreach (List<int> series in results)
         {
             series.Count.Should().Be(0);
         }
