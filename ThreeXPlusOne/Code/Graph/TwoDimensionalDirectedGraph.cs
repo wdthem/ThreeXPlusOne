@@ -52,12 +52,11 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
         _nodes[4].IsPositioned = true;
         _nodes[4].Shape.Radius = _settings.NodeRadius;
 
-        List<DirectedGraphNode> nodesToDraw = _nodes.Where(n => n.Value.Depth == _nodes[4].Depth + 1)
-                                                    .Select(n => n.Value)
-                                                    .ToList();
+        List<DirectedGraphNode> nodesToDraw = _nodes.Values.Where(n => n.Depth == _nodes[4].Depth + 1)
+                                                           .ToList();
         _nodesPositioned = 3;
 
-        foreach (var node in nodesToDraw)
+        foreach (DirectedGraphNode node in nodesToDraw)
         {
             PositionNode(node);
         }
@@ -72,9 +71,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     /// </summary>
     public void SetNodeShapes()
     {
-        foreach (var node in _nodes.Where(node => node.Value.IsPositioned))
+        foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
-            SetNodeShape(node.Value);
+            SetNodeShape(node);
         }
     }
 
@@ -131,7 +130,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (_settings.NodeRotationAngle != 0)
             {
-                (float x, float y) = RotateNode(node.Value, _settings.NodeRotationAngle, xOffset, yOffset);
+                (float x, float y) = RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
 
                 node.Position = (x, y);
             }

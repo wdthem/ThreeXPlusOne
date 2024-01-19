@@ -1,11 +1,11 @@
 ﻿namespace ThreeXPlusOne.Code.Models;
 
-public class DirectedGraphNode(int value)
+public class DirectedGraphNode(int numberValue)
 {
     /// <summary>
     /// The number value of the node from the series of generated numbers
     /// </summary>
-    public int Value { get; set; } = value;
+    public int NumberValue { get; set; } = numberValue;
 
     /// <summary>
     /// The node's parent node
