@@ -81,21 +81,21 @@ public class FileHelper(IOptions<Settings> settings,
 
     public string GenerateDirectedGraphFilePath()
     {
-        var fileName = $"{_prefix}-{_settings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
+        string fileName = $"{_prefix}-{_settings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
         return GenerateFullFilePath(_settings.UniqueExecutionId, _settings.OutputPath, fileName);
     }
 
     public string GenerateHistogramFilePath()
     {
-        var fileName = $"{_prefix}-Histogram.png";
+        string fileName = $"{_prefix}-Histogram.png";
 
         return GenerateFullFilePath(_settings.UniqueExecutionId, _settings.OutputPath, fileName);
     }
 
     public string GenerateMetadataFilePath()
     {
-        var fileName = $"{_prefix}-Metadata.txt";
+        string fileName = $"{_prefix}-Metadata.txt";
 
         return GenerateFullFilePath(_settings.UniqueExecutionId, _settings.OutputPath, fileName);
     }

@@ -34,7 +34,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             DirectedGraphNode? previousNode = null;
             int currentDepth = series.Count;
 
-            foreach (var number in series)
+            foreach (int number in series)
             {
                 if (!_nodes.TryGetValue(number, out DirectedGraphNode? currentNode))
                 {
@@ -224,7 +224,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
             if (_nodeGrid.TryGetValue(checkCell, out var nodesInCell))
             {
-                foreach (var node in nodesInCell)
+                foreach ((float X, float Y) node in nodesInCell)
                 {
                     if (Distance(newNode.Position, node) < minDistance)
                     {

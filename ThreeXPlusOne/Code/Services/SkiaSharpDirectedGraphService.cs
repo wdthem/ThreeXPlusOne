@@ -133,7 +133,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             throw new Exception("Could not draw the graph. Canvas object or Nodes object was null");
         }
 
-        var extraMessage = "";
+        string extraMessage = "";
 
         if (drawNodeConnections)
         {
@@ -145,13 +145,13 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
         if (drawNodeConnections)
         {
             //do a separate loop to draw connections to ensure they are drawn under nodes
-            foreach (var node in _nodes)
+            foreach (DirectedGraphNode node in _nodes)
             {
                 DrawNodeConnection(_canvas, node);
             }
         }
 
-        foreach (var node in _nodes)
+        foreach (DirectedGraphNode node in _nodes)
         {
             DrawNode(_canvas,
                      node,

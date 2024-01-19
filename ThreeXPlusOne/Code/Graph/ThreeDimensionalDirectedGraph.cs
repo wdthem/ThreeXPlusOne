@@ -84,12 +84,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
             SetNodeShape(node);
 
             float rotationRadians = -0.785f + (float)_random.NextDouble() * 1.57f; // Range of -π/4 to π/4 radians
+            skewFactor = 0.0f;
 
-            if (_random.NextDouble() < noSkewProbability)
-            {
-                skewFactor = 0.0f;
-            }
-            else
+            if (_random.NextDouble() >= noSkewProbability)
             {
                 skewFactor = (_random.NextDouble() > 0.5 ? 1 : -1) * (0.1f + (float)_random.NextDouble() * 0.8f);
             }
@@ -146,7 +143,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         float maxZ = _nodes.Values.Max(node => node.Z);
         float depthFactor = node.Z / maxZ;
         float scale = 0.99f - depthFactor * 0.1f;
-        float minScale = (float)0.2;
+        float minScale = 0.2f;
         float nodeRadius = baseRadius * Math.Max(scale - 0.02f, minScale);
         float xNodeSpacer = _settings.XNodeSpacer;
         float yNodeSpacer = _settings.YNodeSpacer;
@@ -196,7 +193,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         float yOffset = node.Parent!.Position.Y - (yNodeSpacer + yNodeSpacer / node.Depth + (positionedNodesAtDepth * (yNodeSpacer / 30)));
 
-        node.Position = (xOffset, (float)yOffset);
+        node.Position = (xOffset, yOffset);
 
         if (_settings.NodeRotationAngle != 0)
         {
@@ -216,7 +213,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.Write($"\r{_nodesPositioned} nodes positioned... ");
 
-        foreach (var childNode in node.Children)
+        foreach (DirectedGraphNode childNode in node.Children)
         {
             PositionNode(childNode);
         }

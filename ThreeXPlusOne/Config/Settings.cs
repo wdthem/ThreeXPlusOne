@@ -197,7 +197,7 @@ public class Settings
 
             string[] stringArray = UseTheseNumbers.Split(_separator, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (var numberAsString in stringArray)
+            foreach (string numberAsString in stringArray)
             {
                 if (int.TryParse(numberAsString, out int parsedNumber))
                 {

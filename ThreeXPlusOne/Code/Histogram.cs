@@ -57,9 +57,9 @@ public class Histogram(IOptions<Settings> settings,
     {
         List<int> digitCounts = Enumerable.Repeat(0, 9).ToList();
 
-        foreach (var list in seriesData)
+        foreach (List<int> list in seriesData)
         {
-            foreach (var number in list)
+            foreach (int number in list)
             {
                 string numberStr = number.ToString();
 

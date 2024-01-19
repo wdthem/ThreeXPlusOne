@@ -171,7 +171,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             _consoleHelper.Write($"\r{_nodesPositioned} nodes positioned... ");
 
-            foreach (var childNode in node.Children)
+            foreach (DirectedGraphNode childNode in node.Children)
             {
                 PositionNode(childNode);
             }
