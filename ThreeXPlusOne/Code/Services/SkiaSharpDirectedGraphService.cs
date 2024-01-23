@@ -258,15 +258,6 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                               node.Shape.Radius,
                               paint);
 
-            foreach (var ray in node.Shape.LightRayData)
-            {
-                using var rayPaint = new SKPaint { Color = ConvertColorToSKColor(ray.Color), StrokeWidth = 10, Style = SKPaintStyle.Stroke };
-
-                canvas.DrawLine(new SKPoint(ray.Start.X, ray.Start.Y),
-                                new SKPoint(ray.End.X, ray.End.Y),
-                                rayPaint);
-            }
-
             return;
         }
 
@@ -277,15 +268,6 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                             node.Shape.EllipseConfig.RadiusX,
                             node.Shape.EllipseConfig.RadiusY,
                             paint);
-
-            foreach (var ray in node.Shape.LightRayData)
-            {
-                using var rayPaint = new SKPaint { Color = ConvertColorToSKColor(ray.Color), StrokeWidth = 10, Style = SKPaintStyle.Stroke };
-
-                canvas.DrawLine(new SKPoint(ray.Start.X, ray.Start.Y),
-                                new SKPoint(ray.End.X, ray.End.Y),
-                                rayPaint);
-            }
 
             return;
         }
@@ -309,15 +291,58 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
         path.Close();
         canvas.DrawPath(path, paint);
 
-        foreach (var ray in node.Shape.LightRayData)
+        RenderNodeLightEffect(canvas, node.Shape, (0, 0));
+    }
+
+    private static void RenderNodeLightEffect(SKCanvas canvas, Shape shape, (float X, float Y) lightSourceCoordinates)
+    {
+        float maxDistance = canvas.LocalClipBounds.Height / (float)1.2;
+
+        foreach (var ray in shape.LightRayData)
         {
-            using var rayPaint = new SKPaint { Color = ConvertColorToSKColor(ray.Color), StrokeWidth = 10, Style = SKPaintStyle.Stroke };
+            // Use a smaller stroke width and blur effect for testing
+            float blurAmount = 5.0f;
+            var blurEffect = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, blurAmount);
+            float distanceToLightSource = Distance(ray.Start, lightSourceCoordinates);
+            float opacityFactor = 1 - (distanceToLightSource / maxDistance);
+            opacityFactor = Math.Clamp(opacityFactor, 0, 1);
+
+            // For testing, place the gradient center closer to the ray's start
+            (float X, float Y) = ray.Start;
+
+            SKColor skColor = ConvertColorToSKColor(ray.Color).WithAlpha((byte)(opacityFactor * 255));
+
+            var rayPaint = new SKPaint
+            {
+                Shader = SKShader.CreateRadialGradient(new SKPoint(X, Y),
+                                                       Distance(ray.Start, ray.End) / 2, // Half the ray length
+                                                       new[] { skColor, skColor.WithAlpha(0) },
+                                                       null,
+                                                       SKShaderTileMode.Clamp),
+                Style = SKPaintStyle.Stroke,
+                StrokeWidth = 10, // Reduced for testing
+                MaskFilter = blurEffect
+            };
 
             canvas.DrawLine(new SKPoint(ray.Start.X, ray.Start.Y),
                             new SKPoint(ray.End.X, ray.End.Y),
                             rayPaint);
         }
     }
+
+
+    /// <summary>
+    /// Calculate the Euclidean distance between two node positions
+    /// </summary>
+    /// <param name="position1"></param>
+    /// <param name="position2"></param>
+    /// <returns></returns>
+    private static float Distance((float X, float Y) position1,
+                                  (float X, float Y) position2)
+    {
+        return (float)Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
+    }
+
 
     /// <summary>
     /// Draw the lines connecting nodes to their parent/children

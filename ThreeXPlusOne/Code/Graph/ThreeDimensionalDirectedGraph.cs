@@ -88,7 +88,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (_random.NextDouble() >= noSkewProbability)
             {
-                skewFactor = (_random.NextDouble() > 0.5 ? 1 : -1) * (0.1f + (float)_random.NextDouble() * 0.8f);
+                skewFactor = (_random.NextDouble() > 0.5 ? 1 : -1) * ((0.1f + (float)_random.NextDouble()) * 0.6f);
             }
 
             if (node.Shape.ShapeType == Enums.ShapeType.Circle)

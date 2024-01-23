@@ -5,6 +5,9 @@ namespace ThreeXPlusOne.Code.Interfaces;
 
 public interface ILightSourceService
 {
+    /// <summary>
+    /// The enum describing the origin position of the light source
+    /// </summary>
     LightSourcePosition LightSourcePosition { get; }
 
     /// <summary>
