@@ -258,6 +258,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                               node.Shape.Radius,
                               paint);
 
+            RenderNodeHaloEffect(canvas, node, (0, 0));
+
             return;
         }
 
@@ -268,6 +270,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                             node.Shape.EllipseConfig.RadiusX,
                             node.Shape.EllipseConfig.RadiusY,
                             paint);
+
+            RenderNodeHaloEffect(canvas, node, (0, 0));
 
             return;
         }
@@ -291,43 +295,37 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
         path.Close();
         canvas.DrawPath(path, paint);
 
-        RenderNodeLightEffect(canvas, node.Shape, (0, 0));
+        //TODO: light source coordinates can't be hard-coded
+        RenderNodeHaloEffect(canvas, node, (0, 0));
     }
 
-    private static void RenderNodeLightEffect(SKCanvas canvas, Shape shape, (float X, float Y) lightSourceCoordinates)
+    /// <summary>
+    /// Render a light halo around nodes, with decreasing intensity as distance from the light source increases
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    /// <param name="lightSourceCoordinates"></param>
+    private static void RenderNodeHaloEffect(SKCanvas canvas, DirectedGraphNode node, (float X, float Y) lightSourceCoordinates)
     {
+        float distanceToLightSource = Distance((node.Position.X, node.Position.Y), lightSourceCoordinates);
+        //TODO: maxDistance should be part of ILightSourceService
         float maxDistance = canvas.LocalClipBounds.Height / (float)1.2;
+        float intensity = Math.Max(0, 1 - (distanceToLightSource / maxDistance));
 
-        foreach (var ray in shape.LightRayData)
+        SKColor haloColor = SKColors.White.WithAlpha((byte)(intensity * 255));
+        float haloRadius = node.Shape.Radius * 2;
+
+        var haloPaint = new SKPaint
         {
-            // Use a smaller stroke width and blur effect for testing
-            float blurAmount = 5.0f;
-            var blurEffect = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, blurAmount);
-            float distanceToLightSource = Distance(ray.Start, lightSourceCoordinates);
-            float opacityFactor = 1 - (distanceToLightSource / maxDistance);
-            opacityFactor = Math.Clamp(opacityFactor, 0, 1);
+            Shader = SKShader.CreateRadialGradient(new SKPoint(node.Position.X, node.Position.Y),
+                                                   haloRadius,
+                                                   new[] { haloColor, SKColors.Transparent },
+                                                   null,
+                                                   SKShaderTileMode.Clamp),
+            Style = SKPaintStyle.Fill
+        };
 
-            // For testing, place the gradient center closer to the ray's start
-            (float X, float Y) = ray.Start;
-
-            SKColor skColor = ConvertColorToSKColor(ray.Color).WithAlpha((byte)(opacityFactor * 255));
-
-            var rayPaint = new SKPaint
-            {
-                Shader = SKShader.CreateRadialGradient(new SKPoint(X, Y),
-                                                       Distance(ray.Start, ray.End) / 2, // Half the ray length
-                                                       new[] { skColor, skColor.WithAlpha(0) },
-                                                       null,
-                                                       SKShaderTileMode.Clamp),
-                Style = SKPaintStyle.Stroke,
-                StrokeWidth = 10, // Reduced for testing
-                MaskFilter = blurEffect
-            };
-
-            canvas.DrawLine(new SKPoint(ray.Start.X, ray.Start.Y),
-                            new SKPoint(ray.End.X, ray.End.Y),
-                            rayPaint);
-        }
+        canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y), haloRadius, haloPaint);
     }
 
 
