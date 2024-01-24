@@ -230,7 +230,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             FakeBoldText = true,
         };
 
-        DrawShape(canvas, node, paint);
+        DrawShape(canvas,
+                  node,
+                  paint);
 
         if (drawNumbersOnNodes)
         {
@@ -258,7 +260,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                               node.Shape.Radius,
                               paint);
 
-            RenderNodeHaloEffect(canvas, node, (0, 0));
+            RenderNodeHaloEffect(canvas, node);
 
             return;
         }
@@ -271,7 +273,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                             node.Shape.EllipseConfig.RadiusY,
                             paint);
 
-            RenderNodeHaloEffect(canvas, node, (0, 0));
+            RenderNodeHaloEffect(canvas, node);
 
             return;
         }
@@ -295,8 +297,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
         path.Close();
         canvas.DrawPath(path, paint);
 
-        //TODO: light source coordinates can't be hard-coded
-        RenderNodeHaloEffect(canvas, node, (0, 0));
+        RenderNodeHaloEffect(canvas, node);
     }
 
     /// <summary>
@@ -304,43 +305,30 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
-    /// <param name="lightSourceCoordinates"></param>
-    private static void RenderNodeHaloEffect(SKCanvas canvas, DirectedGraphNode node, (float X, float Y) lightSourceCoordinates)
+    private static void RenderNodeHaloEffect(SKCanvas canvas,
+                                             DirectedGraphNode node)
     {
-        float distanceToLightSource = Distance((node.Position.X, node.Position.Y), lightSourceCoordinates);
-        //TODO: maxDistance should be part of ILightSourceService
-        float maxDistance = canvas.LocalClipBounds.Height / (float)1.2;
-        float intensity = Math.Max(0, 1 - (distanceToLightSource / maxDistance));
+        if (node.Shape.HaloConfig.Color == Color.Empty)
+        {
+            return;
+        }
 
-        SKColor haloColor = SKColors.White.WithAlpha((byte)(intensity * 255));
-        float haloRadius = node.Shape.Radius * 2;
+        SKColor skColor = ConvertColorToSKColor(node.Shape.HaloConfig.Color);
 
         var haloPaint = new SKPaint
         {
             Shader = SKShader.CreateRadialGradient(new SKPoint(node.Position.X, node.Position.Y),
-                                                   haloRadius,
-                                                   new[] { haloColor, SKColors.Transparent },
+                                                   node.Shape.HaloConfig.Radius,
+                                                   new[] { skColor, SKColors.Transparent },
                                                    null,
                                                    SKShaderTileMode.Clamp),
             Style = SKPaintStyle.Fill
         };
 
-        canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y), haloRadius, haloPaint);
+        canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
+                          node.Shape.HaloConfig.Radius,
+                          haloPaint);
     }
-
-
-    /// <summary>
-    /// Calculate the Euclidean distance between two node positions
-    /// </summary>
-    /// <param name="position1"></param>
-    /// <param name="position2"></param>
-    /// <returns></returns>
-    private static float Distance((float X, float Y) position1,
-                                  (float X, float Y) position2)
-    {
-        return (float)Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
-    }
-
 
     /// <summary>
     /// Draw the lines connecting nodes to their parent/children
@@ -363,7 +351,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                             new SKPoint(childNode.Position.X, childNode.Position.Y),
                             paint);
 
-            canvas.DrawCircle(new SKPoint(childNode.Position.X, childNode.Position.Y), 10, paint);
+            canvas.DrawCircle(new SKPoint(childNode.Position.X, childNode.Position.Y),
+                              10,   //hard-coded radius for node number
+                              paint);
         }
     }
 
