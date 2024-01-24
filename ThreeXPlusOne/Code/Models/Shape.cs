@@ -26,6 +26,11 @@ public class Shape()
     public ((float X, float Y) Center, float RadiusX, float RadiusY) EllipseConfig { get; set; }
 
     /// <summary>
+    /// The radius and color of the node's halo when a light source exists
+    /// </summary>
+    public (float Radius, Color Color) HaloConfig { get; set; } = (0, Color.Empty);
+
+    /// <summary>
     /// The colour of the shape
     /// </summary>
     public Color Color { get; set; } = Color.Empty;

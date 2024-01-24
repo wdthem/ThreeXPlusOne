@@ -5,6 +5,9 @@ namespace ThreeXPlusOne.Code.Interfaces;
 
 public interface ILightSourceService
 {
+    /// <summary>
+    /// The enum describing the origin position of the light source
+    /// </summary>
     LightSourcePosition LightSourcePosition { get; }
 
     /// <summary>
@@ -32,4 +35,10 @@ public interface ILightSourceService
     /// <param name="position"></param>
     /// <returns></returns>
     (float X, float Y) GetLightSourceCoordinates(LightSourcePosition position);
+
+    /// <summary>
+    /// Get the max distance of the effect of the light source
+    /// </summary>
+    /// <returns></returns>
+    float GetLightSourceMaxDistanceOfEffect();
 }

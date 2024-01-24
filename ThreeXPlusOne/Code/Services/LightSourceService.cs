@@ -85,6 +85,20 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
+    /// Get the max distance of the effect of the light source
+    /// </summary>
+    /// <returns></returns>
+    public float GetLightSourceMaxDistanceOfEffect()
+    {
+        if (_graphDimensions == 3)
+        {
+            return _canvasDimensions.Height / 1.2f;
+        }
+
+        return _canvasDimensions.Height / 2.0f; ;
+    }
+
+    /// <summary>
     /// Parse the value from settings into a LightSourcePosition enum value
     /// </summary>
     /// <param name="settingsValue"></param>

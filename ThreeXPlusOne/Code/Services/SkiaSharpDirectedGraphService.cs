@@ -230,7 +230,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             FakeBoldText = true,
         };
 
-        DrawShape(canvas, node, paint);
+        DrawShape(canvas,
+                  node,
+                  paint);
 
         if (drawNumbersOnNodes)
         {
@@ -258,6 +260,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                               node.Shape.Radius,
                               paint);
 
+            RenderNodeHaloEffect(canvas, node);
+
             return;
         }
 
@@ -268,6 +272,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                             node.Shape.EllipseConfig.RadiusX,
                             node.Shape.EllipseConfig.RadiusY,
                             paint);
+
+            RenderNodeHaloEffect(canvas, node);
 
             return;
         }
@@ -290,6 +296,38 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         path.Close();
         canvas.DrawPath(path, paint);
+
+        RenderNodeHaloEffect(canvas, node);
+    }
+
+    /// <summary>
+    /// Render a light halo around nodes, with decreasing intensity as distance from the light source increases
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    private static void RenderNodeHaloEffect(SKCanvas canvas,
+                                             DirectedGraphNode node)
+    {
+        if (node.Shape.HaloConfig.Color == Color.Empty)
+        {
+            return;
+        }
+
+        SKColor skColor = ConvertColorToSKColor(node.Shape.HaloConfig.Color);
+
+        var haloPaint = new SKPaint
+        {
+            Shader = SKShader.CreateRadialGradient(new SKPoint(node.Position.X, node.Position.Y),
+                                                   node.Shape.HaloConfig.Radius,
+                                                   new[] { skColor, SKColors.Transparent },
+                                                   null,
+                                                   SKShaderTileMode.Clamp),
+            Style = SKPaintStyle.Fill
+        };
+
+        canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
+                          node.Shape.HaloConfig.Radius,
+                          haloPaint);
     }
 
     /// <summary>
@@ -313,7 +351,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                             new SKPoint(childNode.Position.X, childNode.Position.Y),
                             paint);
 
-            canvas.DrawCircle(new SKPoint(childNode.Position.X, childNode.Position.Y), 10, paint);
+            canvas.DrawCircle(new SKPoint(childNode.Position.X, childNode.Position.Y),
+                              10,   //hard-coded radius for node number
+                              paint);
         }
     }
 

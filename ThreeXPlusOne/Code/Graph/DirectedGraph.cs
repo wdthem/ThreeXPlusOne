@@ -147,9 +147,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             }
             else
             {
-                node.Shape.Color = ApplyLightSourceToNodeColor(node,
-                                                               nodeColor,
-                                                               lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition));
+                ApplyLightSourceToNode(node,
+                                       nodeColor,
+                                       lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
+                                       lightSourceService.GetLightSourceMaxDistanceOfEffect(),
+                                       lightSourceService.LightSourceColor);
             }
         }
 
@@ -435,10 +437,14 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="node"></param>
     /// <param name="nodeBaseColor"></param>
     /// <param name="lightSourceCoordinates"></param>
+    /// <param name="lightSourceMaxDistanceEffect"></param>
+    /// <param name="lightSourceColor"></param>
     /// <returns></returns>
-    private Color ApplyLightSourceToNodeColor(DirectedGraphNode node,
-                                              Color nodeBaseColor,
-                                              (float X, float Y) lightSourceCoordinates)
+    private static void ApplyLightSourceToNode(DirectedGraphNode node,
+                                               Color nodeBaseColor,
+                                               (float X, float Y) lightSourceCoordinates,
+                                               float lightSourceMaxDistanceEffect,
+                                               Color lightSourceColor)
     {
         Color nodeColor;
         float distance = Distance((node.Position.X, node.Position.Y),
@@ -446,18 +452,17 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
 
         float additionalOpacityFactor;
-        float maxDistance = _canvasHeight / (float)1.2;
 
-        float lightIntensity = 0.5f; // Adjust this value between 0 and 1 to control the light's power
+        float lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
 
-        if (distance < maxDistance)
+        if (distance < lightSourceMaxDistanceEffect)
         {
-            additionalOpacityFactor = distance / maxDistance;
+            additionalOpacityFactor = distance / lightSourceMaxDistanceEffect;
             additionalOpacityFactor = Math.Clamp(additionalOpacityFactor, 0, 1);
 
             // Apply the light intensity to the blend factor
             float blendFactor = additionalOpacityFactor * lightIntensity;
-            nodeColor = BlendColor(nodeBaseColor, Color.LightYellow, 1 - blendFactor);
+            nodeColor = BlendColor(nodeBaseColor, lightSourceColor, 1 - blendFactor);
         }
         else
         {
@@ -467,7 +472,17 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         byte finalAlpha = (byte)(nodeBaseColor.A * additionalOpacityFactor);
 
-        return Color.FromArgb(finalAlpha, nodeColor.R, nodeColor.G, nodeColor.B);
+        node.Shape.Color = Color.FromArgb(finalAlpha, nodeColor.R, nodeColor.G, nodeColor.B);
+
+        //configure the halo
+        float haloRadius = node.Shape.Radius * 2;
+        float intensity = Math.Max(0, 1 - (distance / lightSourceMaxDistanceEffect));
+        Color haloColor = Color.FromArgb((byte)(intensity * lightSourceColor.A),
+                                         lightSourceColor.R,
+                                         lightSourceColor.G,
+                                         lightSourceColor.B);
+
+        node.Shape.HaloConfig = (haloRadius, haloColor);
     }
 
     /// <summary>
