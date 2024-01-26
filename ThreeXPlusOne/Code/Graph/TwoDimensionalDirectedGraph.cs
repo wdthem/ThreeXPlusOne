@@ -63,7 +63,10 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.WriteDone();
 
-        MoveNodesToPositiveCoordinates();
+        _nodePosition.MoveNodesToPositiveCoordinates(_nodes,
+                                                     _settings.XNodeSpacer,
+                                                     _settings.YNodeSpacer,
+                                                     _settings.NodeRadius);
     }
 
     /// <summary>
@@ -73,7 +76,10 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     {
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
-            SetNodeShape(node);
+            _nodeAesthetics.SetNodeShape(node,
+                                         _random,
+                                         _settings.NodeRadius,
+                                         _settings.IncludePolygonsAsNodes);
         }
     }
 
@@ -130,7 +136,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (_settings.NodeRotationAngle != 0)
             {
-                (double x, double y) = RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
+                (double x, double y) = _nodeAesthetics.RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
 
                 node.Position = (x, y);
             }
@@ -155,7 +161,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             double minDistance = nodeRadius * 2;
 
-            while (NodeIsTooCloseToNeighbours(node, minDistance))
+            while (_nodePosition.NodeIsTooCloseToNeighbours(node, minDistance))
             {
                 node.Position = (node.Position.X + (node.IsFirstChild
                                                                 ? -nodeRadius * 2 - 40
@@ -163,7 +169,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                                  node.Position.Y);
             }
 
-            AddNodeToGrid(node, minDistance);
+            _nodePosition.AddNodeToGrid(node, minDistance);
 
             node.Shape.Radius = nodeRadius;
             node.IsPositioned = true;

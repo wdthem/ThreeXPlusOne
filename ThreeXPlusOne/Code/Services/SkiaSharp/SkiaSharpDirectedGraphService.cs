@@ -5,7 +5,7 @@ using ThreeXPlusOne.Code.Enums;
 using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Code.Models;
 
-namespace ThreeXPlusOne.Code.Services;
+namespace ThreeXPlusOne.Code.Services.SkiaSharp;
 
 public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGraphService
 {

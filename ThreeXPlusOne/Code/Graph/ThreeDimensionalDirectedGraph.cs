@@ -67,7 +67,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.WriteDone();
 
-        MoveNodesToPositiveCoordinates();
+        _nodePosition.MoveNodesToPositiveCoordinates(_nodes,
+                                                     _settings.XNodeSpacer,
+                                                     _settings.YNodeSpacer,
+                                                     _settings.NodeRadius);
     }
 
     /// <summary>
@@ -81,7 +84,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
-            SetNodeShape(node);
+            _nodeAesthetics.SetNodeShape(node,
+                                         _random,
+                                         _settings.NodeRadius,
+                                         _settings.IncludePolygonsAsNodes);
 
             double rotationRadians = -0.785f + _random.NextDouble() * 1.57f; // Range of -π/4 to π/4 radians
             skewFactor = 0.0f;
@@ -197,7 +203,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         if (_settings.NodeRotationAngle != 0)
         {
-            (double x, double y) = RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
+            (double x, double y) = _nodeAesthetics.RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
 
             node.Position = (x, y);
         }

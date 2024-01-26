@@ -2,7 +2,7 @@ using SkiaSharp;
 using ThreeXPlusOne.Code.Enums;
 using ThreeXPlusOne.Code.Interfaces;
 
-namespace ThreeXPlusOne.Code.Services;
+namespace ThreeXPlusOne.Code.Services.SkiaSharp;
 
 public class SkiaSharpHistogramService() : IHistogramService
 {
