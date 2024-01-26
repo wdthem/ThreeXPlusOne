@@ -58,7 +58,7 @@ public class SkiaSharpHistogramService() : IHistogramService
 
         // Scale the bars to leave space for the count text
         int adjustedMaxCount = maxCount + (maxCount / 10); // Adjust for space above the tallest bar
-        float scaleFactor = (float)(effectiveCanvasHeight - xAxisLabelHeight - topPadding) / adjustedMaxCount;
+        double scaleFactor = (effectiveCanvasHeight - xAxisLabelHeight - topPadding) / adjustedMaxCount;
 
         // Define maximum height and segment count
         const int maxSegmentCount = 10;
@@ -87,11 +87,18 @@ public class SkiaSharpHistogramService() : IHistogramService
             int labelValue = i * segmentSize;
             if (labelValue <= adjustedMaxCount) // Ensure label doesn't exceed the adjusted max
             {
-                float y = effectiveCanvasHeight - xAxisLabelHeight - topPadding - (labelValue * scaleFactor);
+                double y = effectiveCanvasHeight - xAxisLabelHeight - topPadding - (labelValue * scaleFactor);
 
-                _canvas.DrawLine(yAxisLabelSpace, y, _canvasWidth, y, new SKPaint { Color = SKColors.Gray, IsAntialias = true, StrokeWidth = 1 });
+                _canvas.DrawLine(yAxisLabelSpace,
+                                 (float)y,
+                                 _canvasWidth,
+                                 (float)y,
+                                 new SKPaint { Color = SKColors.Gray, IsAntialias = true, StrokeWidth = 1 });
 
-                _canvas.DrawText(labelValue.ToString(), yAxisLabelSpace - 10, y, new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Right });
+                _canvas.DrawText(labelValue.ToString(),
+                                 yAxisLabelSpace - 10,
+                                 (float)y,
+                                 new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Right });
             }
         }
 

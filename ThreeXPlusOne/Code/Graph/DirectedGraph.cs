@@ -14,7 +14,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 {
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;
-    private readonly Dictionary<(int, int), List<(float X, float Y)>> _nodeGrid = [];
+    private readonly Dictionary<(int, int), List<(double X, double Y)>> _nodeGrid = [];
 
     protected readonly Random _random = new();
     protected readonly Settings _settings = settings.Value;
@@ -178,11 +178,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     {
         _consoleHelper.Write("Adjusting node positions to fit on canvas... ");
 
-        float minX = _nodes.Values.Min(node => node.Position.X);
-        float minY = _nodes.Values.Min(node => node.Position.Y);
+        double minX = _nodes.Values.Min(node => node.Position.X);
+        double minY = _nodes.Values.Min(node => node.Position.Y);
 
-        float translationX = minX < 0 ? -minX + _settings.XNodeSpacer + (int)_settings.NodeRadius : 0;
-        float translationY = minY < 0 ? -minY + _settings.YNodeSpacer + (int)_settings.NodeRadius : 0;
+        double translationX = minX < 0 ? -minX + _settings.XNodeSpacer + _settings.NodeRadius : 0;
+        double translationY = minY < 0 ? -minY + _settings.YNodeSpacer + _settings.NodeRadius : 0;
 
         foreach (DirectedGraphNode node in _nodes.Values)
         {
@@ -198,11 +198,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// </summary>
     protected void SetCanvasSize()
     {
-        float maxX = _nodes.Values.Max(node => node.Position.X);
-        float maxY = _nodes.Values.Max(node => node.Position.Y);
+        double maxX = _nodes.Values.Max(node => node.Position.X);
+        double maxY = _nodes.Values.Max(node => node.Position.Y);
 
-        _canvasWidth = (int)maxX + _settings.XNodeSpacer + (int)_settings.NodeRadius;
-        _canvasHeight = (int)maxY + _settings.YNodeSpacer + (int)_settings.NodeRadius;
+        _canvasWidth = (int)(maxX + _settings.XNodeSpacer + _settings.NodeRadius);
+        _canvasHeight = (int)(maxY + _settings.YNodeSpacer + _settings.NodeRadius);
 
         _consoleHelper.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
     }
@@ -214,7 +214,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="minDistance"></param>
     /// <returns></returns>
     protected bool NodeIsTooCloseToNeighbours(DirectedGraphNode newNode,
-                                              float minDistance)
+                                              double minDistance)
     {
         (int, int) cell = GetGridCellForNode(newNode, minDistance);
 
@@ -226,7 +226,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
             if (_nodeGrid.TryGetValue(checkCell, out var nodesInCell))
             {
-                foreach ((float X, float Y) node in nodesInCell)
+                foreach ((double X, double Y) node in nodesInCell)
                 {
                     if (Distance(newNode.Position, node) < minDistance)
                     {
@@ -245,11 +245,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="node"></param>
     /// <param name="minDistance"></param>
     protected void AddNodeToGrid(DirectedGraphNode node,
-                                 float minDistance)
+                                 double minDistance)
     {
         (int, int) cell = GetGridCellForNode(node, minDistance);
 
-        if (!_nodeGrid.TryGetValue(cell, out List<(float X, float Y)>? value))
+        if (!_nodeGrid.TryGetValue(cell, out List<(double X, double Y)>? value))
         {
             value = ([]);
             _nodeGrid[cell] = value;
@@ -264,10 +264,10 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="position1"></param>
     /// <param name="position2"></param>
     /// <returns></returns>
-    protected static float Distance((float X, float Y) position1,
-                                    (float X, float Y) position2)
+    protected static double Distance((double X, double Y) position1,
+                                     (double X, double Y) position2)
     {
-        return (float)Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
+        return Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
     }
 
     /// <summary>
@@ -279,8 +279,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="childPosition"></param>
     /// <param name="parentPosition"></param>
     /// <returns></returns>
-    protected static float XAxisSignedDistanceFromParent((float X, float Y) childPosition,
-                                                         (float X, float Y) parentPosition)
+    protected static double XAxisSignedDistanceFromParent((double X, double Y) childPosition,
+                                                         (double X, double Y) parentPosition)
     {
         return childPosition.X - parentPosition.X;
     }
@@ -294,12 +294,12 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="x"></param>
     /// <param name="y"></param>
     /// <returns></returns>
-    protected static (float X, float Y) RotateNode(int nodeValue,
-                                                   float rotationAngle,
-                                                   float x,
-                                                   float y)
+    protected static (double X, double Y) RotateNode(int nodeValue,
+                                                     double rotationAngle,
+                                                     double x,
+                                                     double y)
     {
-        (float X, float Y) rotatedPosition;
+        (double X, double Y) rotatedPosition;
 
         // Check if either coordinate is negative to know how to rotate
         bool isInNegativeSpace = x < 0 || y < 0;
@@ -343,14 +343,14 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         node.Shape.ShapeType = ShapeType.Polygon;
 
-        float rotationAngle = (float)(_random.NextDouble() * 2 * Math.PI);
+        double rotationAngle = _random.NextDouble() * 2 * Math.PI;
 
         for (int i = 0; i < numberOfSides; i++)
         {
-            float angle = (float)(2 * Math.PI / numberOfSides * i) + rotationAngle;
+            double angle = (2 * Math.PI / numberOfSides * i) + rotationAngle;
 
-            node.Shape.PolygonVertices.Add((node.Position.X + node.Shape.Radius * (float)Math.Cos(angle),
-                                     node.Position.Y + node.Shape.Radius * (float)Math.Sin(angle)));
+            node.Shape.PolygonVertices.Add((node.Position.X + node.Shape.Radius * Math.Cos(angle),
+                                            node.Position.Y + node.Shape.Radius * Math.Sin(angle)));
         }
     }
 
@@ -361,9 +361,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="y"></param>
     /// <param name="angleDegrees"></param>
     /// <returns></returns>
-    private static (float x, float y) RotatePointClockwise(float x,
-                                                           float y,
-                                                           float angleDegrees)
+    private static (double x, double y) RotatePointClockwise(double x,
+                                                             double y,
+                                                             double angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 
@@ -373,7 +373,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         double xNew = cosTheta * x + sinTheta * y;
         double yNew = -sinTheta * x + cosTheta * y;
 
-        return ((float)xNew, (float)yNew);
+        return (xNew, yNew);
     }
 
     /// <summary>
@@ -383,9 +383,9 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="y"></param>
     /// <param name="angleDegrees"></param>
     /// <returns></returns>
-    private static (float x, float y) RotatePointAntiClockwise(float x,
-                                                               float y,
-                                                               float angleDegrees)
+    private static (double x, double y) RotatePointAntiClockwise(double x,
+                                                                 double y,
+                                                                 double angleDegrees)
     {
         double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
 
@@ -395,7 +395,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         double xNew = cosTheta * x - sinTheta * y;
         double yNew = sinTheta * x + cosTheta * y;
 
-        return ((float)xNew, (float)yNew);
+        return (xNew, yNew);
     }
 
     /// <summary>
@@ -405,7 +405,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <param name="cellSize"></param>
     /// <returns></returns>
     private static (int, int) GetGridCellForNode(DirectedGraphNode node,
-                                                 float cellSize)
+                                                 double cellSize)
     {
         return ((int)(node.Position.X / cellSize), (int)(node.Position.Y / cellSize));
     }
@@ -416,8 +416,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <returns></returns>
     private Color GenerateNodeColor()
     {
-        byte alpha = (byte)_random.Next(30, 211);
         byte red, green, blue;
+        byte alpha = (byte)_random.Next(30, 231); //avoid too transparent, and avoid fully opaque
 
         do
         {
@@ -425,7 +425,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             green = (byte)_random.Next(256);
             blue = (byte)_random.Next(256);
         }
-        while (red <= 10 || green <= 10 || blue <= 10); //avoid very dark colours
+        while (red == 0 && green == 0 && blue == 0);    //avoid black
 
         return Color.FromArgb(alpha, red, green, blue);
     }
@@ -442,18 +442,18 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <returns></returns>
     private static void ApplyLightSourceToNode(DirectedGraphNode node,
                                                Color nodeBaseColor,
-                                               (float X, float Y) lightSourceCoordinates,
-                                               float lightSourceMaxDistanceEffect,
+                                               (double X, double Y) lightSourceCoordinates,
+                                               double lightSourceMaxDistanceEffect,
                                                Color lightSourceColor)
     {
         Color nodeColor;
-        float distance = Distance((node.Position.X, node.Position.Y),
-                                  (lightSourceCoordinates.X, lightSourceCoordinates.Y));
+        double distance = Distance((node.Position.X, node.Position.Y),
+                                   (lightSourceCoordinates.X, lightSourceCoordinates.Y));
 
 
-        float additionalOpacityFactor;
+        double additionalOpacityFactor;
 
-        float lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
+        double lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
 
         if (distance < lightSourceMaxDistanceEffect)
         {
@@ -461,11 +461,12 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             additionalOpacityFactor = Math.Clamp(additionalOpacityFactor, 0, 1);
 
             // Apply the light intensity to the blend factor
-            float blendFactor = additionalOpacityFactor * lightIntensity;
+            double blendFactor = additionalOpacityFactor * lightIntensity;
             nodeColor = BlendColor(nodeBaseColor, lightSourceColor, 1 - blendFactor);
         }
         else
         {
+            //else leave opacity at the randomly select value
             nodeColor = nodeBaseColor;
             additionalOpacityFactor = 1.0f;
         }
@@ -474,9 +475,8 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         node.Shape.Color = Color.FromArgb(finalAlpha, nodeColor.R, nodeColor.G, nodeColor.B);
 
-        //configure the halo
-        float haloRadius = node.Shape.Radius * 2;
-        float intensity = Math.Max(0, 1 - (distance / lightSourceMaxDistanceEffect));
+        double haloRadius = node.Shape.Radius * 2;
+        double intensity = Math.Max(0, 1 - (distance / lightSourceMaxDistanceEffect));
         Color haloColor = Color.FromArgb((byte)(intensity * lightSourceColor.A),
                                          lightSourceColor.R,
                                          lightSourceColor.G,
@@ -494,7 +494,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     /// <returns></returns>
     private static Color BlendColor(Color baseColor,
                                     Color blendColor,
-                                    float blendFactor)
+                                    double blendFactor)
     {
         byte r = (byte)((baseColor.R * (1 - blendFactor)) + (blendColor.R * blendFactor));
         byte g = (byte)((baseColor.G * (1 - blendFactor)) + (blendColor.G * blendFactor));

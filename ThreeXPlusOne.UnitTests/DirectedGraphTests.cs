@@ -50,20 +50,20 @@ public class DirectedGraphTests
     [Theory]
 
     //even node values
-    [InlineData(236, 3657, 234, 0.8, 3659.9106, 182.9175)]
-    [InlineData(236, -3657, 234, 0.8, -3659.9106, 182.9175)]
-    [InlineData(236, 3657, -234, 0.8, 3659.9106, -182.9175)]
+    [InlineData(236, 3657, 234, 0.8, 3659.9106805013857, 182.91749711792292)]
+    [InlineData(236, -3657, 234, 0.8, -3659.9106805013857, 182.91749711792292)]
+    [InlineData(236, 3657, -234, 0.8, 3659.9106805013857, -182.91749711792292)]
 
     //odd node values
-    [InlineData(377, 5734, 749, 0.8, 5722.9834, 828.98615)]
-    [InlineData(377, -5734, 749, 0.8, -5722.9834, 828.98615)]
-    [InlineData(377, 5734, -749, 0.8, 5722.9834, -828.98615)]
+    [InlineData(377, 5734, 749, 0.8, 5722.98339959533, 828.9861325476279)]
+    [InlineData(377, -5734, 749, 0.8, -5722.98339959533, 828.9861325476279)]
+    [InlineData(377, 5734, -749, 0.8, 5722.98339959533, -828.9861325476279)]
     public void RotateNode_Success00(int nodeValue,
-                                     float xCoordinate,
-                                     float yCoordinate,
-                                     float rotationAngle,
-                                     float expectedXPrime,
-                                     float expectedYPrime)
+                                     double xCoordinate,
+                                     double yCoordinate,
+                                     double rotationAngle,
+                                     double expectedXPrime,
+                                     double expectedYPrime)
     {
         // Arrange
         MockDirectedGraph mockDirectedGraph = new(_settings,
@@ -72,7 +72,7 @@ public class DirectedGraphTests
                                                   _consoleHelperMock.Object);
 
         // Act
-        (float xPrime, float yPrime) = mockDirectedGraph.RotateNode_Base(nodeValue, rotationAngle, xCoordinate, yCoordinate);
+        (double xPrime, double yPrime) = mockDirectedGraph.RotateNode_Base(nodeValue, rotationAngle, xCoordinate, yCoordinate);
 
         // Assert
         xPrime.Should().Be(expectedXPrime);
@@ -100,7 +100,7 @@ public class DirectedGraphTests
         // Assert
         _graphServiceMock.Verify(service => service.Initialize(It.IsAny<List<DirectedGraphNode>>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Color>()), Times.Once);
         _graphServiceMock.Verify(service => service.GenerateBackgroundStars(It.IsAny<int>()), Times.AtMost(1));
-        _graphServiceMock.Verify(service => service.GenerateLightSource(It.IsAny<(float, float)>(), It.IsAny<float>(), It.IsAny<Color>()), Times.AtMost(1));
+        _graphServiceMock.Verify(service => service.GenerateLightSource(It.IsAny<(double, double)>(), It.IsAny<double>(), It.IsAny<Color>()), Times.AtMost(1));
         _graphServiceMock.Verify(service => service.Draw(It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
         _graphServiceMock.Verify(service => service.Render(), Times.Once);
         _graphServiceMock.Verify(service => service.SaveImage(), Times.AtMost(1));

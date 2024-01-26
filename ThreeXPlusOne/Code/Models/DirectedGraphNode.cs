@@ -25,12 +25,12 @@ public class DirectedGraphNode(int numberValue)
     /// <summary>
     /// The x,y position of the node on the graph
     /// </summary>
-    public (float X, float Y) Position { get; set; }
+    public (double X, double Y) Position { get; set; }
 
     /// <summary>
     /// The Z coordinate of the node for use in pseudo 3D graphs
     /// </summary>
-    public float Z { get; set; }
+    public double Z { get; set; }
 
     /// <summary>
     /// Whether or not the node's coordinates have been calculated

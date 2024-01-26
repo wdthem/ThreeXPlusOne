@@ -49,12 +49,12 @@ public class Settings
     /// <remarks>
     /// If the node value is even, it is rotated clockwise. If odd, anti-clockwise
     /// </remarks>
-    public float NodeRotationAngle { get; set; } = 0;
+    public double NodeRotationAngle { get; set; } = 0;
 
     /// <summary>
     /// The radius of the node
     /// </summary>
-    public float NodeRadius { get; set; } = 50;
+    public double NodeRadius { get; set; } = 50;
 
     /// <summary>
     /// Whether or not to draw polygons as nodes in addition to circles
@@ -74,7 +74,7 @@ public class Settings
     /// <summary>
     /// For pseudo-3D graphs, the distance from the viewer (to create perspective)
     /// </summary>
-    public float DistanceFromViewer { get; set; } = 200;
+    public double DistanceFromViewer { get; set; } = 200;
 
     /// <summary>
     /// The number of dimensions to render in the graph

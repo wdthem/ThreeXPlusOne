@@ -36,9 +36,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        (float X, float Y) base1 = (0, 0);                                    // Node '1' at the bottom
-        (float X, float Y) base2 = (0, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
-        (float X, float Y) base4 = (0, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
+        (double X, double Y) base1 = (0, 0);                                    // Node '1' at the bottom
+        (double X, double Y) base2 = (0, base1.Y - _settings.YNodeSpacer);      // Node '2' just above '1'
+        (double X, double Y) base4 = (0, base2.Y - _settings.YNodeSpacer);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
@@ -83,7 +83,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
     {
-        float nodeRadius = _settings.NodeRadius;
+        double nodeRadius = _settings.NodeRadius;
 
         if (!node.IsPositioned)
         {
@@ -93,7 +93,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
             int positionedNodesAtDepth =
                 _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
 
-            float xOffset = node.Parent == null
+            double xOffset = node.Parent == null
                                     ? 0
                                     : node.Parent.Position.X;
 
@@ -124,19 +124,19 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                 }
             }
 
-            float yOffset = node.Parent!.Position.Y - _settings.YNodeSpacer;
+            double yOffset = node.Parent!.Position.Y - _settings.YNodeSpacer;
 
             node.Position = (xOffset, yOffset);
 
             if (_settings.NodeRotationAngle != 0)
             {
-                (float x, float y) = RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
+                (double x, double y) = RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
 
                 node.Position = (x, y);
             }
 
-            float signedXAxisDistanceFromParent = XAxisSignedDistanceFromParent(node.Position, node.Parent.Position);
-            float absoluteXAxisDistanceFromParent = Math.Abs(signedXAxisDistanceFromParent);
+            double signedXAxisDistanceFromParent = XAxisSignedDistanceFromParent(node.Position, node.Parent.Position);
+            double absoluteXAxisDistanceFromParent = Math.Abs(signedXAxisDistanceFromParent);
 
             //limit the x-axis distance between node and parent, because the distance calculated above based on allNodesAtDepth can push
             //parents and children too far away from each other on the x-axis
@@ -153,7 +153,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                 }
             }
 
-            float minDistance = nodeRadius * 2;
+            double minDistance = nodeRadius * 2;
 
             while (NodeIsTooCloseToNeighbours(node, minDistance))
             {

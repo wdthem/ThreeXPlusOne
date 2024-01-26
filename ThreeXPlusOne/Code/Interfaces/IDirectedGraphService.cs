@@ -50,7 +50,7 @@ public interface IDirectedGraphService : IDisposable
     /// <param name="radius"></param>
     /// <param name="color"></param>
     /// <exception cref="Exception"></exception>
-    void GenerateLightSource((float X, float Y) lightSourceCoordinates, float radius, Color color);
+    void GenerateLightSource((double X, double Y) lightSourceCoordinates, double radius, Color color);
 
     /// <summary>
     /// Draw the graph based on provided settings

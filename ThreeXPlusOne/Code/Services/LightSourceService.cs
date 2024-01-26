@@ -9,7 +9,7 @@ public class LightSourceService() : ILightSourceService
     private (int Width, int Height) _canvasDimensions;
     private int _graphDimensions;
     private LightSourcePosition _lightSourcePosition = LightSourcePosition.None;
-    private Dictionary<LightSourcePosition, (float X, float Y)>? _positionMappings;
+    private Dictionary<LightSourcePosition, (double X, double Y)>? _positionMappings;
 
     /// <summary>
     /// The position of the light source
@@ -25,11 +25,11 @@ public class LightSourceService() : ILightSourceService
     /// <summary>
     /// The radius of the light source
     /// </summary>
-    public float Radius
+    public double Radius
     {
         get
         {
-            return (float)Math.Sqrt(Math.Pow(_canvasDimensions.Width, 2) + Math.Pow(_canvasDimensions.Height, 2));
+            return Math.Sqrt(Math.Pow(_canvasDimensions.Width, 2) + Math.Pow(_canvasDimensions.Height, 2));
         }
     }
 
@@ -71,10 +71,10 @@ public class LightSourceService() : ILightSourceService
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    public (float X, float Y) GetLightSourceCoordinates(LightSourcePosition position)
+    public (double X, double Y) GetLightSourceCoordinates(LightSourcePosition position)
     {
         if (_positionMappings != null &&
-            _positionMappings.TryGetValue(position, out (float X, float Y) coordinates))
+            _positionMappings.TryGetValue(position, out (double X, double Y) coordinates))
         {
             return coordinates;
         }
@@ -88,14 +88,14 @@ public class LightSourceService() : ILightSourceService
     /// Get the max distance of the effect of the light source
     /// </summary>
     /// <returns></returns>
-    public float GetLightSourceMaxDistanceOfEffect()
+    public double GetLightSourceMaxDistanceOfEffect()
     {
         if (_graphDimensions == 3)
         {
-            return _canvasDimensions.Height / 1.2f;
+            return _canvasDimensions.Height / 1.2;
         }
 
-        return _canvasDimensions.Height / 2.0f; ;
+        return _canvasDimensions.Height / 2.0;
     }
 
     /// <summary>
@@ -118,7 +118,7 @@ public class LightSourceService() : ILightSourceService
     /// </summary>
     private void InitializePositionMappings()
     {
-        _positionMappings = new Dictionary<LightSourcePosition, (float X, float Y)>
+        _positionMappings = new Dictionary<LightSourcePosition, (double X, double Y)>
             {
                 { LightSourcePosition.None, (-1, -1) },
 
