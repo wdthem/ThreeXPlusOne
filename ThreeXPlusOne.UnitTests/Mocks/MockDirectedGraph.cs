@@ -10,6 +10,8 @@ public class MockDirectedGraph(IOptions<Settings> settings,
                                ILightSourceService lightSourceService,
                                IConsoleHelper consoleHelper) : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper), IDirectedGraph
 {
+    private new readonly NodeAesthetics _nodeAesthetics = new();
+
     public int Dimensions => 2;
 
     public void SetCanvasDimensions()
@@ -28,16 +30,11 @@ public class MockDirectedGraph(IOptions<Settings> settings,
     {
     }
 
-    //ignore warning because this is called from a unit test instance
-#pragma warning disable CA1822 // Mark members as static
-
     public (double x, double y) RotateNode_Base(int nodeValue, double rotationAngle, double x, double y)
 
     {
-        return RotateNode(nodeValue, rotationAngle, x, y);
+        return _nodeAesthetics.RotateNode(nodeValue, rotationAngle, x, y);
     }
-
-#pragma warning restore CA1822 // Mark members as static
 
     public void DrawDirectedGraph_Base()
     {

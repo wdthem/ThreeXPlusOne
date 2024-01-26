@@ -7,18 +7,19 @@ using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code.Graph;
 
-public abstract class DirectedGraph(IOptions<Settings> settings,
-                                    IEnumerable<IDirectedGraphService> graphServices,
-                                    ILightSourceService lightSourceService,
-                                    IConsoleHelper consoleHelper)
+public abstract partial class DirectedGraph(IOptions<Settings> settings,
+                                            IEnumerable<IDirectedGraphService> graphServices,
+                                            ILightSourceService lightSourceService,
+                                            IConsoleHelper consoleHelper)
 {
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;
-    private readonly Dictionary<(int, int), List<(double X, double Y)>> _nodeGrid = [];
 
     protected readonly Random _random = new();
     protected readonly Settings _settings = settings.Value;
     protected readonly IConsoleHelper _consoleHelper = consoleHelper;
+    protected readonly NodeAesthetics _nodeAesthetics = new();
+    protected readonly NodePosition _nodePosition = new(consoleHelper);
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
 
     /// <summary>
@@ -139,7 +140,7 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
 
         foreach (DirectedGraphNode node in _nodes.Values)
         {
-            Color nodeColor = GenerateNodeColor();
+            Color nodeColor = _nodeAesthetics.GenerateNodeColor(_random);
 
             if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
             {
@@ -147,11 +148,11 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
             }
             else
             {
-                ApplyLightSourceToNode(node,
-                                       nodeColor,
-                                       lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
-                                       lightSourceService.GetLightSourceMaxDistanceOfEffect(),
-                                       lightSourceService.LightSourceColor);
+                _nodeAesthetics.ApplyLightSourceToNode(node,
+                                                       nodeColor,
+                                                       lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
+                                                       lightSourceService.GetLightSourceMaxDistanceOfEffect(),
+                                                       lightSourceService.LightSourceColor);
             }
         }
 
@@ -171,29 +172,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
-    /// The graph starts out at 0,0 with 0 width and 0 height. This means that nodes go into negative space as they are initially positioned, 
-    /// so all coordinates need to be shifted to make sure all are in positive space
-    /// </summary>
-    protected void MoveNodesToPositiveCoordinates()
-    {
-        _consoleHelper.Write("Adjusting node positions to fit on canvas... ");
-
-        double minX = _nodes.Values.Min(node => node.Position.X);
-        double minY = _nodes.Values.Min(node => node.Position.Y);
-
-        double translationX = minX < 0 ? -minX + _settings.XNodeSpacer + _settings.NodeRadius : 0;
-        double translationY = minY < 0 ? -minY + _settings.YNodeSpacer + _settings.NodeRadius : 0;
-
-        foreach (DirectedGraphNode node in _nodes.Values)
-        {
-            node.Position = (node.Position.X + translationX,
-                             node.Position.Y + translationY);
-        }
-
-        _consoleHelper.WriteDone();
-    }
-
-    /// <summary>
     /// Set the canvas dimensions to a bit more than the bounding box of all the nodes
     /// </summary>
     protected void SetCanvasSize()
@@ -205,57 +183,6 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
         _canvasHeight = (int)(maxY + _settings.YNodeSpacer + _settings.NodeRadius);
 
         _consoleHelper.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
-    }
-
-    /// <summary>
-    /// Determine if the node that was just positioned is too close to neighbouring nodes (and thus overlapping)
-    /// </summary>
-    /// <param name="newNode"></param>
-    /// <param name="minDistance"></param>
-    /// <returns></returns>
-    protected bool NodeIsTooCloseToNeighbours(DirectedGraphNode newNode,
-                                              double minDistance)
-    {
-        (int, int) cell = GetGridCellForNode(newNode, minDistance);
-
-        // Check this cell and adjacent cells
-        foreach ((int, int) offset in new[] { (0, 0), (1, 0), (0, 1), (-1, 0), (0, -1) })
-        {
-            (int, int) checkCell = (cell.Item1 + offset.Item1,
-                                    cell.Item2 + offset.Item2);
-
-            if (_nodeGrid.TryGetValue(checkCell, out var nodesInCell))
-            {
-                foreach ((double X, double Y) node in nodesInCell)
-                {
-                    if (Distance(newNode.Position, node) < minDistance)
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Add the node to the grid dictionary to keep track of node positions via a grid system
-    /// </summary>
-    /// <param name="node"></param>
-    /// <param name="minDistance"></param>
-    protected void AddNodeToGrid(DirectedGraphNode node,
-                                 double minDistance)
-    {
-        (int, int) cell = GetGridCellForNode(node, minDistance);
-
-        if (!_nodeGrid.TryGetValue(cell, out List<(double X, double Y)>? value))
-        {
-            value = ([]);
-            _nodeGrid[cell] = value;
-        }
-
-        value.Add(node.Position);
     }
 
     /// <summary>
@@ -283,223 +210,5 @@ public abstract class DirectedGraph(IOptions<Settings> settings,
                                                          (double X, double Y) parentPosition)
     {
         return childPosition.X - parentPosition.X;
-    }
-
-    /// <summary>
-    /// Rotate a node's x,y coordinate position based on whether the node's integer value is even or odd
-    /// If even, rotate clockwise. If odd, rotate anti-clockwise. But if the coordinates are in negative space, reverse this.
-    /// </summary>
-    /// <param name="nodeValue"></param>
-    /// <param name="rotationAngle"></param>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <returns></returns>
-    protected static (double X, double Y) RotateNode(int nodeValue,
-                                                     double rotationAngle,
-                                                     double x,
-                                                     double y)
-    {
-        (double X, double Y) rotatedPosition;
-
-        // Check if either coordinate is negative to know how to rotate
-        bool isInNegativeSpace = x < 0 || y < 0;
-
-        if ((nodeValue % 2 == 0 && !isInNegativeSpace) || (nodeValue % 2 != 0 && isInNegativeSpace))
-        {
-            rotatedPosition = RotatePointClockwise(x, y, rotationAngle);
-        }
-        else
-        {
-            rotatedPosition = RotatePointAntiClockwise(x, y, rotationAngle);
-        }
-
-        return rotatedPosition;
-    }
-
-    /// <summary>
-    /// Assign a ShapeType to the node and vertices if applicable
-    /// </summary>
-    /// <param name="node"></param>
-    protected void SetNodeShape(DirectedGraphNode node)
-    {
-        if (node.Shape.Radius == 0)
-        {
-            node.Shape.Radius = _settings.NodeRadius;
-        }
-
-        int numberOfSides = _random.Next(0, 11);
-
-        if (!_settings.IncludePolygonsAsNodes || numberOfSides == 0)
-        {
-            node.Shape.ShapeType = ShapeType.Circle;
-
-            return;
-        }
-
-        if (numberOfSides == 1 || numberOfSides == 2)
-        {
-            numberOfSides = _random.Next(3, 11); //cannot have 1 or 2 sides, so re-select
-        }
-
-        node.Shape.ShapeType = ShapeType.Polygon;
-
-        double rotationAngle = _random.NextDouble() * 2 * Math.PI;
-
-        for (int i = 0; i < numberOfSides; i++)
-        {
-            double angle = (2 * Math.PI / numberOfSides * i) + rotationAngle;
-
-            node.Shape.PolygonVertices.Add((node.Position.X + node.Shape.Radius * Math.Cos(angle),
-                                            node.Position.Y + node.Shape.Radius * Math.Sin(angle)));
-        }
-    }
-
-    /// <summary>
-    /// Rotate the node's position clockwise based on the angle provided by the user. This gives a more artistic feel to the generated graph.
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <param name="angleDegrees"></param>
-    /// <returns></returns>
-    private static (double x, double y) RotatePointClockwise(double x,
-                                                             double y,
-                                                             double angleDegrees)
-    {
-        double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
-
-        double cosTheta = Math.Cos(angleRadians);
-        double sinTheta = Math.Sin(angleRadians);
-
-        double xNew = cosTheta * x + sinTheta * y;
-        double yNew = -sinTheta * x + cosTheta * y;
-
-        return (xNew, yNew);
-    }
-
-    /// <summary>
-    /// Rotate the node's position anti-clockwise based on the angle provided by the user. This gives a more artistic feel to the generated graph.
-    /// </summary>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <param name="angleDegrees"></param>
-    /// <returns></returns>
-    private static (double x, double y) RotatePointAntiClockwise(double x,
-                                                                 double y,
-                                                                 double angleDegrees)
-    {
-        double angleRadians = angleDegrees * Math.PI / 180.0; // Convert angle to radians
-
-        double cosTheta = Math.Cos(angleRadians);
-        double sinTheta = Math.Sin(angleRadians);
-
-        double xNew = cosTheta * x - sinTheta * y;
-        double yNew = sinTheta * x + cosTheta * y;
-
-        return (xNew, yNew);
-    }
-
-    /// <summary>
-    /// Retrieve the cell in the grid object in which the node is positioned
-    /// </summary>
-    /// <param name="node"></param>
-    /// <param name="cellSize"></param>
-    /// <returns></returns>
-    private static (int, int) GetGridCellForNode(DirectedGraphNode node,
-                                                 double cellSize)
-    {
-        return ((int)(node.Position.X / cellSize), (int)(node.Position.Y / cellSize));
-    }
-
-    /// <summary>
-    /// Generate a random colour for the node
-    /// </summary>
-    /// <returns></returns>
-    private Color GenerateNodeColor()
-    {
-        byte red, green, blue;
-        byte alpha = (byte)_random.Next(30, 231); //avoid too transparent, and avoid fully opaque
-
-        do
-        {
-            red = (byte)_random.Next(256);
-            green = (byte)_random.Next(256);
-            blue = (byte)_random.Next(256);
-        }
-        while (red == 0 && green == 0 && blue == 0);    //avoid black
-
-        return Color.FromArgb(alpha, red, green, blue);
-    }
-
-    /// <summary>
-    /// If a light source is in place, it should impact the colour of nodes.
-    /// The closer to the source, the more the impact.
-    /// </summary>
-    /// <param name="node"></param>
-    /// <param name="nodeBaseColor"></param>
-    /// <param name="lightSourceCoordinates"></param>
-    /// <param name="lightSourceMaxDistanceEffect"></param>
-    /// <param name="lightSourceColor"></param>
-    /// <returns></returns>
-    private static void ApplyLightSourceToNode(DirectedGraphNode node,
-                                               Color nodeBaseColor,
-                                               (double X, double Y) lightSourceCoordinates,
-                                               double lightSourceMaxDistanceEffect,
-                                               Color lightSourceColor)
-    {
-        Color nodeColor;
-        double distance = Distance((node.Position.X, node.Position.Y),
-                                   (lightSourceCoordinates.X, lightSourceCoordinates.Y));
-
-
-        double additionalOpacityFactor;
-
-        double lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
-
-        if (distance < lightSourceMaxDistanceEffect)
-        {
-            additionalOpacityFactor = distance / lightSourceMaxDistanceEffect;
-            additionalOpacityFactor = Math.Clamp(additionalOpacityFactor, 0, 1);
-
-            // Apply the light intensity to the blend factor
-            double blendFactor = additionalOpacityFactor * lightIntensity;
-            nodeColor = BlendColor(nodeBaseColor, lightSourceColor, 1 - blendFactor);
-        }
-        else
-        {
-            //else leave opacity at the randomly select value
-            nodeColor = nodeBaseColor;
-            additionalOpacityFactor = 1.0f;
-        }
-
-        byte finalAlpha = (byte)(nodeBaseColor.A * additionalOpacityFactor);
-
-        node.Shape.Color = Color.FromArgb(finalAlpha, nodeColor.R, nodeColor.G, nodeColor.B);
-
-        double haloRadius = node.Shape.Radius * 2;
-        double intensity = Math.Max(0, 1 - (distance / lightSourceMaxDistanceEffect));
-        Color haloColor = Color.FromArgb((byte)(intensity * lightSourceColor.A),
-                                         lightSourceColor.R,
-                                         lightSourceColor.G,
-                                         lightSourceColor.B);
-
-        node.Shape.HaloConfig = (haloRadius, haloColor);
-    }
-
-    /// <summary>
-    /// Blend the node's colour with the light source, adjusted for distance from the light source
-    /// </summary>
-    /// <param name="baseColor"></param>
-    /// <param name="blendColor"></param>
-    /// <param name="blendFactor"></param>
-    /// <returns></returns>
-    private static Color BlendColor(Color baseColor,
-                                    Color blendColor,
-                                    double blendFactor)
-    {
-        byte r = (byte)((baseColor.R * (1 - blendFactor)) + (blendColor.R * blendFactor));
-        byte g = (byte)((baseColor.G * (1 - blendFactor)) + (blendColor.G * blendFactor));
-        byte b = (byte)((baseColor.B * (1 - blendFactor)) + (blendColor.B * blendFactor));
-
-        return Color.FromArgb(255, r, g, b);
     }
 }
