@@ -31,7 +31,7 @@ public class MockDirectedGraph(IOptions<Settings> settings,
     //ignore warning because this is called from a unit test instance
 #pragma warning disable CA1822 // Mark members as static
 
-    public (float x, float y) RotateNode_Base(int nodeValue, float rotationAngle, float x, float y)
+    public (double x, double y) RotateNode_Base(int nodeValue, double rotationAngle, double x, double y)
 
     {
         return RotateNode(nodeValue, rotationAngle, x, y);

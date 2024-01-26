@@ -13,22 +13,22 @@ public class Shape()
     /// <summary>
     /// The radius of the shape, used for both circles and polygons
     /// </summary>
-    public float Radius { get; set; }
+    public double Radius { get; set; }
 
     /// <summary>
     /// A list of all the vertices of the shape, if it's a polygon
     /// </summary>
-    public List<(float X, float Y)> PolygonVertices { get; set; } = [];
+    public List<(double X, double Y)> PolygonVertices { get; set; } = [];
 
     /// <summary>
     /// The coordinates and radii of the ellipse (which was transformed from a circle)
     /// </summary>
-    public ((float X, float Y) Center, float RadiusX, float RadiusY) EllipseConfig { get; set; }
+    public ((double X, double Y) Center, double RadiusX, double RadiusY) EllipseConfig { get; set; }
 
     /// <summary>
     /// The radius and color of the node's halo when a light source exists
     /// </summary>
-    public (float Radius, Color Color) HaloConfig { get; set; } = (0, Color.Empty);
+    public (double Radius, Color Color) HaloConfig { get; set; } = (0, Color.Empty);
 
     /// <summary>
     /// The colour of the shape

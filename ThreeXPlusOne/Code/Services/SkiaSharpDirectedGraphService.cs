@@ -13,7 +13,6 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     private SKSurface? _surface;
     private SKCanvas? _canvas;
     private SKImage? _image;
-    private SKColor _canvasBackgroundColor;
     private readonly Random _random = new();
 
     public Action<string>? OnStart { get; set; }
@@ -35,15 +34,13 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                            int height,
                            Color backgroundColor)
     {
-
         OnStart?.Invoke($"Initializing {GraphProvider} graph... ");
 
         _nodes = nodes;
         _surface = SKSurface.Create(new SKImageInfo(width, height));
         _canvas = _surface.Canvas;
-        _canvasBackgroundColor = ConvertColorToSKColor(backgroundColor);
 
-        _canvas.Clear(_canvasBackgroundColor);
+        _canvas.Clear(ConvertColorToSKColor(backgroundColor));
 
         OnComplete?.Invoke();
     }
@@ -66,10 +63,10 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         for (int i = 0; i < starCount; i++)
         {
-            float x = (float)_random.NextDouble() * _canvas.LocalClipBounds.Width;
-            float y = (float)_random.NextDouble() * _canvas.LocalClipBounds.Height;
+            double x = _random.NextDouble() * _canvas.LocalClipBounds.Width;
+            double y = _random.NextDouble() * _canvas.LocalClipBounds.Height;
 
-            points.Add(new SKPoint(x, y));
+            points.Add(ConvertCoordinatesToSKPoint(x, y));
         }
 
         foreach (SKPoint point in points)
@@ -87,8 +84,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     /// <param name="radius"></param>
     /// <param name="color"></param>
     /// <exception cref="Exception"></exception>
-    public void GenerateLightSource((float X, float Y) lightSourceCoordinates,
-                                    float radius,
+    public void GenerateLightSource((double X, double Y) lightSourceCoordinates,
+                                    double radius,
                                     Color color)
     {
         if (_canvas == null)
@@ -99,11 +96,11 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
         OnStart?.Invoke("Generating light source... ");
 
         SKColor startColor = ConvertColorToSKColor(color);
-        SKColor endColor = _canvasBackgroundColor;
+        SKColor endColor = SKColors.Transparent;
 
         // Create a radial gradient from the specified origin
-        SKShader shader = SKShader.CreateRadialGradient(new SKPoint(lightSourceCoordinates.X, lightSourceCoordinates.Y),
-                                                        radius,
+        SKShader shader = SKShader.CreateRadialGradient(ConvertCoordinatesToSKPoint(lightSourceCoordinates.X, lightSourceCoordinates.Y),
+                                                        (float)radius,
                                                         [startColor, endColor],
                                                         [0, 0.75f], // Gradient stops
                                                         SKShaderTileMode.Clamp);
@@ -238,9 +235,12 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
         {
             // Draw the text
             // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
-            float textY = node.Position.Y + 8;
+            double textY = node.Position.Y + 8;
 
-            canvas.DrawText(node.NumberValue.ToString(), node.Position.X, textY, textPaint);
+            canvas.DrawText(node.NumberValue.ToString(),
+                            (float)node.Position.X,
+                            (float)textY,
+                            textPaint);
         }
     }
 
@@ -256,8 +256,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     {
         if (node.Shape.ShapeType == ShapeType.Circle)
         {
-            canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
-                              node.Shape.Radius,
+            canvas.DrawCircle(ConvertCoordinatesToSKPoint(node.Position.X, node.Position.Y),
+                              (float)node.Shape.Radius,
                               paint);
 
             RenderNodeHaloEffect(canvas, node);
@@ -267,10 +267,10 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         if (node.Shape.ShapeType == ShapeType.Ellipse)
         {
-            canvas.DrawOval(node.Shape.EllipseConfig.Center.X,
-                            node.Shape.EllipseConfig.Center.Y,
-                            node.Shape.EllipseConfig.RadiusX,
-                            node.Shape.EllipseConfig.RadiusY,
+            canvas.DrawOval((float)node.Shape.EllipseConfig.Center.X,
+                            (float)node.Shape.EllipseConfig.Center.Y,
+                            (float)node.Shape.EllipseConfig.RadiusX,
+                            (float)node.Shape.EllipseConfig.RadiusY,
                             paint);
 
             RenderNodeHaloEffect(canvas, node);
@@ -282,15 +282,15 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         for (int i = 0; i < node.Shape.PolygonVertices.Count; i++)
         {
-            (float x, float y) = node.Shape.PolygonVertices[i];
+            (double x, double y) = node.Shape.PolygonVertices[i];
 
             if (i == 0)
             {
-                path.MoveTo(new SKPoint(x, y));
+                path.MoveTo(ConvertCoordinatesToSKPoint(x, y));
             }
             else
             {
-                path.LineTo(new SKPoint(x, y));
+                path.LineTo(ConvertCoordinatesToSKPoint(x, y));
             }
         }
 
@@ -317,16 +317,16 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         var haloPaint = new SKPaint
         {
-            Shader = SKShader.CreateRadialGradient(new SKPoint(node.Position.X, node.Position.Y),
-                                                   node.Shape.HaloConfig.Radius,
+            Shader = SKShader.CreateRadialGradient(ConvertCoordinatesToSKPoint(node.Position.X, node.Position.Y),
+                                                   (float)node.Shape.HaloConfig.Radius,
                                                    new[] { skColor, SKColors.Transparent },
                                                    null,
                                                    SKShaderTileMode.Clamp),
             Style = SKPaintStyle.Fill
         };
 
-        canvas.DrawCircle(new SKPoint(node.Position.X, node.Position.Y),
-                          node.Shape.HaloConfig.Radius,
+        canvas.DrawCircle(ConvertCoordinatesToSKPoint(node.Position.X, node.Position.Y),
+                          (float)node.Shape.HaloConfig.Radius,
                           haloPaint);
     }
 
@@ -347,11 +347,11 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         foreach (DirectedGraphNode childNode in node.Children)
         {
-            canvas.DrawLine(new SKPoint(node.Position.X, node.Position.Y),
-                            new SKPoint(childNode.Position.X, childNode.Position.Y),
+            canvas.DrawLine(ConvertCoordinatesToSKPoint(node.Position.X, node.Position.Y),
+                            ConvertCoordinatesToSKPoint(childNode.Position.X, childNode.Position.Y),
                             paint);
 
-            canvas.DrawCircle(new SKPoint(childNode.Position.X, childNode.Position.Y),
+            canvas.DrawCircle(ConvertCoordinatesToSKPoint(childNode.Position.X, childNode.Position.Y),
                               10,   //hard-coded radius for node number
                               paint);
         }
@@ -382,6 +382,17 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         canvas.DrawCircle(point, starSize, blurPaint);
         canvas.DrawCircle(point, starSize, starPaint);
+    }
+
+    /// <summary>
+    /// Convert the given x,y coordinates to an SKPoint object
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    private static SKPoint ConvertCoordinatesToSKPoint(double x, double y)
+    {
+        return new SKPoint((float)x, (float)y);
     }
 
     /// <summary>

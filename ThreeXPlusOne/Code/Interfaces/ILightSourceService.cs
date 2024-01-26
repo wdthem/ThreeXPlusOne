@@ -13,7 +13,7 @@ public interface ILightSourceService
     /// <summary>
     /// The radius of the light source
     /// </summary>
-    float Radius { get; }
+    double Radius { get; }
 
     /// <summary>
     /// The color of the lightsource
@@ -34,11 +34,11 @@ public interface ILightSourceService
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    (float X, float Y) GetLightSourceCoordinates(LightSourcePosition position);
+    (double X, double Y) GetLightSourceCoordinates(LightSourcePosition position);
 
     /// <summary>
     /// Get the max distance of the effect of the light source
     /// </summary>
     /// <returns></returns>
-    float GetLightSourceMaxDistanceOfEffect();
+    double GetLightSourceMaxDistanceOfEffect();
 }
