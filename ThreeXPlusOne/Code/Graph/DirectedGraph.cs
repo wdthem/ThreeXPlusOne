@@ -19,7 +19,7 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
     protected readonly Settings _settings = settings.Value;
     protected readonly IConsoleHelper _consoleHelper = consoleHelper;
     protected readonly NodeAesthetics _nodeAesthetics = new();
-    protected readonly NodePosition _nodePosition = new(consoleHelper);
+    protected readonly NodePositions _nodePositions = new(consoleHelper);
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
 
     /// <summary>
@@ -195,20 +195,5 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
                                      (double X, double Y) position2)
     {
         return Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
-    }
-
-    /// <summary>
-    /// Calculate the signed X-axis distance from a parent to a child node
-    /// </summary>
-    /// <remarks>
-    /// Negative if child is the to left of the parent, positive if to the right
-    /// </remarks>
-    /// <param name="childPosition"></param>
-    /// <param name="parentPosition"></param>
-    /// <returns></returns>
-    protected static double XAxisSignedDistanceFromParent((double X, double Y) childPosition,
-                                                         (double X, double Y) parentPosition)
-    {
-        return childPosition.X - parentPosition.X;
     }
 }

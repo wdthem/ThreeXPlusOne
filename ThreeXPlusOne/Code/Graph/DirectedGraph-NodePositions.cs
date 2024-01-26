@@ -8,7 +8,7 @@ public abstract partial class DirectedGraph
     /// <summary>
     /// Nested class to encapsulate all shared methods that manipulate node position
     /// </summary>
-    protected class NodePosition(IConsoleHelper consoleHelper) : INodePosition
+    protected class NodePositions(IConsoleHelper consoleHelper) : INodePositions
     {
         private readonly Dictionary<(int, int), List<(double X, double Y)>> _nodeGrid = [];
 

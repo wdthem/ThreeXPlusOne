@@ -2,7 +2,7 @@ using ThreeXPlusOne.Code.Models;
 
 namespace ThreeXPlusOne.Code.Interfaces;
 
-public interface INodePosition
+public interface INodePositions
 {
     /// <summary>
     /// The graph starts out at 0,0 with 0 width and 0 height. This means that nodes go into negative space as they are initially positioned, 
