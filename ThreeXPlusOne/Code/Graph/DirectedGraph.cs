@@ -15,7 +15,6 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;
 
-    protected readonly Random _random = new();
     protected readonly Settings _settings = settings.Value;
     protected readonly IConsoleHelper _consoleHelper = consoleHelper;
     protected readonly NodeAesthetics _nodeAesthetics = new();
@@ -140,7 +139,7 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
 
         foreach (DirectedGraphNode node in _nodes.Values)
         {
-            Color nodeColor = _nodeAesthetics.GenerateNodeColor(_random);
+            Color nodeColor = _nodeAesthetics.GenerateNodeColor();
 
             if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
             {

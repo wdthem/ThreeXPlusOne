@@ -77,7 +77,6 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
             _nodeAesthetics.SetNodeShape(node,
-                                         _random,
                                          _settings.NodeRadius,
                                          _settings.IncludePolygonsAsNodes);
         }

@@ -16,11 +16,9 @@ public abstract partial class DirectedGraph
         /// Assign a ShapeType to the node and vertices if applicable
         /// </summary>
         /// <param name="node"></param>
-        /// <param name="random"></param>
         /// <param name="nodeRadius"></param>
         /// <param name="includePolygonsAsNodes"></param>
         public void SetNodeShape(DirectedGraphNode node,
-                                 Random random,
                                  double nodeRadius,
                                  bool includePolygonsAsNodes)
         {
@@ -29,7 +27,7 @@ public abstract partial class DirectedGraph
                 node.Shape.Radius = nodeRadius;
             }
 
-            int numberOfSides = random.Next(0, 11);
+            int numberOfSides = Random.Shared.Next(0, 11);
 
             if (!includePolygonsAsNodes || numberOfSides == 0)
             {
@@ -40,12 +38,12 @@ public abstract partial class DirectedGraph
 
             if (numberOfSides == 1 || numberOfSides == 2)
             {
-                numberOfSides = random.Next(3, 11); //cannot have 1 or 2 sides, so re-select
+                numberOfSides = Random.Shared.Next(3, 11); //cannot have 1 or 2 sides, so re-select
             }
 
             node.Shape.ShapeType = ShapeType.Polygon;
 
-            double rotationAngle = random.NextDouble() * 2 * Math.PI;
+            double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
 
             for (int i = 0; i < numberOfSides; i++)
             {
@@ -90,18 +88,17 @@ public abstract partial class DirectedGraph
         /// <summary>
         /// Generate a random colour for the node
         /// </summary>
-        /// <param name="random"></param>
         /// <returns></returns>
-        public Color GenerateNodeColor(Random random)
+        public Color GenerateNodeColor()
         {
             byte red, green, blue;
-            byte alpha = (byte)random.Next(30, 231); //avoid too transparent, and avoid fully opaque
+            byte alpha = (byte)Random.Shared.Next(30, 231); //avoid too transparent, and avoid fully opaque
 
             do
             {
-                red = (byte)random.Next(256);
-                green = (byte)random.Next(256);
-                blue = (byte)random.Next(256);
+                red = (byte)Random.Shared.Next(256);
+                green = (byte)Random.Shared.Next(256);
+                blue = (byte)Random.Shared.Next(256);
             }
             while (red == 0 && green == 0 && blue == 0);    //avoid black
 

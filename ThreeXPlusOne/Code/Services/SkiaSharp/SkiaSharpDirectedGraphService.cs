@@ -13,7 +13,6 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     private SKSurface? _surface;
     private SKCanvas? _canvas;
     private SKImage? _image;
-    private readonly Random _random = new();
 
     public Action<string>? OnStart { get; set; }
     public Action? OnComplete { get; set; }
@@ -63,8 +62,8 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         for (int i = 0; i < starCount; i++)
         {
-            double x = _random.NextDouble() * _canvas.LocalClipBounds.Width;
-            double y = _random.NextDouble() * _canvas.LocalClipBounds.Height;
+            double x = Random.Shared.NextDouble() * _canvas.LocalClipBounds.Width;
+            double y = Random.Shared.NextDouble() * _canvas.LocalClipBounds.Height;
 
             points.Add(ConvertCoordinatesToSKPoint(x, y));
         }
@@ -365,7 +364,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     private void DrawStarWithBlur(SKCanvas canvas,
                                   SKPoint point)
     {
-        float starSize = _random.Next(10, 26); //from 10 to 26
+        float starSize = Random.Shared.Next(10, 26); //from 10 to 26
         float blurRadius = 9.0f;
 
         SKPaint blurPaint = new()
