@@ -63,10 +63,10 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.WriteDone();
 
-        _nodePosition.MoveNodesToPositiveCoordinates(_nodes,
-                                                     _settings.XNodeSpacer,
-                                                     _settings.YNodeSpacer,
-                                                     _settings.NodeRadius);
+        _nodePositions.MoveNodesToPositiveCoordinates(_nodes,
+                                                      _settings.XNodeSpacer,
+                                                      _settings.YNodeSpacer,
+                                                      _settings.NodeRadius);
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             double minDistance = nodeRadius * 2;
 
-            while (_nodePosition.NodeIsTooCloseToNeighbours(node, minDistance))
+            while (_nodePositions.NodeIsTooCloseToNeighbours(node, minDistance))
             {
                 node.Position = (node.Position.X + (node.IsFirstChild
                                                                 ? -nodeRadius * 2 - 40
@@ -169,7 +169,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                                  node.Position.Y);
             }
 
-            _nodePosition.AddNodeToGrid(node, minDistance);
+            _nodePositions.AddNodeToGrid(node, minDistance);
 
             node.Shape.Radius = nodeRadius;
             node.IsPositioned = true;
@@ -182,5 +182,20 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                 PositionNode(childNode);
             }
         }
+    }
+
+    /// <summary>
+    /// Calculate the signed X-axis distance from a parent to a child node
+    /// </summary>
+    /// <remarks>
+    /// Negative if child is the to left of the parent, positive if to the right
+    /// </remarks>
+    /// <param name="childPosition"></param>
+    /// <param name="parentPosition"></param>
+    /// <returns></returns>
+    private static double XAxisSignedDistanceFromParent((double X, double Y) childPosition,
+                                                        (double X, double Y) parentPosition)
+    {
+        return childPosition.X - parentPosition.X;
     }
 }

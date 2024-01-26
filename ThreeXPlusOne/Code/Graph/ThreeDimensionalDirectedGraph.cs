@@ -67,10 +67,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _consoleHelper.WriteDone();
 
-        _nodePosition.MoveNodesToPositiveCoordinates(_nodes,
-                                                     _settings.XNodeSpacer,
-                                                     _settings.YNodeSpacer,
-                                                     _settings.NodeRadius);
+        _nodePositions.MoveNodesToPositiveCoordinates(_nodes,
+                                                      _settings.XNodeSpacer,
+                                                      _settings.YNodeSpacer,
+                                                      _settings.NodeRadius);
     }
 
     /// <summary>
