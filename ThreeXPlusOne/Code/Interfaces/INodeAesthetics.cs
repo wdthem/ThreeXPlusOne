@@ -9,11 +9,9 @@ public interface INodeAesthetics
     /// Assign a ShapeType to the node and vertices if applicable
     /// </summary>
     /// <param name="node"></param>
-    /// <param name="random"></param>
     /// <param name="nodeRadius"></param>
     /// <param name="includePolygonsAsNodes"></param>
     void SetNodeShape(DirectedGraphNode node,
-                      Random random,
                       double nodeRadius,
                       bool includePolygonsAsNodes);
 
@@ -34,9 +32,8 @@ public interface INodeAesthetics
     /// <summary>
     /// Generate a random colour for the node
     /// </summary>
-    /// <param name="random"></param>
     /// <returns></returns>
-    Color GenerateNodeColor(Random random);
+    Color GenerateNodeColor();
 
     /// <summary>
     /// If a light source is in place, it should impact the colour of nodes.

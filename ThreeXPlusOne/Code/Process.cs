@@ -106,7 +106,6 @@ public class Process(IOptions<Settings> settings,
     {
         consoleHelper.WriteHeading("Series data");
 
-        Random random = new();
         List<int> inputValues = [];
 
         if (string.IsNullOrWhiteSpace(_settings.UseTheseNumbers))
@@ -127,7 +126,7 @@ public class Process(IOptions<Settings> settings,
                     break;
                 }
 
-                int randomValue = random.Next(0, _settings.MaxStartingNumber) + 1;
+                int randomValue = Random.Shared.Next(0, _settings.MaxStartingNumber) + 1;
 
                 if (_settings.ListOfNumbersToExclude.Contains(randomValue))
                 {
