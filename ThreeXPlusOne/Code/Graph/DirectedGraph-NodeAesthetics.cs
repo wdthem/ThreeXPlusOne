@@ -1,6 +1,5 @@
 using System.Drawing;
 using ThreeXPlusOne.Code.Enums;
-using ThreeXPlusOne.Code.Interfaces;
 using ThreeXPlusOne.Code.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
@@ -10,7 +9,7 @@ public abstract partial class DirectedGraph
     /// <summary>
     /// Nested class to encapsulate all shared methods that manipulate node colour, shape and orientation
     /// </summary>
-    protected class NodeAesthetics() : INodeAesthetics
+    protected class NodeAesthetics()
     {
         /// <summary>
         /// Assign a ShapeType to the node and vertices if applicable
@@ -18,9 +17,9 @@ public abstract partial class DirectedGraph
         /// <param name="node"></param>
         /// <param name="nodeRadius"></param>
         /// <param name="includePolygonsAsNodes"></param>
-        public void SetNodeShape(DirectedGraphNode node,
-                                 double nodeRadius,
-                                 bool includePolygonsAsNodes)
+        public static void SetNodeShape(DirectedGraphNode node,
+                                        double nodeRadius,
+                                        bool includePolygonsAsNodes)
         {
             if (node.Shape.Radius == 0)
             {
@@ -63,10 +62,10 @@ public abstract partial class DirectedGraph
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public (double X, double Y) RotateNode(int nodeValue,
-                                               double rotationAngle,
-                                               double x,
-                                               double y)
+        public static (double X, double Y) RotateNode(int nodeValue,
+                                                      double rotationAngle,
+                                                      double x,
+                                                      double y)
         {
             (double X, double Y) rotatedPosition;
 
@@ -89,18 +88,12 @@ public abstract partial class DirectedGraph
         /// Generate a random colour for the node
         /// </summary>
         /// <returns></returns>
-        public Color GenerateNodeColor()
+        public static Color GenerateNodeColor()
         {
-            byte red, green, blue;
             byte alpha = (byte)Random.Shared.Next(30, 231); //avoid too transparent, and avoid fully opaque
-
-            do
-            {
-                red = (byte)Random.Shared.Next(256);
-                green = (byte)Random.Shared.Next(256);
-                blue = (byte)Random.Shared.Next(256);
-            }
-            while (red == 0 && green == 0 && blue == 0);    //avoid black
+            byte red = (byte)Random.Shared.Next(1, 256);    //for rgb, skip 0 to avoid black
+            byte green = (byte)Random.Shared.Next(1, 256);
+            byte blue = (byte)Random.Shared.Next(1, 256);
 
             return Color.FromArgb(alpha, red, green, blue);
         }
@@ -115,16 +108,15 @@ public abstract partial class DirectedGraph
         /// <param name="lightSourceMaxDistanceEffect"></param>
         /// <param name="lightSourceColor"></param>
         /// <returns></returns>
-        public void ApplyLightSourceToNode(DirectedGraphNode node,
-                                           Color nodeBaseColor,
-                                           (double X, double Y) lightSourceCoordinates,
-                                           double lightSourceMaxDistanceEffect,
-                                           Color lightSourceColor)
+        public static void ApplyLightSourceToNode(DirectedGraphNode node,
+                                                  Color nodeBaseColor,
+                                                  (double X, double Y) lightSourceCoordinates,
+                                                  double lightSourceMaxDistanceEffect,
+                                                  Color lightSourceColor)
         {
             Color nodeColor;
             double distance = Distance((node.Position.X, node.Position.Y),
                                        (lightSourceCoordinates.X, lightSourceCoordinates.Y));
-
 
             double additionalOpacityFactor;
 

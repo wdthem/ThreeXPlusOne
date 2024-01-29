@@ -2,7 +2,8 @@ using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using ThreeXPlusOne.Code.Enums;
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
+using ThreeXPlusOne.Code.Interfaces.Services;
 using ThreeXPlusOne.Code.Models;
 
 namespace ThreeXPlusOne.Code.Services.SkiaSharp;
@@ -104,7 +105,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                                                         [0, 0.75f], // Gradient stops
                                                         SKShaderTileMode.Clamp);
 
-        SKPaint paint = new()
+        using SKPaint paint = new()
         {
             Shader = shader
         };
@@ -241,6 +242,9 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
                             (float)textY,
                             textPaint);
         }
+
+        paint.Dispose();
+        textPaint.Dispose();
     }
 
     /// <summary>
@@ -314,7 +318,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
 
         SKColor skColor = ConvertColorToSKColor(node.Shape.HaloConfig.Color);
 
-        var haloPaint = new SKPaint
+        using SKPaint haloPaint = new()
         {
             Shader = SKShader.CreateRadialGradient(ConvertCoordinatesToSKPoint(node.Position.X, node.Position.Y),
                                                    (float)node.Shape.HaloConfig.Radius,
@@ -337,7 +341,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     private static void DrawNodeConnection(SKCanvas canvas,
                                            DirectedGraphNode node)
     {
-        SKPaint paint = new()
+        using SKPaint paint = new()
         {
             Color = SKColors.White.WithAlpha(100),
             StrokeWidth = 2,
@@ -361,19 +365,19 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="point"></param>
-    private void DrawStarWithBlur(SKCanvas canvas,
-                                  SKPoint point)
+    private static void DrawStarWithBlur(SKCanvas canvas,
+                                         SKPoint point)
     {
         float starSize = Random.Shared.Next(10, 26); //from 10 to 26
         float blurRadius = 9.0f;
 
-        SKPaint blurPaint = new()
+        using SKPaint blurPaint = new()
         {
             IsAntialias = true,
             MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, blurRadius)
         };
 
-        SKPaint starPaint = new()
+        using SKPaint starPaint = new()
         {
             IsAntialias = true,
             Color = SKColors.White

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Graph;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
+using ThreeXPlusOne.Code.Interfaces.Services;
 using ThreeXPlusOne.Code.Models;
 using ThreeXPlusOne.Config;
 
@@ -8,7 +10,9 @@ namespace ThreeXPlusOne.Code.Graph;
 public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
                                            IEnumerable<IDirectedGraphService> graphServices,
                                            ILightSourceService lightSourceService,
-                                           IConsoleHelper consoleHelper) : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper), IDirectedGraph
+                                           IConsoleHelper consoleHelper)
+                                                : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper),
+                                                  IDirectedGraph
 {
     private int _nodesPositioned = 0;
 
@@ -42,7 +46,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         _nodes[1].Position = base1;
         _nodes[1].Position = ApplyNodePerspectiveTransformation(_nodes[1], _settings.DistanceFromViewer);
-        _nodes[1].Shape.Radius = 50;
+        _nodes[1].Shape.Radius = 80;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
@@ -74,8 +78,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     }
 
     /// <summary>
-    /// Set the shapes of the positioned nodes. Apply pseudo-3D skewing effect to polygons, and make circles become ellipses
-    /// (use random number to determine if the given node is skewed or not)
+    /// Set the shapes of the positioned nodes. Apply a pseudo-3D skewing effect to polygons, and make circles become ellipses
+    /// (use a random number to determine if the given node is skewed or not)
     /// </summary>
     public void SetNodeShapes()
     {
@@ -84,9 +88,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
-            _nodeAesthetics.SetNodeShape(node,
-                                         _settings.NodeRadius,
-                                         _settings.IncludePolygonsAsNodes);
+            NodeAesthetics.SetNodeShape(node,
+                                        _settings.NodeRadius,
+                                        _settings.IncludePolygonsAsNodes);
 
             double rotationRadians = -0.785 + Random.Shared.NextDouble() * 1.57; // Range of -π/4 to π/2 radians
             skewFactor = 0.0;
@@ -153,6 +157,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         double xNodeSpacer = _settings.XNodeSpacer;
         double yNodeSpacer = _settings.YNodeSpacer;
 
+        //reduce bunching of nodes at lower depths by increasing the node spacers
         if (node.Depth < 10)
         {
             xNodeSpacer *= node.Depth;
@@ -202,14 +207,18 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         if (_settings.NodeRotationAngle != 0)
         {
-            (double x, double y) = _nodeAesthetics.RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
+            (double x, double y) = NodeAesthetics.RotateNode(node.NumberValue,
+                                                             _settings.NodeRotationAngle,
+                                                             xOffset,
+                                                             yOffset);
 
             node.Position = (x, y);
         }
 
         if (node.Parent != null && node.Parent.Children.Count == 2)
         {
-            node.Position = ApplyNodePerspectiveTransformation(node, _settings.DistanceFromViewer);
+            node.Position = ApplyNodePerspectiveTransformation(node,
+                                                               _settings.DistanceFromViewer);
         }
 
         node.Shape.Radius = nodeRadius;

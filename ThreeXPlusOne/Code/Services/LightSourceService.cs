@@ -1,6 +1,6 @@
 using System.Drawing;
 using ThreeXPlusOne.Code.Enums;
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Services;
 
 namespace ThreeXPlusOne.Code.Services;
 

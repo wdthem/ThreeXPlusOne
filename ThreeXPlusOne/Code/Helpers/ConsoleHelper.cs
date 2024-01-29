@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Enums;
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code.Helpers;

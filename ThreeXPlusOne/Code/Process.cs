@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Graph;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.Code;

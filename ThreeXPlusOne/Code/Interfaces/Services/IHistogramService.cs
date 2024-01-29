@@ -1,6 +1,6 @@
 using ThreeXPlusOne.Code.Enums;
 
-namespace ThreeXPlusOne.Code.Interfaces;
+namespace ThreeXPlusOne.Code.Interfaces.Services;
 
 public interface IHistogramService : IDisposable
 {
