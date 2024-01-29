@@ -1,4 +1,4 @@
-﻿namespace ThreeXPlusOne.Code.Interfaces;
+﻿namespace ThreeXPlusOne.Code.Interfaces.Helpers;
 
 public interface IFileHelper
 {

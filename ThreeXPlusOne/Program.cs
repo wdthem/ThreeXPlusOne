@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using ThreeXPlusOne;
 using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
 
 using IHost host = Host.CreateDefaultBuilder(args)
                        .ConfigureApplication()

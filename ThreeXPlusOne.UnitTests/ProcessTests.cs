@@ -2,6 +2,8 @@ using Microsoft.Extensions.Options;
 using Moq;
 using ThreeXPlusOne.Code;
 using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Graph;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
 using ThreeXPlusOne.Config;
 using Xunit;
 

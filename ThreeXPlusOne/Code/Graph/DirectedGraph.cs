@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Drawing;
 using ThreeXPlusOne.Code.Enums;
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
+using ThreeXPlusOne.Code.Interfaces.Services;
 using ThreeXPlusOne.Code.Models;
 using ThreeXPlusOne.Config;
 
@@ -17,7 +18,6 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
 
     protected readonly Settings _settings = settings.Value;
     protected readonly IConsoleHelper _consoleHelper = consoleHelper;
-    protected readonly NodeAesthetics _nodeAesthetics = new();
     protected readonly NodePositions _nodePositions = new(consoleHelper);
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
 
@@ -139,7 +139,7 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
 
         foreach (DirectedGraphNode node in _nodes.Values)
         {
-            Color nodeColor = _nodeAesthetics.GenerateNodeColor();
+            Color nodeColor = NodeAesthetics.GenerateNodeColor();
 
             if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
             {
@@ -147,11 +147,11 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
             }
             else
             {
-                _nodeAesthetics.ApplyLightSourceToNode(node,
-                                                       nodeColor,
-                                                       lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
-                                                       lightSourceService.GetLightSourceMaxDistanceOfEffect(),
-                                                       lightSourceService.LightSourceColor);
+                NodeAesthetics.ApplyLightSourceToNode(node,
+                                                      nodeColor,
+                                                      lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
+                                                      lightSourceService.GetLightSourceMaxDistanceOfEffect(),
+                                                      lightSourceService.LightSourceColor);
             }
         }
 

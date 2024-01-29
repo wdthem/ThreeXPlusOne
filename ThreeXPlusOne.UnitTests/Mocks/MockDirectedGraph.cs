@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.Code.Graph;
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Graph;
+using ThreeXPlusOne.Code.Interfaces.Services;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.UnitTests.Mocks;
@@ -8,10 +10,10 @@ namespace ThreeXPlusOne.UnitTests.Mocks;
 public class MockDirectedGraph(IOptions<Settings> settings,
                                IEnumerable<IDirectedGraphService> graphServices,
                                ILightSourceService lightSourceService,
-                               IConsoleHelper consoleHelper) : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper), IDirectedGraph
+                               IConsoleHelper consoleHelper)
+                                    : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper),
+                                      IDirectedGraph
 {
-    private new readonly NodeAesthetics _nodeAesthetics = new();
-
     public int Dimensions => 2;
 
     public void SetCanvasDimensions()
@@ -33,7 +35,7 @@ public class MockDirectedGraph(IOptions<Settings> settings,
     public (double x, double y) RotateNode_Base(int nodeValue, double rotationAngle, double x, double y)
 
     {
-        return _nodeAesthetics.RotateNode(nodeValue, rotationAngle, x, y);
+        return NodeAesthetics.RotateNode(nodeValue, rotationAngle, x, y);
     }
 
     public void DrawDirectedGraph_Base()

@@ -3,7 +3,7 @@ using System.Drawing;
 using ThreeXPlusOne.Code.Enums;
 using ThreeXPlusOne.Code.Models;
 
-namespace ThreeXPlusOne.Code.Interfaces;
+namespace ThreeXPlusOne.Code.Interfaces.Services;
 
 public interface IDirectedGraphService : IDisposable
 {

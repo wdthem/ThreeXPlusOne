@@ -1,4 +1,4 @@
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
 using ThreeXPlusOne.Code.Models;
 
 namespace ThreeXPlusOne.Code.Graph;
@@ -8,7 +8,7 @@ public abstract partial class DirectedGraph
     /// <summary>
     /// Nested class to encapsulate all shared methods that manipulate node position
     /// </summary>
-    protected class NodePositions(IConsoleHelper consoleHelper) : INodePositions
+    protected class NodePositions(IConsoleHelper consoleHelper)
     {
         private readonly Dictionary<(int, int), List<(double X, double Y)>> _nodeGrid = [];
 
@@ -48,8 +48,8 @@ public abstract partial class DirectedGraph
         /// <param name="newNode"></param>
         /// <param name="minDistance"></param>
         /// <returns></returns>
-        public bool NodeIsTooCloseToNeighbours(DirectedGraphNode newNode,
-                                               double minDistance)
+        public bool NodeOverlapsNeighbours(DirectedGraphNode newNode,
+                                           double minDistance)
         {
             (int, int) cell = GetGridCellForNode(newNode, minDistance);
 

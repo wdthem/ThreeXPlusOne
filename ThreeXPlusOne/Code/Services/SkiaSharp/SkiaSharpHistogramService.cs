@@ -1,6 +1,6 @@
 using SkiaSharp;
 using ThreeXPlusOne.Code.Enums;
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Services;
 
 namespace ThreeXPlusOne.Code.Services.SkiaSharp;
 
@@ -122,7 +122,7 @@ public class SkiaSharpHistogramService() : IHistogramService
                              new SKPaint { Color = SKColors.Black, IsAntialias = true, TextAlign = SKTextAlign.Center });
 
             // Draw bar totals inside the bars near the top
-            SKPaint textPaint = new()
+            using SKPaint textPaint = new()
             {
                 Color = SKColors.White,
                 IsAntialias = true,
@@ -141,7 +141,7 @@ public class SkiaSharpHistogramService() : IHistogramService
         }
 
         // Draw the title below the X-axis labels
-        SKPaint titlePaint = new()
+        using SKPaint titlePaint = new()
         {
             Color = SKColors.Black,
             IsAntialias = true,

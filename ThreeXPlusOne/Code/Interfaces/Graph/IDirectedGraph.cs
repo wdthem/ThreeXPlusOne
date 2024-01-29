@@ -1,4 +1,4 @@
-﻿namespace ThreeXPlusOne.Code.Interfaces;
+﻿namespace ThreeXPlusOne.Code.Interfaces.Graph;
 
 public interface IDirectedGraph
 {

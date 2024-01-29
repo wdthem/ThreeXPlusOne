@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Code.Interfaces.Graph;
+using ThreeXPlusOne.Code.Interfaces.Helpers;
+using ThreeXPlusOne.Code.Interfaces.Services;
 using ThreeXPlusOne.Code.Models;
 using ThreeXPlusOne.Config;
 
@@ -8,7 +10,9 @@ namespace ThreeXPlusOne.Code.Graph;
 public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                                          IEnumerable<IDirectedGraphService> graphServices,
                                          ILightSourceService lightSourceService,
-                                         IConsoleHelper consoleHelper) : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper), IDirectedGraph
+                                         IConsoleHelper consoleHelper)
+                                                : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper),
+                                                  IDirectedGraph
 {
     private int _nodesPositioned = 0;
 
@@ -76,9 +80,9 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
     {
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
-            _nodeAesthetics.SetNodeShape(node,
-                                         _settings.NodeRadius,
-                                         _settings.IncludePolygonsAsNodes);
+            NodeAesthetics.SetNodeShape(node,
+                                        _settings.NodeRadius,
+                                        _settings.IncludePolygonsAsNodes);
         }
     }
 
@@ -135,7 +139,10 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             if (_settings.NodeRotationAngle != 0)
             {
-                (double x, double y) = _nodeAesthetics.RotateNode(node.NumberValue, _settings.NodeRotationAngle, xOffset, yOffset);
+                (double x, double y) = NodeAesthetics.RotateNode(node.NumberValue,
+                                                                 _settings.NodeRotationAngle,
+                                                                 xOffset,
+                                                                 yOffset);
 
                 node.Position = (x, y);
             }
@@ -160,7 +167,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
 
             double minDistance = nodeRadius * 2;
 
-            while (_nodePositions.NodeIsTooCloseToNeighbours(node, minDistance))
+            while (_nodePositions.NodeOverlapsNeighbours(node, minDistance))
             {
                 node.Position = (node.Position.X + (node.IsFirstChild
                                                                 ? -nodeRadius * 2 - 40
