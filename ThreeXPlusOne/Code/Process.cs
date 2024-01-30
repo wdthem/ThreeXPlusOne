@@ -28,7 +28,7 @@ public class Process(IOptions<Settings> settings,
         consoleHelper.WriteAsciiArtLogo();
         consoleHelper.WriteSettings();
 
-        List<int> inputValues = GenerateInputValues(stopwatch);
+        List<int> inputValues = GetInputValues(stopwatch);
         List<List<int>> seriesLists = algorithm.Run(inputValues);
 
         metadata.GenerateMedatadataFile(seriesLists);
@@ -97,70 +97,71 @@ public class Process(IOptions<Settings> settings,
     }
 
     /// <summary>
-    /// Get the list of numbers to use to run through the algorithm
+    /// Get or generate the list of numbers to use to run through the algorithm
     /// Either:
-    ///     Random numbers - the amount specified in settings; or
-    ///     The list specified by the user in settings (this takes priority)
+    ///     The list specified by the user in settings (this takes priority); or
+    ///     Random numbers - the total number specified in settings
     /// </summary>
     /// <param name="stopwatch"></param>
     /// <returns></returns>
-    private List<int> GenerateInputValues(Stopwatch stopwatch)
+    /// <exception cref="Exception"></exception>
+    private List<int> GetInputValues(Stopwatch stopwatch)
     {
         consoleHelper.WriteHeading("Series data");
 
         List<int> inputValues = [];
 
-        if (string.IsNullOrWhiteSpace(_settings.UseTheseNumbers))
-        {
-            consoleHelper.Write($"Generating {_settings.NumberOfSeries} random numbers from 1 to {_settings.MaxStartingNumber}... ");
-
-            while (inputValues.Count < _settings.NumberOfSeries)
-            {
-                if (stopwatch.Elapsed.TotalSeconds >= 10)
-                {
-                    if (inputValues.Count == 0)
-                    {
-                        throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_settings.ExcludeTheseNumbers)}");
-                    }
-
-                    consoleHelper.WriteLine($"\nGave up generating {_settings.NumberOfSeries} random numbers. Generated {inputValues.Count}\n");
-
-                    break;
-                }
-
-                int randomValue = Random.Shared.Next(0, _settings.MaxStartingNumber) + 1;
-
-                if (_settings.ListOfNumbersToExclude.Contains(randomValue))
-                {
-                    continue;
-                }
-
-                if (!inputValues.Contains(randomValue))
-                {
-                    inputValues.Add(randomValue);
-                }
-            }
-
-            //populate the property as the number list is used to generate a hash value for the directory name
-            _settings.UseTheseNumbers = string.Join(", ", inputValues);
-            _generatedRandomNumbers = true;
-
-            consoleHelper.WriteDone();
-        }
-        else
+        if (_settings.ListOfSeriesNumbers.Count > 0)
         {
             inputValues = _settings.ListOfSeriesNumbers;
             inputValues.RemoveAll(_settings.ListOfNumbersToExclude.Contains);
 
             if (inputValues.Count == 0)
             {
-                throw new Exception("No numbers provided on which to run the algorithm");
+                throw new Exception($"{nameof(_settings.UseTheseNumbers)} had values, but {nameof(_settings.ExcludeTheseNumbers)} removed them all. Please provide more numbers in {nameof(_settings.UseTheseNumbers)}");
             }
 
             _generatedRandomNumbers = false;
 
             consoleHelper.WriteLine($"Using series numbers defined in {nameof(_settings.UseTheseNumbers)} apart from any excluded in {nameof(_settings.ExcludeTheseNumbers)}\n");
+
+            return inputValues;
         }
+
+        consoleHelper.Write($"Generating {_settings.NumberOfSeries} random numbers from 1 to {_settings.MaxStartingNumber}... ");
+
+        while (inputValues.Count < _settings.NumberOfSeries)
+        {
+            if (stopwatch.Elapsed.TotalSeconds >= 10)
+            {
+                if (inputValues.Count == 0)
+                {
+                    throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_settings.ExcludeTheseNumbers)}");
+                }
+
+                consoleHelper.WriteLine($"\nGave up generating {_settings.NumberOfSeries} random numbers. Generated {inputValues.Count}\n");
+
+                break;
+            }
+
+            int randomValue = Random.Shared.Next(0, _settings.MaxStartingNumber) + 1;
+
+            if (_settings.ListOfNumbersToExclude.Contains(randomValue))
+            {
+                continue;
+            }
+
+            if (!inputValues.Contains(randomValue))
+            {
+                inputValues.Add(randomValue);
+            }
+        }
+
+        //populate the property as the number list is used to generate a hash value for the directory name
+        _settings.UseTheseNumbers = string.Join(", ", inputValues);
+        _generatedRandomNumbers = true;
+
+        consoleHelper.WriteDone();
 
         return inputValues;
     }
