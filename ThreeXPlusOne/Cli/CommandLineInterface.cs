@@ -12,9 +12,9 @@ public class CommandLineInterface(IProcess process,
     private readonly IConsoleHelper _consoleHelper = consoleHelper;
 
     /// <summary>
-    /// Run the ThreeXPlusOne app
+    /// Run the app
     /// </summary>
-    private void RunThreeXPlusOne()
+    private void RunApp()
     {
         try
         {
@@ -58,6 +58,8 @@ public class CommandLineInterface(IProcess process,
     /// <param name="arguments"></param>
     public void RunCommand(string[] arguments)
     {
+        CommandExecutionFlow? flow = null;
+
         Parser parser = new(settings =>
         {
             settings.AutoHelp = false;
@@ -67,13 +69,14 @@ public class CommandLineInterface(IProcess process,
         parser.ParseArguments<CommandLineOptions>(arguments)
               .WithParsed(options =>
                 {
-                    CommandExecutionFlow flow = HandleOptions(options);
-
-                    if (flow.Continue)
-                    {
-                        RunThreeXPlusOne();
-                    }
+                    flow = HandleOptions(options);
                 })
               .WithNotParsed(errors => { });
+
+        if (flow != null &&
+            flow.Continue)
+        {
+            RunApp();
+        }
     }
 }
