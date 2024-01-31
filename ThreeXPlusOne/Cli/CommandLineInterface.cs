@@ -1,6 +1,7 @@
 using CommandLine;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.Cli.Models;
 
 namespace ThreeXPlusOne.Cli;
 
@@ -26,10 +27,36 @@ public class CommandLineInterface(IProcess process,
     }
 
     /// <summary>
+    /// Handle optional parameters and determine if execution flow should continue
+    /// </summary>
+    /// <param name="opts"></param>
+    /// <returns></returns>
+    private CommandExecutionFlow HandleOptions(CommandLineOptions opts)
+    {
+        CommandExecutionFlow flow = new() { Continue = true };
+
+        if (opts.Help)
+        {
+            _consoleHelper.WriteHelpText();
+
+            flow.Continue = false;
+        }
+
+        if (opts.Version)
+        {
+            _consoleHelper.WriteVersionText();
+
+            flow.Continue = false;
+        }
+
+        return flow;
+    }
+
+    /// <summary>
     /// Parse the command and any provided arguments
     /// </summary>
-    /// <param name="args"></param>
-    public void RunCommandWithArguments(string[] args)
+    /// <param name="arguments"></param>
+    public void RunCommand(string[] arguments)
     {
         Parser parser = new(settings =>
         {
@@ -37,29 +64,16 @@ public class CommandLineInterface(IProcess process,
             settings.AutoVersion = false;
         });
 
-        parser.ParseArguments<CommandLineOptions>(args)
-                .WithParsed(opts =>
+        parser.ParseArguments<CommandLineOptions>(arguments)
+              .WithParsed(options =>
                 {
-                    if (opts.Help)
+                    CommandExecutionFlow flow = HandleOptions(options);
+
+                    if (flow.Continue)
                     {
-                        _consoleHelper.WriteHelpText();
-
-                        return;
+                        RunThreeXPlusOne();
                     }
-
-                    if (opts.Version)
-                    {
-                        _consoleHelper.WriteVersionText();
-
-                        return;
-                    }
-
-                    RunThreeXPlusOne();
-
                 })
-                .WithNotParsed(errs =>
-                {
-
-                });
+              .WithNotParsed(errors => { });
     }
 }
