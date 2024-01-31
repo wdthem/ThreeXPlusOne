@@ -1,15 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ThreeXPlusOne.Code;
-using ThreeXPlusOne.Code.Graph;
-using ThreeXPlusOne.Code.Services;
-using ThreeXPlusOne.Code.Interfaces.Graph;
-using ThreeXPlusOne.Code.Interfaces.Helpers;
-using ThreeXPlusOne.Code.Interfaces.Services;
-using ThreeXPlusOne.Code.Services.SkiaSharp;
-using ThreeXPlusOne.Code.Helpers;
-using ThreeXPlusOne.Code.Interfaces;
+using ThreeXPlusOne.Cli;
+using ThreeXPlusOne.App;
+using ThreeXPlusOne.App.Graph;
+using ThreeXPlusOne.App.Services;
+using ThreeXPlusOne.App.Interfaces.Graph;
+using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Services.SkiaSharp;
+using ThreeXPlusOne.App.Helpers;
+using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne;
@@ -44,6 +45,8 @@ public static class StartupExtensions
     private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<Settings>(configuration);
+
+        services.AddScoped<CommandLineInterface>();
 
         services.AddScoped<IProcess, Process>();
         services.AddScoped<IAlgorithm, Algorithm>();
