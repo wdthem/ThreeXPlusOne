@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Moq;
-using ThreeXPlusOne.Code;
-using ThreeXPlusOne.Code.Interfaces.Helpers;
+using ThreeXPlusOne.App;
+using ThreeXPlusOne.App.Interfaces.Helpers;
 using Xunit;
 
 namespace ThreeXPlusOne.UnitTests;

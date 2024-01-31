@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ThreeXPlusOne;
-using ThreeXPlusOne.Code.Interfaces;
-using ThreeXPlusOne.Code.Interfaces.Helpers;
+using ThreeXPlusOne.Cli;
 
 using IHost host = Host.CreateDefaultBuilder(args)
                        .ConfigureApplication()
@@ -10,25 +9,6 @@ using IHost host = Host.CreateDefaultBuilder(args)
 
 using IServiceScope scope = host.Services.CreateScope();
 
-IConsoleHelper consoleHelper = scope.ServiceProvider.GetRequiredService<IConsoleHelper>();
+CommandLineInterface cli = scope.ServiceProvider.GetRequiredService<CommandLineInterface>();
 
-if (args.Length > 0)
-{
-    if (args[0] == "--help")
-    {
-        consoleHelper.WriteHelpText();
-
-        return;
-    }
-}
-
-try
-{
-    IProcess process = scope.ServiceProvider.GetRequiredService<IProcess>();
-
-    process.Run();
-}
-catch (Exception e)
-{
-    consoleHelper.WriteError($"{e.Message}");
-}
+cli.RunCommandWithArguments(args);

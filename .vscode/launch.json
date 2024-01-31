@@ -8,6 +8,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             "cwd": "${workspaceFolder}/ThreeXPlusOne/bin/Debug/net8.0",
+            "args": [
+                "",
+            ],
         }
     ]
 }
