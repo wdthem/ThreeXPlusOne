@@ -11,7 +11,7 @@ namespace ThreeXPlusOne.App.Helpers;
 public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 {
     private readonly Settings _settings = settings.Value;
-    private static readonly object _consoleLock = new object();
+    private static readonly object _consoleLock = new();
     private CancellationTokenSource? _cancellationTokenSource;
     private int _spinnerCounter = 0;
     private readonly string[] _spinner = ["|", "/", "-", "\\"];
@@ -139,6 +139,8 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
     public void WriteHeading(string headerText)
     {
+        SetForegroundColor(ConsoleColor.White);
+
         WriteSeparator();
 
         SetForegroundColor(ConsoleColor.DarkYellow);
@@ -148,23 +150,42 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         SetForegroundColor(ConsoleColor.White);
     }
 
-    public void WriteHelpText()
+    public void WriteHelpText(List<(string longName, string shortName, string description)> commandLineOptions)
     {
         WriteAsciiArtLogo();
+        WriteHeading("Help");
+
+        WriteHeading("Commands");
+
+        foreach ((string longName, string shortName, string description) in commandLineOptions)
+        {
+            WriteLine($"  -{shortName}, --{longName}\t\t{description}");
+        }
+
+        WriteLine("");
 
         WriteHeading("Version");
         WriteVersionText();
 
-        WriteHeading("Credits");
-        WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
-        WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
-        WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n");
-
         WriteHeading("GitHub repository");
         WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
 
+        WriteHeading("Credits");
+        WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
+        WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
+        WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n\n");
+    }
+
+    public void WriteUsageText()
+    {
+        Type settingsType = typeof(Settings);
+
+        WriteAsciiArtLogo();
         WriteHeading("Usage information");
-        WriteLine($"To apply custom settings, ensure that a '{_settings.SettingsFileName}' file exists in the same folder as the executable. It must have the following content:\n");
+
+        WriteHeading("App settings");
+        WriteLine("\nIf no custom settings are supplied, app defaults will be used.\n");
+        WriteLine($"To apply custom settings, place a file called '{_settings.SettingsFileName}' in the same folder as the executable.\n\nIt must have the following content:\n");
         WriteLine("{");
 
         int lcv = 1;
@@ -179,7 +200,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
             SetForegroundColor(ConsoleColor.Blue);
 
-            Write($"    {property.Name}: ");
+            Write($"  {property.Name}: ");
 
             SetForegroundColor(ConsoleColor.White);
 
@@ -196,107 +217,55 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         }
 
         SetForegroundColor(ConsoleColor.White);
-        WriteLine("}");
+        WriteLine("}\n");
 
-        WriteLine("\nA good starting point for settings:\n");
+        WriteHeading("Suggested values and explanations");
         SetForegroundColor(ConsoleColor.White);
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.NumberOfSeries)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("200 (the total number of series that will run)");
+        lcv = 1;
+        foreach (PropertyInfo property in settingsProperties)
+        {
+            string comma = lcv != settingsProperties.Count ? "," : "";
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.MaxStartingNumber)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("1000 (the highest number any given series can start with)");
+            SetForegroundColor(ConsoleColor.Blue);
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.UseTheseNumbers)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine($"\"\" (comma-separated list of numbers to run the program with. Overrides {nameof(Settings.NumberOfSeries)} and {nameof(Settings.MaxStartingNumber)})");
+            Write($"  {property.Name}:\t");
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.ExcludeTheseNumbers)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\"\" (comma-separated list of numbers not to use)");
+            if (property.Name.Length < 12)
+            {
+                Write("\t\t");
+            }
+            else if (property.Name.Length < 22)
+            {
+                Write("\t");
+            }
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.NodeRotationAngle)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("0 (the size of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8)");
+            SetForegroundColor(ConsoleColor.White);
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.NodeRadius)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("50 for 2D, 275 for 3D (the radius of the nodes in pixels)");
+            SettingAttribute? attribute = property.GetCustomAttribute<SettingAttribute>();
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.IncludePolygonsAsNodes)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("false (whether or not to use circles or polygons + circles as graph nodes)");
+            if (attribute != null)
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    Write($"\"{attribute.SuggestedValue}\"");
+                }
+                else
+                {
+                    Write($"{attribute.SuggestedValue}");
+                }
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.XNodeSpacer)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("125 for 2D, 250 for 3D (the space between nodes on the x-axis)");
+                WriteLine($"\t[{attribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}]");
+            }
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.YNodeSpacer)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("125 for 2D, 225 for 3D (the space between nodes on the y-axis)");
+            lcv++;
+        }
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.DistanceFromViewer)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("200 (for the 3D graph, the distance from the view when applying the perspective transformation)");
+        WriteLine("\n\nThe above settings are a good starting point from which to experiment.\n");
+        WriteLine("Alternatively, start with the settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n");
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.GraphDimensions)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("2 (the number of dimensions to render in the graph - 2 or 3)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.LightSourcePosition)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine($"None (the position of the light source. Values are: {string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)))})");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.DrawConnections)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("true (whether or not to draw connections between the nodes in the graph - if true can increase image file size substantially)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.DrawNumbersOnNodes)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("true (whether or not to draw the numbers at the center of the node that the node represents)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.GenerateGraph)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("true (whether or not to generate the visualization of the data)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.GenerateHistogram)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("true (whether or not to generate a histogram of the distribution of numbers starting from 1-9)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.GenerateMetadataFile)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("true (whether or not to generate a file with metadata about the run)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.GenerateBackgroundStars)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("false (whether or not to generate random stars in the background of the graph)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"    {nameof(Settings.OutputPath)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\"C:\\path\\to\\save\\image\\\" (the folder in which the output files should be placed)\n");
-
-        WriteLine("Note: Increasing some settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
+        WriteHeading("Performance");
+        WriteLine("Be aware that increasing some settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
     }
 
     public void WriteVersionText()
@@ -305,6 +274,8 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
         AssemblyInformationalVersionAttribute? versionAttribute =
             assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+
+        SetForegroundColor(ConsoleColor.White);
 
         if (versionAttribute != null)
         {

@@ -74,9 +74,15 @@ public interface IConsoleHelper
     void WriteHeading(string headerText);
 
     /// <summary>
-    /// Output the help text for the app
+    /// Output the general help text for the app
     /// </summary>
-    void WriteHelpText();
+    /// <param name="commandLineOptions"></param>
+    void WriteHelpText(List<(string longName, string shortName, string description)> commandLineOptions);
+
+    /// <summary>
+    /// Output the usage info for the app
+    /// </summary>
+    void WriteUsageText();
 
     /// <summary>
     /// Output the current version of the app

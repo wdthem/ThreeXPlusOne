@@ -26,21 +26,25 @@ public class Settings
     /// <summary>
     /// The amount of numbers to randomly generate to run through the algorithm
     /// </summary>
+    [Setting(description: "The total number of series that will run", suggestedValue: "200")]
     public int NumberOfSeries { get; set; } = 200;
 
     /// <summary>
     /// The max value that the randomly selected numbers can be
     /// </summary>
+    [Setting(description: "The highest number any given series can start with", suggestedValue: "1000")]
     public int MaxStartingNumber { get; set; } = 1000;
 
     /// <summary>
     /// If supplied, the algorithm will be run only on these numbers
     /// </summary>
+    [Setting(description: $"Comma-separated list of numbers to run the program with. Overrides {nameof(NumberOfSeries)} and {nameof(MaxStartingNumber)}", suggestedValue: "")]
     public string UseTheseNumbers { get; set; } = "";
 
     /// <summary>
     /// If supplied, these numbers will be excluded from either random number selection or from the UseTheseNumbers property
     /// </summary>
+    [Setting(description: "Comma-separated list of numbers not to use", suggestedValue: "")]
     public string ExcludeTheseNumbers { get; set; } = "";
 
     /// <summary>
@@ -49,77 +53,92 @@ public class Settings
     /// <remarks>
     /// If the node value is even, it is rotated clockwise. If odd, anti-clockwise
     /// </remarks>
+    [Setting(description: "The size of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8", suggestedValue: "0")]
     public double NodeRotationAngle { get; set; } = 0;
 
     /// <summary>
     /// The radius of the node
     /// </summary>
+    [Setting(description: "The radius of the nodes in pixels", suggestedValue: "50 for 2D, 275 for 3D")]
     public double NodeRadius { get; set; } = 50;
 
     /// <summary>
     /// Whether or not to draw polygons as nodes in addition to circles
     /// </summary>
+    [Setting(description: "Whether or not to use circles or polygons + circles as graph nodes", suggestedValue: "false")]
     public bool IncludePolygonsAsNodes { get; set; }
 
     /// <summary>
     /// The amount of x-axis space in pixels by which to separate nodes
     /// </summary>
+    [Setting(description: "The space between nodes on the x-axis", suggestedValue: "125 for 2D, 250 for 3D")]
     public int XNodeSpacer { get; set; } = 125;
 
     /// <summary>
     /// The amount of y-axis space in pixels by which to separate nodes
     /// </summary>
+    [Setting(description: "The space between nodes on the y-axis", suggestedValue: "125 for 2D, 225 for 3D")]
     public int YNodeSpacer { get; set; } = 125;
 
     /// <summary>
     /// For pseudo-3D graphs, the distance from the viewer (to create perspective)
     /// </summary>
+    [Setting(description: "For the 3D graph, the distance from the view when applying the perspective transformation", suggestedValue: "200")]
     public double DistanceFromViewer { get; set; } = 200;
 
     /// <summary>
     /// The number of dimensions to render in the graph
     /// </summary>
     /// <remarks>2 or 3</remarks>
+    [Setting(description: "The number of dimensions to render in the graph - 2 or 3", suggestedValue: "2")]
     public int GraphDimensions { get; set; } = 2;
 
     /// <summary>
     /// The position of the light source. Use "None" to not generate the light source.
     /// </summary>
+    [Setting(description: "The position of the light source. Values are: {LightSourcePositionsPlaceholder}", suggestedValue: "None")]
     public string LightSourcePosition { get; set; } = "None";
 
     /// <summary>
     /// Whether or not to draw the connections between nodes on the graph
     /// </summary>
+    [Setting(description: "Whether or not to draw connections between the nodes in the graph - if true can increase image file size substantially", suggestedValue: "true")]
     public bool DrawConnections { get; set; } = true;
 
     /// <summary>
     /// Whether or not to draw the number at the center of the node that the node represents
     /// </summary>
+    [Setting(description: "Whether or not to draw the numbers at the center of the node that the node represents", suggestedValue: "true")]
     public bool DrawNumbersOnNodes { get; set; } = true;
 
     /// <summary>
     /// Whether or not to generate the directed graph
     /// </summary>
+    [Setting(description: "Whether or not to generate the visualization of the data", suggestedValue: "true")]
     public bool GenerateGraph { get; set; } = true;
 
     /// <summary>
     /// Whether or not to generate the histogram illustrating Benford's law
     /// </summary>
+    [Setting(description: "Whether or not to generate a histogram of the distribution of numbers starting from 1-9", suggestedValue: "true")]
     public bool GenerateHistogram { get; set; } = true;
 
     /// <summary>
     /// Whether or not to generate the metadata file
     /// </summary>
+    [Setting(description: "Whether or not to generate a file with metadata about the run", suggestedValue: "true")]
     public bool GenerateMetadataFile { get; set; } = true;
 
     /// <summary>
     /// Whether or not to draw stars on the graph's background
     /// </summary>
+    [Setting(description: "Whether or not to generate random points of white light in the background of the graph", suggestedValue: "false")]
     public bool GenerateBackgroundStars { get; set; }
 
     /// <summary>
     /// The directory in which the process will create a unique execution folder with generated output
     /// </summary>
+    [Setting(description: "The folder in which the output files should be placed", suggestedValue: "C:\\path\\to\\save\\image\\")]
     public string OutputPath { get; set; } = "";
 
     /// <summary>

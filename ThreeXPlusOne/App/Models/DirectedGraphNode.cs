@@ -1,6 +1,6 @@
 ﻿namespace ThreeXPlusOne.App.Models;
 
-public class DirectedGraphNode(int numberValue)
+public record DirectedGraphNode(int numberValue)
 {
     /// <summary>
     /// The number value of the node from the series of generated numbers

@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Enums;
 
 namespace ThreeXPlusOne.App.Models;
 
-public class Shape()
+public record Shape()
 {
     /// <summary>
     /// The type of the shape (e.g. Circle or Polygon)

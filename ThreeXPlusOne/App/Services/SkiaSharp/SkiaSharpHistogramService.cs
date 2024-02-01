@@ -182,32 +182,13 @@ public class SkiaSharpHistogramService() : IHistogramService
     /// </summary>
     public void Dispose()
     {
-        Dispose(true);
+        _canvas?.Dispose();
+        _canvas = null;
+
+        _bitmap?.Dispose();
+        _bitmap = null;
+
         GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Method to handle disposing resources
-    /// </summary>
-    /// <param name="disposing"></param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            _canvas?.Dispose();
-            _canvas = null;
-
-            _bitmap?.Dispose();
-            _bitmap = null;
-        }
-    }
-
-    /// <summary>
-    /// IDisposable finalizer
-    /// </summary>
-    ~SkiaSharpHistogramService()
-    {
-        Dispose(false);
     }
 
     #endregion

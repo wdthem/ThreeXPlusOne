@@ -1,6 +1,8 @@
+using System.Reflection;
 using CommandLine;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.Cli.Models;
 
 namespace ThreeXPlusOne.Cli;
 
@@ -11,9 +13,9 @@ public class CommandLineInterface(IProcess process,
     private readonly IConsoleHelper _consoleHelper = consoleHelper;
 
     /// <summary>
-    /// Run the ThreeXPlusOne app
+    /// Run the app
     /// </summary>
-    private void RunThreeXPlusOne()
+    private void RunApp()
     {
         try
         {
@@ -21,45 +23,93 @@ public class CommandLineInterface(IProcess process,
         }
         catch (Exception e)
         {
-            _consoleHelper.WriteError($"{e.Message}");
+            _consoleHelper.WriteError(e.Message);
         }
+    }
+
+    /// <summary>
+    /// Handle optional parameters and determine if execution flow should continue
+    /// </summary>
+    /// <param name="opts"></param>
+    /// <returns></returns>
+    private CommandExecutionFlow HandleOptions(CommandLineOptions opts)
+    {
+        CommandExecutionFlow flow = new() { Continue = true };
+
+        if (opts.Help)
+        {
+            List<(string longName, string shortName, string description)> options = GetOptionsAttributeMetadata();
+
+            _consoleHelper.WriteHelpText(options);
+
+            flow.Continue = false;
+        }
+
+        if (opts.Version)
+        {
+            _consoleHelper.WriteVersionText();
+
+            flow.Continue = false;
+        }
+
+        if (opts.Usage)
+        {
+            _consoleHelper.WriteUsageText();
+
+            flow.Continue = false;
+        }
+
+        return flow;
+    }
+
+    /// <summary>
+    /// Generate a list of all option values to send to the console
+    /// </summary>
+    /// <returns></returns>
+    private static List<(string longName, string shortName, string description)> GetOptionsAttributeMetadata()
+    {
+        List<(string longName, string shortName, string description)> options = [];
+
+        Type optionsType = typeof(CommandLineOptions);
+
+        foreach (PropertyInfo prop in optionsType.GetProperties())
+        {
+            OptionAttribute? optionAttribute = prop.GetCustomAttribute<OptionAttribute>();
+
+            if (optionAttribute != null)
+            {
+                options.Add((optionAttribute.LongName, optionAttribute.ShortName, optionAttribute.HelpText));
+            }
+        }
+
+        return options;
     }
 
     /// <summary>
     /// Parse the command and any provided arguments
     /// </summary>
-    /// <param name="args"></param>
-    public void RunCommandWithArguments(string[] args)
+    /// <param name="arguments"></param>
+    public void RunCommand(string[] arguments)
     {
+        CommandExecutionFlow? flow = null;
+
         Parser parser = new(settings =>
         {
             settings.AutoHelp = false;
             settings.AutoVersion = false;
         });
 
-        parser.ParseArguments<CommandLineOptions>(args)
-                .WithParsed(opts =>
+        parser.ParseArguments<CommandLineOptions>(arguments)
+              .WithParsed(options =>
                 {
-                    if (opts.Help)
-                    {
-                        _consoleHelper.WriteHelpText();
-
-                        return;
-                    }
-
-                    if (opts.Version)
-                    {
-                        _consoleHelper.WriteVersionText();
-
-                        return;
-                    }
-
-                    RunThreeXPlusOne();
-
+                    flow = HandleOptions(options);
                 })
-                .WithNotParsed(errs =>
-                {
+              .WithNotParsed(errors => { });
 
-                });
+        if (flow != null &&
+            flow.Continue)
+        {
+            RunApp();
+        }
     }
 }
