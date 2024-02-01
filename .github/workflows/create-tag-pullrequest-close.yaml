@@ -26,9 +26,9 @@ jobs:
         script: |
           const version = 'v${{ steps.get_info.outputs.VERSION }}';
           const message = '${{ steps.get_info.outputs.TAG_MESSAGE }}';
-          
-          // Create a tag object
-          const tagObject = await github.git.createTag({
+          const octokit = github; // Ensure you have the correct reference to octokit
+    
+          const tagObject = await octokit.rest.git.createTag({
             owner: context.repo.owner,
             repo: context.repo.repo,
             tag: version,
@@ -36,11 +36,11 @@ jobs:
             object: context.payload.pull_request.merge_commit_sha,
             type: 'commit'
           });
-
-          // Create a reference for the tag
-          await github.git.createRef({
+    
+          await octokit.rest.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: `refs/tags/${version}`,
             sha: tagObject.data.sha
           });
+      
