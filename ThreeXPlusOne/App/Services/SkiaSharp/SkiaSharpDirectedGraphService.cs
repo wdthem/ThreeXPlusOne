@@ -429,37 +429,18 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
     /// </summary>
     public void Dispose()
     {
-        Dispose(true);
+        _image?.Dispose();
+        _image = null;
+
+        _canvas?.Dispose();
+        _canvas = null;
+
+        _surface?.Dispose();
+        _surface = null;
+
+        _nodes = null;
+
         GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Method to handle disposing resources
-    /// </summary>
-    /// <param name="disposing"></param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            _image?.Dispose();
-            _image = null;
-
-            _canvas?.Dispose();
-            _canvas = null;
-
-            _surface?.Dispose();
-            _surface = null;
-
-            _nodes = null;
-        }
-    }
-
-    /// <summary>
-    /// IDisposable finalizer
-    /// </summary>
-    ~SkiaSharpDirectedGraphService()
-    {
-        Dispose(false);
     }
 
     #endregion

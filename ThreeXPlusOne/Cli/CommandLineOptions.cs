@@ -9,4 +9,7 @@ public class CommandLineOptions()
 
     [Option('v', "version", Required = false, HelpText = "Display version information.")]
     public bool Version { get; set; }
+
+    [Option('u', "usage", Required = false, HelpText = "Display usage information.")]
+    public bool Usage { get; set; }
 }

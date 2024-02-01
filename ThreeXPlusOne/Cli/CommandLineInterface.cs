@@ -1,3 +1,4 @@
+using System.Reflection;
 using CommandLine;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.Helpers;
@@ -22,7 +23,7 @@ public class CommandLineInterface(IProcess process,
         }
         catch (Exception e)
         {
-            _consoleHelper.WriteError($"{e.Message}");
+            _consoleHelper.WriteError(e.Message);
         }
     }
 
@@ -37,7 +38,9 @@ public class CommandLineInterface(IProcess process,
 
         if (opts.Help)
         {
-            _consoleHelper.WriteHelpText();
+            List<(string longName, string shortName, string description)> options = GetOptionsAttributeMetadata();
+
+            _consoleHelper.WriteHelpText(options);
 
             flow.Continue = false;
         }
@@ -49,7 +52,33 @@ public class CommandLineInterface(IProcess process,
             flow.Continue = false;
         }
 
+        if (opts.Usage)
+        {
+            _consoleHelper.WriteUsageText();
+
+            flow.Continue = false;
+        }
+
         return flow;
+    }
+
+    private static List<(string longName, string shortName, string description)> GetOptionsAttributeMetadata()
+    {
+        List<(string longName, string shortName, string description)> options = [];
+
+        Type optionsType = typeof(CommandLineOptions);
+
+        foreach (PropertyInfo prop in optionsType.GetProperties())
+        {
+            var optionAttribute = prop.GetCustomAttribute<OptionAttribute>();
+
+            if (optionAttribute != null)
+            {
+                options.Add((optionAttribute.LongName, optionAttribute.ShortName, optionAttribute.HelpText));
+            }
+        }
+
+        return options;
     }
 
     /// <summary>
