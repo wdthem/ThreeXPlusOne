@@ -25,8 +25,11 @@ jobs:
           TAG_MESSAGE_BASE=$(grep -oP '<TagMessage>\K[^<]+' base/ThreeXPlusOne/ThreeXPlusOne.csproj)
           TAG_MESSAGE_HEAD=$(grep -oP '<TagMessage>\K[^<]+' head/ThreeXPlusOne/ThreeXPlusOne.csproj)
           
-          echo "Base Version: $VERSION_BASE Base Tag Message: $TAG_MESSAGE_BASE"
-          echo "Head Version: $VERSION_HEAD Head Tag Message: $TAG_MESSAGE_HEAD"
+          echo "Base Version: $VERSION_BASE"
+          echo "Head Version: $VERSION_HEAD"
+
+          echo "Base Tag Message: $TAG_MESSAGE_BASE"
+          echo "Head Tag Message: $TAG_MESSAGE_HEAD"
 
           # Convert version numbers to an array (split by '.')
           IFS='.' read -r -a VERSION_BASE_ARRAY <<< "$VERSION_BASE"
