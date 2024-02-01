@@ -62,6 +62,10 @@ public class CommandLineInterface(IProcess process,
         return flow;
     }
 
+    /// <summary>
+    /// Generate a list of all option values to send to the console
+    /// </summary>
+    /// <returns></returns>
     private static List<(string longName, string shortName, string description)> GetOptionsAttributeMetadata()
     {
         List<(string longName, string shortName, string description)> options = [];
@@ -70,7 +74,7 @@ public class CommandLineInterface(IProcess process,
 
         foreach (PropertyInfo prop in optionsType.GetProperties())
         {
-            var optionAttribute = prop.GetCustomAttribute<OptionAttribute>();
+            OptionAttribute? optionAttribute = prop.GetCustomAttribute<OptionAttribute>();
 
             if (optionAttribute != null)
             {
