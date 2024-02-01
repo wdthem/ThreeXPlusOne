@@ -179,6 +179,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
     public void WriteUsageText()
     {
+        Type settingsType = typeof(Settings);
         Assembly assembly = Assembly.GetExecutingAssembly();
         string? assemblyName = assembly.GetName().Name;
 
@@ -223,100 +224,34 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteHeading("Explanations and suggested values");
         SetForegroundColor(ConsoleColor.White);
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.NumberOfSeries)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t200 (the total number of series that will run)");
+        lcv = 1;
+        foreach (PropertyInfo property in settingsProperties)
+        {
+            string comma = lcv != settingsProperties.Count ? "," : "";
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.MaxStartingNumber)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t1000 (the highest number any given series can start with)");
+            SetForegroundColor(ConsoleColor.Blue);
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.UseTheseNumbers)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine($"\t\t\"\" (comma-separated list of numbers to run the program with. Overrides {nameof(Settings.NumberOfSeries)} and {nameof(Settings.MaxStartingNumber)})");
+            Write($"  {property.Name}: ");
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.ExcludeTheseNumbers)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t\"\" (comma-separated list of numbers not to use)");
+            SetForegroundColor(ConsoleColor.White);
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.NodeRotationAngle)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t0 (the size of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8)");
+            var attr = property.GetCustomAttribute<SettingInfoAttribute>();
+            if (attr != null)
+            {
+                if (property.PropertyType == typeof(string))
+                {
+                    Write($"\"{attr.SuggestedValue}\"");
+                }
+                else
+                {
+                    Write($"{attr.SuggestedValue}");
+                }
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.NodeRadius)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t\t50 for 2D, 275 for 3D (the radius of the nodes in pixels)");
+                WriteLine($"({attr.Description})");
+            }
 
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.IncludePolygonsAsNodes)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\tfalse (whether or not to use circles or polygons + circles as graph nodes)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.XNodeSpacer)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t\t125 for 2D, 250 for 3D (the space between nodes on the x-axis)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.YNodeSpacer)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t\t125 for 2D, 225 for 3D (the space between nodes on the y-axis)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.DistanceFromViewer)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t200 (for the 3D graph, the distance from the view when applying the perspective transformation)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.GraphDimensions)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t2 (the number of dimensions to render in the graph - 2 or 3)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.LightSourcePosition)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine($"\t\tNone (the position of the light source. Values are: {string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)))})");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.DrawConnections)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\ttrue (whether or not to draw connections between the nodes in the graph - if true can increase image file size substantially)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.DrawNumbersOnNodes)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\ttrue (whether or not to draw the numbers at the center of the node that the node represents)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.GenerateGraph)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\ttrue (whether or not to generate the visualization of the data)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.GenerateHistogram)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\ttrue (whether or not to generate a histogram of the distribution of numbers starting from 1-9)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.GenerateMetadataFile)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\ttrue (whether or not to generate a file with metadata about the run)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.GenerateBackgroundStars)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\tfalse (whether or not to generate random stars in the background of the graph)");
-
-        SetForegroundColor(ConsoleColor.Blue);
-        Write($"  {nameof(Settings.OutputPath)}: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine("\t\t\t\"C:\\path\\to\\save\\image\\\" (the folder in which the output files should be placed)\n");
+            lcv++;
+        }
 
         WriteLine("The above settings are a good starting point from which to experiment\n");
         WriteLine("Alternatively, start with the settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt");
