@@ -10,14 +10,23 @@ on:
     branches: [ "main", "feature/*", "bugfix/*", "refactor/*" ]
 
 jobs:
+  pre-build:
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.skip_check.outputs.skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v3
+        with:
+          github_token: ${{ github.token }}
+          skip_after_successful_duplicate: true
+          paths_ignore: '**.md'
+          do_not_skip: 'pull_request'
+
   build:
     runs-on: ubuntu-latest
-
-    # Condition to prevent running on push if there's an open PR for the branch
-    if: >
-      github.event_name != 'push' ||
-      github.event_name == 'push' && 
-      !contains(github.event.ref, 'refs/pull/')
+    needs: pre-build
+    if: needs.pre-build.outputs.skip != 'true'
 
     steps:
     - uses: actions/checkout@v3
