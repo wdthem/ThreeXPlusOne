@@ -1,4 +1,4 @@
-name: Check Version Increment
+name: Version Increment Check
 
 on: pull_request
 
@@ -21,6 +21,8 @@ jobs:
       run: |
         VERSION_BASE=$(grep -oP '<Version>\K[^<]+' base/ThreeXPlusOne/ThreeXPlusOne.csproj)
         VERSION_HEAD=$(grep -oP '<Version>\K[^<]+' head/ThreeXPlusOne/ThreeXPlusOne.csproj)
+        echo "Base version: $VERSION_BASE"
+        echo "Head version: $VERSION_HEAD"
         if [ "$VERSION_HEAD" = "$VERSION_BASE" ]; then
           echo "Version has not been incremented."
           exit 1
