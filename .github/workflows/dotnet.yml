@@ -10,33 +10,37 @@ on:
     branches: [ "main", "feature/*", "bugfix/*", "refactor/*" ]
 
 jobs:
-  pre-build:
+  check-pr:
     runs-on: ubuntu-latest
     outputs:
-      skip: ${{ steps.skip_check.outputs.skip }}
+      has_open_pr: ${{ steps.pr_check.outputs.has_open_pr }}
     steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@v3
+      - id: pr_check
+        uses: actions/github-script@v5
         with:
-          github_token: ${{ github.token }}
-          skip_after_successful_duplicate: true
-          paths_ignore: '**.md'
-          do_not_skip: 'pull_request'
+          script: |
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${{ github.ref_name }}`,
+              state: 'open'
+            });
+            const hasOpenPr = pullRequests.length > 0 ? 'true' : 'false';
+            core.setOutput('has_open_pr', hasOpenPr);
 
   build:
     runs-on: ubuntu-latest
-    needs: pre-build
-    if: needs.pre-build.outputs.skip != 'true'
-
+    needs: check-pr
+    if: needs.check-pr.outputs.has_open_pr == 'false'
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
