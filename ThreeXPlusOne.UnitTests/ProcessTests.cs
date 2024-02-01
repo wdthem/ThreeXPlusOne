@@ -52,7 +52,7 @@ public class ProcessTests
                                   _consoleHelperMock.Object);
 
         // Act
-        process.Run();
+        process.Run([]);
 
         // Assert
         _algorithmMock.Verify(algorithm => algorithm.Run(It.IsAny<List<int>>()), Times.Once);

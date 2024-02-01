@@ -21,11 +21,13 @@ public class Process(IOptions<Settings> settings,
     /// <summary>
     /// Run the algorithm and data generation based on the user-provided settings
     /// </summary>
-    public void Run()
+    /// <param name="commandParsingMessages"></param>
+    public void Run(List<string> commandParsingMessages)
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
 
         consoleHelper.WriteAsciiArtLogo();
+        consoleHelper.WriteCommandParsingMessages(commandParsingMessages);
         consoleHelper.WriteSettings();
 
         List<int> inputValues = GetInputValues(stopwatch);
@@ -90,7 +92,7 @@ public class Process(IOptions<Settings> settings,
         consoleHelper.WriteHeading("Save settings");
 
         bool confirmedSaveSettings = _generatedRandomNumbers &&
-                                     consoleHelper.ReadYKeyToProceed($"Save generated number series to '{_settings.SettingsFileName}' for reuse?");
+                                     consoleHelper.ReadYKeyToProceed($"Save generated number series to '{_settings.SettingsFilePath}' for reuse?");
 
         fileHelper.WriteSettingsToFile(confirmedSaveSettings);
         consoleHelper.WriteSettingsSavedMessage(confirmedSaveSettings);

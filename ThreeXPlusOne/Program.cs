@@ -2,13 +2,16 @@
 using Microsoft.Extensions.Hosting;
 using ThreeXPlusOne;
 using ThreeXPlusOne.Cli;
+using ThreeXPlusOne.Cli.Models;
+
+CommandExecutionSettings commandExecutionSettings = CommandLineParser.ParseCommand(args);
 
 using IHost host = Host.CreateDefaultBuilder(args)
-                       .ConfigureApplication()
+                       .ConfigureApplication(commandExecutionSettings.SettingsPath)
                        .Build();
 
 using IServiceScope scope = host.Services.CreateScope();
 
-CommandLineInterface cli = scope.ServiceProvider.GetRequiredService<CommandLineInterface>();
+CommandLineRunner clr = scope.ServiceProvider.GetRequiredService<CommandLineRunner>();
 
-cli.RunCommand(host, args);
+clr.RunCommand(commandExecutionSettings);

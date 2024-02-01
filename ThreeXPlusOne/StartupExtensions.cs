@@ -17,47 +17,41 @@ namespace ThreeXPlusOne;
 
 public static class StartupExtensions
 {
-    private static readonly string _settingsFileName = "settings.json";
+    private static readonly string _settingsFileName = "appSettings.json";
 
     /// <summary>
     /// Set up the host required for dependency injection
     /// </summary>
     /// <param name="builder"></param>
+    /// <param name="settingsFilePath"></param>
     /// <returns></returns>
-    public static IHostBuilder ConfigureApplication(this IHostBuilder builder)
+    public static IHostBuilder ConfigureApplication(this IHostBuilder builder,
+                                                    string settingsFilePath)
     {
-        return builder
-                    //.ConfigureAppConfiguration((context, configBuilder) =>
-                    //{
-                    //    configBuilder.AddJsonFile(_settingsFileName, optional: true, reloadOnChange: true);
-                    //})
-                    .ConfigureServices((context, services) =>
-                    {
-                        services.AddServices(context.Configuration);
-                    });
+        return builder.ConfigureAppConfiguration((context, configBuilder) =>
+                        {
+                            if (!string.IsNullOrEmpty(settingsFilePath))
+                            {
+                                configBuilder.AddJsonFile(settingsFilePath, optional: true, reloadOnChange: true);
+                            }
+
+                            if (string.IsNullOrEmpty(settingsFilePath))
+                            {
+                                settingsFilePath = _settingsFileName;
+                            }
+
+                            Dictionary<string, string?> inMemorySettings = new()
+                                                            {
+                                                                { "SettingsFilePath", settingsFilePath }
+                                                            };
+
+                            configBuilder.AddInMemoryCollection(inMemorySettings);
+                        })
+                      .ConfigureServices((context, services) =>
+                        {
+                            services.AddServices(context.Configuration);
+                        });
     }
-
-    private static void BindSettings(this IHost host, string settingsPath)
-    {
-        var configuration = host.Services.GetRequiredService<IConfiguration>();
-        var configurationRoot = configuration as IConfigurationRoot;
-        var builder = new ConfigurationBuilder()
-            .AddJsonFile(settingsPath, optional: false, reloadOnChange: true);
-
-        if (configurationRoot != null)
-        {
-            foreach (var provider in configurationRoot.Providers.ToList())
-            {
-                provider.AddConfiguration(configuration);
-            }
-        }
-
-        var newConfiguration = builder.Build();
-        // Here, you have a couple of options:
-        // 1. Update the DI container with the new configuration instance (complex and not recommended).
-        // 2. Use the new configuration directly where needed (simpler, more practical in many cases).
-    }
-
 
     /// <summary>
     /// Configure all required services for dependency injection
@@ -69,7 +63,7 @@ public static class StartupExtensions
     {
         services.Configure<Settings>(configuration);
 
-        services.AddScoped<CommandLineInterface>();
+        services.AddScoped<CommandLineRunner>();
 
         services.AddScoped<IProcess, Process>();
         services.AddScoped<IAlgorithm, Algorithm>();

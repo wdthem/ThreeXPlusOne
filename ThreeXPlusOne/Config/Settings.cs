@@ -15,7 +15,7 @@ public class Settings
     private string? _uniqueExecutionId;
 
     [JsonIgnore]
-    private readonly string _settingsFileName = "settings.json";
+    private readonly string _settingsFileName = "appSettings.json";
 
     [JsonIgnore]
     private readonly GraphProvider _graphProvider = GraphProvider.SkiaSharp;
@@ -164,6 +164,12 @@ public class Settings
             return _settingsFileName;
         }
     }
+
+    /// <summary>
+    /// The path to the settings file (could be provided by the user)
+    /// </summary>
+    [JsonIgnore]
+    public string SettingsFilePath { get; set; } = "";
 
     /// <summary>
     /// An MD5 hash used to name a directory to store the output for the run of the given number series

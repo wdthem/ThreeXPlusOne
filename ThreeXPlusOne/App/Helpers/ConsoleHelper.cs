@@ -60,7 +60,6 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         WriteHeading("Settings");
 
-        bool settingsFileExists = File.Exists(_settings.SettingsFileName);
         List<PropertyInfo> settingsProperties =
             typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
 
@@ -88,18 +87,30 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         {
             WriteLine($"\nInvalid GraphDimensions ({_settings.GraphDimensions}). Defaulted to {_settings.SanitizedGraphDimensions}.");
         }
+    }
 
-        if (!settingsFileExists)
+    public void WriteCommandParsingMessages(List<string> commandParsingMessages)
+    {
+        if (commandParsingMessages.Count == 0)
         {
-            WriteLine($"\nFile '{_settings.SettingsFileName}' not found. Used defaults.");
+            return;
         }
+
+        WriteHeading("Information");
+
+        foreach (string message in commandParsingMessages)
+        {
+            WriteLine(message);
+        }
+
+        WriteLine("");
     }
 
     public void WriteSettingsSavedMessage(bool savedSettings)
     {
         if (savedSettings)
         {
-            WriteLine($"\nSaved generated numbers to '{_settings.SettingsFileName}'\n");
+            WriteLine($"\nSaved generated numbers to '{_settings.SettingsFilePath}'\n");
         }
         else
         {
@@ -157,7 +168,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
         WriteHeading("Commands");
 
-        foreach ((string longName, string shortName, string description) in commandLineOptions)
+        foreach ((string shortName, string longName, string description) in commandLineOptions)
         {
             WriteLine($"  -{shortName}, --{longName}\t\t{description}");
         }
@@ -185,7 +196,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
         WriteHeading("App settings");
         WriteLine("\nIf no custom settings are supplied, app defaults will be used.\n");
-        WriteLine($"To apply custom settings, place a file called '{_settings.SettingsFileName}' in the same folder as the executable.\n\nIt must have the following content:\n");
+        WriteLine($"To apply custom settings, place a file called '{_settings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_settings.SettingsFileName}' file.\n\nIt must have the following content:\n");
         WriteLine("{");
 
         int lcv = 1;

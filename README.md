@@ -27,15 +27,15 @@ Directed Graphs are drawn via the SkiaSharp library. All output can be toggled o
 
 ## Usage
 
-* In order to provide custom settings to the app, a `settings.json` file must exist in the same folder of either the executable or the DLL, depending on how you run the app. If this file is not supplied, defaults will be used.
+* In order to provide custom settings to the app, a `appSettings.json` file must exist in the same folder of either the executable or the DLL, depending on how you run the app. If this file is not supplied, defaults will be used.
 * Running the executable or DLL with the flag `--help` will output help text regarding the format and suggested starting points for the values of the settings.
-* Run the executable from the command line with no arguments (with or without `settings.json` in place)
+* Run the executable from the command line with no arguments (with or without `appSettings.json` in place)
 * Running the process with the same list of numbers will put any generated output into the same folder name as created by the process itself
 
 ## Performance
 
-* The app creates a canvas large enough to put a bounding box around the maximum x and y node coordinates, and this is influenced by the `MaxStartingNumber`, `NodeRadius`, `XNodeSpacer`, and `YNodeSpacer` values in `settings.json`
-* The higher the value given to `MaxStartingNumber` in `settings.json`, the more likely you will get a very high y-axis maximum, which can make the canvas size very large, and therefore result in large PNG file sizes
+* The app creates a canvas large enough to put a bounding box around the maximum x and y node coordinates, and this is influenced by the `MaxStartingNumber`, `NodeRadius`, `XNodeSpacer`, and `YNodeSpacer` values in `appSettings.json`
+* The higher the value given to `MaxStartingNumber` in `appSettings.json`, the more likely you will get a very high y-axis maximum, which can make the canvas size very large, and therefore result in large PNG file sizes
 *  Generally a `MaxStartingNumber` of under 3000 is manageable, but may still generate a y-axis maximum of ~50,000 pixels
 * The app will show you in the console output the size of the canvas it will generate. If it is too large, you can cancel the image creation.
 * Machines with lower-spec GPUs may fail to render large canvas sizes; your mileage may vary.
