@@ -1,0 +1,46 @@
+name: Tag on PR Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  tag-version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Extract version and tag message
+      id: get_info
+      run: |
+        VERSION=$(grep -oP '<Version>\K[^<]+' ThreeXPlusOne/ThreeXPlusOne.csproj)
+        TAG_MESSAGE=$(grep -oP '<TagMessage>\K[^<]+' ThreeXPlusOne/ThreeXPlusOne.csproj)
+        echo "::set-output name=VERSION::$VERSION"
+        echo "::set-output name=TAG_MESSAGE::$TAG_MESSAGE"
+
+    - name: Create tag
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const version = 'v${{ steps.get_info.outputs.VERSION }}';
+          const message = '${{ steps.get_info.outputs.TAG_MESSAGE }}';
+          
+          // Create a tag object
+          const tagObject = await github.git.createTag({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag: version,
+            message: message,
+            object: context.payload.pull_request.merge_commit_sha,
+            type: 'commit'
+          });
+
+          // Create a reference for the tag
+          await github.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: `refs/tags/${version}`,
+            sha: tagObject.data.sha
+          });
