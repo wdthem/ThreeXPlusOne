@@ -11,4 +11,4 @@ using IServiceScope scope = host.Services.CreateScope();
 
 CommandLineInterface cli = scope.ServiceProvider.GetRequiredService<CommandLineInterface>();
 
-cli.RunCommand(args);
+cli.RunCommand(host, args);

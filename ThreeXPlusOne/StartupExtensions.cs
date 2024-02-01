@@ -26,15 +26,38 @@ public static class StartupExtensions
     /// <returns></returns>
     public static IHostBuilder ConfigureApplication(this IHostBuilder builder)
     {
-        return builder.ConfigureAppConfiguration((context, configBuilder) =>
-                            {
-                                configBuilder.AddJsonFile(_settingsFileName, optional: true, reloadOnChange: true);
-                            })
-                            .ConfigureServices((context, services) =>
-                            {
-                                services.AddServices(context.Configuration);
-                            });
+        return builder
+                    //.ConfigureAppConfiguration((context, configBuilder) =>
+                    //{
+                    //    configBuilder.AddJsonFile(_settingsFileName, optional: true, reloadOnChange: true);
+                    //})
+                    .ConfigureServices((context, services) =>
+                    {
+                        services.AddServices(context.Configuration);
+                    });
     }
+
+    private static void BindSettings(this IHost host, string settingsPath)
+    {
+        var configuration = host.Services.GetRequiredService<IConfiguration>();
+        var configurationRoot = configuration as IConfigurationRoot;
+        var builder = new ConfigurationBuilder()
+            .AddJsonFile(settingsPath, optional: false, reloadOnChange: true);
+
+        if (configurationRoot != null)
+        {
+            foreach (var provider in configurationRoot.Providers.ToList())
+            {
+                provider.AddConfiguration(configuration);
+            }
+        }
+
+        var newConfiguration = builder.Build();
+        // Here, you have a couple of options:
+        // 1. Update the DI container with the new configuration instance (complex and not recommended).
+        // 2. Use the new configuration directly where needed (simpler, more practical in many cases).
+    }
+
 
     /// <summary>
     /// Configure all required services for dependency injection
