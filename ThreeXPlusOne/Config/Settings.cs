@@ -132,7 +132,7 @@ public class Settings
     /// <summary>
     /// Whether or not to draw stars on the graph's background
     /// </summary>
-    [SettingInfo(description: "Whether or not to generate random stars in the background of the graph", suggestedValue: "false")]
+    [SettingInfo(description: "Whether or not to generate random points of white light in the background of the graph", suggestedValue: "false")]
     public bool GenerateBackgroundStars { get; set; }
 
     /// <summary>

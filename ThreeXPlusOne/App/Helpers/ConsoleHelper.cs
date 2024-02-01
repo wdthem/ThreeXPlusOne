@@ -219,9 +219,9 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         }
 
         SetForegroundColor(ConsoleColor.White);
-        WriteLine("}");
+        WriteLine("}\n");
 
-        WriteHeading("Explanations and suggested values");
+        WriteHeading("Suggested values and explanations");
         SetForegroundColor(ConsoleColor.White);
 
         lcv = 1;
@@ -231,30 +231,40 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
             SetForegroundColor(ConsoleColor.Blue);
 
-            Write($"  {property.Name}: ");
+            Write($"  {property.Name}:\t");
+
+            if (property.Name.Length < 12)
+            {
+                Write("\t\t");
+            }
+            else if (property.Name.Length < 22)
+            {
+                Write("\t");
+            }
 
             SetForegroundColor(ConsoleColor.White);
 
-            var attr = property.GetCustomAttribute<SettingInfoAttribute>();
-            if (attr != null)
+            SettingInfoAttribute? attribute = property.GetCustomAttribute<SettingInfoAttribute>();
+
+            if (attribute != null)
             {
                 if (property.PropertyType == typeof(string))
                 {
-                    Write($"\"{attr.SuggestedValue}\"");
+                    Write($"\"{attribute.SuggestedValue}\"");
                 }
                 else
                 {
-                    Write($"{attr.SuggestedValue}");
+                    Write($"{attribute.SuggestedValue}");
                 }
 
-                WriteLine($"({attr.Description})");
+                WriteLine($"\t[{attribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}]");
             }
 
             lcv++;
         }
 
-        WriteLine("The above settings are a good starting point from which to experiment\n");
-        WriteLine("Alternatively, start with the settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt");
+        WriteLine("\n\nThe above settings are a good starting point from which to experiment.\n");
+        WriteLine("Alternatively, start with the settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n");
 
         WriteHeading("Performance");
         WriteLine("Be aware that increasing some settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
