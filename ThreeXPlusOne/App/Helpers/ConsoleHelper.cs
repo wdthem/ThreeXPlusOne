@@ -152,21 +152,8 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
     public void WriteHelpText(List<(string longName, string shortName, string description)> commandLineOptions)
     {
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        string? assemblyName = assembly.GetName().Name;
-
-        WriteHeading($"{assemblyName}: Help");
-
-        WriteHeading("Version");
-        WriteVersionText();
-
-        WriteHeading("Credits");
-        WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
-        WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
-        WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n");
-
-        WriteHeading("GitHub repository");
-        WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
+        WriteAsciiArtLogo();
+        WriteHeading("Help");
 
         WriteHeading("Commands");
 
@@ -174,16 +161,27 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         {
             WriteLine($"  -{shortName}, --{longName}\t\t{description}");
         }
+
         WriteLine("");
+
+        WriteHeading("Version");
+        WriteVersionText();
+
+        WriteHeading("GitHub repository");
+        WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
+
+        WriteHeading("Credits");
+        WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
+        WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
+        WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n\n");
     }
 
     public void WriteUsageText()
     {
         Type settingsType = typeof(Settings);
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        string? assemblyName = assembly.GetName().Name;
 
-        WriteHeading($"{assemblyName}: Usage information");
+        WriteAsciiArtLogo();
+        WriteHeading("Usage information");
 
         WriteHeading("App settings");
         WriteLine("\nIf no custom settings are supplied, app defaults will be used.\n");
