@@ -244,7 +244,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
             SetForegroundColor(ConsoleColor.White);
 
-            SettingInfoAttribute? attribute = property.GetCustomAttribute<SettingInfoAttribute>();
+            SettingAttribute? attribute = property.GetCustomAttribute<SettingAttribute>();
 
             if (attribute != null)
             {
