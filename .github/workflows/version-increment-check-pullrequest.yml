@@ -1,0 +1,52 @@
+name: Version Increment Check
+
+on: pull_request
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout base branch
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.base_ref }}
+        path: base
+
+    - name: Checkout head branch
+      uses: actions/checkout@v2
+      with:
+        path: head
+
+    - name: Compare versions
+      run: |
+          VERSION_BASE=$(grep -oP '<Version>\K[^<]+' base/ThreeXPlusOne/ThreeXPlusOne.csproj)
+          VERSION_HEAD=$(grep -oP '<Version>\K[^<]+' head/ThreeXPlusOne/ThreeXPlusOne.csproj)
+          
+          echo "Base Version: $VERSION_BASE"
+          echo "Head Version: $VERSION_HEAD"
+
+          # Convert version numbers to an array (split by '.')
+          IFS='.' read -r -a VERSION_BASE_ARRAY <<< "$VERSION_BASE"
+          IFS='.' read -r -a VERSION_HEAD_ARRAY <<< "$VERSION_HEAD"
+          
+          # Initial comparison flag
+          version_is_higher=false
+          
+          # Compare each segment of the version number
+          for i in "${!VERSION_BASE_ARRAY[@]}"; do
+            if [[ "${VERSION_HEAD_ARRAY[i]}" -gt "${VERSION_BASE_ARRAY[i]}" ]]; then
+              version_is_higher=true
+              break
+            elif [[ "${VERSION_HEAD_ARRAY[i]}" -lt "${VERSION_BASE_ARRAY[i]}" ]]; then
+              version_is_higher=false
+              break
+            fi
+          done
+          
+          if [ "$version_is_higher" = false ]; then
+            echo "Version must be incremented."
+            exit 1
+          else
+            echo "Version check passed."
+          fi
+      shell: bash
