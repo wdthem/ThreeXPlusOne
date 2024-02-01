@@ -21,9 +21,15 @@ jobs:
       run: |
           VERSION_BASE=$(grep -oP '<Version>\K[^<]+' base/ThreeXPlusOne/ThreeXPlusOne.csproj)
           VERSION_HEAD=$(grep -oP '<Version>\K[^<]+' head/ThreeXPlusOne/ThreeXPlusOne.csproj)
+
+          TAG_MESSAGE_BASE=$(grep -oP '<TagMessage>\K[^<]+' base/ThreeXPlusOne/ThreeXPlusOne.csproj)
+          TAG_MESSAGE_HEAD=$(grep -oP '<TagMessage>\K[^<]+' head/ThreeXPlusOne/ThreeXPlusOne.csproj)
           
           echo "Base Version: $VERSION_BASE"
           echo "Head Version: $VERSION_HEAD"
+
+          echo "Base Tag Message: $TAG_MESSAGE_BASE"
+          echo "Head Tag Message: $TAG_MESSAGE_HEAD"
 
           # Convert version numbers to an array (split by '.')
           IFS='.' read -r -a VERSION_BASE_ARRAY <<< "$VERSION_BASE"
@@ -43,8 +49,9 @@ jobs:
             fi
           done
           
-          if [ "$version_is_higher" = false ]; then
-            echo "Version must be incremented."
+          # Check if version is higher or tag message is different
+          if [ "$version_is_higher" = false ] || [ "$TAG_MESSAGE_HEAD" = "$TAG_MESSAGE_BASE" ]; then
+            echo "Version must be incremented and tag message must be changed."
             exit 1
           else
             echo "Version check passed."
