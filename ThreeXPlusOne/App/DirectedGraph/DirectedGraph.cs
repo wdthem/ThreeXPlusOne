@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Drawing;
+using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
-using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.App.DirectedGraph;
 

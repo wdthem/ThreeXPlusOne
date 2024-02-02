@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Options;
+using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
-using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.UnitTests.Mocks;
 

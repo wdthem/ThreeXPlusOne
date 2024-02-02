@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using ThreeXPlusOne.App.Enums;
 
-namespace ThreeXPlusOne.Config;
+namespace ThreeXPlusOne.App.Config;
 
 /// <summary>
 /// If no settings file is supplied, the defaults set here would be used
