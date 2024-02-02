@@ -9,7 +9,7 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Services.SkiaSharp;
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.Config;
+using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
 
 namespace ThreeXPlusOne;

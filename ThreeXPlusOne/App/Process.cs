@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
-using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.App;
 

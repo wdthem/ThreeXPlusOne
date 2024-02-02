@@ -1,4 +1,4 @@
-namespace ThreeXPlusOne.Config;
+namespace ThreeXPlusOne.App.Config;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public class SettingAttribute(string description, string suggestedValue) : Attribute
