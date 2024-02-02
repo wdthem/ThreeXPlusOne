@@ -4,7 +4,7 @@ using Moq;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Graph;
+using ThreeXPlusOne.App.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Helpers;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;

@@ -1,7 +1,7 @@
 using ThreeXPlusOne.App.Interfaces.Helpers;
 using ThreeXPlusOne.App.Models;
 
-namespace ThreeXPlusOne.App.Graph;
+namespace ThreeXPlusOne.App.DirectedGraph;
 
 public abstract partial class DirectedGraph
 {

@@ -6,7 +6,7 @@ using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.Config;
 
-namespace ThreeXPlusOne.App.Graph;
+namespace ThreeXPlusOne.App.DirectedGraph;
 
 public abstract partial class DirectedGraph(IOptions<Settings> settings,
                                             IEnumerable<IDirectedGraphService> graphServices,

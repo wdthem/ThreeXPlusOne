@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ThreeXPlusOne.CommandLine;
 using ThreeXPlusOne.App;
-using ThreeXPlusOne.App.Graph;
+using ThreeXPlusOne.App.DirectedGraph;
 using ThreeXPlusOne.App.Services;
 using ThreeXPlusOne.App.Interfaces.Graph;
 using ThreeXPlusOne.App.Interfaces.Helpers;

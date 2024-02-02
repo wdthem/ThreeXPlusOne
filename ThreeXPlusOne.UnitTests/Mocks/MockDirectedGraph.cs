@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Options;
-using ThreeXPlusOne.App.Graph;
+using ThreeXPlusOne.App.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Graph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Interfaces.Helpers;

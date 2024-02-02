@@ -86,7 +86,7 @@ public class Settings
     /// The number of dimensions to render in the graph
     /// </summary>
     /// <remarks>2 or 3</remarks>
-    [Setting(description: "The number of dimensions to render in the graph - 2 or 3", suggestedValue: "2")]
+    [Setting(description: "The number of dimensions to render in the graph. Values are: 2, 3", suggestedValue: "2")]
     public int GraphDimensions { get; set; } = 2;
 
     /// <summary>
@@ -116,7 +116,7 @@ public class Settings
     /// <summary>
     /// Whether or not to generate the histogram illustrating Benford's law
     /// </summary>
-    [Setting(description: "Whether or not to generate a histogram of the distribution of numbers starting from 1-9", suggestedValue: "true")]
+    [Setting(description: "Whether or not to generate a histogram of the distribution of numbers starting from 1 to 9", suggestedValue: "true")]
     public bool GenerateHistogram { get; set; } = true;
 
     /// <summary>

@@ -11,11 +11,47 @@ namespace ThreeXPlusOne.App.Helpers;
 
 public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 {
-    private readonly Settings _settings = settings.Value;
-    private static readonly object _consoleLock = new();
-    private CancellationTokenSource? _cancellationTokenSource;
     private int _spinnerCounter = 0;
+    private static readonly object _consoleLock = new();
+    private readonly Settings _settings = settings.Value;
+    private CancellationTokenSource? _cancellationTokenSource;
     private readonly string[] _spinner = ["|", "/", "-", "\\"];
+    private readonly Assembly _assembly = Assembly.GetExecutingAssembly();
+
+    private string TruncateLongSettings(string input, int maxLength = 100)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return input;
+        }
+
+        string[] numbers = input.Split(',');
+        StringBuilder truncated = new();
+        string ellipsis = $" ...see {_settings.SettingsFileName} for full value";
+
+        int lengthWithEllipsis = maxLength - ellipsis.Length;
+
+        foreach (string number in numbers)
+        {
+            // Check if adding this number exceeds the maximum length
+            // +1 for the comma, except for the first number
+            if (truncated.Length + number.Length + (truncated.Length > 0 ? 1 : 0) > lengthWithEllipsis)
+            {
+                truncated.Append(ellipsis);
+
+                break;
+            }
+
+            if (truncated.Length > 0)
+            {
+                truncated.Append(',');
+            }
+
+            truncated.Append(number);
+        }
+
+        return truncated.ToString();
+    }
 
     public void Write(string message)
     {
@@ -170,12 +206,14 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
     public void WriteHelpText(List<(string longName, string shortName, string description, string hint)> commandLineOptions)
     {
+        string? assemblyName = _assembly.GetName().Name;
+
         WriteAsciiArtLogo();
         WriteHeading("Help");
 
         WriteHeading("Commands");
 
-        Write("usage: ThreeXPlusOne ");
+        Write($"usage: {assemblyName} ");
 
         int lcv = 1;
         foreach ((string shortName, string longName, string description, string hint) in commandLineOptions)
@@ -318,10 +356,8 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
     public void WriteVersionText()
     {
-        Assembly assembly = Assembly.GetExecutingAssembly();
-
         AssemblyInformationalVersionAttribute? versionAttribute =
-            assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+            _assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
 
         SetForegroundColor(ConsoleColor.White);
 
@@ -331,7 +367,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
             string[] versionParts = version.Split('+');
             string coreVersion = versionParts[0];
 
-            string? assemblyName = assembly.GetName().Name;
+            string? assemblyName = _assembly.GetName().Name;
 
             WriteLine($"{assemblyName}: v{coreVersion}\n");
         }
@@ -511,15 +547,6 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         SetForegroundColor(ConsoleColor.White);
     }
 
-    public void WriteProcessEnd(TimeSpan timespan)
-    {
-        string elapsedTime = string.Format("{0:00}:{1:00}.{2:000}",
-                                           timespan.Minutes, timespan.Seconds, timespan.Milliseconds);
-
-        WriteHeading($"Process completed");
-        WriteLine($"Execution time: {elapsedTime}\n\n");
-    }
-
     public void ShowSpinningBar()
     {
         long previousMilliseconds = 0;
@@ -562,38 +589,12 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         SetCursorVisibility(true);
     }
 
-    private string TruncateLongSettings(string input, int maxLength = 100)
+    public void WriteProcessEnd(TimeSpan timespan)
     {
-        if (string.IsNullOrEmpty(input))
-        {
-            return input;
-        }
+        string elapsedTime = string.Format("{0:00}:{1:00}.{2:000}",
+                                           timespan.Minutes, timespan.Seconds, timespan.Milliseconds);
 
-        string[] numbers = input.Split(',');
-        StringBuilder truncated = new();
-        string ellipsis = $" ...see {_settings.SettingsFileName} for full value";
-
-        int lengthWithEllipsis = maxLength - ellipsis.Length;
-
-        foreach (string number in numbers)
-        {
-            // Check if adding this number exceeds the maximum length
-            // +1 for the comma, except for the first number
-            if (truncated.Length + number.Length + (truncated.Length > 0 ? 1 : 0) > lengthWithEllipsis)
-            {
-                truncated.Append(ellipsis);
-
-                break;
-            }
-
-            if (truncated.Length > 0)
-            {
-                truncated.Append(',');
-            }
-
-            truncated.Append(number);
-        }
-
-        return truncated.ToString();
+        WriteHeading($"Process completed");
+        WriteLine($"Execution time: {elapsedTime}\n\n");
     }
 }

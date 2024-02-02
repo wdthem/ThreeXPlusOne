@@ -5,7 +5,7 @@ using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.Config;
 
-namespace ThreeXPlusOne.App.Graph;
+namespace ThreeXPlusOne.App.DirectedGraph;
 
 public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
                                            IEnumerable<IDirectedGraphService> graphServices,
