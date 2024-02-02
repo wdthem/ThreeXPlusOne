@@ -1,8 +1,8 @@
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.Helpers;
-using ThreeXPlusOne.Cli.Models;
+using ThreeXPlusOne.CommandLine.Models;
 
-namespace ThreeXPlusOne.Cli;
+namespace ThreeXPlusOne.CommandLine;
 
 public class CommandLineRunner(IProcess process,
                                IConsoleHelper consoleHelper)
@@ -41,9 +41,9 @@ public class CommandLineRunner(IProcess process,
             _consoleHelper.WriteVersionText();
         }
 
-        if (commandExecutionSettings.WriteUsageText)
+        if (commandExecutionSettings.WriteConfigText)
         {
-            _consoleHelper.WriteUsageText();
+            _consoleHelper.WriteConfigText();
         }
 
         //user provided a path, but the path was invalid

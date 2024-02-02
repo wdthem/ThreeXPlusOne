@@ -168,14 +168,33 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         SetForegroundColor(ConsoleColor.White);
     }
 
-    public void WriteHelpText(List<(string longName, string shortName, string description)> commandLineOptions)
+    public void WriteHelpText(List<(string longName, string shortName, string description, string hint)> commandLineOptions)
     {
         WriteAsciiArtLogo();
         WriteHeading("Help");
 
         WriteHeading("Commands");
 
-        foreach ((string shortName, string longName, string description) in commandLineOptions)
+        Write("usage: ThreeXPlusOne ");
+
+        int lcv = 1;
+        foreach ((string shortName, string longName, string description, string hint) in commandLineOptions)
+        {
+            if (lcv % 3 == 0)
+            {
+                Write("\n                     ");
+            }
+
+            string hintText = !string.IsNullOrWhiteSpace(hint) ? $" {hint}" : "";
+
+            Write($"[-{shortName} | --{longName}{hintText}] ");
+
+            lcv++;
+        }
+
+        WriteLine("\n");
+
+        foreach ((string shortName, string longName, string description, string hint) in commandLineOptions)
         {
             string commandText = $"  -{shortName}, --{longName}";
             Write(commandText);
@@ -206,10 +225,10 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n\n");
     }
 
-    public void WriteUsageText()
+    public void WriteConfigText()
     {
         WriteAsciiArtLogo();
-        WriteHeading("Usage information");
+        WriteHeading("Configuration");
 
         WriteHeading("App settings");
         WriteLine("If no custom settings are supplied, app defaults will be used.\n");
@@ -254,10 +273,9 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         SetForegroundColor(ConsoleColor.White);
         WriteLine("}\n");
 
-        WriteHeading("Suggested values and explanations");
+        WriteHeading("Definitions and suggested values");
         SetForegroundColor(ConsoleColor.White);
 
-        lcv = 1;
         foreach (PropertyInfo property in settingsProperties)
         {
             jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
@@ -267,20 +285,9 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
                 continue;
             }
 
-            string comma = lcv != settingsProperties.Count ? "," : "";
-
             SetForegroundColor(ConsoleColor.Blue);
 
-            Write($"  {property.Name}:\t");
-
-            if (property.Name.Length < 12)
-            {
-                Write("\t\t");
-            }
-            else if (property.Name.Length < 22)
-            {
-                Write("\t");
-            }
+            WriteLine($"  {property.Name}");
 
             SetForegroundColor(ConsoleColor.White);
 
@@ -288,22 +295,21 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
             if (settingAttribute != null)
             {
+                WriteLine($"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}");
+
+                Write("  Suggested value: ");
                 if (property.PropertyType == typeof(string))
                 {
-                    Write($"\"{settingAttribute.SuggestedValue}\"");
+                    WriteLine($"\"{settingAttribute.SuggestedValue}\"\n");
                 }
                 else
                 {
-                    Write($"{settingAttribute.SuggestedValue}");
+                    WriteLine($"{settingAttribute.SuggestedValue}\n");
                 }
-
-                WriteLine($"\t[{settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}]");
             }
-
-            lcv++;
         }
 
-        WriteLine("\n\nThe above settings are a good starting point from which to experiment.\n");
+        WriteLine("\nThe above settings are a good starting point from which to experiment.\n");
         WriteLine("Alternatively, start with the settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n");
 
         WriteHeading("Performance");
@@ -331,7 +337,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         }
         else
         {
-            WriteLine("Version information not found\n");
+            WriteLine("Version information not found.\n");
         }
     }
 

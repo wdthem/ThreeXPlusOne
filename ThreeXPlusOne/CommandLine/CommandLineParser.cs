@@ -1,8 +1,8 @@
 using System.Reflection;
 using CommandLine;
-using ThreeXPlusOne.Cli.Models;
+using ThreeXPlusOne.CommandLine.Models;
 
-namespace ThreeXPlusOne.Cli;
+namespace ThreeXPlusOne.CommandLine;
 
 public static class CommandLineParser
 {
@@ -28,9 +28,9 @@ public static class CommandLineParser
             commandExecutionSettings.ContinueExecution = false;
         }
 
-        if (options.Usage)
+        if (options.Config)
         {
-            commandExecutionSettings.WriteUsageText = true;
+            commandExecutionSettings.WriteConfigText = true;
             commandExecutionSettings.ContinueExecution = false;
         }
 
@@ -72,19 +72,22 @@ public static class CommandLineParser
     /// Generate a list of all possible option values to send to the console as help text
     /// </summary>
     /// <returns></returns>
-    private static List<(string shortName, string longName, string description)> GetOptionsAttributeMetadata()
+    private static List<(string shortName, string longName, string description, string hint)> GetOptionsAttributeMetadata()
     {
-        List<(string shortName, string longName, string description)> options = [];
+        List<(string shortName, string longName, string description, string hint)> options = [];
 
         Type optionsType = typeof(CommandLineOptions);
 
         foreach (PropertyInfo propertyInfo in optionsType.GetProperties())
         {
             OptionAttribute? optionAttribute = propertyInfo.GetCustomAttribute<OptionAttribute>();
+            CommandLineHintAttribute? commandLineOptionAttribute = propertyInfo.GetCustomAttribute<CommandLineHintAttribute>();
+
+            string hint = commandLineOptionAttribute != null ? commandLineOptionAttribute.Hint : "";
 
             if (optionAttribute != null)
             {
-                options.Add((optionAttribute.ShortName, optionAttribute.LongName, optionAttribute.HelpText));
+                options.Add((optionAttribute.ShortName, optionAttribute.LongName, optionAttribute.HelpText, hint));
             }
         }
 

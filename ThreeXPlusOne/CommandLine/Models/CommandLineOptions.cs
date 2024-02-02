@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace ThreeXPlusOne.Cli.Models;
+namespace ThreeXPlusOne.CommandLine.Models;
 
 public class CommandLineOptions()
 {
@@ -10,9 +10,10 @@ public class CommandLineOptions()
     [Option('v', "version", Required = false, HelpText = "Display version information.")]
     public bool Version { get; set; }
 
-    [Option('u', "usage", Required = false, HelpText = "Display usage information.")]
-    public bool Usage { get; set; }
+    [Option('c', "config", Required = false, HelpText = "Display config (settings) information.")]
+    public bool Config { get; set; }
 
     [Option('s', "settings", Required = false, HelpText = "Specifies the directory path to the settings file.")]
+    [CommandLineHint(hint: "<directory-path>")]
     public string? SettingsPath { get; set; }
 }
