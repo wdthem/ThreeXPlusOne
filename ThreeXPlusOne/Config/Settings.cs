@@ -6,16 +6,12 @@ using ThreeXPlusOne.App.Enums;
 namespace ThreeXPlusOne.Config;
 
 /// <summary>
-/// Run --help command for additional property documentation
 /// If no settings file is supplied, the defaults set here would be used
 /// </summary>
 public class Settings
 {
     [JsonIgnore]
     private string? _uniqueExecutionId;
-
-    [JsonIgnore]
-    private readonly string _settingsFileName = "appSettings.json";
 
     [JsonIgnore]
     private readonly GraphProvider _graphProvider = GraphProvider.SkiaSharp;
@@ -157,19 +153,13 @@ public class Settings
     /// The name of the file in which these settings are stored
     /// </summary>
     [JsonIgnore]
-    public string SettingsFileName
-    {
-        get
-        {
-            return _settingsFileName;
-        }
-    }
+    public string SettingsFileName { get; set; } = "";
 
     /// <summary>
-    /// The path to the settings file (could be provided by the user)
+    /// The full path to the settings file (could be provided by the user)
     /// </summary>
     [JsonIgnore]
-    public string SettingsFilePath { get; set; } = "";
+    public string SettingsFileFullPath { get; set; } = "";
 
     /// <summary>
     /// An MD5 hash used to name a directory to store the output for the run of the given number series

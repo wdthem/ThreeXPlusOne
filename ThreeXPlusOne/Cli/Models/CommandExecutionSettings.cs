@@ -3,6 +3,16 @@ namespace ThreeXPlusOne.Cli.Models;
 public record CommandExecutionSettings()
 {
     /// <summary>
+    /// The name of the app settings file
+    /// </summary>
+    private readonly string _settingsFileName = "appSettings.json";
+
+    /// <summary>
+    /// The name of the app settings file
+    /// </summary>
+    public string SettingsFileName => _settingsFileName;
+
+    /// <summary>
     /// Whether or not processing should continue
     /// </summary>
     public bool ContinueExecution { get; set; }
@@ -24,9 +34,9 @@ public record CommandExecutionSettings()
     public bool SettingsPathExists { get; set; }
 
     /// <summary>
-    /// The parsed path to the settings file if provided by the user
+    /// The full path to the setting file, which could have been provided by the user
     /// </summary>
-    public string SettingsPath { get; set; } = "";
+    public string SettingsFileFullPath { get; set; } = "";
 
     /// <summary>
     /// Whether or not to output help text
@@ -42,4 +52,9 @@ public record CommandExecutionSettings()
     /// Whether or not to output usage text
     /// </summary>
     public bool WriteUsageText { get; set; }
+
+    /// <summary>
+    /// Messages to surface to the user as a result of parsing the command line commands
+    /// </summary>
+    public List<string> CommandParsingMessages { get; set; } = [];
 }

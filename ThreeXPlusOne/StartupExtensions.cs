@@ -12,13 +12,12 @@ using ThreeXPlusOne.App.Services.SkiaSharp;
 using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.Config;
+using ThreeXPlusOne.Cli.Models;
 
 namespace ThreeXPlusOne;
 
 public static class StartupExtensions
 {
-    private static readonly string _settingsFileName = "appSettings.json";
-
     /// <summary>
     /// Set up the host required for dependency injection
     /// </summary>
@@ -26,23 +25,26 @@ public static class StartupExtensions
     /// <param name="settingsFilePath"></param>
     /// <returns></returns>
     public static IHostBuilder ConfigureApplication(this IHostBuilder builder,
-                                                    string settingsFilePath)
+                                                    CommandExecutionSettings commandExecutionSettings)
     {
         return builder.ConfigureAppConfiguration((context, configBuilder) =>
                         {
-                            if (!string.IsNullOrEmpty(settingsFilePath))
+                            string fullSettingFilePath = commandExecutionSettings.SettingsFileFullPath;
+
+                            if (!string.IsNullOrEmpty(fullSettingFilePath))
                             {
-                                configBuilder.AddJsonFile(settingsFilePath, optional: true, reloadOnChange: true);
+                                configBuilder.AddJsonFile(fullSettingFilePath, optional: true, reloadOnChange: true);
                             }
 
-                            if (string.IsNullOrEmpty(settingsFilePath))
+                            if (string.IsNullOrEmpty(fullSettingFilePath))
                             {
-                                settingsFilePath = _settingsFileName;
+                                fullSettingFilePath = commandExecutionSettings.SettingsFileName;
                             }
 
                             Dictionary<string, string?> inMemorySettings = new()
                                                             {
-                                                                { "SettingsFilePath", settingsFilePath }
+                                                                { "SettingsFileName", commandExecutionSettings.SettingsFileName },
+                                                                { "SettingsFileFullPath", fullSettingFilePath }
                                                             };
 
                             configBuilder.AddInMemoryCollection(inMemorySettings);

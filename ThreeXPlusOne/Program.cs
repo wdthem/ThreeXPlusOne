@@ -7,7 +7,7 @@ using ThreeXPlusOne.Cli.Models;
 CommandExecutionSettings commandExecutionSettings = CommandLineParser.ParseCommand(args);
 
 using IHost host = Host.CreateDefaultBuilder(args)
-                       .ConfigureApplication(commandExecutionSettings.SettingsPath)
+                       .ConfigureApplication(commandExecutionSettings)
                        .Build();
 
 using IServiceScope scope = host.Services.CreateScope();

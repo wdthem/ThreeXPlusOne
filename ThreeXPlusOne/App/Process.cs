@@ -92,7 +92,7 @@ public class Process(IOptions<Settings> settings,
         consoleHelper.WriteHeading("Save settings");
 
         bool confirmedSaveSettings = _generatedRandomNumbers &&
-                                     consoleHelper.ReadYKeyToProceed($"Save generated number series to '{_settings.SettingsFilePath}' for reuse?");
+                                     consoleHelper.ReadYKeyToProceed($"Save generated number series to '{_settings.SettingsFileFullPath}' for reuse?");
 
         fileHelper.WriteSettingsToFile(confirmedSaveSettings);
         consoleHelper.WriteSettingsSavedMessage(confirmedSaveSettings);
