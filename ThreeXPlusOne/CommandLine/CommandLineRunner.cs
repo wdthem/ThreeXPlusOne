@@ -28,6 +28,12 @@ public class CommandLineRunner(IProcess process,
     /// <param name="commandExecutionSettings"></param>
     private void HandleOptions(CommandExecutionSettings commandExecutionSettings)
     {
+        if (commandExecutionSettings.CommandParsingMessages.Count > 0 && !commandExecutionSettings.ContinueExecution)
+        {
+            consoleService.WriteError(string.Join(", ", commandExecutionSettings.CommandParsingMessages));
+            consoleService.WriteCommandUsage(commandExecutionSettings.OptionsMetadata);
+        }
+
         if (commandExecutionSettings.WriteHelpText)
         {
             consoleService.WriteHelpText(commandExecutionSettings.OptionsMetadata);
