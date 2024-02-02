@@ -29,22 +29,22 @@ public static class StartupExtensions
     {
         return builder.ConfigureAppConfiguration((context, configBuilder) =>
                         {
-                            string fullSettingFilePath = commandExecutionSettings.SettingsFileFullPath;
+                            string settingsFileFullPath = commandExecutionSettings.SettingsFileFullPath;
 
-                            if (!string.IsNullOrEmpty(fullSettingFilePath))
+                            if (!string.IsNullOrEmpty(settingsFileFullPath))
                             {
-                                configBuilder.AddJsonFile(fullSettingFilePath, optional: true, reloadOnChange: true);
+                                configBuilder.AddJsonFile(settingsFileFullPath, optional: true, reloadOnChange: true);
                             }
 
-                            if (string.IsNullOrEmpty(fullSettingFilePath))
+                            if (string.IsNullOrEmpty(settingsFileFullPath))
                             {
-                                fullSettingFilePath = commandExecutionSettings.SettingsFileName;
+                                settingsFileFullPath = commandExecutionSettings.SettingsFileName;
                             }
 
                             Dictionary<string, string?> inMemorySettings = new()
                                                             {
-                                                                { "SettingsFileName", commandExecutionSettings.SettingsFileName },
-                                                                { "SettingsFileFullPath", fullSettingFilePath }
+                                                                { nameof(Settings.SettingsFileName), commandExecutionSettings.SettingsFileName },
+                                                                { nameof(Settings.SettingsFileFullPath), settingsFileFullPath }
                                                             };
 
                             configBuilder.AddInMemoryCollection(inMemorySettings);
