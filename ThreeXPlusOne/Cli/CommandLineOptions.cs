@@ -12,4 +12,7 @@ public class CommandLineOptions()
 
     [Option('u', "usage", Required = false, HelpText = "Display usage information.")]
     public bool Usage { get; set; }
+
+    [Option('s', "settings", Required = false, HelpText = "Specifies the directory path to the settings file.")]
+    public string? SettingsPath { get; set; }
 }

@@ -17,23 +17,40 @@ namespace ThreeXPlusOne;
 
 public static class StartupExtensions
 {
-    private static readonly string _settingsFileName = "settings.json";
+    private static readonly string _settingsFileName = "appSettings.json";
 
     /// <summary>
     /// Set up the host required for dependency injection
     /// </summary>
     /// <param name="builder"></param>
+    /// <param name="settingsFilePath"></param>
     /// <returns></returns>
-    public static IHostBuilder ConfigureApplication(this IHostBuilder builder)
+    public static IHostBuilder ConfigureApplication(this IHostBuilder builder,
+                                                    string settingsFilePath)
     {
         return builder.ConfigureAppConfiguration((context, configBuilder) =>
+                        {
+                            if (!string.IsNullOrEmpty(settingsFilePath))
                             {
-                                configBuilder.AddJsonFile(_settingsFileName, optional: true, reloadOnChange: true);
-                            })
-                            .ConfigureServices((context, services) =>
+                                configBuilder.AddJsonFile(settingsFilePath, optional: true, reloadOnChange: true);
+                            }
+
+                            if (string.IsNullOrEmpty(settingsFilePath))
                             {
-                                services.AddServices(context.Configuration);
-                            });
+                                settingsFilePath = _settingsFileName;
+                            }
+
+                            Dictionary<string, string?> inMemorySettings = new()
+                                                            {
+                                                                { "SettingsFilePath", settingsFilePath }
+                                                            };
+
+                            configBuilder.AddInMemoryCollection(inMemorySettings);
+                        })
+                      .ConfigureServices((context, services) =>
+                        {
+                            services.AddServices(context.Configuration);
+                        });
     }
 
     /// <summary>
@@ -46,7 +63,7 @@ public static class StartupExtensions
     {
         services.Configure<Settings>(configuration);
 
-        services.AddScoped<CommandLineInterface>();
+        services.AddScoped<CommandLineRunner>();
 
         services.AddScoped<IProcess, Process>();
         services.AddScoped<IAlgorithm, Algorithm>();

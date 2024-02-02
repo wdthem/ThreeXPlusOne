@@ -39,6 +39,12 @@ public interface IConsoleHelper
     void WriteSettings();
 
     /// <summary>
+    /// Output any non-breaking messages that occurred during command-line parsing
+    /// </summary>
+    /// <param name="commandParsingMessages"></param>
+    void WriteCommandParsingMessages(List<string> commandParsingMessages);
+
+    /// <summary>
     /// Output a message regarding whether the user saved the settings file or not
     /// </summary>
     /// <param name="savedSettings"></param>
