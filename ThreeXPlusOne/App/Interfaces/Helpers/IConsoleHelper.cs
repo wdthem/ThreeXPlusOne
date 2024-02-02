@@ -83,12 +83,12 @@ public interface IConsoleHelper
     /// Output the general help text for the app
     /// </summary>
     /// <param name="commandLineOptions"></param>
-    void WriteHelpText(List<(string longName, string shortName, string description)> commandLineOptions);
+    void WriteHelpText(List<(string longName, string shortName, string description, string hint)> commandLineOptions);
 
     /// <summary>
-    /// Output the usage info for the app
+    /// Output the configuration info for the app
     /// </summary>
-    void WriteUsageText();
+    void WriteConfigText();
 
     /// <summary>
     /// Output the current version of the app

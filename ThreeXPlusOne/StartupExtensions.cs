@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ThreeXPlusOne.Cli;
+using ThreeXPlusOne.CommandLine;
 using ThreeXPlusOne.App;
 using ThreeXPlusOne.App.Graph;
 using ThreeXPlusOne.App.Services;
@@ -12,7 +12,7 @@ using ThreeXPlusOne.App.Services.SkiaSharp;
 using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.Config;
-using ThreeXPlusOne.Cli.Models;
+using ThreeXPlusOne.CommandLine.Models;
 
 namespace ThreeXPlusOne;
 

@@ -1,4 +1,4 @@
-namespace ThreeXPlusOne.Cli.Models;
+namespace ThreeXPlusOne.CommandLine.Models;
 
 public record CommandExecutionSettings()
 {
@@ -21,7 +21,7 @@ public record CommandExecutionSettings()
     /// A list of all possible command line options for use in help text
     /// </summary>
     /// <remarks>Combined into a list to de-couple the app from any command line libraries
-    public List<(string shortName, string longName, string description)> OptionsMetadata { get; set; } = [];
+    public List<(string shortName, string longName, string description, string hint)> OptionsMetadata { get; set; } = [];
 
     /// <summary>
     /// Whether or not the user provided a directory path to the settings file
@@ -49,9 +49,9 @@ public record CommandExecutionSettings()
     public bool WriteVersionText { get; set; }
 
     /// <summary>
-    /// Whether or not to output usage text
+    /// Whether or not to output configuration text
     /// </summary>
-    public bool WriteUsageText { get; set; }
+    public bool WriteConfigText { get; set; }
 
     /// <summary>
     /// Messages to surface to the user as a result of parsing the command line commands
