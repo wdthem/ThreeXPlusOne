@@ -6,8 +6,6 @@ namespace ThreeXPlusOne.Cli;
 
 public static class CommandLineParser
 {
-    private static readonly string _settingsFileName = "appSettings.json";
-
     /// <summary>
     /// Handle command-line options and determine if execution flow should continue
     /// </summary>
@@ -39,7 +37,7 @@ public static class CommandLineParser
         //look for settings file at provided directory
         if (!string.IsNullOrWhiteSpace(options.SettingsPath))
         {
-            commandExecutionSettings.SettingsPath = "";
+            commandExecutionSettings.SettingsFileFullPath = "";
             commandExecutionSettings.SettingsPathProvided = true;
             commandExecutionSettings.SettingsPathExists = false;
 
@@ -47,21 +45,21 @@ public static class CommandLineParser
 
             string directoryPath = GetDirectoryPath(trimmedPath);
 
-            string combinedPath = Path.Combine(directoryPath, _settingsFileName);
+            string combinedPath = Path.Combine(directoryPath, commandExecutionSettings.SettingsFileName);
 
             if (File.Exists(combinedPath))
             {
                 commandExecutionSettings.SettingsPathExists = true;
-                commandExecutionSettings.SettingsPath = combinedPath;
+                commandExecutionSettings.SettingsFileFullPath = combinedPath;
             }
         }
 
         //else look for settings file at current execution directory
-        if (string.IsNullOrWhiteSpace(commandExecutionSettings.SettingsPath))
+        if (string.IsNullOrWhiteSpace(commandExecutionSettings.SettingsFileFullPath))
         {
-            if (File.Exists(_settingsFileName))
+            if (File.Exists(commandExecutionSettings.SettingsFileName))
             {
-                commandExecutionSettings.SettingsPath = _settingsFileName;
+                commandExecutionSettings.SettingsFileFullPath = commandExecutionSettings.SettingsFileName;
             }
 
             //otherwise defaults are used
@@ -136,7 +134,30 @@ public static class CommandLineParser
                 })
               .WithNotParsed(errors =>
               {
+                  foreach (Error? error in errors)
+                  {
+                      string? errorText = null;
 
+                      if (error is UnknownOptionError)
+                      {
+                          string tokenText = error is UnknownOptionError optionError ? $" -{optionError.Token}" : "";
+
+                          errorText = $"Unknown command option{tokenText} ignored.";
+                      }
+                      else
+                      {
+                          errorText = error.ToString();
+                      }
+
+                      if (errorText == null)
+                      {
+                          continue;
+                      }
+
+                      commandExecutionSettings.CommandParsingMessages.Add(errorText);
+                  }
+
+                  commandExecutionSettings.ContinueExecution = true;
               });
 
         return commandExecutionSettings;

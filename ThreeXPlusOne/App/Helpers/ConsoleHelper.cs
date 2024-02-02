@@ -110,7 +110,7 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         if (savedSettings)
         {
-            WriteLine($"\nSaved generated numbers to '{_settings.SettingsFilePath}'\n");
+            WriteLine($"\nSaved generated numbers to '{_settings.SettingsFileFullPath}'\n");
         }
         else
         {

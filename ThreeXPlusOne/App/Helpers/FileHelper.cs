@@ -58,7 +58,7 @@ public class FileHelper(IOptions<Settings> settings,
 
         string jsonString = JsonSerializer.Serialize(_settings, _serializerOptions);
 
-        File.WriteAllText(_settings.SettingsFilePath, jsonString);
+        File.WriteAllText(_settings.SettingsFileFullPath, jsonString);
     }
 
     public bool FileExists(string filePath)

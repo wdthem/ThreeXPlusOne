@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace ThreeXPlusOne.Cli;
+namespace ThreeXPlusOne.Cli.Models;
 
 public class CommandLineOptions()
 {

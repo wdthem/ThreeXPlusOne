@@ -31,8 +31,6 @@ public class CommandLineRunner(IProcess process,
     /// <param name="commandExecutionSettings"></param>
     public void RunCommand(CommandExecutionSettings commandExecutionSettings)
     {
-        List<string> commandParsingMessages = [];
-
         if (commandExecutionSettings.WriteHelpText)
         {
             _consoleHelper.WriteHelpText(commandExecutionSettings.OptionsMetadata);
@@ -50,22 +48,22 @@ public class CommandLineRunner(IProcess process,
 
         if (commandExecutionSettings.SettingsPathProvided && !commandExecutionSettings.SettingsPathExists)
         {
-            commandParsingMessages.Add($"Settings file not found at provided path.");
+            commandExecutionSettings.CommandParsingMessages.Add($"Settings file not found at provided path.");
 
-            if (!string.IsNullOrEmpty(commandExecutionSettings.SettingsPath))
+            if (!string.IsNullOrEmpty(commandExecutionSettings.SettingsFileFullPath))
             {
-                commandParsingMessages.Add("Settings file found at default location (current execution directory).");
+                commandExecutionSettings.CommandParsingMessages.Add("Settings file found at default location (current execution directory).");
             }
         }
 
-        if (string.IsNullOrEmpty(commandExecutionSettings.SettingsPath))
+        if (string.IsNullOrEmpty(commandExecutionSettings.SettingsFileFullPath))
         {
-            commandParsingMessages.Add("Settings file not found at default location. Defaults used instead.");
+            commandExecutionSettings.CommandParsingMessages.Add("Settings file not found at default location. Defaults used instead.");
         }
 
         if (commandExecutionSettings.ContinueExecution)
         {
-            RunApp(commandParsingMessages);
+            RunApp(commandExecutionSettings.CommandParsingMessages);
         }
     }
 }
