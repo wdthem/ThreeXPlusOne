@@ -26,5 +26,5 @@ jobs:
 
     # Conditional execution of the test step
     - name: Test
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
       run: dotnet test --no-build --verbosity normal
