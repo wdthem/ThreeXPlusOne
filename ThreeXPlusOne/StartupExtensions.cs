@@ -22,7 +22,7 @@ public static class StartupExtensions
     /// Set up the host required for dependency injection
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="settingsFilePath"></param>
+    /// <param name="commandExecutionSettings"></param>
     /// <returns></returns>
     public static IHostBuilder ConfigureApplication(this IHostBuilder builder,
                                                     CommandExecutionSettings commandExecutionSettings)
