@@ -86,6 +86,12 @@ public interface IConsoleService
     void WriteHelpText(List<(string longName, string shortName, string description, string hint)> commandLineOptions);
 
     /// <summary>
+    /// Output the command help
+    /// </summary>
+    /// <param name="commandLineOptions"></param>
+    void WriteCommandUsage(List<(string longName, string shortName, string description, string hint)> commandLineOptions);
+
+    /// <summary>
     /// Output the configuration info for the app
     /// </summary>
     void WriteConfigText();

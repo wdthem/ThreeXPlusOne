@@ -145,7 +145,10 @@ public static class CommandLineParser
                       {
                           string tokenText = error is UnknownOptionError optionError ? $" (-{optionError.Token})" : "";
 
-                          errorText = $"Unknown command option ignored{tokenText}.";
+                          errorText = $"Unknown command option{tokenText}.";
+
+                          commandExecutionSettings.OptionsMetadata = GetOptionsAttributeMetadata();
+                          commandExecutionSettings.ContinueExecution = false;
                       }
                       else
                       {
@@ -159,8 +162,6 @@ public static class CommandLineParser
 
                       commandExecutionSettings.CommandParsingMessages.Add(errorText);
                   }
-
-                  commandExecutionSettings.ContinueExecution = true;
               });
 
         return commandExecutionSettings;

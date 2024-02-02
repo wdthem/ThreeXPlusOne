@@ -206,12 +206,28 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
 
     public void WriteHelpText(List<(string longName, string shortName, string description, string hint)> commandLineOptions)
     {
-        string? assemblyName = _assembly.GetName().Name;
-
         WriteAsciiArtLogo();
         WriteHeading("Help");
 
         WriteHeading("Commands");
+
+        WriteCommandUsage(commandLineOptions);
+
+        WriteHeading("Version");
+        WriteVersionText();
+
+        WriteHeading("GitHub repository");
+        WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
+
+        WriteHeading("Credits");
+        WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
+        WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
+        WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n\n");
+    }
+
+    public void WriteCommandUsage(List<(string longName, string shortName, string description, string hint)> commandLineOptions)
+    {
+        string? assemblyName = _assembly.GetName().Name;
 
         Write($"usage: {assemblyName} ");
 
@@ -250,17 +266,6 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
         }
 
         WriteLine("");
-
-        WriteHeading("Version");
-        WriteVersionText();
-
-        WriteHeading("GitHub repository");
-        WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
-
-        WriteHeading("Credits");
-        WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
-        WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
-        WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n\n");
     }
 
     public void WriteConfigText()
