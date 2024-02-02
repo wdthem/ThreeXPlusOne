@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
 using ThreeXPlusOne.App;
@@ -11,9 +12,9 @@ namespace ThreeXPlusOne.UnitTests;
 
 public class ProcessTests
 {
-    private readonly IOptions<Settings> _settings = new OptionsWrapper<Settings>
+    private IOptions<Settings> _settings = new OptionsWrapper<Settings>
     (
-        new Settings { GraphDimensions = 2, NumberOfSeries = 10, MaxStartingNumber = 100 }
+        new Settings { }
     );
 
     private readonly Mock<IAlgorithm> _algorithmMock;
@@ -36,10 +37,20 @@ public class ProcessTests
         _consoleServiceMock = new Mock<IConsoleService>();
     }
 
+    private void ResetSettings()
+    {
+        _settings = new OptionsWrapper<Settings>
+        (
+            new Settings { GraphDimensions = 2, NumberOfSeries = 10, MaxStartingNumber = 100 }
+        );
+    }
+
     [Fact]
     public void Run_Success00()
     {
         // Arrange
+        ResetSettings();
+
         _algorithmMock.Setup(algorithm => algorithm.Run(It.IsAny<List<int>>())).Returns([[32, 16, 8, 4, 2, 1]]);
         _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate 2D visualization?")).Returns(true);
 
@@ -66,5 +77,29 @@ public class ProcessTests
         _consoleServiceMock.Verify(helper => helper.ReadYKeyToProceed(It.IsAny<string>()), Times.Exactly(2));
         _fileServiceMock.Verify(helper => helper.WriteSettingsToFile(It.IsAny<bool>()), Times.Once);
         _consoleServiceMock.Verify(helper => helper.WriteSettingsSavedMessage(It.IsAny<bool>()), Times.Once);
+    }
+
+    /// <summary>
+    /// User-provided input values result in no data to process
+    /// </summary>
+    [Fact]
+    public void Run_Failure00()
+    {
+        // Arrange
+        ResetSettings();
+
+        _settings.Value.UseTheseNumbers = "5,6,7";
+        _settings.Value.ExcludeTheseNumbers = "5,6,7";
+
+        var process = new Process(_settings,
+                                  _algorithmMock.Object,
+                                  _directedGraphs,
+                                  _histogramMock.Object,
+                                  _metadataMock.Object,
+                                  _fileServiceMock.Object,
+                                  _consoleServiceMock.Object);
+
+        // Act + Assert
+        process.Invoking(process => process.Run([])).Should().Throw<Exception>();
     }
 }
