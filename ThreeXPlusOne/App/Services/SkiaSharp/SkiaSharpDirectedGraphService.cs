@@ -2,13 +2,12 @@ using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.Helpers;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
-public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGraphService
+public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirectedGraphService
 {
     private List<DirectedGraphNode>? _nodes;
     private SKSurface? _surface;
@@ -187,7 +186,7 @@ public class SkiaSharpDirectedGraphService(IFileHelper fileHelper) : IDirectedGr
             throw new Exception("Could not save graph. Image object was null");
         }
 
-        string path = fileHelper.GenerateDirectedGraphFilePath();
+        string path = fileService.GenerateDirectedGraphFilePath();
 
         OnStart?.Invoke($"Saving image to {path}... ");
 

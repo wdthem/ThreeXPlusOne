@@ -2,8 +2,8 @@ using Microsoft.Extensions.Options;
 using Moq;
 using ThreeXPlusOne.App;
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Graph;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.Config;
 using Xunit;
 
@@ -21,8 +21,8 @@ public class ProcessTests
     private readonly IEnumerable<IDirectedGraph> _directedGraphs;
     private readonly Mock<IHistogram> _histogramMock;
     private readonly Mock<IMetadata> _metadataMock;
-    private readonly Mock<IFileHelper> _fileHelperMock;
-    private readonly Mock<IConsoleHelper> _consoleHelperMock;
+    private readonly Mock<IFileService> _fileServiceMock;
+    private readonly Mock<IConsoleService> _consoleServiceMock;
 
     public ProcessTests()
     {
@@ -32,8 +32,8 @@ public class ProcessTests
         _directedGraphs = new List<IDirectedGraph> { _directedGraph.Object };
         _histogramMock = new Mock<IHistogram>();
         _metadataMock = new Mock<IMetadata>();
-        _fileHelperMock = new Mock<IFileHelper>();
-        _consoleHelperMock = new Mock<IConsoleHelper>();
+        _fileServiceMock = new Mock<IFileService>();
+        _consoleServiceMock = new Mock<IConsoleService>();
     }
 
     [Fact]
@@ -41,15 +41,15 @@ public class ProcessTests
     {
         // Arrange
         _algorithmMock.Setup(algorithm => algorithm.Run(It.IsAny<List<int>>())).Returns([[32, 16, 8, 4, 2, 1]]);
-        _consoleHelperMock.Setup(consoleHelper => consoleHelper.ReadYKeyToProceed("Generate 2D visualization?")).Returns(true);
+        _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate 2D visualization?")).Returns(true);
 
         var process = new Process(_settings,
                                   _algorithmMock.Object,
                                   _directedGraphs,
                                   _histogramMock.Object,
                                   _metadataMock.Object,
-                                  _fileHelperMock.Object,
-                                  _consoleHelperMock.Object);
+                                  _fileServiceMock.Object,
+                                  _consoleServiceMock.Object);
 
         // Act
         process.Run([]);
@@ -63,8 +63,8 @@ public class ProcessTests
         _directedGraph.Verify(graph => graph.Draw(), Times.Once);
         _histogramMock.Verify(histogram => histogram.GenerateHistogram(It.IsAny<List<List<int>>>()), Times.Once);
         _metadataMock.Verify(metadata => metadata.GenerateMedatadataFile(It.IsAny<List<List<int>>>()), Times.Once);
-        _consoleHelperMock.Verify(helper => helper.ReadYKeyToProceed(It.IsAny<string>()), Times.Exactly(2));
-        _fileHelperMock.Verify(helper => helper.WriteSettingsToFile(It.IsAny<bool>()), Times.Once);
-        _consoleHelperMock.Verify(helper => helper.WriteSettingsSavedMessage(It.IsAny<bool>()), Times.Once);
+        _consoleServiceMock.Verify(helper => helper.ReadYKeyToProceed(It.IsAny<string>()), Times.Exactly(2));
+        _fileServiceMock.Verify(helper => helper.WriteSettingsToFile(It.IsAny<bool>()), Times.Once);
+        _consoleServiceMock.Verify(helper => helper.WriteSettingsSavedMessage(It.IsAny<bool>()), Times.Once);
     }
 }

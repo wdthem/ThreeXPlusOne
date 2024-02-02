@@ -1,20 +1,20 @@
 using FluentAssertions;
 using Moq;
 using ThreeXPlusOne.App;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.Services;
 using Xunit;
 
 namespace ThreeXPlusOne.UnitTests;
 
 public class AlgorithmTests
 {
-    private readonly Mock<IConsoleHelper> _consoleHelperMock;
+    private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly Algorithm _algorithm;
 
     public AlgorithmTests()
     {
-        _consoleHelperMock = new Mock<IConsoleHelper>();
-        _algorithm = new Algorithm(_consoleHelperMock.Object);
+        _consoleServiceMock = new Mock<IConsoleService>();
+        _algorithm = new Algorithm(_consoleServiceMock.Object);
     }
 
     /// <summary>

@@ -2,7 +2,7 @@ using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Models;
 
-namespace ThreeXPlusOne.App.Graph;
+namespace ThreeXPlusOne.App.DirectedGraph;
 
 public abstract partial class DirectedGraph
 {

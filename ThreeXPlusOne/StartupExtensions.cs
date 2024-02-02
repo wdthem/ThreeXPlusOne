@@ -3,13 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ThreeXPlusOne.CommandLine;
 using ThreeXPlusOne.App;
-using ThreeXPlusOne.App.Graph;
+using ThreeXPlusOne.App.DirectedGraph;
 using ThreeXPlusOne.App.Services;
-using ThreeXPlusOne.App.Interfaces.Graph;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Services.SkiaSharp;
-using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.Config;
 using ThreeXPlusOne.CommandLine.Models;
@@ -71,7 +69,7 @@ public static class StartupExtensions
         services.AddScoped<IAlgorithm, Algorithm>();
         services.AddScoped<IHistogram, Histogram>();
         services.AddScoped<IMetadata, Metadata>();
-        services.AddScoped<IFileHelper, FileHelper>();
+        services.AddScoped<IFileService, FileService>();
         services.AddScoped<IHistogramService, SkiaSharpHistogramService>();
         services.AddScoped<ILightSourceService, LightSourceService>();
 
@@ -79,7 +77,7 @@ public static class StartupExtensions
         services.AddScoped<IDirectedGraph, ThreeDimensionalDirectedGraph>();
         services.AddScoped<IDirectedGraphService, SkiaSharpDirectedGraphService>();
 
-        services.AddSingleton<IConsoleHelper, ConsoleHelper>();
+        services.AddSingleton<IConsoleService, ConsoleService>();
 
         return services;
     }

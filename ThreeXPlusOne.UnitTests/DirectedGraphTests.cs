@@ -4,8 +4,7 @@ using Moq;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Graph;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.Config;
@@ -16,7 +15,7 @@ namespace ThreeXPlusOne.UnitTests;
 
 public class DirectedGraphTests
 {
-    private readonly Mock<IConsoleHelper> _consoleHelperMock;
+    private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly Mock<ILightSourceService> _lightSourceServiceMock;
     private readonly IEnumerable<IDirectedGraphService> _graphServicesList;
     private readonly Mock<IDirectedGraphService> _graphServiceMock;
@@ -27,7 +26,7 @@ public class DirectedGraphTests
 
     public DirectedGraphTests()
     {
-        _consoleHelperMock = new Mock<IConsoleHelper>();
+        _consoleServiceMock = new Mock<IConsoleService>();
         _lightSourceServiceMock = new Mock<ILightSourceService>();
         _graphServiceMock = new Mock<IDirectedGraphService>();
         _graphServicesList = [_graphServiceMock.Object];
@@ -42,7 +41,7 @@ public class DirectedGraphTests
         TwoDimensionalDirectedGraph twoDimensionalGraph = new(_settings,
                                                               _graphServicesList,
                                                               _lightSourceServiceMock.Object,
-                                                              _consoleHelperMock.Object);
+                                                              _consoleServiceMock.Object);
 
         // Act + Assert
         twoDimensionalGraph.Invoking(graph => graph.AddSeries(seriesLists)).Should().NotThrow();
@@ -70,7 +69,7 @@ public class DirectedGraphTests
         MockDirectedGraph mockDirectedGraph = new(_settings,
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
-                                                  _consoleHelperMock.Object);
+                                                  _consoleServiceMock.Object);
 
         // Act
         (double xPrime, double yPrime) = mockDirectedGraph.RotateNode_Base(nodeValue, rotationAngle, xCoordinate, yCoordinate);
@@ -93,7 +92,7 @@ public class DirectedGraphTests
         MockDirectedGraph mockDirectedGraph = new(_settings,
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
-                                                  _consoleHelperMock.Object);
+                                                  _consoleServiceMock.Object);
 
         // Act
         mockDirectedGraph.DrawDirectedGraph_Base();

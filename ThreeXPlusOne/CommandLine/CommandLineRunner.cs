@@ -1,15 +1,12 @@
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.CommandLine.Models;
 
 namespace ThreeXPlusOne.CommandLine;
 
 public class CommandLineRunner(IProcess process,
-                               IConsoleHelper consoleHelper)
+                               IConsoleService consoleService)
 {
-    private readonly IProcess _process = process;
-    private readonly IConsoleHelper _consoleHelper = consoleHelper;
-
     /// <summary>
     /// Run the app
     /// </summary>
@@ -17,11 +14,11 @@ public class CommandLineRunner(IProcess process,
     {
         try
         {
-            _process.Run(commandParsingMessages);
+            process.Run(commandParsingMessages);
         }
         catch (Exception e)
         {
-            _consoleHelper.WriteError(e.Message);
+            consoleService.WriteError(e.Message);
         }
     }
 
@@ -33,17 +30,17 @@ public class CommandLineRunner(IProcess process,
     {
         if (commandExecutionSettings.WriteHelpText)
         {
-            _consoleHelper.WriteHelpText(commandExecutionSettings.OptionsMetadata);
+            consoleService.WriteHelpText(commandExecutionSettings.OptionsMetadata);
         }
 
         if (commandExecutionSettings.WriteVersionText)
         {
-            _consoleHelper.WriteVersionText();
+            consoleService.WriteVersionText();
         }
 
         if (commandExecutionSettings.WriteConfigText)
         {
-            _consoleHelper.WriteConfigText();
+            consoleService.WriteConfigText();
         }
 
         //user provided a path, but the path was invalid

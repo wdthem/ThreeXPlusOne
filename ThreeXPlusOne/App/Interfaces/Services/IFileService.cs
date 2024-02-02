@@ -1,6 +1,6 @@
-﻿namespace ThreeXPlusOne.App.Interfaces.Helpers;
+﻿namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IFileHelper
+public interface IFileService
 {
     /// <summary>
     /// Save the Settings object values back to the settings file

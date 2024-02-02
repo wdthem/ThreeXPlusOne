@@ -1,5 +1,5 @@
-using System.Reflection;
 using CommandLine;
+using System.Reflection;
 using ThreeXPlusOne.CommandLine.Models;
 
 namespace ThreeXPlusOne.CommandLine;

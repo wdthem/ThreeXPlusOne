@@ -1,6 +1,6 @@
-namespace ThreeXPlusOne.App.Interfaces.Helpers;
+namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IConsoleHelper
+public interface IConsoleService
 {
     /// <summary>
     /// Issue a Console.Write() command

@@ -1,30 +1,30 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Text;
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.App;
 
 public class Metadata(IOptions<Settings> settings,
-                      IFileHelper fileHelper,
-                      IConsoleHelper consoleHelper) : IMetadata
+                      IFileService fileService,
+                      IConsoleService consoleService) : IMetadata
 {
     private readonly Settings _settings = settings.Value;
 
     public void GenerateMedatadataFile(List<List<int>> seriesData)
     {
-        consoleHelper.WriteHeading("Metadata");
+        consoleService.WriteHeading("Metadata");
 
         if (_settings.GenerateMetadataFile)
         {
-            consoleHelper.Write("Generating metadata... ");
+            consoleService.Write("Generating metadata... ");
 
-            string filePath = fileHelper.GenerateMetadataFilePath();
+            string filePath = fileService.GenerateMetadataFilePath();
 
-            if (fileHelper.FileExists(filePath))
+            if (fileService.FileExists(filePath))
             {
-                consoleHelper.WriteLine("already exists\n");
+                consoleService.WriteLine("already exists\n");
 
                 return;
             }
@@ -35,13 +35,13 @@ public class Metadata(IOptions<Settings> settings,
             content.Append(GenerateTop10LongestSeriesMetadata(seriesData));
             content.Append(GenerateFullSeriesData(seriesData));
 
-            fileHelper.WriteMetadataToFile(content.ToString(), filePath);
+            fileService.WriteMetadataToFile(content.ToString(), filePath);
 
-            consoleHelper.WriteDone();
+            consoleService.WriteDone();
         }
         else
         {
-            consoleHelper.WriteLine("Metadata generation disabled\n");
+            consoleService.WriteLine("Metadata generation disabled\n");
         }
     }
 

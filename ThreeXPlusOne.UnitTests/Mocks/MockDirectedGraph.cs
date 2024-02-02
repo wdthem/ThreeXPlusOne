@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Options;
-using ThreeXPlusOne.App.Graph;
-using ThreeXPlusOne.App.Interfaces.Graph;
+using ThreeXPlusOne.App.DirectedGraph;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
-using ThreeXPlusOne.App.Interfaces.Helpers;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.UnitTests.Mocks;
@@ -10,8 +9,8 @@ namespace ThreeXPlusOne.UnitTests.Mocks;
 public class MockDirectedGraph(IOptions<Settings> settings,
                                IEnumerable<IDirectedGraphService> graphServices,
                                ILightSourceService lightSourceService,
-                               IConsoleHelper consoleHelper)
-                                    : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper),
+                               IConsoleService consoleService)
+                                    : DirectedGraph(settings, graphServices, lightSourceService, consoleService),
                                       IDirectedGraph
 {
     public int Dimensions => 2;

@@ -1,24 +1,23 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.Helpers;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.Config;
 
-namespace ThreeXPlusOne.App.Graph;
+namespace ThreeXPlusOne.App.DirectedGraph;
 
 public abstract partial class DirectedGraph(IOptions<Settings> settings,
                                             IEnumerable<IDirectedGraphService> graphServices,
                                             ILightSourceService lightSourceService,
-                                            IConsoleHelper consoleHelper)
+                                            IConsoleService consoleService)
 {
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;
 
     protected readonly Settings _settings = settings.Value;
-    protected readonly IConsoleHelper _consoleHelper = consoleHelper;
-    protected readonly NodePositions _nodePositions = new(consoleHelper);
+    protected readonly IConsoleService _consoleService = consoleService;
+    protected readonly NodePositions _nodePositions = new(consoleService);
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
 
     /// <summary>
@@ -27,7 +26,7 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
     /// <param name="seriesLists"></param>
     public void AddSeries(List<List<int>> seriesLists)
     {
-        _consoleHelper.Write($"Adding {seriesLists.Count} series to the graph... ");
+        _consoleService.Write($"Adding {seriesLists.Count} series to the graph... ");
 
         foreach (List<int> series in seriesLists)
         {
@@ -84,7 +83,7 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
             }
         }
 
-        _consoleHelper.WriteDone();
+        _consoleService.WriteDone();
     }
 
     /// <summary>
@@ -104,14 +103,14 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
 
         graphService.OnStart = (message) =>
         {
-            _consoleHelper.Write(message);
-            _consoleHelper.ShowSpinningBar();
+            _consoleService.Write(message);
+            _consoleService.ShowSpinningBar();
         };
 
         graphService.OnComplete = () =>
         {
-            _consoleHelper.StopSpinningBar();
-            _consoleHelper.WriteDone();
+            _consoleService.StopSpinningBar();
+            _consoleService.WriteDone();
         };
 
         Task.Run(() => graphService.Initialize([.. _nodes.Values],
@@ -181,7 +180,7 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
         _canvasWidth = (int)(maxX + _settings.XNodeSpacer + _settings.NodeRadius);
         _canvasHeight = (int)(maxY + _settings.YNodeSpacer + _settings.NodeRadius);
 
-        _consoleHelper.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
+        _consoleService.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
     }
 
     /// <summary>
