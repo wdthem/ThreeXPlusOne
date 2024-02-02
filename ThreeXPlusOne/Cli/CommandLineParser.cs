@@ -78,9 +78,9 @@ public static class CommandLineParser
 
         Type optionsType = typeof(CommandLineOptions);
 
-        foreach (PropertyInfo prop in optionsType.GetProperties())
+        foreach (PropertyInfo propertyInfo in optionsType.GetProperties())
         {
-            OptionAttribute? optionAttribute = prop.GetCustomAttribute<OptionAttribute>();
+            OptionAttribute? optionAttribute = propertyInfo.GetCustomAttribute<OptionAttribute>();
 
             if (optionAttribute != null)
             {
@@ -140,9 +140,9 @@ public static class CommandLineParser
 
                       if (error is UnknownOptionError)
                       {
-                          string tokenText = error is UnknownOptionError optionError ? $" -{optionError.Token}" : "";
+                          string tokenText = error is UnknownOptionError optionError ? $" (-{optionError.Token})" : "";
 
-                          errorText = $"Unknown command option{tokenText} ignored.";
+                          errorText = $"Unknown command option ignored{tokenText}.";
                       }
                       else
                       {

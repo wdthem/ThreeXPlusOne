@@ -26,10 +26,10 @@ public class CommandLineRunner(IProcess process,
     }
 
     /// <summary>
-    /// Run the command based on the settings parsed by the CommandLineParser
+    /// Handle any supplied command line options
     /// </summary>
     /// <param name="commandExecutionSettings"></param>
-    public void RunCommand(CommandExecutionSettings commandExecutionSettings)
+    private void HandleOptions(CommandExecutionSettings commandExecutionSettings)
     {
         if (commandExecutionSettings.WriteHelpText)
         {
@@ -46,20 +46,38 @@ public class CommandLineRunner(IProcess process,
             _consoleHelper.WriteUsageText();
         }
 
+        //user provided a path, but the path was invalid
         if (commandExecutionSettings.SettingsPathProvided && !commandExecutionSettings.SettingsPathExists)
         {
             commandExecutionSettings.CommandParsingMessages.Add($"Settings file not found at provided path.");
 
+            //settings were then found at the default location
             if (!string.IsNullOrEmpty(commandExecutionSettings.SettingsFileFullPath))
             {
                 commandExecutionSettings.CommandParsingMessages.Add("Settings file found at default location (current execution directory).");
             }
         }
 
+        //user provided a path, and it was valid
+        if (commandExecutionSettings.SettingsPathProvided && commandExecutionSettings.SettingsPathExists)
+        {
+            commandExecutionSettings.CommandParsingMessages.Add($"Settings file found at provided path: {commandExecutionSettings.SettingsFileFullPath}");
+        }
+
+        //no settings were found at either the provided or default locations
         if (string.IsNullOrEmpty(commandExecutionSettings.SettingsFileFullPath))
         {
             commandExecutionSettings.CommandParsingMessages.Add("Settings file not found at default location. Defaults used instead.");
         }
+    }
+
+    /// <summary>
+    /// Run the command based on the settings parsed by the CommandLineParser
+    /// </summary>
+    /// <param name="commandExecutionSettings"></param>
+    public void RunCommand(CommandExecutionSettings commandExecutionSettings)
+    {
+        HandleOptions(commandExecutionSettings);
 
         if (commandExecutionSettings.ContinueExecution)
         {

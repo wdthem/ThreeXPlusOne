@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Helpers;
@@ -60,11 +61,17 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
     {
         WriteHeading("Settings");
 
-        List<PropertyInfo> settingsProperties =
-            typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
+        List<PropertyInfo> settingsProperties = [.. typeof(Settings).GetProperties()];
 
         foreach (PropertyInfo property in settingsProperties)
         {
+            JsonIgnoreAttribute? attribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
+
+            if (attribute != null)
+            {
+                continue;
+            }
+
             object? value = property.GetValue(_settings, null);
 
             SetForegroundColor(ConsoleColor.Blue);
@@ -170,7 +177,19 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
         foreach ((string shortName, string longName, string description) in commandLineOptions)
         {
-            WriteLine($"  -{shortName}, --{longName}\t\t{description}");
+            string commandText = $"  -{shortName}, --{longName}";
+            Write(commandText);
+
+            if (commandText.Length <= 15)
+            {
+                Write("\t\t");
+            }
+            else
+            {
+                Write("\t");
+            }
+
+            WriteLine($"{description}");
         }
 
         WriteLine("");
@@ -189,24 +208,29 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
     public void WriteUsageText()
     {
-        Type settingsType = typeof(Settings);
-
         WriteAsciiArtLogo();
         WriteHeading("Usage information");
 
         WriteHeading("App settings");
-        WriteLine("\nIf no custom settings are supplied, app defaults will be used.\n");
+        WriteLine("If no custom settings are supplied, app defaults will be used.\n");
         WriteLine($"To apply custom settings, place a file called '{_settings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_settings.SettingsFileName}' file.\n\nIt must have the following content:\n");
         WriteLine("{");
 
         int lcv = 1;
-        List<PropertyInfo> settingsProperties =
-            typeof(Settings).GetProperties().Where(p => p.SetMethod != null && !p.SetMethod.IsPrivate).ToList();
+        List<PropertyInfo> settingsProperties = [.. typeof(Settings).GetProperties()];
+        JsonIgnoreAttribute? jsonAttribute;
 
         SetForegroundColor(ConsoleColor.White);
 
         foreach (PropertyInfo property in settingsProperties)
         {
+            jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
+
+            if (jsonAttribute != null)
+            {
+                continue;
+            }
+
             string comma = lcv != settingsProperties.Count ? "," : "";
 
             SetForegroundColor(ConsoleColor.Blue);
@@ -236,6 +260,13 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
         lcv = 1;
         foreach (PropertyInfo property in settingsProperties)
         {
+            jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
+
+            if (jsonAttribute != null)
+            {
+                continue;
+            }
+
             string comma = lcv != settingsProperties.Count ? "," : "";
 
             SetForegroundColor(ConsoleColor.Blue);
@@ -253,20 +284,20 @@ public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
 
             SetForegroundColor(ConsoleColor.White);
 
-            SettingAttribute? attribute = property.GetCustomAttribute<SettingAttribute>();
+            SettingAttribute? settingAttribute = property.GetCustomAttribute<SettingAttribute>();
 
-            if (attribute != null)
+            if (settingAttribute != null)
             {
                 if (property.PropertyType == typeof(string))
                 {
-                    Write($"\"{attribute.SuggestedValue}\"");
+                    Write($"\"{settingAttribute.SuggestedValue}\"");
                 }
                 else
                 {
-                    Write($"{attribute.SuggestedValue}");
+                    Write($"{settingAttribute.SuggestedValue}");
                 }
 
-                WriteLine($"\t[{attribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}]");
+                WriteLine($"\t[{settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}]");
             }
 
             lcv++;
