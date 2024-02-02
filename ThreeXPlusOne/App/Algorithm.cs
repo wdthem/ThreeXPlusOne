@@ -1,9 +1,9 @@
 ﻿using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App;
 
-public class Algorithm(IConsoleHelper consoleHelper) : IAlgorithm
+public class Algorithm(IConsoleService consoleService) : IAlgorithm
 {
     /// <summary>
     /// Execute the the 3x+1 algorithm for all numbers either supplied by the user or generated randomly
@@ -12,14 +12,14 @@ public class Algorithm(IConsoleHelper consoleHelper) : IAlgorithm
     /// <returns></returns>
     public List<List<int>> Run(List<int> inputValues)
     {
-        consoleHelper.WriteHeading("Algorithm execution");
+        consoleService.WriteHeading("Algorithm execution");
 
         if (inputValues.Count == 0)
         {
             throw new Exception("No input provided to the algorithm");
         }
 
-        consoleHelper.Write($"Running 3x + 1 algorithm on {inputValues.Count} numbers... ");
+        consoleService.Write($"Running 3x + 1 algorithm on {inputValues.Count} numbers... ");
 
         List<List<int>> returnValues = [];
 
@@ -56,7 +56,7 @@ public class Algorithm(IConsoleHelper consoleHelper) : IAlgorithm
             returnValues.Add(outputValues);
         }
 
-        consoleHelper.WriteDone();
+        consoleService.WriteDone();
 
         return returnValues;
     }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using ThreeXPlusOne.App.Interfaces.Graph;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.Config;
@@ -10,8 +9,8 @@ namespace ThreeXPlusOne.App.DirectedGraph;
 public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
                                          IEnumerable<IDirectedGraphService> graphServices,
                                          ILightSourceService lightSourceService,
-                                         IConsoleHelper consoleHelper)
-                                                : DirectedGraph(settings, graphServices, lightSourceService, consoleHelper),
+                                         IConsoleService consoleService)
+                                                : DirectedGraph(settings, graphServices, lightSourceService, consoleService),
                                                   IDirectedGraph
 {
     private int _nodesPositioned = 0;
@@ -65,7 +64,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
             PositionNode(node);
         }
 
-        _consoleHelper.WriteDone();
+        _consoleService.WriteDone();
 
         _nodePositions.MoveNodesToPositiveCoordinates(_nodes,
                                                       _settings.XNodeSpacer,
@@ -181,7 +180,7 @@ public class TwoDimensionalDirectedGraph(IOptions<Settings> settings,
             node.IsPositioned = true;
             _nodesPositioned += 1;
 
-            _consoleHelper.Write($"\r{_nodesPositioned} nodes positioned... ");
+            _consoleService.Write($"\r{_nodesPositioned} nodes positioned... ");
 
             foreach (DirectedGraphNode childNode in node.Children)
             {

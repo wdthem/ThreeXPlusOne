@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Helpers;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.Config;
 
@@ -8,31 +7,31 @@ namespace ThreeXPlusOne.App;
 
 public class Histogram(IOptions<Settings> settings,
                        IHistogramService histogramService,
-                       IFileHelper fileHelper,
-                       IConsoleHelper consoleHelper) : IHistogram
+                       IFileService fileService,
+                       IConsoleService consoleService) : IHistogram
 {
     private readonly Settings _settings = settings.Value;
 
     public void GenerateHistogram(List<List<int>> seriesData)
     {
-        consoleHelper.WriteHeading("Histogram");
+        consoleService.WriteHeading("Histogram");
 
         if (_settings.GenerateHistogram)
         {
-            consoleHelper.Write("Generating histogram... ");
+            consoleService.Write("Generating histogram... ");
         }
         else
         {
-            consoleHelper.WriteLine("Histogram generation disabled\n");
+            consoleService.WriteLine("Histogram generation disabled\n");
 
             return;
         }
 
-        string filePath = fileHelper.GenerateHistogramFilePath();
+        string filePath = fileService.GenerateHistogramFilePath();
 
-        if (fileHelper.FileExists(filePath))
+        if (fileService.FileExists(filePath))
         {
-            consoleHelper.WriteLine("already exists\n");
+            consoleService.WriteLine("already exists\n");
 
             return;
         }
@@ -47,7 +46,7 @@ public class Histogram(IOptions<Settings> settings,
         histogramService.SaveImage(filePath);
         histogramService.Dispose();
 
-        consoleHelper.WriteDone();
+        consoleService.WriteDone();
     }
 
     /// <summary>

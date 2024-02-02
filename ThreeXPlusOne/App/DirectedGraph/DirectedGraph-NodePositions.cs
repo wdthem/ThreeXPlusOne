@@ -1,4 +1,4 @@
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph;
@@ -8,7 +8,7 @@ public abstract partial class DirectedGraph
     /// <summary>
     /// Nested class to encapsulate all shared methods that manipulate node position
     /// </summary>
-    protected class NodePositions(IConsoleHelper consoleHelper)
+    protected class NodePositions(IConsoleService consoleService)
     {
         private readonly Dictionary<(int, int), List<(double X, double Y)>> _nodeGrid = [];
 
@@ -25,7 +25,7 @@ public abstract partial class DirectedGraph
                                                    double yNodeSpacer,
                                                    double nodeRadius)
         {
-            consoleHelper.Write("Adjusting node positions to fit on canvas... ");
+            consoleService.Write("Adjusting node positions to fit on canvas... ");
 
             double minX = nodes.Values.Min(node => node.Position.X);
             double minY = nodes.Values.Min(node => node.Position.Y);
@@ -39,7 +39,7 @@ public abstract partial class DirectedGraph
                                  node.Position.Y + translationY);
             }
 
-            consoleHelper.WriteDone();
+            consoleService.WriteDone();
         }
 
         /// <summary>

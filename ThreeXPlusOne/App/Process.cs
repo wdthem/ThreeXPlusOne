@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Graph;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.Config;
 
 namespace ThreeXPlusOne.App;
@@ -12,8 +12,8 @@ public class Process(IOptions<Settings> settings,
                      IEnumerable<IDirectedGraph> directedGraphs,
                      IHistogram histogram,
                      IMetadata metadata,
-                     IFileHelper fileHelper,
-                     IConsoleHelper consoleHelper) : IProcess
+                     IFileService fileService,
+                     IConsoleService consoleService) : IProcess
 {
     private readonly Settings _settings = settings.Value;
     private bool _generatedRandomNumbers = false;
@@ -26,9 +26,9 @@ public class Process(IOptions<Settings> settings,
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        consoleHelper.WriteAsciiArtLogo();
-        consoleHelper.WriteCommandParsingMessages(commandParsingMessages);
-        consoleHelper.WriteSettings();
+        consoleService.WriteAsciiArtLogo();
+        consoleService.WriteCommandParsingMessages(commandParsingMessages);
+        consoleService.WriteSettings();
 
         List<int> inputValues = GetInputValues(stopwatch);
         List<List<int>> seriesLists = algorithm.Run(inputValues);
@@ -42,7 +42,7 @@ public class Process(IOptions<Settings> settings,
 
         stopwatch.Stop();
 
-        consoleHelper.WriteProcessEnd(stopwatch.Elapsed);
+        consoleService.WriteProcessEnd(stopwatch.Elapsed);
     }
 
     /// <summary>
@@ -55,11 +55,11 @@ public class Process(IOptions<Settings> settings,
                                              .Where(graph => graph.Dimensions == _settings.SanitizedGraphDimensions)
                                              .First();
 
-        consoleHelper.WriteHeading($"Directed graph ({graph.Dimensions}D)");
+        consoleService.WriteHeading($"Directed graph ({graph.Dimensions}D)");
 
         if (!_settings.GenerateGraph)
         {
-            consoleHelper.WriteLine("Graph generation disabled\n");
+            consoleService.WriteLine("Graph generation disabled\n");
 
             return;
         }
@@ -70,16 +70,16 @@ public class Process(IOptions<Settings> settings,
         graph.SetCanvasDimensions();
 
         //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
-        bool confirmedGenerateGraph = consoleHelper.ReadYKeyToProceed($"Generate {graph.Dimensions}D visualization?");
+        bool confirmedGenerateGraph = consoleService.ReadYKeyToProceed($"Generate {graph.Dimensions}D visualization?");
 
         if (!confirmedGenerateGraph)
         {
-            consoleHelper.WriteLine("\nGraph generation cancelled\n");
+            consoleService.WriteLine("\nGraph generation cancelled\n");
 
             return;
         }
 
-        consoleHelper.WriteLine("");
+        consoleService.WriteLine("");
 
         graph.Draw();
     }
@@ -89,13 +89,13 @@ public class Process(IOptions<Settings> settings,
     /// </summary>
     private void SaveSettings()
     {
-        consoleHelper.WriteHeading("Save settings");
+        consoleService.WriteHeading("Save settings");
 
         bool confirmedSaveSettings = _generatedRandomNumbers &&
-                                     consoleHelper.ReadYKeyToProceed($"Save generated number series to '{_settings.SettingsFileFullPath}' for reuse?");
+                                     consoleService.ReadYKeyToProceed($"Save generated number series to '{_settings.SettingsFileFullPath}' for reuse?");
 
-        fileHelper.WriteSettingsToFile(confirmedSaveSettings);
-        consoleHelper.WriteSettingsSavedMessage(confirmedSaveSettings);
+        fileService.WriteSettingsToFile(confirmedSaveSettings);
+        consoleService.WriteSettingsSavedMessage(confirmedSaveSettings);
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ public class Process(IOptions<Settings> settings,
     /// <exception cref="Exception"></exception>
     private List<int> GetInputValues(Stopwatch stopwatch)
     {
-        consoleHelper.WriteHeading("Series data");
+        consoleService.WriteHeading("Series data");
 
         List<int> inputValues = [];
 
@@ -125,12 +125,12 @@ public class Process(IOptions<Settings> settings,
 
             _generatedRandomNumbers = false;
 
-            consoleHelper.WriteLine($"Using series numbers defined in {nameof(_settings.UseTheseNumbers)} apart from any excluded in {nameof(_settings.ExcludeTheseNumbers)}\n");
+            consoleService.WriteLine($"Using series numbers defined in {nameof(_settings.UseTheseNumbers)} apart from any excluded in {nameof(_settings.ExcludeTheseNumbers)}\n");
 
             return inputValues;
         }
 
-        consoleHelper.Write($"Generating {_settings.NumberOfSeries} random numbers from 1 to {_settings.MaxStartingNumber}... ");
+        consoleService.Write($"Generating {_settings.NumberOfSeries} random numbers from 1 to {_settings.MaxStartingNumber}... ");
 
         while (inputValues.Count < _settings.NumberOfSeries)
         {
@@ -141,7 +141,7 @@ public class Process(IOptions<Settings> settings,
                     throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_settings.ExcludeTheseNumbers)}");
                 }
 
-                consoleHelper.WriteLine($"\nGave up generating {_settings.NumberOfSeries} random numbers. Generated {inputValues.Count}\n");
+                consoleService.WriteLine($"\nGave up generating {_settings.NumberOfSeries} random numbers. Generated {inputValues.Count}\n");
 
                 break;
             }
@@ -163,7 +163,7 @@ public class Process(IOptions<Settings> settings,
         _settings.UseTheseNumbers = string.Join(", ", inputValues);
         _generatedRandomNumbers = true;
 
-        consoleHelper.WriteDone();
+        consoleService.WriteDone();
 
         return inputValues;
     }

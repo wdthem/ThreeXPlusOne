@@ -4,12 +4,12 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.Config;
 
-namespace ThreeXPlusOne.App.Helpers;
+namespace ThreeXPlusOne.App.Services;
 
-public class ConsoleHelper(IOptions<Settings> settings) : IConsoleHelper
+public class ConsoleService(IOptions<Settings> settings) : IConsoleService
 {
     private int _spinnerCounter = 0;
     private static readonly object _consoleLock = new();

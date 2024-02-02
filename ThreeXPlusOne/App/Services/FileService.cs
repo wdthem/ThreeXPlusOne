@@ -1,13 +1,13 @@
 ﻿using System.Reflection;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
-using ThreeXPlusOne.App.Interfaces.Helpers;
+using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.Config;
 
-namespace ThreeXPlusOne.App.Helpers;
+namespace ThreeXPlusOne.App.Services;
 
-public class FileHelper(IOptions<Settings> settings,
-                        IConsoleHelper consoleHelper) : IFileHelper
+public class FileService(IOptions<Settings> settings,
+                         IConsoleService consoleService) : IFileService
 {
     private readonly Settings _settings = settings.Value;
     private readonly string _prefix = Assembly.GetExecutingAssembly().GetName().Name!;
@@ -76,7 +76,7 @@ public class FileHelper(IOptions<Settings> settings,
         }
         catch (Exception ex)
         {
-            consoleHelper.WriteError(ex.Message);
+            consoleService.WriteError(ex.Message);
         }
     }
 
