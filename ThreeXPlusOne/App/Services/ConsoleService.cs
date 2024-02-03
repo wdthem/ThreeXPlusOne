@@ -53,11 +53,74 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
         return truncated.ToString();
     }
 
-    public void Write(string message)
+    private void ScrollOutput(string outputType, List<(ConsoleColor Color, string Text)> lines)
+    {
+        int currentLine = 0;
+
+        WriteLine($"Press a key to scroll {outputType} text, 'q' to output all...");
+
+        int startLeft = Console.CursorLeft;
+        int startTop = Console.CursorTop;
+
+        while (true)
+        {
+            if (Console.KeyAvailable)
+            {
+                ConsoleKey key = Console.ReadKey(intercept: true).Key;
+
+                if (currentLine == 0)
+                {
+                    SetCursorPosition(startLeft, startTop - 1);
+                    Write(new string(' ', Console.WindowWidth)); // Overwrite the line with spaces
+                    SetCursorPosition(startLeft, startTop - 1);
+                }
+
+                if (key == ConsoleKey.Q)
+                {
+                    //output all remaining lines in one go
+                    for (int lcv = currentLine; lcv < lines.Count; lcv++)
+                    {
+                        SetForegroundColor(lines[lcv].Color);
+                        WriteLine(lines[lcv].Text);
+                    }
+
+                    break;
+                }
+
+                if (currentLine < lines.Count)
+                {
+                    SetForegroundColor(lines[currentLine].Color);
+                    WriteLine(lines[currentLine].Text);
+
+                    currentLine++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            Thread.Sleep(100);
+        }
+    }
+
+    public void Write(string message, bool delay = false)
     {
         lock (_consoleLock)
         {
-            Console.Write(message);
+            if (!delay)
+            {
+                Console.Write(message);
+
+                return;
+            }
+
+            foreach (char character in message.ToCharArray())
+            {
+                Console.Write(character.ToString());
+
+                Thread.Sleep(Random.Shared.Next(1, 8));
+            }
         }
     }
 
@@ -188,7 +251,7 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
 
     public void WriteSeparator()
     {
-        WriteLine("\n------------------------------------------------------------------------------------");
+        Write("\n------------------------------------------------------------------------------------\n", true);
     }
 
     public void WriteHeading(string headerText)
@@ -317,7 +380,8 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
         WriteLine("}\n");
 
         WriteHeading("Definitions and suggested values");
-        SetForegroundColor(ConsoleColor.White);
+
+        List<(ConsoleColor, string)> lines = [];
 
         foreach (PropertyInfo property in settingsProperties)
         {
@@ -328,32 +392,33 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
                 continue;
             }
 
-            SetForegroundColor(ConsoleColor.Blue);
-
-            WriteLine($"  {property.Name}");
-
-            SetForegroundColor(ConsoleColor.White);
+            lines.Add((ConsoleColor.Blue, $"  {property.Name}"));
 
             SettingAttribute? settingAttribute = property.GetCustomAttribute<SettingAttribute>();
 
             if (settingAttribute != null)
             {
-                WriteLine($"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}");
+                lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}"));
 
-                Write("  Suggested value: ");
+                string suggestedValueText = "  Suggested value: ";
+
                 if (property.PropertyType == typeof(string))
                 {
-                    WriteLine($"\"{settingAttribute.SuggestedValue}\"\n");
+                    suggestedValueText += $"\"{settingAttribute.SuggestedValue}\"\n";
                 }
                 else
                 {
-                    WriteLine($"{settingAttribute.SuggestedValue}\n");
+                    suggestedValueText += $"{settingAttribute.SuggestedValue}\n";
                 }
+
+                lines.Add((ConsoleColor.White, suggestedValueText));
             }
         }
 
-        WriteLine("\nThe above settings are a good starting point from which to experiment.\n");
-        WriteLine("Alternatively, start with the settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n");
+        lines.Add((ConsoleColor.White, "\nThe above settings are a good starting point from which to experiment.\n"));
+        lines.Add((ConsoleColor.White, "Alternatively, start with the settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n"));
+
+        ScrollOutput("settings", lines);
 
         WriteHeading("Performance");
         WriteLine("Be aware that increasing some settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
@@ -389,37 +454,37 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
         //line 1
         Write("\n\n_____");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\\\\\\\\\\\\\\\");
+        Write("/\\\\\\\\\\\\\\\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_______________________________________________________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\");
+        Write("/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         WriteLine("_        ");
 
         //line 2
         Write(" ___");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\///////\\\\\\");
+        Write("/\\\\\\///////\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("__________________________________________________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\\\\\\\\\");
+        Write("/\\\\\\\\\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         WriteLine("_       ");
 
         //line 3
         Write("  __");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///");
+        Write("\\///", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("______");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\");
+        Write("/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_______________________________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\");
+        Write("/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_______________");
         SetForegroundColor(ConsoleColor.DarkYellow);
@@ -430,125 +495,127 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
         //line 4
         Write("   _________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\//");
+        Write("/\\\\\\//", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("____");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\");
+        Write("/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("____");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\");
+        Write("/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_______________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\");
+        Write("\\/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("___________________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\");
+        Write("\\/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         WriteLine("_     ");
 
         //line 5
         Write("    ________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\////\\\\\\");
+        Write("\\////\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("__");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///\\\\\\/\\\\\\/");
+        Write("\\///\\\\\\/\\\\\\/", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_____________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\\\\\\\\\\\\\\\\\");
+        Write("/\\\\\\\\\\\\\\\\\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_______________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\");
+        Write("\\/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         WriteLine("_    ");
 
         //line 6
         Write("     ___________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\//\\\\\\");
+        Write("\\//\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("___");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///\\\\\\/");
+        Write("\\///\\\\\\/", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("______________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/////\\\\\\///");
+        Write("\\/////\\\\\\///", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("________________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\");
+        Write("\\/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         WriteLine("_   ");
 
         //line 7
         Write("      __");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\");
+        Write("/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("______");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\");
+        Write("/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_____");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\/\\\\\\");
+        Write("/\\\\\\/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_________________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\");
+        Write("\\/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("___________________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\");
+        Write("\\/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         WriteLine("_  ");
 
         //line 8
         Write("       _");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///\\\\\\\\\\\\\\\\\\/");
+        Write("\\///\\\\\\\\\\\\\\\\\\/", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("____");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\/\\///\\\\\\");
+        Write("/\\\\\\/\\///\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_______________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///");
+        Write("\\///", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("____________________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\");
+        Write("\\/\\\\\\", true);
         SetForegroundColor(ConsoleColor.Blue);
         WriteLine("_ ");
 
         //line 9
         Write("        ___");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/////////");
+        Write("\\/////////", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("_____");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///");
+        Write("\\///", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("____");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///");
+        Write("\\///", true);
         SetForegroundColor(ConsoleColor.Blue);
         Write("________________________________________");
         SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///");
+        Write("\\///", true);
         SetForegroundColor(ConsoleColor.Blue);
         WriteLine("_ ");
 
+        Write("                                                                                    ", true);
+        WriteLine("");
         SetForegroundColor(ConsoleColor.White);
     }
 
