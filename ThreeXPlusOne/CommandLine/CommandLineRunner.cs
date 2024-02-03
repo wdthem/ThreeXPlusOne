@@ -80,7 +80,14 @@ public class CommandLineRunner(IProcess process,
     /// <param name="commandExecutionSettings"></param>
     public void RunCommand(CommandExecutionSettings commandExecutionSettings)
     {
-        HandleOptions(commandExecutionSettings);
+        try
+        {
+            HandleOptions(commandExecutionSettings);
+        }
+        catch (Exception e)
+        {
+            consoleService.WriteError(e.Message);
+        }
 
         if (commandExecutionSettings.ContinueExecution)
         {

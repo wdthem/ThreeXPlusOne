@@ -6,7 +6,8 @@ public interface IConsoleService
     /// Issue a Console.Write() command
     /// </summary>
     /// <param name="message"></param>
-    void Write(string message);
+    /// <param name="delay"></param>
+    void Write(string message, bool delay = false);
 
     /// <summary>
     /// Issue a Console.WriteLine() command
