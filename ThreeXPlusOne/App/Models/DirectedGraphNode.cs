@@ -1,11 +1,11 @@
 ﻿namespace ThreeXPlusOne.App.Models;
 
-public record DirectedGraphNode(int numberValue)
+public record DirectedGraphNode(int NumberValue)
 {
     /// <summary>
     /// The number value of the node from the series of generated numbers
     /// </summary>
-    public int NumberValue { get; set; } = numberValue;
+    public int NumberValue { get; set; } = NumberValue;
 
     /// <summary>
     /// The node's parent node
