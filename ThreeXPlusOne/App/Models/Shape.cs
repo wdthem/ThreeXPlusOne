@@ -26,7 +26,7 @@ public record Shape()
     public ((double X, double Y) Center, double RadiusX, double RadiusY) EllipseConfig { get; set; }
 
     /// <summary>
-    /// The radius and color of the node's halo when a light source exists
+    /// The radius and colour of the node's halo when a light source exists
     /// </summary>
     public (double Radius, Color Color) HaloConfig { get; set; } = (0, Color.Empty);
 
