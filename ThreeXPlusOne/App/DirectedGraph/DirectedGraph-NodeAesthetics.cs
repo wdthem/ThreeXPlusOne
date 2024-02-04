@@ -221,11 +221,11 @@ public abstract partial class DirectedGraph
             {
                 if (hexCodeRegex.IsMatch(rawCode))
                 {
-                    Color colorFromHex = ColorTranslator.FromHtml(rawCode);
+                    Color colorFromHexCode = ColorTranslator.FromHtml(rawCode);
 
-                    if (colorFromHex != Color.Empty)
+                    if (colorFromHexCode != Color.Empty)
                     {
-                        colors.Add(colorFromHex);
+                        colors.Add(colorFromHexCode);
                     }
                 }
             }
