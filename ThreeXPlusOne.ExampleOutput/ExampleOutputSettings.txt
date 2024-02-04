@@ -9,6 +9,7 @@ Use the following settings to achieve the results shown in the Example Output im
   "ExcludeTheseNumbers": "",
   "NodeRotationAngle": 0,
   "NodeRadius": 50,
+  "NodeColors": "",
   "IncludePolygonsAsNodes": true,
   "XNodeSpacer": 125,
   "YNodeSpacer": 125,
@@ -17,9 +18,6 @@ Use the following settings to achieve the results shown in the Example Output im
   "LightSourcePosition": "None",
   "DrawConnections": false,
   "DrawNumbersOnNodes": true,
-  "GenerateGraph": true,
-  "GenerateHistogram": false,
-  "GenerateMetadataFile": true,
   "GenerateBackgroundStars": false,
   "OutputPath": ""
 }
@@ -32,6 +30,7 @@ Use the following settings to achieve the results shown in the Example Output im
   "ExcludeTheseNumbers": "",
   "NodeRotationAngle": 0.8,
   "NodeRadius": 50,
+  "NodeColors": "",
   "IncludePolygonsAsNodes": true,
   "XNodeSpacer": 125,
   "YNodeSpacer": 125,
@@ -40,9 +39,6 @@ Use the following settings to achieve the results shown in the Example Output im
   "LightSourcePosition": "None",
   "DrawConnections": false,
   "DrawNumbersOnNodes": true,
-  "GenerateGraph": true,
-  "GenerateHistogram": false,
-  "GenerateMetadataFile": true,
   "GenerateBackgroundStars": false,
   "OutputPath": ""
 }
@@ -55,6 +51,7 @@ Use the following settings to achieve the results shown in the Example Output im
   "ExcludeTheseNumbers": "",
   "NodeRotationAngle": 0.8,
   "NodeRadius": 275,
+  "NodeColors": "",
   "IncludePolygonsAsNodes": true,
   "XNodeSpacer": 250,
   "YNodeSpacer": 225,
@@ -63,9 +60,6 @@ Use the following settings to achieve the results shown in the Example Output im
   "LightSourcePosition": "None",
   "DrawConnections": false,
   "DrawNumbersOnNodes": true,
-  "GenerateGraph": true,
-  "GenerateHistogram": false,
-  "GenerateMetadataFile": true,
   "GenerateBackgroundStars": false,
   "OutputPath": ""
 }

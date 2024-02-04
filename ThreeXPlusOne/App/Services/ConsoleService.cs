@@ -119,7 +119,7 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
             {
                 Console.Write(character.ToString());
 
-                Thread.Sleep(Random.Shared.Next(1, 8));
+                Thread.Sleep(Random.Shared.Next(1, 6));
             }
         }
     }
