@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Text.RegularExpressions;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Models;
 
@@ -9,8 +10,13 @@ public abstract partial class DirectedGraph
     /// <summary>
     /// Nested class to encapsulate all shared methods that manipulate node colour, shape and orientation
     /// </summary>
-    protected class NodeAesthetics()
+    protected partial class NodeAesthetics()
     {
+        [GeneratedRegex("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")]
+        private static partial Regex HexCodeRegEx();
+        private List<Color> _nodeColors = [];
+        private bool _parsedHexCodes = false;
+
         /// <summary>
         /// Assign a ShapeType to the node and vertices if applicable
         /// </summary>
@@ -88,14 +94,30 @@ public abstract partial class DirectedGraph
         /// Generate a random colour for the node
         /// </summary>
         /// <returns></returns>
-        public static Color GenerateNodeColor()
+        /// <param name="nodeColors"></param>
+        public Color GenerateNodeColor(string nodeColors)
         {
-            byte alpha = (byte)Random.Shared.Next(30, 231); //avoid too transparent, and avoid fully opaque
-            byte red = (byte)Random.Shared.Next(1, 256);    //for rgb, skip 0 to avoid black
-            byte green = (byte)Random.Shared.Next(1, 256);
-            byte blue = (byte)Random.Shared.Next(1, 256);
+            if (string.IsNullOrWhiteSpace(nodeColors))
+            {
+                return GenerateRandomNodeColor();
+            }
 
-            return Color.FromArgb(alpha, red, green, blue);
+            if (!_parsedHexCodes)
+            {
+                _nodeColors = GetColorsFromHexCodes(nodeColors);
+                _parsedHexCodes = true;
+            }
+
+            if (_nodeColors.Count == 0)
+            {
+                return GenerateRandomNodeColor();
+            }
+
+            Color nodeColor = _nodeColors.Count == 1
+                                    ? _nodeColors[0]
+                                    : _nodeColors[Random.Shared.Next(0, _nodeColors.Count)];
+
+            return nodeColor;
         }
 
         /// <summary>
@@ -153,6 +175,20 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
+        /// Generate a random colour for the node
+        /// </summary>
+        /// <returns></returns>
+        private static Color GenerateRandomNodeColor()
+        {
+            byte alpha = (byte)Random.Shared.Next(30, 231); //avoid too transparent, and avoid fully opaque
+            byte red = (byte)Random.Shared.Next(1, 256);    //for rgb, skip 0 to avoid black
+            byte green = (byte)Random.Shared.Next(1, 256);
+            byte blue = (byte)Random.Shared.Next(1, 256);
+
+            return Color.FromArgb(alpha, red, green, blue);
+        }
+
+        /// <summary>
         /// Blend the node's colour with the light source, adjusted for distance from the light source
         /// </summary>
         /// <param name="baseColor"></param>
@@ -168,6 +204,33 @@ public abstract partial class DirectedGraph
             byte b = (byte)((baseColor.B * (1 - blendFactor)) + (blendColor.B * blendFactor));
 
             return Color.FromArgb(255, r, g, b);
+        }
+
+        /// <summary>
+        /// Get valid hex codes passed in as settings
+        /// </summary>
+        /// <param name="hexCodes"></param>
+        /// <returns></returns>
+        private static List<Color> GetColorsFromHexCodes(string hexCodes)
+        {
+            List<Color> colors = [];
+            List<string> rawCodes = [.. hexCodes.Split(",")];
+            Regex hexCodeRegex = HexCodeRegEx();
+
+            foreach (string rawCode in rawCodes)
+            {
+                if (hexCodeRegex.IsMatch(rawCode))
+                {
+                    Color colorFromHex = ColorTranslator.FromHtml(rawCode);
+
+                    if (colorFromHex != Color.Empty)
+                    {
+                        colors.Add(colorFromHex);
+                    }
+                }
+            }
+
+            return colors;
         }
 
         /// <summary>

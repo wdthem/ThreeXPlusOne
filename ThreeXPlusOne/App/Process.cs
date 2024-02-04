@@ -57,13 +57,6 @@ public class Process(IOptions<Settings> settings,
 
         consoleService.WriteHeading($"Directed graph ({graph.Dimensions}D)");
 
-        if (!_settings.GenerateGraph)
-        {
-            consoleService.WriteLine("Graph generation disabled\n");
-
-            return;
-        }
-
         graph.AddSeries(seriesLists);
         graph.PositionNodes();
         graph.SetNodeShapes();

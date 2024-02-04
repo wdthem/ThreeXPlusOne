@@ -1,48 +1,35 @@
-﻿using Microsoft.Extensions.Options;
-using System.Text;
-using ThreeXPlusOne.App.Config;
+﻿using System.Text;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App;
 
-public class Metadata(IOptions<Settings> settings,
-                      IFileService fileService,
+public class Metadata(IFileService fileService,
                       IConsoleService consoleService) : IMetadata
 {
-    private readonly Settings _settings = settings.Value;
-
     public void GenerateMedatadataFile(List<List<int>> seriesData)
     {
         consoleService.WriteHeading("Metadata");
+        consoleService.Write("Generating metadata... ");
 
-        if (_settings.GenerateMetadataFile)
+        string filePath = fileService.GenerateMetadataFilePath();
+
+        if (fileService.FileExists(filePath))
         {
-            consoleService.Write("Generating metadata... ");
+            consoleService.WriteLine("already exists\n");
 
-            string filePath = fileService.GenerateMetadataFilePath();
-
-            if (fileService.FileExists(filePath))
-            {
-                consoleService.WriteLine("already exists\n");
-
-                return;
-            }
-
-            StringBuilder content = new();
-
-            content.Append(GenerateNumberSeriesMetadata(seriesData));
-            content.Append(GenerateTop10LongestSeriesMetadata(seriesData));
-            content.Append(GenerateFullSeriesData(seriesData));
-
-            fileService.WriteMetadataToFile(content.ToString(), filePath);
-
-            consoleService.WriteDone();
+            return;
         }
-        else
-        {
-            consoleService.WriteLine("Metadata generation disabled\n");
-        }
+
+        StringBuilder content = new();
+
+        content.Append(GenerateNumberSeriesMetadata(seriesData));
+        content.Append(GenerateTop10LongestSeriesMetadata(seriesData));
+        content.Append(GenerateFullSeriesData(seriesData));
+
+        fileService.WriteMetadataToFile(content.ToString(), filePath);
+
+        consoleService.WriteDone();
     }
 
     /// <summary>

@@ -1,31 +1,16 @@
-﻿using Microsoft.Extensions.Options;
-using ThreeXPlusOne.App.Config;
-using ThreeXPlusOne.App.Interfaces;
+﻿using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App;
 
-public class Histogram(IOptions<Settings> settings,
-                       IHistogramService histogramService,
+public class Histogram(IHistogramService histogramService,
                        IFileService fileService,
                        IConsoleService consoleService) : IHistogram
 {
-    private readonly Settings _settings = settings.Value;
-
     public void GenerateHistogram(List<List<int>> seriesData)
     {
         consoleService.WriteHeading("Histogram");
-
-        if (_settings.GenerateHistogram)
-        {
-            consoleService.Write("Generating histogram... ");
-        }
-        else
-        {
-            consoleService.WriteLine("Histogram generation disabled\n");
-
-            return;
-        }
+        consoleService.Write("Generating histogram... ");
 
         string filePath = fileService.GenerateHistogramFilePath();
 
