@@ -228,7 +228,10 @@ public abstract partial class DirectedGraph
 
                 if (colorFromHexCode != Color.Empty)
                 {
-                    colors.Add(colorFromHexCode);
+                    colors.Add(Color.FromArgb((byte)Random.Shared.Next(30, 231), //avoid too transparent, and avoid fully opaque
+                                              colorFromHexCode.R,
+                                              colorFromHexCode.G,
+                                              colorFromHexCode.B));
                 }
             }
 
