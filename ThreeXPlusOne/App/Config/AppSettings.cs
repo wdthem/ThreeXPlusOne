@@ -6,8 +6,11 @@ using ThreeXPlusOne.App.Enums;
 namespace ThreeXPlusOne.App.Config;
 
 /// <summary>
-/// If no app settings file is supplied, the defaults set here would be used
+/// Settings supplied by the user to control aspects of the given execution of the process
 /// </summary>
+/// <remarks>
+/// If no app settings file is supplied by the user, the defaults set here will be used
+/// </remarks>
 public class AppSettings
 {
     [JsonIgnore]
