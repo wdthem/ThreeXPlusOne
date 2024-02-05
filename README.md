@@ -27,8 +27,12 @@ Directed Graphs are drawn via the SkiaSharp library. All output can be toggled o
 
 ## Usage
 
-* In order to provide custom settings to the app, an `appSettings.json` file must exist in the same folder of either the executable or the DLL, depending on how you run the app. If this file is not supplied, defaults will be used.
-* Running the executable or DLL with the flag `--help` will output help text. The `--config` flag will output information about each available custom setting and suggested starting points for the values of the app settings.
+* Running the executable (or the DLL, depending on how you run the app) with the flag `--help` will output help text.
+* Running the executable/DLL with the flag `--config` will output information about each available custom setting and suggested starting points for the values of the app settings.
+* In order to provide custom settings to the app, an `appSettings.json` file must be provided. Either:
+  * Put the file in the same folder as the executable/DLL; or
+  * Use the `--settings` flag to provide a directory path of your choice containing the `appSettings.json` file.
+* If the `appSettings.json` file is not supplied by any of the above means, defaults will be used.
 * Run the executable from the command line with no arguments (with or without `appSettings.json` in place)
 * Running the process with the same list of numbers will put any generated output into the same folder name as created by the process itself
 
