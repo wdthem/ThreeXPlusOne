@@ -14,12 +14,12 @@ public interface IDirectedGraph
     void AddSeries(List<List<int>> seriesLists);
 
     /// <summary>
-    /// Position the nodes on the directed graph bassed on the provided settings
+    /// Position the nodes on the directed graph bassed on the provided app settings
     /// </summary>
     void PositionNodes();
 
     /// <summary>
-    /// Set the shape of each node to either circle or polygon, depending on settings
+    /// Set the shape of each node to either circle or polygon, depending on app settings
     /// </summary>
     void SetNodeShapes();
 
@@ -29,7 +29,7 @@ public interface IDirectedGraph
     void SetCanvasDimensions();
 
     /// <summary>
-    /// Generate a visual representation of the directed graph based on the settings
+    /// Generate a visual representation of the directed graph based on the app settings
     /// </summary>
     void Draw();
 }

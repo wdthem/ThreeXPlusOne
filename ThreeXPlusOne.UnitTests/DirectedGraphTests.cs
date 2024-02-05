@@ -19,9 +19,9 @@ public class DirectedGraphTests
     private readonly Mock<ILightSourceService> _lightSourceServiceMock;
     private readonly IEnumerable<IDirectedGraphService> _graphServicesList;
     private readonly Mock<IDirectedGraphService> _graphServiceMock;
-    private readonly IOptions<Settings> _settings = new OptionsWrapper<Settings>
+    private readonly IOptions<AppSettings> _appSettings = new OptionsWrapper<AppSettings>
     (
-        new Settings { }
+        new AppSettings { }
     );
 
     public DirectedGraphTests()
@@ -38,7 +38,7 @@ public class DirectedGraphTests
         // Arrange
         List<List<int>> seriesLists = [[64, 32, 16, 8, 4, 2, 1], [5, 16, 8, 4, 2, 1]];
 
-        TwoDimensionalDirectedGraph twoDimensionalGraph = new(_settings,
+        TwoDimensionalDirectedGraph twoDimensionalGraph = new(_appSettings,
                                                               _graphServicesList,
                                                               _lightSourceServiceMock.Object,
                                                               _consoleServiceMock.Object);
@@ -66,7 +66,7 @@ public class DirectedGraphTests
                                      double expectedYPrime)
     {
         // Arrange
-        MockDirectedGraph mockDirectedGraph = new(_settings,
+        MockDirectedGraph mockDirectedGraph = new(_appSettings,
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
                                                   _consoleServiceMock.Object);
@@ -89,7 +89,7 @@ public class DirectedGraphTests
         _graphServiceMock.Setup(service => service.GraphProvider).Returns(GraphProvider.SkiaSharp);
         _graphServiceMock.Setup(service => service.SupportedDimensions).Returns(new ReadOnlyCollection<int>([2]));
 
-        MockDirectedGraph mockDirectedGraph = new(_settings,
+        MockDirectedGraph mockDirectedGraph = new(_appSettings,
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
                                                   _consoleServiceMock.Object);

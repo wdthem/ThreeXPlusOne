@@ -6,11 +6,11 @@ using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph;
 
-public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
+public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                            IEnumerable<IDirectedGraphService> graphServices,
                                            ILightSourceService lightSourceService,
                                            IConsoleService consoleService)
-                                                : DirectedGraph(settings, graphServices, lightSourceService, consoleService),
+                                                : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService),
                                                   IDirectedGraph
 {
     private int _nodesPositioned = 0;
@@ -40,22 +40,22 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
     {
         // Set up the base nodes' positions
         (double X, double Y) base1 = (0, 0);                                          // Node '1' at the bottom
-        (double X, double Y) base2 = (0, base1.Y - (_settings.YNodeSpacer * 6));      // Node '2' just above '1'
-        (double X, double Y) base4 = (0, base2.Y - (_settings.YNodeSpacer * 5));      // Node '4' above '2'
+        (double X, double Y) base2 = (0, base1.Y - (_appSettings.YNodeSpacer * 6));      // Node '2' just above '1'
+        (double X, double Y) base4 = (0, base2.Y - (_appSettings.YNodeSpacer * 5));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
-        _nodes[1].Position = ApplyNodePerspectiveTransformation(_nodes[1], _settings.DistanceFromViewer);
+        _nodes[1].Position = ApplyNodePerspectiveTransformation(_nodes[1], _appSettings.DistanceFromViewer);
         _nodes[1].Shape.Radius = 80;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
-        _nodes[2].Position = ApplyNodePerspectiveTransformation(_nodes[2], _settings.DistanceFromViewer);
+        _nodes[2].Position = ApplyNodePerspectiveTransformation(_nodes[2], _appSettings.DistanceFromViewer);
         _nodes[2].Shape.Radius = 100;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
-        _nodes[4].Position = ApplyNodePerspectiveTransformation(_nodes[4], _settings.DistanceFromViewer);
-        _nodes[4].Shape.Radius = _settings.NodeRadius;
+        _nodes[4].Position = ApplyNodePerspectiveTransformation(_nodes[4], _appSettings.DistanceFromViewer);
+        _nodes[4].Shape.Radius = _appSettings.NodeRadius;
         _nodes[4].IsPositioned = true;
 
         List<DirectedGraphNode> nodesToDraw = _nodes.Values.Where(n => n.Depth == _nodes[4].Depth + 1)
@@ -71,9 +71,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         _consoleService.WriteDone();
 
         _nodePositions.MoveNodesToPositiveCoordinates(_nodes,
-                                                      _settings.XNodeSpacer,
-                                                      _settings.YNodeSpacer,
-                                                      _settings.NodeRadius);
+                                                      _appSettings.XNodeSpacer,
+                                                      _appSettings.YNodeSpacer,
+                                                      _appSettings.NodeRadius);
     }
 
     /// <summary>
@@ -88,8 +88,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
             NodeAesthetics.SetNodeShape(node,
-                                        _settings.NodeRadius,
-                                        _settings.IncludePolygonsAsNodes);
+                                        _appSettings.NodeRadius,
+                                        _appSettings.IncludePolygonsAsNodes);
 
             double rotationRadians = -0.785 + Random.Shared.NextDouble() * 1.57; // Range of -π/4 to π/2 radians
             skewFactor = 0.0;
@@ -141,7 +141,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         int positionedNodesAtDepth =
             _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
 
-        double baseRadius = _settings.NodeRadius;
+        double baseRadius = _appSettings.NodeRadius;
 
         if (node.Parent != null && node.Parent.Shape.Radius > 0)
         {
@@ -153,8 +153,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         double scale = 0.99 - depthFactor * 0.1;
         double minScale = 0.2;
         double nodeRadius = baseRadius * Math.Max(scale - 0.02, minScale);
-        double xNodeSpacer = _settings.XNodeSpacer;
-        double yNodeSpacer = _settings.YNodeSpacer;
+        double xNodeSpacer = _appSettings.XNodeSpacer;
+        double yNodeSpacer = _appSettings.YNodeSpacer;
 
         //reduce bunching of nodes at lower depths by increasing the node spacers
         if (node.Depth < 10)
@@ -204,10 +204,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
 
         node.Position = (xOffset, yOffset);
 
-        if (_settings.NodeRotationAngle != 0)
+        if (_appSettings.NodeRotationAngle != 0)
         {
             (double x, double y) = NodeAesthetics.RotateNode(node.NumberValue,
-                                                             _settings.NodeRotationAngle,
+                                                             _appSettings.NodeRotationAngle,
                                                              xOffset,
                                                              yOffset);
 
@@ -217,7 +217,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
         if (node.Parent != null && node.Parent.Children.Count == 2)
         {
             node.Position = ApplyNodePerspectiveTransformation(node,
-                                                               _settings.DistanceFromViewer);
+                                                               _appSettings.DistanceFromViewer);
         }
 
         node.Shape.Radius = nodeRadius;
@@ -243,7 +243,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<Settings> settings,
                                                                     double viewerDistance)
     {
         double xPrime = node.Position.X / (1 + node.Z / viewerDistance);
-        double yPrime = node.Position.Y / (1 + node.Z / viewerDistance) - (_settings.YNodeSpacer * 4);
+        double yPrime = node.Position.Y / (1 + node.Z / viewerDistance) - (_appSettings.YNodeSpacer * 4);
 
         return (xPrime, yPrime);
     }

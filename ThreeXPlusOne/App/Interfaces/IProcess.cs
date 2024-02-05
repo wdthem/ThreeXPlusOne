@@ -3,7 +3,7 @@
 public interface IProcess
 {
     /// <summary>
-    /// Run the algorithm and data generation based on the user-provided settings
+    /// Run the algorithm and data generation based on the user-provided app settings
     /// </summary>
     /// <param name="commandParsingMessages"></param>
     void Run(List<string> commandParsingMessages);

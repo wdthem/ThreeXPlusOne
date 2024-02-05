@@ -50,27 +50,27 @@ public class CommandLineRunner(IProcess process,
         }
 
         //user provided a path, but the path was invalid
-        if (commandExecutionSettings.SettingsPathProvided && !commandExecutionSettings.SettingsPathExists)
+        if (commandExecutionSettings.AppSettingsPathProvided && !commandExecutionSettings.AppSettingsPathExists)
         {
-            commandExecutionSettings.CommandParsingMessages.Add($"Settings file not found at provided path.");
+            commandExecutionSettings.CommandParsingMessages.Add($"App settings file not found at provided path.");
 
-            //settings were then found at the default location
-            if (!string.IsNullOrEmpty(commandExecutionSettings.SettingsFileFullPath))
+            //app settings were then found at the default location
+            if (!string.IsNullOrEmpty(commandExecutionSettings.AppSettingsFileFullPath))
             {
-                commandExecutionSettings.CommandParsingMessages.Add("Settings file found at default location (current execution directory).");
+                commandExecutionSettings.CommandParsingMessages.Add("App settings file found at default location (current execution directory).");
             }
         }
 
         //user provided a path, and it was valid
-        if (commandExecutionSettings.SettingsPathProvided && commandExecutionSettings.SettingsPathExists)
+        if (commandExecutionSettings.AppSettingsPathProvided && commandExecutionSettings.AppSettingsPathExists)
         {
-            commandExecutionSettings.CommandParsingMessages.Add($"Settings file found at provided path: {commandExecutionSettings.SettingsFileFullPath}");
+            commandExecutionSettings.CommandParsingMessages.Add($"App settings file found at provided path: {commandExecutionSettings.AppSettingsFileFullPath}");
         }
 
-        //no settings were found at either the provided or default locations
-        if (string.IsNullOrEmpty(commandExecutionSettings.SettingsFileFullPath))
+        //no app settings were found at either the provided or default locations
+        if (string.IsNullOrEmpty(commandExecutionSettings.AppSettingsFileFullPath))
         {
-            commandExecutionSettings.CommandParsingMessages.Add("Settings file not found at default location. Defaults used instead.");
+            commandExecutionSettings.CommandParsingMessages.Add("App settings file not found at default location. Defaults used instead.");
         }
     }
 

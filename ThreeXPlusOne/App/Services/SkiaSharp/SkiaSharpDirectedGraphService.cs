@@ -116,7 +116,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     }
 
     /// <summary>
-    /// Draw the graph based on the provided settings
+    /// Draw the graph based on the provided app settings
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="drawNodeConnections"></param>
@@ -247,7 +247,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     }
 
     /// <summary>
-    /// Draw either a circle or a polygon for the node based on settings
+    /// Draw either a circle or a polygon for the node based on app settings
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>

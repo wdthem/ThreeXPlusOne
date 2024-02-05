@@ -6,11 +6,11 @@ using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.UnitTests.Mocks;
 
-public class MockDirectedGraph(IOptions<Settings> settings,
+public class MockDirectedGraph(IOptions<AppSettings> appSettings,
                                IEnumerable<IDirectedGraphService> graphServices,
                                ILightSourceService lightSourceService,
                                IConsoleService consoleService)
-                                    : DirectedGraph(settings, graphServices, lightSourceService, consoleService),
+                                    : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService),
                                       IDirectedGraph
 {
     public int Dimensions => 2;
