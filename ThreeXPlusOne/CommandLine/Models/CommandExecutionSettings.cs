@@ -5,12 +5,12 @@ public record CommandExecutionSettings()
     /// <summary>
     /// The name of the app settings file
     /// </summary>
-    private readonly string _settingsFileName = "appSettings.json";
+    private readonly string _appSettingsFileName = "appSettings.json";
 
     /// <summary>
     /// The name of the app settings file
     /// </summary>
-    public string SettingsFileName => _settingsFileName;
+    public string AppSettingsFileName => _appSettingsFileName;
 
     /// <summary>
     /// Whether or not processing should continue
@@ -24,19 +24,19 @@ public record CommandExecutionSettings()
     public List<(string shortName, string longName, string description, string hint)> OptionsMetadata { get; set; } = [];
 
     /// <summary>
-    /// Whether or not the user provided a directory path to the settings file
+    /// Whether or not the user provided a directory path to the app settings file
     /// </summary>
-    public bool SettingsPathProvided { get; set; }
+    public bool AppSettingsPathProvided { get; set; }
 
     /// <summary>
-    /// Whether or not the settings file exists at the directory path provided by the user
+    /// Whether or not the app settings file exists at the directory path provided by the user
     /// </summary>
-    public bool SettingsPathExists { get; set; }
+    public bool AppSettingsPathExists { get; set; }
 
     /// <summary>
-    /// The full path to the setting file, which could have been provided by the user
+    /// The full path to the app settings file, which could have been provided by the user
     /// </summary>
-    public string SettingsFileFullPath { get; set; } = "";
+    public string AppSettingsFileFullPath { get; set; } = "";
 
     /// <summary>
     /// Whether or not to output help text

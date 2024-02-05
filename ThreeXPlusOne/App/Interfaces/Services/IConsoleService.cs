@@ -35,7 +35,7 @@ public interface IConsoleService
     void SetCursorPosition(int left, int top);
 
     /// <summary>
-    /// Output the settings from the settings file, or defaults
+    /// Output the app settings from the app settings file, or defaults
     /// </summary>
     void WriteSettings();
 
@@ -46,7 +46,7 @@ public interface IConsoleService
     void WriteCommandParsingMessages(List<string> commandParsingMessages);
 
     /// <summary>
-    /// Output a message regarding whether the user saved the settings file or not
+    /// Output a message regarding whether the user saved the app settings file or not
     /// </summary>
     /// <param name="savedSettings"></param>
     void WriteSettingsSavedMessage(bool savedSettings);

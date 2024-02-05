@@ -207,7 +207,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Get valid hex codes passed in as settings
+        /// Get valid hex codes passed in as app settings
         /// </summary>
         /// <param name="hexCodes"></param>
         /// <returns></returns>
@@ -219,14 +219,16 @@ public abstract partial class DirectedGraph
 
             foreach (string rawCode in rawCodes)
             {
-                if (hexCodeRegex.IsMatch(rawCode))
+                if (!hexCodeRegex.IsMatch(rawCode))
                 {
-                    Color colorFromHexCode = ColorTranslator.FromHtml(rawCode);
+                    continue;
+                }
 
-                    if (colorFromHexCode != Color.Empty)
-                    {
-                        colors.Add(colorFromHexCode);
-                    }
+                Color colorFromHexCode = ColorTranslator.FromHtml(rawCode);
+
+                if (colorFromHexCode != Color.Empty)
+                {
+                    colors.Add(colorFromHexCode);
                 }
             }
 

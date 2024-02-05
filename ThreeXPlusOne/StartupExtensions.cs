@@ -27,22 +27,22 @@ public static class StartupExtensions
     {
         return builder.ConfigureAppConfiguration((context, configBuilder) =>
                         {
-                            string settingsFileFullPath = commandExecutionSettings.SettingsFileFullPath;
+                            string appSettingsFileFullPath = commandExecutionSettings.AppSettingsFileFullPath;
 
-                            if (!string.IsNullOrEmpty(settingsFileFullPath))
+                            if (!string.IsNullOrEmpty(appSettingsFileFullPath))
                             {
-                                configBuilder.AddJsonFile(settingsFileFullPath, optional: true, reloadOnChange: true);
+                                configBuilder.AddJsonFile(appSettingsFileFullPath, optional: true, reloadOnChange: true);
                             }
 
-                            if (string.IsNullOrEmpty(settingsFileFullPath))
+                            if (string.IsNullOrEmpty(appSettingsFileFullPath))
                             {
-                                settingsFileFullPath = commandExecutionSettings.SettingsFileName;
+                                appSettingsFileFullPath = commandExecutionSettings.AppSettingsFileName;
                             }
 
                             Dictionary<string, string?> inMemorySettings = new()
                                                             {
-                                                                { nameof(Settings.SettingsFileName), commandExecutionSettings.SettingsFileName },
-                                                                { nameof(Settings.SettingsFileFullPath), settingsFileFullPath }
+                                                                { nameof(AppSettings.SettingsFileName), commandExecutionSettings.AppSettingsFileName },
+                                                                { nameof(AppSettings.SettingsFileFullPath), appSettingsFileFullPath }
                                                             };
 
                             configBuilder.AddInMemoryCollection(inMemorySettings);
@@ -61,7 +61,7 @@ public static class StartupExtensions
     /// <returns></returns>
     private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<Settings>(configuration);
+        services.Configure<AppSettings>(configuration);
 
         services.AddScoped<CommandLineRunner>();
 

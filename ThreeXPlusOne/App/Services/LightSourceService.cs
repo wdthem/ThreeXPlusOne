@@ -99,13 +99,13 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// Parse the value from settings into a LightSourcePosition enum value
+    /// Parse the value from app  into a LightSourcePosition enum value
     /// </summary>
-    /// <param name="settingsValue"></param>
+    /// <param name="appSettingsValue"></param>
     /// <returns></returns>
-    private static LightSourcePosition ParseLightSourcePosition(string settingsValue)
+    private static LightSourcePosition ParseLightSourcePosition(string appSettingsValue)
     {
-        if (!Enum.TryParse(settingsValue, out LightSourcePosition position))
+        if (!Enum.TryParse(appSettingsValue, out LightSourcePosition position))
         {
             return LightSourcePosition.None;
         }

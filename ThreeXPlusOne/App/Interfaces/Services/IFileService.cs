@@ -3,7 +3,7 @@
 public interface IFileService
 {
     /// <summary>
-    /// Save the Settings object values back to the settings file
+    /// Save the app settings object values back to the app settings file
     /// </summary>
     /// <param name="userConfirmedSave"></param>
     void WriteSettingsToFile(bool userConfirmedSave);

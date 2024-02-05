@@ -1,7 +1,7 @@
 namespace ThreeXPlusOne.App.Config;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class SettingAttribute(string description, string suggestedValue) : Attribute
+public class AppSettingAttribute(string description, string suggestedValue) : Attribute
 {
     /// <summary>
     /// A human-readable description of the setting for use in help text

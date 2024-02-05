@@ -9,11 +9,11 @@ using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App.Services;
 
-public class ConsoleService(IOptions<Settings> settings) : IConsoleService
+public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
 {
     private int _spinnerCounter = 0;
     private static readonly object _consoleLock = new();
-    private readonly Settings _settings = settings.Value;
+    private readonly AppSettings _appSettings = appSettings.Value;
     private CancellationTokenSource? _cancellationTokenSource;
     private readonly string[] _spinner = ["|", "/", "-", "\\"];
     private readonly Assembly _assembly = Assembly.GetExecutingAssembly();
@@ -27,7 +27,7 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
 
         string[] numbers = input.Split(',');
         StringBuilder truncated = new();
-        string ellipsis = $" ...see {_settings.SettingsFileName} for full value";
+        string ellipsis = $" ...see {_appSettings.SettingsFileName} for full value";
 
         int lengthWithEllipsis = maxLength - ellipsis.Length;
 
@@ -160,9 +160,9 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
     {
         WriteHeading("Settings");
 
-        List<PropertyInfo> settingsProperties = [.. typeof(Settings).GetProperties()];
+        List<PropertyInfo> appSettingsProperties = [.. typeof(AppSettings).GetProperties()];
 
-        foreach (PropertyInfo property in settingsProperties)
+        foreach (PropertyInfo property in appSettingsProperties)
         {
             JsonIgnoreAttribute? attribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
 
@@ -171,7 +171,7 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
                 continue;
             }
 
-            object? value = property.GetValue(_settings, null);
+            object? value = property.GetValue(_appSettings, null);
 
             SetForegroundColor(ConsoleColor.Blue);
 
@@ -189,9 +189,9 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
             WriteLine("");
         }
 
-        if (_settings.GraphDimensions != _settings.SanitizedGraphDimensions)
+        if (_appSettings.GraphDimensions != _appSettings.SanitizedGraphDimensions)
         {
-            WriteLine($"\nInvalid GraphDimensions ({_settings.GraphDimensions}). Defaulted to {_settings.SanitizedGraphDimensions}.");
+            WriteLine($"\nInvalid GraphDimensions ({_appSettings.GraphDimensions}). Defaulted to {_appSettings.SanitizedGraphDimensions}.");
         }
     }
 
@@ -216,7 +216,7 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
     {
         if (savedSettings)
         {
-            WriteLine($"\nSaved generated numbers to '{_settings.SettingsFileFullPath}'\n");
+            WriteLine($"\nSaved generated numbers to '{_appSettings.SettingsFileFullPath}'\n");
         }
         else
         {
@@ -337,17 +337,17 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
         WriteHeading("Configuration");
 
         WriteHeading("App settings");
-        WriteLine("If no custom settings are supplied, app defaults will be used.\n");
-        WriteLine($"To apply custom settings, place a file called '{_settings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_settings.SettingsFileName}' file.\n\nIt must have the following content:\n");
+        WriteLine("If no custom app settings are supplied, defaults will be used.\n");
+        WriteLine($"To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_appSettings.SettingsFileName}' file.\n\nIt must have the following content:\n");
         WriteLine("{");
 
         int lcv = 1;
-        List<PropertyInfo> settingsProperties = [.. typeof(Settings).GetProperties()];
+        List<PropertyInfo> appSettingsProperties = [.. typeof(AppSettings).GetProperties()];
         JsonIgnoreAttribute? jsonAttribute;
 
         SetForegroundColor(ConsoleColor.White);
 
-        foreach (PropertyInfo property in settingsProperties)
+        foreach (PropertyInfo property in appSettingsProperties)
         {
             jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
 
@@ -356,7 +356,7 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
                 continue;
             }
 
-            string comma = lcv != settingsProperties.Count ? "," : "";
+            string comma = lcv != appSettingsProperties.Count ? "," : "";
 
             SetForegroundColor(ConsoleColor.Blue);
 
@@ -383,7 +383,7 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
 
         List<(ConsoleColor, string)> lines = [];
 
-        foreach (PropertyInfo property in settingsProperties)
+        foreach (PropertyInfo property in appSettingsProperties)
         {
             jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
 
@@ -394,7 +394,7 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
 
             lines.Add((ConsoleColor.Blue, $"  {property.Name}"));
 
-            SettingAttribute? settingAttribute = property.GetCustomAttribute<SettingAttribute>();
+            AppSettingAttribute? settingAttribute = property.GetCustomAttribute<AppSettingAttribute>();
 
             if (settingAttribute != null)
             {
@@ -415,13 +415,13 @@ public class ConsoleService(IOptions<Settings> settings) : IConsoleService
             }
         }
 
-        lines.Add((ConsoleColor.White, "\nThe above settings are a good starting point from which to experiment.\n"));
-        lines.Add((ConsoleColor.White, "Alternatively, start with the settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n"));
+        lines.Add((ConsoleColor.White, "\nThe above app settings are a good starting point from which to experiment.\n"));
+        lines.Add((ConsoleColor.White, "Alternatively, start with the app settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n"));
 
-        ScrollOutput("settings", lines);
+        ScrollOutput("app settings", lines);
 
         WriteHeading("Performance");
-        WriteLine("Be aware that increasing some settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
+        WriteLine("Be aware that increasing some app settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
     }
 
     public void WriteVersionText()

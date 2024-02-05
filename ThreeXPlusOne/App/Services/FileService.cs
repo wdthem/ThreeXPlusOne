@@ -6,10 +6,10 @@ using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App.Services;
 
-public class FileService(IOptions<Settings> settings,
+public class FileService(IOptions<AppSettings> appSettings,
                          IConsoleService consoleService) : IFileService
 {
-    private readonly Settings _settings = settings.Value;
+    private readonly AppSettings _appSettings = appSettings.Value;
     private readonly string _prefix = Assembly.GetExecutingAssembly().GetName().Name!;
     private readonly JsonSerializerOptions _serializerOptions = new() { WriteIndented = true };
 
@@ -29,7 +29,7 @@ public class FileService(IOptions<Settings> settings,
 
             if (directory == null || !Directory.Exists(directory))
             {
-                throw new Exception($"Invalid {nameof(_settings.OutputPath)}. Check '{_settings.SettingsFileName}'");
+                throw new Exception($"Invalid {nameof(_appSettings.OutputPath)}. Check '{_appSettings.SettingsFileName}'");
             }
         }
 
@@ -56,9 +56,9 @@ public class FileService(IOptions<Settings> settings,
             return;
         }
 
-        string jsonString = JsonSerializer.Serialize(_settings, _serializerOptions);
+        string jsonString = JsonSerializer.Serialize(_appSettings, _serializerOptions);
 
-        File.WriteAllText(_settings.SettingsFileFullPath, jsonString);
+        File.WriteAllText(_appSettings.SettingsFileFullPath, jsonString);
     }
 
     public bool FileExists(string filePath)
@@ -82,22 +82,22 @@ public class FileService(IOptions<Settings> settings,
 
     public string GenerateDirectedGraphFilePath()
     {
-        string fileName = $"{_prefix}-{_settings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
+        string fileName = $"{_prefix}-{_appSettings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
-        return GenerateFullFilePath(_settings.UniqueExecutionId, _settings.OutputPath, fileName);
+        return GenerateFullFilePath(_appSettings.UniqueExecutionId, _appSettings.OutputPath, fileName);
     }
 
     public string GenerateHistogramFilePath()
     {
         string fileName = $"{_prefix}-Histogram.png";
 
-        return GenerateFullFilePath(_settings.UniqueExecutionId, _settings.OutputPath, fileName);
+        return GenerateFullFilePath(_appSettings.UniqueExecutionId, _appSettings.OutputPath, fileName);
     }
 
     public string GenerateMetadataFilePath()
     {
         string fileName = $"{_prefix}-Metadata.txt";
 
-        return GenerateFullFilePath(_settings.UniqueExecutionId, _settings.OutputPath, fileName);
+        return GenerateFullFilePath(_appSettings.UniqueExecutionId, _appSettings.OutputPath, fileName);
     }
 }

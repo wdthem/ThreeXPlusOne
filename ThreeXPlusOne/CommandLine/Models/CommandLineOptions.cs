@@ -10,10 +10,10 @@ public class CommandLineOptions()
     [Option('v', "version", Required = false, HelpText = "Display version information.")]
     public bool Version { get; set; }
 
-    [Option('c', "config", Required = false, HelpText = "Display config (settings) information.")]
+    [Option('c', "config", Required = false, HelpText = "Display config (app settings) information.")]
     public bool Config { get; set; }
 
-    [Option('s', "settings", Required = false, HelpText = "Specifies the directory path to the settings file.")]
+    [Option('s', "settings", Required = false, HelpText = "Specifies the directory path to the app settings file.")]
     [CommandLineHint(hint: "<directory-path>")]
     public string? SettingsPath { get; set; }
 }

@@ -1,5 +1,5 @@
 
-Use the following settings to achieve the results shown in the Example Output images.
+Use the following app settings to achieve the results shown in the Example Output images.
 
 2D No Rotation
 {

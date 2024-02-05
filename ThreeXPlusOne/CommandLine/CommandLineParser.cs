@@ -34,32 +34,32 @@ public static class CommandLineParser
             commandExecutionSettings.ContinueExecution = false;
         }
 
-        //look for settings file at provided directory
+        //look for app settings file at provided directory
         if (!string.IsNullOrWhiteSpace(options.SettingsPath))
         {
-            commandExecutionSettings.SettingsFileFullPath = "";
-            commandExecutionSettings.SettingsPathProvided = true;
-            commandExecutionSettings.SettingsPathExists = false;
+            commandExecutionSettings.AppSettingsFileFullPath = "";
+            commandExecutionSettings.AppSettingsPathProvided = true;
+            commandExecutionSettings.AppSettingsPathExists = false;
 
             string trimmedPath = options.SettingsPath.Trim();
 
             string directoryPath = GetDirectoryPath(trimmedPath);
 
-            string combinedPath = Path.Combine(directoryPath, commandExecutionSettings.SettingsFileName);
+            string combinedPath = Path.Combine(directoryPath, commandExecutionSettings.AppSettingsFileName);
 
             if (File.Exists(combinedPath))
             {
-                commandExecutionSettings.SettingsPathExists = true;
-                commandExecutionSettings.SettingsFileFullPath = combinedPath;
+                commandExecutionSettings.AppSettingsPathExists = true;
+                commandExecutionSettings.AppSettingsFileFullPath = combinedPath;
             }
         }
 
-        //else look for settings file at current execution directory
-        if (string.IsNullOrWhiteSpace(commandExecutionSettings.SettingsFileFullPath))
+        //else look for app settings file at current execution directory
+        if (string.IsNullOrWhiteSpace(commandExecutionSettings.AppSettingsFileFullPath))
         {
-            if (File.Exists(commandExecutionSettings.SettingsFileName))
+            if (File.Exists(commandExecutionSettings.AppSettingsFileName))
             {
-                commandExecutionSettings.SettingsFileFullPath = commandExecutionSettings.SettingsFileName;
+                commandExecutionSettings.AppSettingsFileFullPath = commandExecutionSettings.AppSettingsFileName;
             }
 
             //otherwise defaults are used
@@ -95,7 +95,7 @@ public static class CommandLineParser
     }
 
     /// <summary>
-    /// The --settings argument expects only a directory, as the settings file is set to a reserved name
+    /// The --settings argument expects only a directory, as the app settings file is set to a reserved name
     /// Get the directory path handling multiple scenarios
     /// </summary>
     /// <param name="userInput"></param>

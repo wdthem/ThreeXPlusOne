@@ -53,7 +53,7 @@ public interface IDirectedGraphService : IDisposable
     void GenerateLightSource((double X, double Y) lightSourceCoordinates, double radius, Color color);
 
     /// <summary>
-    /// Draw the graph based on provided settings
+    /// Draw the graph based on provided app settings
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="drawNodeConnections"></param>

@@ -7,7 +7,7 @@ using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph;
 
-public abstract partial class DirectedGraph(IOptions<Settings> settings,
+public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                             IEnumerable<IDirectedGraphService> graphServices,
                                             ILightSourceService lightSourceService,
                                             IConsoleService consoleService)
@@ -15,7 +15,7 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;
 
-    protected readonly Settings _settings = settings.Value;
+    protected readonly AppSettings _appSettings = appSettings.Value;
     protected readonly IConsoleService _consoleService = consoleService;
     protected readonly NodePositions _nodePositions = new(consoleService);
     protected readonly NodeAesthetics _nodeAesthetics = new();
@@ -94,12 +94,12 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
     protected void DrawDirectedGraph()
     {
         IDirectedGraphService graphService = graphServices.ToList()
-                                                          .Where(graphService => graphService.GraphProvider == _settings.GraphProvider)
+                                                          .Where(graphService => graphService.GraphProvider == _appSettings.GraphProvider)
                                                           .First();
 
-        if (!graphService.SupportedDimensions.Contains(_settings.SanitizedGraphDimensions))
+        if (!graphService.SupportedDimensions.Contains(_appSettings.SanitizedGraphDimensions))
         {
-            throw new Exception($"Graph provider {_settings.GraphProvider} does not support graphs in {_settings.SanitizedGraphDimensions} dimensions.");
+            throw new Exception($"Graph provider {_appSettings.GraphProvider} does not support graphs in {_appSettings.SanitizedGraphDimensions} dimensions.");
         }
 
         graphService.OnStart = (message) =>
@@ -120,15 +120,15 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
                                                Color.Black)).Wait();
 
 
-        if (_settings.GenerateBackgroundStars)
+        if (_appSettings.GenerateBackgroundStars)
         {
             Task.Run(() => graphService.GenerateBackgroundStars(100)).Wait();
         }
 
         lightSourceService.Initialize(_canvasWidth,
                                       _canvasHeight,
-                                      _settings.SanitizedGraphDimensions,
-                                      _settings.LightSourcePosition);
+                                      _appSettings.SanitizedGraphDimensions,
+                                      _appSettings.LightSourcePosition);
 
         if (lightSourceService.LightSourcePosition != LightSourcePosition.None)
         {
@@ -139,7 +139,7 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
 
         foreach (DirectedGraphNode node in _nodes.Values)
         {
-            Color nodeColor = _nodeAesthetics.GenerateNodeColor(_settings.NodeColors);
+            Color nodeColor = _nodeAesthetics.GenerateNodeColor(_appSettings.NodeColors);
 
             if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
             {
@@ -155,8 +155,8 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
             }
         }
 
-        Task.Run(() => graphService.Draw(drawNumbersOnNodes: _settings.DrawNumbersOnNodes,
-                                         drawNodeConnections: _settings.DrawConnections)).Wait();
+        Task.Run(() => graphService.Draw(drawNumbersOnNodes: _appSettings.DrawNumbersOnNodes,
+                                         drawNodeConnections: _appSettings.DrawConnections)).Wait();
 
         Task.Run(graphService.Render).Wait();
 
@@ -178,8 +178,8 @@ public abstract partial class DirectedGraph(IOptions<Settings> settings,
         double maxX = _nodes.Values.Max(node => node.Position.X);
         double maxY = _nodes.Values.Max(node => node.Position.Y);
 
-        _canvasWidth = (int)(maxX + _settings.XNodeSpacer + _settings.NodeRadius);
-        _canvasHeight = (int)(maxY + _settings.YNodeSpacer + _settings.NodeRadius);
+        _canvasWidth = (int)(maxX + _appSettings.XNodeSpacer + _appSettings.NodeRadius);
+        _canvasHeight = (int)(maxY + _appSettings.YNodeSpacer + _appSettings.NodeRadius);
 
         _consoleService.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
     }

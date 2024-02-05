@@ -12,9 +12,9 @@ namespace ThreeXPlusOne.UnitTests;
 
 public class ProcessTests
 {
-    private IOptions<Settings> _settings = new OptionsWrapper<Settings>
+    private IOptions<AppSettings> _appSettings = new OptionsWrapper<AppSettings>
     (
-        new Settings { }
+        new AppSettings { }
     );
 
     private readonly Mock<IAlgorithm> _algorithmMock;
@@ -39,9 +39,9 @@ public class ProcessTests
 
     private void ResetSettings()
     {
-        _settings = new OptionsWrapper<Settings>
+        _appSettings = new OptionsWrapper<AppSettings>
         (
-            new Settings { GraphDimensions = 2, NumberOfSeries = 10, MaxStartingNumber = 100 }
+            new AppSettings { GraphDimensions = 2, NumberOfSeries = 10, MaxStartingNumber = 100 }
         );
     }
 
@@ -54,7 +54,7 @@ public class ProcessTests
         _algorithmMock.Setup(algorithm => algorithm.Run(It.IsAny<List<int>>())).Returns([[32, 16, 8, 4, 2, 1]]);
         _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate 2D visualization?")).Returns(true);
 
-        var process = new Process(_settings,
+        var process = new Process(_appSettings,
                                   _algorithmMock.Object,
                                   _directedGraphs,
                                   _histogramMock.Object,
@@ -88,10 +88,10 @@ public class ProcessTests
         // Arrange
         ResetSettings();
 
-        _settings.Value.UseTheseNumbers = "5,6,7";
-        _settings.Value.ExcludeTheseNumbers = "5,6,7";
+        _appSettings.Value.UseTheseNumbers = "5,6,7";
+        _appSettings.Value.ExcludeTheseNumbers = "5,6,7";
 
-        var process = new Process(_settings,
+        var process = new Process(_appSettings,
                                   _algorithmMock.Object,
                                   _directedGraphs,
                                   _histogramMock.Object,
