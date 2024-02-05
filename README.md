@@ -34,7 +34,7 @@ Directed Graphs are drawn via the SkiaSharp library. All output can be toggled o
   * Use the `--settings` flag to provide a directory path of your choice containing the `appSettings.json` file.
 * If the `appSettings.json` file is not supplied by any of the above means, defaults will be used.
 * Run the executable from the command line with no arguments (with or without `appSettings.json` in place)
-* Running the process with the same list of numbers will put any generated output into the same folder name as created by the process itself
+* Running the process with the same list of numbers repeatedly will put all generated output into the same folder that was created by the process on the first run of the given number list
 
 ## Performance
 
