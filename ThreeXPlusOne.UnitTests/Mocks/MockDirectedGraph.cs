@@ -34,7 +34,7 @@ public class MockDirectedGraph(IOptions<AppSettings> appSettings,
 #pragma warning disable CA1822 // Mark members as static
     public (double x, double y) RotateNode_Base(int nodeValue, double rotationAngle, double x, double y)
     {
-        return NodeAesthetics.RotateNode(nodeValue, rotationAngle, x, y);
+        return NodePositions.RotateNode(nodeValue, rotationAngle, x, y);
     }
 #pragma warning restore CA1822 // Mark members as static
 
