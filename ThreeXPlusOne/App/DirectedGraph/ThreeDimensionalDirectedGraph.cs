@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
@@ -45,12 +45,12 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         _nodes[1].Position = base1;
         _nodes[1].Position = ApplyNodePerspectiveTransformation(_nodes[1], _appSettings.DistanceFromViewer);
-        _nodes[1].Shape.Radius = 80;
+        _nodes[1].Shape.Radius = _appSettings.NodeRadius;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
         _nodes[2].Position = ApplyNodePerspectiveTransformation(_nodes[2], _appSettings.DistanceFromViewer);
-        _nodes[2].Shape.Radius = 100;
+        _nodes[2].Shape.Radius = _appSettings.NodeRadius;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
