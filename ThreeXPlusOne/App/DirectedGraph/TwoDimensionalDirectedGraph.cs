@@ -138,10 +138,10 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
             if (_appSettings.NodeRotationAngle != 0)
             {
-                (double x, double y) = NodeAesthetics.RotateNode(node.NumberValue,
-                                                                 _appSettings.NodeRotationAngle,
-                                                                 xOffset,
-                                                                 yOffset);
+                (double x, double y) = NodePositions.RotateNode(node.NumberValue,
+                                                                _appSettings.NodeRotationAngle,
+                                                                xOffset,
+                                                                yOffset);
 
                 node.Position = (x, y);
             }

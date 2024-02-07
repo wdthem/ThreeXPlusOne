@@ -117,9 +117,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
             for (int i = 0; i < node.Shape.PolygonVertices.Count; i++)
             {
                 node.Shape.PolygonVertices[i] = ApplyVertexPerspectiveSkew(node.Shape.PolygonVertices[i],
-                                                                             node.Position,
-                                                                             skewFactor,
-                                                                             rotationRadians);
+                                                                           node.Position,
+                                                                           skewFactor,
+                                                                           rotationRadians);
             }
         }
     }
@@ -206,10 +206,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         if (_appSettings.NodeRotationAngle != 0)
         {
-            (double x, double y) = NodeAesthetics.RotateNode(node.NumberValue,
-                                                             _appSettings.NodeRotationAngle,
-                                                             xOffset,
-                                                             yOffset);
+            (double x, double y) = NodePositions.RotateNode(node.NumberValue,
+                                                            _appSettings.NodeRotationAngle,
+                                                            xOffset,
+                                                            yOffset);
 
             node.Position = (x, y);
         }
