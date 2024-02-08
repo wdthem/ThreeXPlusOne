@@ -122,7 +122,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         if (_appSettings.GenerateBackgroundStars)
         {
-            Task.Run(() => graphService.GenerateBackgroundStars(100)).Wait();
+            Task.Run(() => graphService.GenerateBackgroundStars(100,
+                                                                _appSettings.NodeRadius)).Wait();
         }
 
         lightSourceService.Initialize(_canvasWidth,
