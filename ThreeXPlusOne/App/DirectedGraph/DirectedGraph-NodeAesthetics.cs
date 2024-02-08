@@ -109,29 +109,24 @@ public abstract partial class DirectedGraph
             double distance = Distance((node.Position.X, node.Position.Y),
                                        (lightSourceCoordinates.X, lightSourceCoordinates.Y));
 
-            double additionalOpacityFactor;
-
             double lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
 
             if (distance < lightSourceMaxDistanceEffect)
             {
-                additionalOpacityFactor = distance / lightSourceMaxDistanceEffect;
-                additionalOpacityFactor = Math.Clamp(additionalOpacityFactor, 0, 1);
+                double normalizedDistance = distance / lightSourceMaxDistanceEffect;
+                double smoothFactor = 1 - Math.Pow(normalizedDistance, 2); // Quadratic decay
 
-                // Apply the light intensity to the blend factor
-                double blendFactor = additionalOpacityFactor * lightIntensity;
-                nodeColor = BlendColor(nodeBaseColor, lightSourceColor, 1 - blendFactor);
+                double blendFactor = smoothFactor * lightIntensity;
+                blendFactor = Math.Clamp(blendFactor, 0, 1); // Ensure it's within bounds
+
+                nodeColor = BlendColor(nodeBaseColor, lightSourceColor, blendFactor);
             }
             else
             {
-                //else leave opacity at the randomly select value
                 nodeColor = nodeBaseColor;
-                additionalOpacityFactor = 1.0f;
             }
 
-            byte finalAlpha = (byte)(nodeBaseColor.A * additionalOpacityFactor);
-
-            node.Shape.Color = Color.FromArgb(finalAlpha, nodeColor.R, nodeColor.G, nodeColor.B);
+            node.Shape.Color = Color.FromArgb(nodeBaseColor.A, nodeColor.R, nodeColor.G, nodeColor.B);
 
             double haloRadius = node.Shape.Radius * 2;
             double intensity = Math.Max(0, 1 - (distance / lightSourceMaxDistanceEffect));
@@ -195,16 +190,58 @@ public abstract partial class DirectedGraph
 
                 Color colorFromHexCode = ColorTranslator.FromHtml(rawCode);
 
-                if (colorFromHexCode != Color.Empty)
+                if (colorFromHexCode == Color.Empty)
                 {
-                    colors.Add(Color.FromArgb((byte)Random.Shared.Next(30, 231), //avoid too transparent, and avoid fully opaque
-                                              colorFromHexCode.R,
-                                              colorFromHexCode.G,
-                                              colorFromHexCode.B));
+                    continue;
                 }
+
+                Color colorWithAlpha = Color.FromArgb((byte)Random.Shared.Next(30, 231), //avoid too transparent, and avoid fully opaque
+                                                      colorFromHexCode.R,
+                                                      colorFromHexCode.G,
+                                                      colorFromHexCode.B);
+
+                colors.Add(colorWithAlpha);
+
+                colors.AddRange(GenerateLighterAndDarkerColors(colorWithAlpha));
             }
 
             return colors;
+        }
+
+        /// <summary>
+        /// For user-supplied colours, get colors slightly lighter and darker than the supplied colour to add
+        /// dynamism
+        /// </summary>
+        /// <param name="baseColor"></param>
+        /// <returns></returns>
+        private static List<Color> GenerateLighterAndDarkerColors(Color baseColor)
+        {
+            List<Color> colors = [];
+
+            // Lighter colors
+            colors.Add(AdjustColorBrightness(baseColor, 1.1f));
+            colors.Add(AdjustColorBrightness(baseColor, 1.2f));
+
+            // Darker colors
+            colors.Add(AdjustColorBrightness(baseColor, 0.9f));
+            colors.Add(AdjustColorBrightness(baseColor, 0.8f));
+
+            return colors;
+        }
+
+        /// <summary>
+        /// Adjust the brightness of the given color to geta  slightly different shade
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="factor"></param>
+        /// <returns></returns>
+        private static Color AdjustColorBrightness(Color color, float factor)
+        {
+            int r = (int)Math.Clamp(color.R * factor, 0, 255);
+            int g = (int)Math.Clamp(color.G * factor, 0, 255);
+            int b = (int)Math.Clamp(color.B * factor, 0, 255);
+
+            return Color.FromArgb(color.A, r, g, b);
         }
     }
 }

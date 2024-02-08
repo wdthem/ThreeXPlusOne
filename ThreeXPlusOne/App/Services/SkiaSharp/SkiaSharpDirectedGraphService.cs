@@ -48,8 +48,9 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     /// Optionally generate white points in the background to mimic stars
     /// </summary>
     /// <param name="starCount"></param>
+    /// <param name="nodeRadius"></param>
     /// <exception cref="Exception"></exception>
-    public void GenerateBackgroundStars(int starCount)
+    public void GenerateBackgroundStars(int starCount, double nodeRadius)
     {
         if (_canvas == null)
         {
@@ -70,7 +71,9 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         foreach (SKPoint point in points)
         {
-            DrawStarWithBlur(_canvas, point);
+            DrawStarWithBlur(_canvas,
+                             point,
+                             nodeRadius);
         }
 
         OnComplete?.Invoke();
@@ -190,7 +193,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         OnStart?.Invoke($"Saving image to {path}... ");
 
-        using (SKData data = _image.Encode(SKEncodedImageFormat.Png, 25))
+        using (SKData data = _image.Encode(SKEncodedImageFormat.Png, 100))
         using (FileStream stream = File.OpenWrite(path))
         {
             data.SaveTo(stream);
@@ -364,10 +367,12 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="point"></param>
+    /// <param name="nodeRadius"></param>
     private static void DrawStarWithBlur(SKCanvas canvas,
-                                         SKPoint point)
+                                         SKPoint point,
+                                         double nodeRadius)
     {
-        float starSize = Random.Shared.Next(10, 26); //from 10 to 26
+        double starSize = Math.Clamp((1 - Random.Shared.NextDouble()) * nodeRadius, 0.05 * nodeRadius, 0.15 * nodeRadius);
         float blurRadius = 9.0f;
 
         using SKPaint blurPaint = new()
@@ -382,8 +387,8 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
             Color = SKColors.White
         };
 
-        canvas.DrawCircle(point, starSize, blurPaint);
-        canvas.DrawCircle(point, starSize, starPaint);
+        canvas.DrawCircle(point, (float)starSize, blurPaint);
+        canvas.DrawCircle(point, (float)starSize, starPaint);
     }
 
     /// <summary>
