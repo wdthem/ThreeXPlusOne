@@ -394,7 +394,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                                          SKPoint point,
                                          double nodeRadius)
     {
-        double starSize = Math.Clamp((1 - Random.Shared.NextDouble()) * nodeRadius, 0.05 * nodeRadius, 0.15 * nodeRadius);
+        double starSize = Math.Clamp((1 - Random.Shared.NextDouble()) * nodeRadius, 0.01 * nodeRadius, 0.09 * nodeRadius);
         double blurRadius = starSize * 0.9;
 
         using SKPaint blurPaint = new()
