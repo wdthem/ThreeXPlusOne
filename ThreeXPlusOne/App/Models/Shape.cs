@@ -34,4 +34,9 @@ public record Shape()
     /// The colour of the shape
     /// </summary>
     public Color Color { get; set; } = Color.Empty;
+
+    /// <summary>
+    /// The colour of the shape's border
+    /// </summary>
+    public Color BorderColor { get; set; } = Color.Empty;
 }
