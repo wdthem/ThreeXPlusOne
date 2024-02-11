@@ -219,6 +219,14 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
             Color = ConvertColorToSKColor(node.Shape.Color)
         };
 
+        SKPaint borderPaint = new()
+        {
+            IsAntialias = true,
+            Style = SKPaintStyle.Stroke,
+            Color = ConvertColorToSKColor(node.Shape.BorderColor),
+            StrokeWidth = 5
+        };
+
         SKPaint textPaint = new()
         {
             Color = SKColors.White,
@@ -231,7 +239,8 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         DrawShape(canvas,
                   node,
-                  paint);
+                  paint,
+                  borderPaint);
 
         if (drawNumbersOnNodes)
         {
@@ -255,15 +264,21 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     /// <param name="canvas"></param>
     /// <param name="node"></param>
     /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
     private static void DrawShape(SKCanvas canvas,
                                   DirectedGraphNode node,
-                                  SKPaint paint)
+                                  SKPaint paint,
+                                  SKPaint borderPaint)
     {
         if (node.Shape.ShapeType == ShapeType.Circle)
         {
             canvas.DrawCircle(ConvertCoordinatesToSKPoint(node.Position.X, node.Position.Y),
                               (float)node.Shape.Radius,
                               paint);
+
+            canvas.DrawCircle(ConvertCoordinatesToSKPoint(node.Position.X, node.Position.Y),
+                              (float)node.Shape.Radius,
+                              borderPaint);
 
             RenderNodeHaloEffect(canvas, node);
 
@@ -277,6 +292,12 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                             (float)node.Shape.EllipseConfig.RadiusX,
                             (float)node.Shape.EllipseConfig.RadiusY,
                             paint);
+
+            canvas.DrawOval((float)node.Shape.EllipseConfig.Center.X,
+                            (float)node.Shape.EllipseConfig.Center.Y,
+                            (float)node.Shape.EllipseConfig.RadiusX,
+                            (float)node.Shape.EllipseConfig.RadiusY,
+                            borderPaint);
 
             RenderNodeHaloEffect(canvas, node);
 
@@ -301,6 +322,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         path.Close();
         canvas.DrawPath(path, paint);
+        canvas.DrawPath(path, borderPaint);
 
         RenderNodeHaloEffect(canvas, node);
     }
@@ -357,7 +379,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                             paint);
 
             canvas.DrawCircle(ConvertCoordinatesToSKPoint(childNode.Position.X, childNode.Position.Y),
-                              10,   //hard-coded radius for node number
+                              (float)childNode.Shape.Radius * 0.10f,
                               paint);
         }
     }
@@ -373,12 +395,12 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                                          double nodeRadius)
     {
         double starSize = Math.Clamp((1 - Random.Shared.NextDouble()) * nodeRadius, 0.05 * nodeRadius, 0.15 * nodeRadius);
-        float blurRadius = 9.0f;
+        double blurRadius = starSize * 0.9;
 
         using SKPaint blurPaint = new()
         {
             IsAntialias = true,
-            MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, blurRadius)
+            MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, (float)blurRadius)
         };
 
         using SKPaint starPaint = new()

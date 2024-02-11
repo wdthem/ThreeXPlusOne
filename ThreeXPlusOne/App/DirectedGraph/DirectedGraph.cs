@@ -141,15 +141,18 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         foreach (DirectedGraphNode node in _nodes.Values)
         {
             Color nodeColor = _nodeAesthetics.GenerateNodeColor(_appSettings.NodeColors);
+            Color nodeBorderColor = NodeAesthetics.GenerateNodeBorderColor(nodeColor);
 
             if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
             {
                 node.Shape.Color = nodeColor;
+                node.Shape.BorderColor = nodeBorderColor;
             }
             else
             {
                 NodeAesthetics.ApplyLightSourceToNode(node,
                                                       nodeColor,
+                                                      nodeBorderColor,
                                                       lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
                                                       lightSourceService.GetLightSourceMaxDistanceOfEffect(),
                                                       lightSourceService.LightSourceColor);

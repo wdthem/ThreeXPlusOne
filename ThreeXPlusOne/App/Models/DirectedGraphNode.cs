@@ -18,8 +18,11 @@ public record DirectedGraphNode(int NumberValue)
     public List<DirectedGraphNode> Children { get; set; } = [];
 
     /// <summary>
-    /// The depth of this node on the graph. When running the algorithm on many numbers, there can be many numbers at any given depth.
+    /// The depth of this node on the graph.
     /// </summary>
+    /// <remarks>
+    /// When running the algorithm on many numbers, there can be many numbers at any given depth.
+    /// </remarks>
     public int Depth { get; set; } = -1;
 
     /// <summary>
