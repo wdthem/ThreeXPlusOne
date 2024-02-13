@@ -57,6 +57,76 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         return truncated.ToString();
     }
 
+    private List<(ConsoleColor, string)> GetSuggestedValueLines(Type? type = null,
+                                                                object? instance = null,
+                                                                string? sectionName = null)
+    {
+        List<(ConsoleColor, string)> lines = [];
+        type ??= typeof(AppSettings);
+        instance ??= _appSettings;
+
+        List<PropertyInfo> appSettingsProperties = [.. type.GetProperties()];
+        JsonIgnoreAttribute? jsonAttribute;
+
+        if (!string.IsNullOrWhiteSpace(sectionName))
+        {
+            SetForegroundColor(ConsoleColor.Blue);
+
+            string sectionNameWords = $"{SplitToWordsRegex().Replace(sectionName, "$1 $2")}:\n";
+
+            lines.Add((ConsoleColor.Blue, sectionNameWords));
+        }
+
+        foreach (PropertyInfo property in appSettingsProperties)
+        {
+            jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
+
+            if (jsonAttribute != null)
+            {
+                continue;
+            }
+
+            Type propertyType = property.PropertyType;
+
+            if (propertyType.IsClass && !propertyType.Equals(typeof(string)))
+            {
+                object? nextInstance = property.GetValue(instance);
+
+                lines.AddRange(GetSuggestedValueLines(propertyType, nextInstance, property.Name));
+            }
+            else
+            {
+                if (type == typeof(AppSettings))
+                {
+                    lines.Add((ConsoleColor.Blue, "General Settings:\n"));
+                }
+                lines.Add((ConsoleColor.Blue, $"  {property.Name}"));
+
+                AppSettingAttribute? settingAttribute = property.GetCustomAttribute<AppSettingAttribute>();
+
+                if (settingAttribute != null)
+                {
+                    lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}"));
+
+                    string suggestedValueText = "  Suggested value: ";
+
+                    if (property.PropertyType == typeof(string))
+                    {
+                        suggestedValueText += $"\"{settingAttribute.SuggestedValue}\"\n";
+                    }
+                    else
+                    {
+                        suggestedValueText += $"{settingAttribute.SuggestedValue}\n";
+                    }
+
+                    lines.Add((ConsoleColor.White, suggestedValueText));
+                }
+            }
+        }
+
+        return lines;
+    }
+
     private void ScrollOutput(string outputType, List<(ConsoleColor Color, string Text)> lines)
     {
         int currentLine = 0;
@@ -179,17 +249,19 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             SetForegroundColor(ConsoleColor.Blue);
 
             string sectionNameWords = isJson
-                                        ? $"\"{sectionName}\": {{"
+                                        ? $"\"{sectionName}\":"
                                         : $"{SplitToWordsRegex().Replace(sectionName, "$1 $2")}:";
 
-            if (type != typeof(AppSettings))
+            if (isJson)
             {
-                WriteLine("");
+                Write($"    {sectionNameWords}");
+                SetForegroundColor(ConsoleColor.Yellow);
+                WriteLine("{");
             }
-
-            Write("    ");
-
-            WriteLine($"{sectionNameWords}");
+            else
+            {
+                WriteLine($"    {sectionNameWords}");
+            }
         }
 
         List<PropertyInfo> appSettingsProperties = [.. type.GetProperties()];
@@ -213,6 +285,12 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             }
             else
             {
+                if (type == typeof(AppSettings) && !isJson)
+                {
+                    SetForegroundColor(ConsoleColor.Blue);
+                    WriteLine("    General Settings:");
+                }
+
                 object? value = property.GetValue(instance, null);
 
                 SetForegroundColor(ConsoleColor.Blue);
@@ -228,12 +306,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                 }
                 else
                 {
-                    if (type != typeof(AppSettings))
-                    {
-                        Write("    ");
-                    }
-
-                    Write($"    {property.Name}: ");
+                    Write($"        {property.Name}: ");
                 }
 
                 SetForegroundColor(ConsoleColor.White);
@@ -264,7 +337,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
         if (isJson && type != typeof(AppSettings))
         {
-            SetForegroundColor(ConsoleColor.Blue);
+            SetForegroundColor(ConsoleColor.Yellow);
             WriteLine("    }");
         }
     }
@@ -413,10 +486,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteHeading("App settings");
         WriteLine("If no custom app settings are supplied, defaults will be used.\n");
         WriteLine($"To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_appSettings.SettingsFileName}' file.\n\nIt must have the following content:\n");
-        WriteLine("{");
 
-        List<PropertyInfo> appSettingsProperties = [.. typeof(AppSettings).GetProperties()];
-        JsonIgnoreAttribute? jsonAttribute;
+        SetForegroundColor(ConsoleColor.Yellow);
+        WriteLine("{");
 
         WriteSettings(type: null,
                       instance: null,
@@ -424,44 +496,12 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                       includeHeader: false,
                       isJson: true);
 
-        SetForegroundColor(ConsoleColor.White);
+        SetForegroundColor(ConsoleColor.Yellow);
         WriteLine("}\n");
 
         WriteHeading("Definitions and suggested values");
 
-        List<(ConsoleColor, string)> lines = [];
-
-        foreach (PropertyInfo property in appSettingsProperties)
-        {
-            jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
-
-            if (jsonAttribute != null)
-            {
-                continue;
-            }
-
-            lines.Add((ConsoleColor.Blue, $"  {property.Name}"));
-
-            AppSettingAttribute? settingAttribute = property.GetCustomAttribute<AppSettingAttribute>();
-
-            if (settingAttribute != null)
-            {
-                lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}"));
-
-                string suggestedValueText = "  Suggested value: ";
-
-                if (property.PropertyType == typeof(string))
-                {
-                    suggestedValueText += $"\"{settingAttribute.SuggestedValue}\"\n";
-                }
-                else
-                {
-                    suggestedValueText += $"{settingAttribute.SuggestedValue}\n";
-                }
-
-                lines.Add((ConsoleColor.White, suggestedValueText));
-            }
-        }
+        List<(ConsoleColor, string)> lines = GetSuggestedValueLines();
 
         lines.Add((ConsoleColor.White, "\nThe above app settings are a good starting point from which to experiment.\n"));
         lines.Add((ConsoleColor.White, "Alternatively, start with the app settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n"));
