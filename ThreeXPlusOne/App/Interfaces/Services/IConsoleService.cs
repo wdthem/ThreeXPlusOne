@@ -41,7 +41,8 @@ public interface IConsoleService
     /// <param name="instance"></param>
     /// <param name="sectionName"></param>
     /// <param name="includeHeader"></param>
-    void WriteSettings(Type? type = null, object? instance = null, string? sectionName = null, bool includeHeader = true);
+    /// <param name="isJson"></param>
+    void WriteSettings(Type? type = null, object? instance = null, string? sectionName = null, bool includeHeader = true, bool isJson = false);
 
     /// <summary>
     /// Output any non-breaking messages that occurred during command-line parsing

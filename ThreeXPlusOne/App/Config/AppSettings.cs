@@ -19,18 +19,17 @@ public class AppSettings
     [JsonIgnore]
     private readonly GraphProvider _graphProvider = GraphProvider.SkiaSharp;
 
-    /// <summary>
-    /// The directory in which the process will create a unique execution folder with generated output
-    /// </summary>
-    [AppSetting(description: "The folder in which the generated output files should be placed", suggestedValue: "C:\\path\\to\\save\\output\\")]
-    public string OutputPath { get; set; } = "";
-
     public AlgorithmSettings AlgorithmSettings { get; set; } = new AlgorithmSettings();
 
     public NodeAestheticSettings NodeAestheticSettings { get; set; } = new NodeAestheticSettings();
 
     public DirectedGraphAestheticSettings DirectedGraphAestheticSettings { get; set; } = new DirectedGraphAestheticSettings();
 
+    /// <summary>
+    /// The directory in which the process will create a unique execution folder with generated output
+    /// </summary>
+    [AppSetting(description: "The folder in which the generated output files should be placed", suggestedValue: "C:\\path\\to\\save\\output\\")]
+    public string OutputPath { get; set; } = "";
     /// <summary>
     /// The graph provider to use to render the graph image
     /// </summary>

@@ -163,11 +163,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     public void WriteSettings(Type? type = null,
                               object? instance = null,
                               string? sectionName = null,
-                              bool includeHeader = true)
+                              bool includeHeader = true,
+                              bool isJson = false)
     {
         type ??= typeof(AppSettings);
         instance ??= _appSettings;
-        sectionName ??= "GeneralSettings";
 
         if (includeHeader)
         {
@@ -178,14 +178,18 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         {
             SetForegroundColor(ConsoleColor.Blue);
 
-            string sectionNameWords = SplitToWordsRegex().Replace(sectionName, "$1 $2");
+            string sectionNameWords = isJson
+                                        ? $"\"{sectionName}\": {{"
+                                        : $"{SplitToWordsRegex().Replace(sectionName, "$1 $2")}:";
 
             if (type != typeof(AppSettings))
             {
                 WriteLine("");
             }
 
-            WriteLine($"{sectionNameWords}:");
+            Write("    ");
+
+            WriteLine($"{sectionNameWords}");
         }
 
         List<PropertyInfo> appSettingsProperties = [.. type.GetProperties()];
@@ -205,7 +209,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             {
                 object? nextInstance = property.GetValue(instance);
 
-                WriteSettings(propertyType, nextInstance, property.Name, false);
+                WriteSettings(propertyType, nextInstance, property.Name, false, isJson);
             }
             else
             {
@@ -213,7 +217,24 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
                 SetForegroundColor(ConsoleColor.Blue);
 
-                Write($"    {property.Name}: ");
+                if (isJson)
+                {
+                    if (type != typeof(AppSettings))
+                    {
+                        Write("    ");
+                    }
+
+                    Write($"    \"{property.Name}\": ");
+                }
+                else
+                {
+                    if (type != typeof(AppSettings))
+                    {
+                        Write("    ");
+                    }
+
+                    Write($"    {property.Name}: ");
+                }
 
                 SetForegroundColor(ConsoleColor.White);
 
@@ -222,10 +243,29 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                     value = TruncateLongSettings(value?.ToString() ?? "");
                 }
 
-                Write($"{value}");
+                if (!isJson)
+                {
+                    Write($"{value}");
+                }
+                else
+                {
+                    if (property.PropertyType == typeof(string))
+                    {
+                        Write("\"[value]\"");
+                    }
+                    else
+                    {
+                        Write("[value]");
+                    }
+                }
 
                 WriteLine("");
             }
+        }
+        if (isJson && type != typeof(AppSettings))
+        {
+            SetForegroundColor(ConsoleColor.Blue);
+            WriteLine("    }");
         }
     }
 
@@ -375,40 +415,14 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteLine($"To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_appSettings.SettingsFileName}' file.\n\nIt must have the following content:\n");
         WriteLine("{");
 
-        int lcv = 1;
         List<PropertyInfo> appSettingsProperties = [.. typeof(AppSettings).GetProperties()];
         JsonIgnoreAttribute? jsonAttribute;
 
-        SetForegroundColor(ConsoleColor.White);
-
-        foreach (PropertyInfo property in appSettingsProperties)
-        {
-            jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
-
-            if (jsonAttribute != null)
-            {
-                continue;
-            }
-
-            string comma = lcv != appSettingsProperties.Count ? "," : "";
-
-            SetForegroundColor(ConsoleColor.Blue);
-
-            Write($"  {property.Name}: ");
-
-            SetForegroundColor(ConsoleColor.White);
-
-            if (property.PropertyType == typeof(string))
-            {
-                WriteLine("\"[value]\"");
-            }
-            else
-            {
-                WriteLine("[value]");
-            }
-
-            lcv++;
-        }
+        WriteSettings(type: null,
+                      instance: null,
+                      sectionName: null,
+                      includeHeader: false,
+                      isJson: true);
 
         SetForegroundColor(ConsoleColor.White);
         WriteLine("}\n");
