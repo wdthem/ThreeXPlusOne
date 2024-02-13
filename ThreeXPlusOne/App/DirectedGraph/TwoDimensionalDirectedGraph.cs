@@ -40,20 +40,20 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     {
         // Set up the base nodes' positions
         (double X, double Y) base1 = (0, 0);                                    // Node '1' at the bottom
-        (double X, double Y) base2 = (0, base1.Y - _appSettings.YNodeSpacer);      // Node '2' just above '1'
-        (double X, double Y) base4 = (0, base2.Y - _appSettings.YNodeSpacer);      // Node '4' above '2'
+        (double X, double Y) base2 = (0, base1.Y - _appSettings.NodeAestheticSettings.YNodeSpacer);      // Node '2' just above '1'
+        (double X, double Y) base4 = (0, base2.Y - _appSettings.NodeAestheticSettings.YNodeSpacer);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
-        _nodes[1].Shape.Radius = _appSettings.NodeRadius;
+        _nodes[1].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
 
         _nodes[2].Position = base2;
         _nodes[2].IsPositioned = true;
-        _nodes[2].Shape.Radius = _appSettings.NodeRadius;
+        _nodes[2].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
 
         _nodes[4].Position = base4;
         _nodes[4].IsPositioned = true;
-        _nodes[4].Shape.Radius = _appSettings.NodeRadius;
+        _nodes[4].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
 
         List<DirectedGraphNode> nodesToDraw = _nodes.Values.Where(n => n.Depth == _nodes[4].Depth + 1)
                                                            .ToList();
@@ -67,9 +67,9 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         _consoleService.WriteDone();
 
         _nodePositions.MoveNodesToPositiveCoordinates(_nodes,
-                                                      _appSettings.XNodeSpacer,
-                                                      _appSettings.YNodeSpacer,
-                                                      _appSettings.NodeRadius);
+                                                      _appSettings.NodeAestheticSettings.XNodeSpacer,
+                                                      _appSettings.NodeAestheticSettings.YNodeSpacer,
+                                                      _appSettings.NodeAestheticSettings.NodeRadius);
     }
 
     /// <summary>
@@ -80,8 +80,8 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
             NodeAesthetics.SetNodeShape(node,
-                                        _appSettings.NodeRadius,
-                                        _appSettings.IncludePolygonsAsNodes);
+                                        _appSettings.NodeAestheticSettings.NodeRadius,
+                                        _appSettings.NodeAestheticSettings.IncludePolygonsAsNodes);
         }
     }
 
@@ -91,7 +91,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
     {
-        double nodeRadius = _appSettings.NodeRadius;
+        double nodeRadius = _appSettings.NodeAestheticSettings.NodeRadius;
 
         if (!node.IsPositioned)
         {
@@ -128,18 +128,18 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                                             : positionedNodesAtDepth;
                     }
 
-                    xOffset = xOffset - (allNodesAtDepth / 2 * _appSettings.XNodeSpacer) + (_appSettings.XNodeSpacer * addedWidth);
+                    xOffset = xOffset - (allNodesAtDepth / 2 * _appSettings.NodeAestheticSettings.XNodeSpacer) + (_appSettings.NodeAestheticSettings.XNodeSpacer * addedWidth);
                 }
             }
 
-            double yOffset = node.Parent!.Position.Y - _appSettings.YNodeSpacer;
+            double yOffset = node.Parent!.Position.Y - _appSettings.NodeAestheticSettings.YNodeSpacer;
 
             node.Position = (xOffset, yOffset);
 
-            if (_appSettings.NodeRotationAngle != 0)
+            if (_appSettings.NodeAestheticSettings.NodeRotationAngle != 0)
             {
                 (double x, double y) = NodePositions.RotateNode(node.NumberValue,
-                                                                _appSettings.NodeRotationAngle,
+                                                                _appSettings.NodeAestheticSettings.NodeRotationAngle,
                                                                 xOffset,
                                                                 yOffset);
 
@@ -151,16 +151,16 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
             //limit the x-axis distance between node and parent, because the distance calculated above based on allNodesAtDepth can push
             //parents and children too far away from each other on the x-axis
-            if (absoluteXAxisDistanceFromParent > _appSettings.XNodeSpacer * 3)
+            if (absoluteXAxisDistanceFromParent > _appSettings.NodeAestheticSettings.XNodeSpacer * 3)
             {
                 //if the child node is to the left of the parent
                 if (signedXAxisDistanceFromParent < 0)
                 {
-                    node.Position = (node.Position.X + ((absoluteXAxisDistanceFromParent / 3) - _appSettings.XNodeSpacer), node.Position.Y);
+                    node.Position = (node.Position.X + ((absoluteXAxisDistanceFromParent / 3) - _appSettings.NodeAestheticSettings.XNodeSpacer), node.Position.Y);
                 }
                 else
                 {
-                    node.Position = (node.Position.X - ((absoluteXAxisDistanceFromParent / 3) + _appSettings.XNodeSpacer), node.Position.Y);
+                    node.Position = (node.Position.X - ((absoluteXAxisDistanceFromParent / 3) + _appSettings.NodeAestheticSettings.XNodeSpacer), node.Position.Y);
                 }
             }
 

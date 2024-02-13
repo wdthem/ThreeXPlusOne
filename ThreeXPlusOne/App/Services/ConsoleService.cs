@@ -3,13 +3,14 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App.Services;
 
-public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
+public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
 {
     private int _spinnerCounter = 0;
     private static readonly object _consoleLock = new();
@@ -17,6 +18,9 @@ public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
     private CancellationTokenSource? _cancellationTokenSource;
     private readonly string[] _spinner = ["|", "/", "-", "\\"];
     private readonly Assembly _assembly = Assembly.GetExecutingAssembly();
+
+    [GeneratedRegex("([a-z])([A-Z])")]
+    private static partial Regex SplitToWordsRegex();
 
     private string TruncateLongSettings(string input, int maxLength = 100)
     {
@@ -156,11 +160,35 @@ public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
         }
     }
 
-    public void WriteSettings()
+    public void WriteSettings(Type? type = null,
+                              object? instance = null,
+                              string? sectionName = null,
+                              bool includeHeader = true)
     {
-        WriteHeading("Settings");
+        type ??= typeof(AppSettings);
+        instance ??= _appSettings;
+        sectionName ??= "GeneralSettings";
 
-        List<PropertyInfo> appSettingsProperties = [.. typeof(AppSettings).GetProperties()];
+        if (includeHeader)
+        {
+            WriteHeading("Settings");
+        }
+
+        if (!string.IsNullOrWhiteSpace(sectionName))
+        {
+            SetForegroundColor(ConsoleColor.Blue);
+
+            string sectionNameWords = SplitToWordsRegex().Replace(sectionName, "$1 $2");
+
+            if (type != typeof(AppSettings))
+            {
+                WriteLine("");
+            }
+
+            WriteLine($"{sectionNameWords}:");
+        }
+
+        List<PropertyInfo> appSettingsProperties = [.. type.GetProperties()];
 
         foreach (PropertyInfo property in appSettingsProperties)
         {
@@ -171,27 +199,33 @@ public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
                 continue;
             }
 
-            object? value = property.GetValue(_appSettings, null);
+            Type propertyType = property.PropertyType;
 
-            SetForegroundColor(ConsoleColor.Blue);
-
-            Write($"    {property.Name}: ");
-
-            SetForegroundColor(ConsoleColor.White);
-
-            if ((value?.ToString() ?? "").Length > 100)
+            if (propertyType.IsClass && !propertyType.Equals(typeof(string)))
             {
-                value = TruncateLongSettings(value?.ToString() ?? "");
+                object? nextInstance = property.GetValue(instance);
+
+                WriteSettings(propertyType, nextInstance, property.Name, false);
             }
+            else
+            {
+                object? value = property.GetValue(instance, null);
 
-            Write($"{value}");
+                SetForegroundColor(ConsoleColor.Blue);
 
-            WriteLine("");
-        }
+                Write($"    {property.Name}: ");
 
-        if (_appSettings.GraphDimensions != _appSettings.SanitizedGraphDimensions)
-        {
-            WriteLine($"\nInvalid GraphDimensions ({_appSettings.GraphDimensions}). Defaulted to {_appSettings.SanitizedGraphDimensions}.");
+                SetForegroundColor(ConsoleColor.White);
+
+                if ((value?.ToString() ?? "").Length > 100)
+                {
+                    value = TruncateLongSettings(value?.ToString() ?? "");
+                }
+
+                Write($"{value}");
+
+                WriteLine("");
+            }
         }
     }
 

@@ -41,8 +41,12 @@ public class ProcessTests
     {
         _appSettings = new OptionsWrapper<AppSettings>
         (
-            new AppSettings { GraphDimensions = 2, NumberOfSeries = 10, MaxStartingNumber = 100 }
+            new AppSettings { }
         );
+
+        _appSettings.Value.DirectedGraphAestheticSettings.GraphDimensions = 2;
+        _appSettings.Value.AlgorithmSettings.NumberOfSeries = 10;
+        _appSettings.Value.AlgorithmSettings.MaxStartingNumber = 100;
     }
 
     [Fact]
@@ -88,8 +92,8 @@ public class ProcessTests
         // Arrange
         ResetSettings();
 
-        _appSettings.Value.UseTheseNumbers = "5,6,7";
-        _appSettings.Value.ExcludeTheseNumbers = "5,6,7";
+        _appSettings.Value.AlgorithmSettings.UseTheseNumbers = "5,6,7";
+        _appSettings.Value.AlgorithmSettings.ExcludeTheseNumbers = "5,6,7";
 
         var process = new Process(_appSettings,
                                   _algorithmMock.Object,

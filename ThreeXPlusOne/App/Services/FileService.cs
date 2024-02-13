@@ -82,7 +82,7 @@ public class FileService(IOptions<AppSettings> appSettings,
 
     public string GenerateDirectedGraphFilePath()
     {
-        string fileName = $"{_prefix}-{_appSettings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
+        string fileName = $"{_prefix}-{_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
 
         return GenerateFullFilePath(_appSettings.UniqueExecutionId, _appSettings.OutputPath, fileName);
     }

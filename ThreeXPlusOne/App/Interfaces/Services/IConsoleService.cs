@@ -37,7 +37,11 @@ public interface IConsoleService
     /// <summary>
     /// Output the app settings from the app settings file, or defaults
     /// </summary>
-    void WriteSettings();
+    /// <param name="type"></param>
+    /// <param name="instance"></param>
+    /// <param name="sectionName"></param>
+    /// <param name="includeHeader"></param>
+    void WriteSettings(Type? type = null, object? instance = null, string? sectionName = null, bool includeHeader = true);
 
     /// <summary>
     /// Output any non-breaking messages that occurred during command-line parsing
