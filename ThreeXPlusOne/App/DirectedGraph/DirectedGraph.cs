@@ -160,7 +160,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         }
 
         Task.Run(() => graphService.Draw(drawNumbersOnNodes: _appSettings.NodeAestheticSettings.DrawNumbersOnNodes,
-                                         drawNodeConnections: _appSettings.NodeAestheticSettings.DrawConnections)).Wait();
+                                         drawNodeConnections: _appSettings.NodeAestheticSettings.DrawNodeConnections)).Wait();
 
         Task.Run(graphService.Render).Wait();
 

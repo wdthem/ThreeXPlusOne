@@ -20,22 +20,22 @@ public class AppSettings
     /// <summary>
     /// All settings related to running the 3x+1 algorithm
     /// </summary>
-    public AlgorithmSettings AlgorithmSettings { get; set; } = new AlgorithmSettings();
+    public AlgorithmSettings AlgorithmSettings { get; set; } = new();
 
     /// <summary>
     /// All settings related to the appearance of the directed graph nodes
     /// </summary>
-    public NodeAestheticSettings NodeAestheticSettings { get; set; } = new NodeAestheticSettings();
+    public NodeAestheticSettings NodeAestheticSettings { get; set; } = new();
 
     /// <summary>
     /// All settings related to the appears of the directed graph itself
     /// </summary>
-    public DirectedGraphAestheticSettings DirectedGraphAestheticSettings { get; set; } = new DirectedGraphAestheticSettings();
+    public DirectedGraphAestheticSettings DirectedGraphAestheticSettings { get; set; } = new();
 
     /// <summary>
     /// The directory in which the process will create a unique execution folder with generated output
     /// </summary>
-    [AppSetting(description: "The folder in which the generated output files should be placed", suggestedValue: "C:\\path\\to\\save\\output\\")]
+    [AppSetting(description: "The folder in which the generated output files should be placed. If not supplied, output is saved to the runtime directory.", suggestedValue: "")]
     public string OutputPath { get; set; } = "";
 
     /// <summary>
@@ -201,7 +201,7 @@ public class NodeAestheticSettings
     /// Whether or not to draw the connections between nodes on the graph
     /// </summary>
     [AppSetting(description: "Whether or not to draw connections between the nodes in the graph. If set to true, image file size may increase substantially.", suggestedValue: "true")]
-    public bool DrawConnections { get; set; } = true;
+    public bool DrawNodeConnections { get; set; } = true;
 
     /// <summary>
     /// Whether or not to draw the number at the center of the node that the node represents

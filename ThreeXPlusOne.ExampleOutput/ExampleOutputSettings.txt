@@ -10,7 +10,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "RandomNumberTotal": 350
   },
   "NodeAestheticSettings": {
-    "DrawConnections": false,
+    "DrawNodeConnections": false,
     "DrawNumbersOnNodes": false,
     "IncludePolygonsAsNodes": true,
     "NodeColors": "",
@@ -37,7 +37,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "RandomNumberTotal": 350
   },
   "NodeAestheticSettings": {
-    "DrawConnections": false,
+    "DrawNodeConnections": false,
     "DrawNumbersOnNodes": false,
     "IncludePolygonsAsNodes": true,
     "NodeColors": "",
@@ -64,7 +64,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "RandomNumberTotal": 350
   },
   "NodeAestheticSettings": {
-    "DrawConnections": false,
+    "DrawNodeConnections": false,
     "DrawNumbersOnNodes": false,
     "IncludePolygonsAsNodes": true,
     "NodeColors": "",
