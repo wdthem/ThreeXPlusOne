@@ -57,9 +57,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         return truncated.ToString();
     }
 
-    private List<(ConsoleColor, string)> GetSuggestedValueLines(Type? type = null,
-                                                                object? instance = null,
-                                                                string? sectionName = null)
+    private List<(ConsoleColor, string)> GenerateSuggestedValueText(Type? type = null,
+                                                                    object? instance = null,
+                                                                    string? sectionName = null)
     {
         List<(ConsoleColor, string)> lines = [];
         type ??= typeof(AppSettings);
@@ -92,7 +92,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             {
                 object? nextInstance = property.GetValue(instance);
 
-                lines.AddRange(GetSuggestedValueLines(propertyType, nextInstance, property.Name));
+                lines.AddRange(GenerateSuggestedValueText(propertyType, nextInstance, property.Name));
             }
             else
             {
@@ -100,6 +100,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                 {
                     lines.Add((ConsoleColor.Blue, "General Settings:\n"));
                 }
+
                 lines.Add((ConsoleColor.Blue, $"  {property.Name}"));
 
                 AppSettingAttribute? settingAttribute = property.GetCustomAttribute<AppSettingAttribute>();
@@ -255,7 +256,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             if (isJson)
             {
                 Write($"    {sectionNameWords}");
-                SetForegroundColor(ConsoleColor.Yellow);
+                SetForegroundColor(ConsoleColor.DarkYellow);
                 WriteLine("{");
             }
             else
@@ -264,17 +265,13 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             }
         }
 
-        List<PropertyInfo> appSettingsProperties = [.. type.GetProperties()];
+        List<PropertyInfo> appSettingsProperties = type.GetProperties()
+                                                       .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
+                                                       .ToList();
 
+        int lcv = 1;
         foreach (PropertyInfo property in appSettingsProperties)
         {
-            JsonIgnoreAttribute? attribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
-
-            if (attribute != null)
-            {
-                continue;
-            }
-
             Type propertyType = property.PropertyType;
 
             if (propertyType.IsClass && !propertyType.Equals(typeof(string)))
@@ -330,15 +327,23 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                     {
                         Write("[value]");
                     }
+
+                    if (lcv < appSettingsProperties.Count)
+                    {
+                        Write(",");
+                    }
                 }
 
                 WriteLine("");
             }
+
+            lcv++;
         }
+
         if (isJson && type != typeof(AppSettings))
         {
-            SetForegroundColor(ConsoleColor.Yellow);
-            WriteLine("    }");
+            SetForegroundColor(ConsoleColor.DarkYellow);
+            WriteLine("    },");
         }
     }
 
@@ -487,7 +492,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteLine("If no custom app settings are supplied, defaults will be used.\n");
         WriteLine($"To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_appSettings.SettingsFileName}' file.\n\nIt must have the following content:\n");
 
-        SetForegroundColor(ConsoleColor.Yellow);
+        SetForegroundColor(ConsoleColor.DarkYellow);
         WriteLine("{");
 
         WriteSettings(type: null,
@@ -496,12 +501,12 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                       includeHeader: false,
                       isJson: true);
 
-        SetForegroundColor(ConsoleColor.Yellow);
+        SetForegroundColor(ConsoleColor.DarkYellow);
         WriteLine("}\n");
 
         WriteHeading("Definitions and suggested values");
 
-        List<(ConsoleColor, string)> lines = GetSuggestedValueLines();
+        List<(ConsoleColor, string)> lines = GenerateSuggestedValueText();
 
         lines.Add((ConsoleColor.White, "\nThe above app settings are a good starting point from which to experiment.\n"));
         lines.Add((ConsoleColor.White, "Alternatively, start with the app settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n"));

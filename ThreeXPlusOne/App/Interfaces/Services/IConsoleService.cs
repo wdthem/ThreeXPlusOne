@@ -37,6 +37,9 @@ public interface IConsoleService
     /// <summary>
     /// Output the app settings from the app settings file, or defaults
     /// </summary>
+    /// <remarks>
+    /// Optional properties to support recursive calls through the nested AppSettings classes
+    /// </remarks>
     /// <param name="type"></param>
     /// <param name="instance"></param>
     /// <param name="sectionName"></param>
