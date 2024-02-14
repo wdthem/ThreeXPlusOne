@@ -37,7 +37,15 @@ public interface IConsoleService
     /// <summary>
     /// Output the app settings from the app settings file, or defaults
     /// </summary>
-    void WriteSettings();
+    /// <remarks>
+    /// Optional properties to support recursive calls through the nested AppSettings classes
+    /// </remarks>
+    /// <param name="type"></param>
+    /// <param name="instance"></param>
+    /// <param name="sectionName"></param>
+    /// <param name="includeHeader"></param>
+    /// <param name="isJson"></param>
+    void WriteSettings(Type? type = null, object? instance = null, string? sectionName = null, bool includeHeader = true, bool isJson = false);
 
     /// <summary>
     /// Output any non-breaking messages that occurred during command-line parsing

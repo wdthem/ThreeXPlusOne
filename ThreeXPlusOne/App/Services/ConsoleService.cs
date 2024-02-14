@@ -3,13 +3,14 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App.Services;
 
-public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
+public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
 {
     private int _spinnerCounter = 0;
     private static readonly object _consoleLock = new();
@@ -17,6 +18,9 @@ public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
     private CancellationTokenSource? _cancellationTokenSource;
     private readonly string[] _spinner = ["|", "/", "-", "\\"];
     private readonly Assembly _assembly = Assembly.GetExecutingAssembly();
+
+    [GeneratedRegex("([a-z])([A-Z])")]
+    private static partial Regex SplitToWordsRegex();
 
     private string TruncateLongSettings(string input, int maxLength = 100)
     {
@@ -51,6 +55,71 @@ public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
         }
 
         return truncated.ToString();
+    }
+
+    private List<(ConsoleColor, string)> GenerateSuggestedValueText(Type? type = null,
+                                                                    object? instance = null,
+                                                                    string? sectionName = null)
+    {
+        List<(ConsoleColor, string)> lines = [];
+        type ??= typeof(AppSettings);
+        instance ??= _appSettings;
+
+        List<PropertyInfo> appSettingsProperties = type.GetProperties()
+                                                       .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
+                                                       .ToList();
+
+        if (!string.IsNullOrWhiteSpace(sectionName))
+        {
+            SetForegroundColor(ConsoleColor.Blue);
+
+            string sectionNameWords = $"{SplitToWordsRegex().Replace(sectionName, "$1 $2")}:\n";
+
+            lines.Add((ConsoleColor.Blue, sectionNameWords));
+        }
+
+        foreach (PropertyInfo property in appSettingsProperties)
+        {
+            Type propertyType = property.PropertyType;
+
+            if (propertyType.IsClass && !propertyType.Equals(typeof(string)))
+            {
+                object? nextInstance = property.GetValue(instance);
+
+                lines.AddRange(GenerateSuggestedValueText(propertyType, nextInstance, property.Name));
+            }
+            else
+            {
+                if (type == typeof(AppSettings))
+                {
+                    lines.Add((ConsoleColor.Blue, "General Settings:\n"));
+                }
+
+                lines.Add((ConsoleColor.Blue, $"  {property.Name}"));
+
+                AppSettingAttribute? settingAttribute = property.GetCustomAttribute<AppSettingAttribute>();
+
+                if (settingAttribute != null)
+                {
+                    lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}"));
+
+                    string suggestedValueText = "  Suggested value: ";
+
+                    if (property.PropertyType == typeof(string))
+                    {
+                        suggestedValueText += $"\"{settingAttribute.SuggestedValue}\"\n";
+                    }
+                    else
+                    {
+                        suggestedValueText += $"{settingAttribute.SuggestedValue}\n";
+                    }
+
+                    lines.Add((ConsoleColor.White, suggestedValueText));
+                }
+            }
+        }
+
+        return lines;
     }
 
     private void ScrollOutput(string outputType, List<(ConsoleColor Color, string Text)> lines)
@@ -156,42 +225,119 @@ public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
         }
     }
 
-    public void WriteSettings()
+    public void WriteSettings(Type? type = null,
+                              object? instance = null,
+                              string? sectionName = null,
+                              bool includeHeader = true,
+                              bool isJson = false)
     {
-        WriteHeading("Settings");
+        type ??= typeof(AppSettings);
+        instance ??= _appSettings;
 
-        List<PropertyInfo> appSettingsProperties = [.. typeof(AppSettings).GetProperties()];
-
-        foreach (PropertyInfo property in appSettingsProperties)
+        if (includeHeader)
         {
-            JsonIgnoreAttribute? attribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
-
-            if (attribute != null)
-            {
-                continue;
-            }
-
-            object? value = property.GetValue(_appSettings, null);
-
-            SetForegroundColor(ConsoleColor.Blue);
-
-            Write($"    {property.Name}: ");
-
-            SetForegroundColor(ConsoleColor.White);
-
-            if ((value?.ToString() ?? "").Length > 100)
-            {
-                value = TruncateLongSettings(value?.ToString() ?? "");
-            }
-
-            Write($"{value}");
-
-            WriteLine("");
+            WriteHeading("Settings");
         }
 
-        if (_appSettings.GraphDimensions != _appSettings.SanitizedGraphDimensions)
+        if (!string.IsNullOrWhiteSpace(sectionName))
         {
-            WriteLine($"\nInvalid GraphDimensions ({_appSettings.GraphDimensions}). Defaulted to {_appSettings.SanitizedGraphDimensions}.");
+            SetForegroundColor(ConsoleColor.Blue);
+
+            string sectionNameWords = isJson
+                                        ? $"\"{sectionName}\":"
+                                        : $"{SplitToWordsRegex().Replace(sectionName, "$1 $2")}:";
+
+            if (isJson)
+            {
+                Write($"    {sectionNameWords}");
+                SetForegroundColor(ConsoleColor.DarkYellow);
+                WriteLine("{");
+            }
+            else
+            {
+                WriteLine($"    {sectionNameWords}");
+            }
+        }
+
+        List<PropertyInfo> appSettingsProperties = type.GetProperties()
+                                                       .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
+                                                       .ToList();
+
+        int lcv = 1;
+        foreach (PropertyInfo property in appSettingsProperties)
+        {
+            Type propertyType = property.PropertyType;
+
+            if (propertyType.IsClass && !propertyType.Equals(typeof(string)))
+            {
+                object? nextInstance = property.GetValue(instance);
+
+                WriteSettings(propertyType, nextInstance, property.Name, false, isJson);
+            }
+            else
+            {
+                if (type == typeof(AppSettings) && !isJson)
+                {
+                    SetForegroundColor(ConsoleColor.Blue);
+                    WriteLine("    General Settings:");
+                }
+
+                object? value = property.GetValue(instance, null);
+
+                SetForegroundColor(ConsoleColor.Blue);
+
+                if (isJson)
+                {
+                    if (type != typeof(AppSettings))
+                    {
+                        Write("    ");
+                    }
+
+                    Write($"    \"{property.Name}\": ");
+                }
+                else
+                {
+                    Write($"        {property.Name}: ");
+                }
+
+                SetForegroundColor(ConsoleColor.White);
+
+                if ((value?.ToString() ?? "").Length > 100)
+                {
+                    value = TruncateLongSettings(value?.ToString() ?? "");
+                }
+
+                if (!isJson)
+                {
+                    Write($"{value}");
+                }
+                else
+                {
+                    if (property.PropertyType == typeof(string))
+                    {
+                        Write("\"[value]\"");
+                    }
+                    else
+                    {
+                        Write("[value]");
+                    }
+
+                    if (lcv < appSettingsProperties.Count)
+                    {
+                        Write(",");
+                    }
+                }
+
+                WriteLine("");
+            }
+
+            lcv++;
+        }
+
+        if (isJson && type != typeof(AppSettings))
+        {
+            SetForegroundColor(ConsoleColor.DarkYellow);
+            WriteLine("    },");
         }
     }
 
@@ -339,81 +485,22 @@ public class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
         WriteHeading("App settings");
         WriteLine("If no custom app settings are supplied, defaults will be used.\n");
         WriteLine($"To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_appSettings.SettingsFileName}' file.\n\nIt must have the following content:\n");
+
+        SetForegroundColor(ConsoleColor.DarkYellow);
         WriteLine("{");
 
-        int lcv = 1;
-        List<PropertyInfo> appSettingsProperties = [.. typeof(AppSettings).GetProperties()];
-        JsonIgnoreAttribute? jsonAttribute;
+        WriteSettings(type: null,
+                      instance: null,
+                      sectionName: null,
+                      includeHeader: false,
+                      isJson: true);
 
-        SetForegroundColor(ConsoleColor.White);
-
-        foreach (PropertyInfo property in appSettingsProperties)
-        {
-            jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
-
-            if (jsonAttribute != null)
-            {
-                continue;
-            }
-
-            string comma = lcv != appSettingsProperties.Count ? "," : "";
-
-            SetForegroundColor(ConsoleColor.Blue);
-
-            Write($"  {property.Name}: ");
-
-            SetForegroundColor(ConsoleColor.White);
-
-            if (property.PropertyType == typeof(string))
-            {
-                WriteLine("\"[value]\"");
-            }
-            else
-            {
-                WriteLine("[value]");
-            }
-
-            lcv++;
-        }
-
-        SetForegroundColor(ConsoleColor.White);
+        SetForegroundColor(ConsoleColor.DarkYellow);
         WriteLine("}\n");
 
         WriteHeading("Definitions and suggested values");
 
-        List<(ConsoleColor, string)> lines = [];
-
-        foreach (PropertyInfo property in appSettingsProperties)
-        {
-            jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
-
-            if (jsonAttribute != null)
-            {
-                continue;
-            }
-
-            lines.Add((ConsoleColor.Blue, $"  {property.Name}"));
-
-            AppSettingAttribute? settingAttribute = property.GetCustomAttribute<AppSettingAttribute>();
-
-            if (settingAttribute != null)
-            {
-                lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))}"));
-
-                string suggestedValueText = "  Suggested value: ";
-
-                if (property.PropertyType == typeof(string))
-                {
-                    suggestedValueText += $"\"{settingAttribute.SuggestedValue}\"\n";
-                }
-                else
-                {
-                    suggestedValueText += $"{settingAttribute.SuggestedValue}\n";
-                }
-
-                lines.Add((ConsoleColor.White, suggestedValueText));
-            }
-        }
+        List<(ConsoleColor, string)> lines = GenerateSuggestedValueText();
 
         lines.Add((ConsoleColor.White, "\nThe above app settings are a good starting point from which to experiment.\n"));
         lines.Add((ConsoleColor.White, "Alternatively, start with the app settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n"));

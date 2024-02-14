@@ -52,7 +52,7 @@ public class Process(IOptions<AppSettings> appSettings,
     private void GenerateDirectedGraph(List<List<int>> seriesLists)
     {
         IDirectedGraph graph = directedGraphs.ToList()
-                                             .Where(graph => graph.Dimensions == _appSettings.SanitizedGraphDimensions)
+                                             .Where(graph => graph.Dimensions == _appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions)
                                              .First();
 
         consoleService.WriteHeading($"Directed graph ({graph.Dimensions}D)");
@@ -106,42 +106,42 @@ public class Process(IOptions<AppSettings> appSettings,
 
         List<int> inputValues = [];
 
-        if (_appSettings.ListOfSeriesNumbers.Count > 0)
+        if (_appSettings.AlgorithmSettings.ListOfRandomNumbers.Count > 0)
         {
-            inputValues = _appSettings.ListOfSeriesNumbers;
-            inputValues.RemoveAll(_appSettings.ListOfNumbersToExclude.Contains);
+            inputValues = _appSettings.AlgorithmSettings.ListOfRandomNumbers;
+            inputValues.RemoveAll(_appSettings.AlgorithmSettings.ListOfNumbersToExclude.Contains);
 
             if (inputValues.Count == 0)
             {
-                throw new Exception($"{nameof(_appSettings.UseTheseNumbers)} had values, but {nameof(_appSettings.ExcludeTheseNumbers)} removed them all. Please provide more numbers in {nameof(_appSettings.UseTheseNumbers)}");
+                throw new Exception($"{nameof(_appSettings.AlgorithmSettings.NumbersToUse)} had values, but {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)} removed them all. Please provide more numbers in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)}");
             }
 
             _generatedRandomNumbers = false;
 
-            consoleService.WriteLine($"Using series numbers defined in {nameof(_appSettings.UseTheseNumbers)} apart from any excluded in {nameof(_appSettings.ExcludeTheseNumbers)}\n");
+            consoleService.WriteLine($"Using series numbers defined in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)} apart from any excluded in {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}\n");
 
             return inputValues;
         }
 
-        consoleService.Write($"Generating {_appSettings.NumberOfSeries} random numbers from 1 to {_appSettings.MaxStartingNumber}... ");
+        consoleService.Write($"Generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers from 1 to {_appSettings.AlgorithmSettings.RandomNumberMax}... ");
 
-        while (inputValues.Count < _appSettings.NumberOfSeries)
+        while (inputValues.Count < _appSettings.AlgorithmSettings.RandomNumberTotal)
         {
             if (stopwatch.Elapsed.TotalSeconds >= 10)
             {
                 if (inputValues.Count == 0)
                 {
-                    throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_appSettings.ExcludeTheseNumbers)}");
+                    throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}");
                 }
 
-                consoleService.WriteLine($"\nGave up generating {_appSettings.NumberOfSeries} random numbers. Generated {inputValues.Count}\n");
+                consoleService.WriteLine($"\nGave up generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers. Generated {inputValues.Count}\n");
 
                 break;
             }
 
-            int randomValue = Random.Shared.Next(0, _appSettings.MaxStartingNumber) + 1;
+            int randomValue = Random.Shared.Next(0, _appSettings.AlgorithmSettings.RandomNumberMax) + 1;
 
-            if (_appSettings.ListOfNumbersToExclude.Contains(randomValue))
+            if (_appSettings.AlgorithmSettings.ListOfNumbersToExclude.Contains(randomValue))
             {
                 continue;
             }
@@ -153,7 +153,7 @@ public class Process(IOptions<AppSettings> appSettings,
         }
 
         //populate the property as the number list is used to generate a hash value for the directory name
-        _appSettings.UseTheseNumbers = string.Join(", ", inputValues);
+        _appSettings.AlgorithmSettings.NumbersToUse = string.Join(", ", inputValues);
         _generatedRandomNumbers = true;
 
         consoleService.WriteDone();

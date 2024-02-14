@@ -97,9 +97,9 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                                           .Where(graphService => graphService.GraphProvider == _appSettings.GraphProvider)
                                                           .First();
 
-        if (!graphService.SupportedDimensions.Contains(_appSettings.SanitizedGraphDimensions))
+        if (!graphService.SupportedDimensions.Contains(_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions))
         {
-            throw new Exception($"Graph provider {_appSettings.GraphProvider} does not support graphs in {_appSettings.SanitizedGraphDimensions} dimensions.");
+            throw new Exception($"Graph provider {_appSettings.GraphProvider} does not support graphs in {_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions} dimensions.");
         }
 
         graphService.OnStart = (message) =>
@@ -120,16 +120,16 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                                Color.Black)).Wait();
 
 
-        if (_appSettings.GenerateBackgroundStars)
+        if (_appSettings.DirectedGraphAestheticSettings.GenerateBackgroundStars)
         {
             Task.Run(() => graphService.GenerateBackgroundStars(100,
-                                                                _appSettings.NodeRadius)).Wait();
+                                                                _appSettings.NodeAestheticSettings.NodeRadius)).Wait();
         }
 
         lightSourceService.Initialize(_canvasWidth,
                                       _canvasHeight,
-                                      _appSettings.SanitizedGraphDimensions,
-                                      _appSettings.LightSourcePosition);
+                                      _appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions,
+                                      _appSettings.DirectedGraphAestheticSettings.LightSourcePosition);
 
         if (lightSourceService.LightSourcePosition != LightSourcePosition.None)
         {
@@ -140,7 +140,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         foreach (DirectedGraphNode node in _nodes.Values)
         {
-            Color nodeColor = _nodeAesthetics.GenerateNodeColor(_appSettings.NodeColors);
+            Color nodeColor = _nodeAesthetics.GenerateNodeColor(_appSettings.NodeAestheticSettings.NodeColors);
             Color nodeBorderColor = NodeAesthetics.GenerateNodeBorderColor(nodeColor);
 
             if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
@@ -159,8 +159,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
             }
         }
 
-        Task.Run(() => graphService.Draw(drawNumbersOnNodes: _appSettings.DrawNumbersOnNodes,
-                                         drawNodeConnections: _appSettings.DrawConnections)).Wait();
+        Task.Run(() => graphService.Draw(drawNumbersOnNodes: _appSettings.NodeAestheticSettings.DrawNumbersOnNodes,
+                                         drawNodeConnections: _appSettings.NodeAestheticSettings.DrawNodeConnections)).Wait();
 
         Task.Run(graphService.Render).Wait();
 
@@ -182,8 +182,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         double maxX = _nodes.Values.Max(node => node.Position.X);
         double maxY = _nodes.Values.Max(node => node.Position.Y);
 
-        _canvasWidth = (int)(maxX + _appSettings.XNodeSpacer + _appSettings.NodeRadius);
-        _canvasHeight = (int)(maxY + _appSettings.YNodeSpacer + _appSettings.NodeRadius);
+        _canvasWidth = (int)(maxX + _appSettings.NodeAestheticSettings.XNodeSpacer + _appSettings.NodeAestheticSettings.NodeRadius);
+        _canvasHeight = (int)(maxY + _appSettings.NodeAestheticSettings.YNodeSpacer + _appSettings.NodeAestheticSettings.NodeRadius);
 
         _consoleService.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
     }
