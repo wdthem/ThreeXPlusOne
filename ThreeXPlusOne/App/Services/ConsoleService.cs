@@ -65,8 +65,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         type ??= typeof(AppSettings);
         instance ??= _appSettings;
 
-        List<PropertyInfo> appSettingsProperties = [.. type.GetProperties()];
-        JsonIgnoreAttribute? jsonAttribute;
+        List<PropertyInfo> appSettingsProperties = type.GetProperties()
+                                                       .Where(p => p.GetCustomAttribute<JsonIgnoreAttribute>() == null)
+                                                       .ToList();
 
         if (!string.IsNullOrWhiteSpace(sectionName))
         {
@@ -79,13 +80,6 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
         foreach (PropertyInfo property in appSettingsProperties)
         {
-            jsonAttribute = property.GetCustomAttribute<JsonIgnoreAttribute>();
-
-            if (jsonAttribute != null)
-            {
-                continue;
-            }
-
             Type propertyType = property.PropertyType;
 
             if (propertyType.IsClass && !propertyType.Equals(typeof(string)))
