@@ -45,8 +45,8 @@ public class ProcessTests
         );
 
         _appSettings.Value.DirectedGraphAestheticSettings.GraphDimensions = 2;
-        _appSettings.Value.AlgorithmSettings.NumberOfSeries = 10;
-        _appSettings.Value.AlgorithmSettings.MaxStartingNumber = 100;
+        _appSettings.Value.AlgorithmSettings.RandomNumberTotal = 10;
+        _appSettings.Value.AlgorithmSettings.RandomNumberMax = 100;
     }
 
     [Fact]
@@ -92,8 +92,8 @@ public class ProcessTests
         // Arrange
         ResetSettings();
 
-        _appSettings.Value.AlgorithmSettings.UseTheseNumbers = "5,6,7";
-        _appSettings.Value.AlgorithmSettings.ExcludeTheseNumbers = "5,6,7";
+        _appSettings.Value.AlgorithmSettings.NumbersToUse = "5,6,7";
+        _appSettings.Value.AlgorithmSettings.NumbersToExclude = "5,6,7";
 
         var process = new Process(_appSettings,
                                   _algorithmMock.Object,

@@ -106,40 +106,40 @@ public class Process(IOptions<AppSettings> appSettings,
 
         List<int> inputValues = [];
 
-        if (_appSettings.AlgorithmSettings.ListOfSeriesNumbers.Count > 0)
+        if (_appSettings.AlgorithmSettings.ListOfRandomNumbers.Count > 0)
         {
-            inputValues = _appSettings.AlgorithmSettings.ListOfSeriesNumbers;
+            inputValues = _appSettings.AlgorithmSettings.ListOfRandomNumbers;
             inputValues.RemoveAll(_appSettings.AlgorithmSettings.ListOfNumbersToExclude.Contains);
 
             if (inputValues.Count == 0)
             {
-                throw new Exception($"{nameof(_appSettings.AlgorithmSettings.UseTheseNumbers)} had values, but {nameof(_appSettings.AlgorithmSettings.ExcludeTheseNumbers)} removed them all. Please provide more numbers in {nameof(_appSettings.AlgorithmSettings.UseTheseNumbers)}");
+                throw new Exception($"{nameof(_appSettings.AlgorithmSettings.NumbersToUse)} had values, but {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)} removed them all. Please provide more numbers in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)}");
             }
 
             _generatedRandomNumbers = false;
 
-            consoleService.WriteLine($"Using series numbers defined in {nameof(_appSettings.AlgorithmSettings.UseTheseNumbers)} apart from any excluded in {nameof(_appSettings.AlgorithmSettings.ExcludeTheseNumbers)}\n");
+            consoleService.WriteLine($"Using series numbers defined in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)} apart from any excluded in {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}\n");
 
             return inputValues;
         }
 
-        consoleService.Write($"Generating {_appSettings.AlgorithmSettings.NumberOfSeries} random numbers from 1 to {_appSettings.AlgorithmSettings.MaxStartingNumber}... ");
+        consoleService.Write($"Generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers from 1 to {_appSettings.AlgorithmSettings.RandomNumberMax}... ");
 
-        while (inputValues.Count < _appSettings.AlgorithmSettings.NumberOfSeries)
+        while (inputValues.Count < _appSettings.AlgorithmSettings.RandomNumberTotal)
         {
             if (stopwatch.Elapsed.TotalSeconds >= 10)
             {
                 if (inputValues.Count == 0)
                 {
-                    throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_appSettings.AlgorithmSettings.ExcludeTheseNumbers)}");
+                    throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}");
                 }
 
-                consoleService.WriteLine($"\nGave up generating {_appSettings.AlgorithmSettings.NumberOfSeries} random numbers. Generated {inputValues.Count}\n");
+                consoleService.WriteLine($"\nGave up generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers. Generated {inputValues.Count}\n");
 
                 break;
             }
 
-            int randomValue = Random.Shared.Next(0, _appSettings.AlgorithmSettings.MaxStartingNumber) + 1;
+            int randomValue = Random.Shared.Next(0, _appSettings.AlgorithmSettings.RandomNumberMax) + 1;
 
             if (_appSettings.AlgorithmSettings.ListOfNumbersToExclude.Contains(randomValue))
             {
@@ -153,7 +153,7 @@ public class Process(IOptions<AppSettings> appSettings,
         }
 
         //populate the property as the number list is used to generate a hash value for the directory name
-        _appSettings.AlgorithmSettings.UseTheseNumbers = string.Join(", ", inputValues);
+        _appSettings.AlgorithmSettings.NumbersToUse = string.Join(", ", inputValues);
         _generatedRandomNumbers = true;
 
         consoleService.WriteDone();
