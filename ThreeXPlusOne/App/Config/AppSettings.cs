@@ -216,13 +216,10 @@ public class NodeAestheticSettings
     public bool IncludePolygonsAsNodes { get; set; }
 
     /// <summary>
-    /// The angle by which a node will be rotated by on the graph
+    /// Hex values to be used for node colours
     /// </summary>
-    /// <remarks>
-    /// If the node value is even, it is rotated clockwise. If odd, anti-clockwise
-    /// </remarks>
-    [AppSetting(description: "The magnitude of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8", suggestedValue: "0")]
-    public double NodeRotationAngle { get; set; } = 0;
+    [AppSetting(description: "Comma-separated list of hex codes to use as colours for the nodes. Leave blank to use randomly-selected colours.", suggestedValue: "")]
+    public string NodeColors { get; set; } = "";
 
     /// <summary>
     /// The radius of the node
@@ -231,10 +228,13 @@ public class NodeAestheticSettings
     public double NodeRadius { get; set; } = 50;
 
     /// <summary>
-    /// Hex values to be used for node colours
+    /// The angle by which a node will be rotated by on the graph
     /// </summary>
-    [AppSetting(description: "Comma-separated list of hex codes to use as colours for the nodes. Leave blank to use randomly-selected colours.", suggestedValue: "")]
-    public string NodeColors { get; set; } = "";
+    /// <remarks>
+    /// If the node value is even, it is rotated clockwise. If odd, anti-clockwise
+    /// </remarks>
+    [AppSetting(description: "The magnitude of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8", suggestedValue: "0")]
+    public double NodeRotationAngle { get; set; } = 0;
 
     /// <summary>
     /// The amount of x-axis space in pixels by which to separate nodes
@@ -251,12 +251,6 @@ public class NodeAestheticSettings
 
 public class DirectedGraphAestheticSettings
 {
-    /// <summary>
-    /// For pseudo-3D graphs, the distance from the viewer (to create perspective)
-    /// </summary>
-    [AppSetting(description: "For the psuedo-3D graph, the distance from the view when applying the perspective transformation.", suggestedValue: "200")]
-    public double DistanceFromViewer { get; set; } = 200;
-
     /// <summary>
     /// Whether or not to draw stars on the graph's background
     /// </summary>
@@ -275,6 +269,12 @@ public class DirectedGraphAestheticSettings
     /// </summary>
     [AppSetting(description: "The position of the light source. Values are: {LightSourcePositionsPlaceholder}", suggestedValue: "None")]
     public string LightSourcePosition { get; set; } = "None";
+
+    /// <summary>
+    /// For pseudo-3D graphs, the distance from the viewer (to create perspective)
+    /// </summary>
+    [AppSetting(description: "For the psuedo-3D graph, the distance from the view when applying the perspective transformation.", suggestedValue: "200")]
+    public double Pseudo3DViewerDistance { get; set; } = 200;
 
     /// <summary>
     /// The sanitized graph dimensions property

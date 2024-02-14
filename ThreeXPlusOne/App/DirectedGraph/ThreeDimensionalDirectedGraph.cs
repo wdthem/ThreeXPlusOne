@@ -44,17 +44,17 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         (double X, double Y) base4 = (0, base2.Y - (_appSettings.NodeAestheticSettings.YNodeSpacer * 5));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
-        _nodes[1].Position = ApplyNodePerspectiveTransformation(_nodes[1], _appSettings.DirectedGraphAestheticSettings.DistanceFromViewer);
+        _nodes[1].Position = ApplyNodePerspectiveTransformation(_nodes[1], _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance);
         _nodes[1].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
         _nodes[1].IsPositioned = true;
 
         _nodes[2].Position = base2;
-        _nodes[2].Position = ApplyNodePerspectiveTransformation(_nodes[2], _appSettings.DirectedGraphAestheticSettings.DistanceFromViewer);
+        _nodes[2].Position = ApplyNodePerspectiveTransformation(_nodes[2], _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance);
         _nodes[2].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
         _nodes[2].IsPositioned = true;
 
         _nodes[4].Position = base4;
-        _nodes[4].Position = ApplyNodePerspectiveTransformation(_nodes[4], _appSettings.DirectedGraphAestheticSettings.DistanceFromViewer);
+        _nodes[4].Position = ApplyNodePerspectiveTransformation(_nodes[4], _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance);
         _nodes[4].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
         _nodes[4].IsPositioned = true;
 
@@ -217,7 +217,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         if (node.Parent != null && node.Parent.Children.Count == 2)
         {
             node.Position = ApplyNodePerspectiveTransformation(node,
-                                                               _appSettings.DirectedGraphAestheticSettings.DistanceFromViewer);
+                                                               _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance);
         }
 
         node.Shape.Radius = nodeRadius;
