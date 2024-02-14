@@ -11,7 +11,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
   },
   "NodeAestheticSettings": {
     "DrawNodeConnections": false,
-    "DrawNumbersOnNodes": false,
+    "DrawNumbersOnNodes": true,
     "IncludePolygonsAsNodes": true,
     "NodeColors": "",
     "NodeRadius": 50,
@@ -38,7 +38,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
   },
   "NodeAestheticSettings": {
     "DrawNodeConnections": false,
-    "DrawNumbersOnNodes": false,
+    "DrawNumbersOnNodes": true,
     "IncludePolygonsAsNodes": true,
     "NodeColors": "",
     "NodeRadius": 50,
@@ -65,7 +65,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
   },
   "NodeAestheticSettings": {
     "DrawNodeConnections": false,
-    "DrawNumbersOnNodes": false,
+    "DrawNumbersOnNodes": true,
     "IncludePolygonsAsNodes": true,
     "NodeColors": "",
     "NodeRadius": 275,
