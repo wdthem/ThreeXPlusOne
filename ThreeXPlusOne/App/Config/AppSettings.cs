@@ -273,7 +273,7 @@ public class DirectedGraphAestheticSettings
     /// <summary>
     /// For pseudo-3D graphs, the distance from the viewer (to create perspective)
     /// </summary>
-    [AppSetting(description: "For the psuedo-3D graph, the distance from the view when applying the perspective transformation.", suggestedValue: "200")]
+    [AppSetting(description: "For the psuedo-3D graph, the distance from the viewer. Used when applying the perspective transformation.", suggestedValue: "200")]
     public double Pseudo3DViewerDistance { get; set; } = 200;
 
     /// <summary>
