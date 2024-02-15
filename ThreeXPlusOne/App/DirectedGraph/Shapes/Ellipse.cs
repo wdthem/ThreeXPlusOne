@@ -1,6 +1,5 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
@@ -9,18 +8,7 @@ namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 /// </summary>
 public class Ellipse() : Shape, IShape
 {
-    private readonly ShapeConfiguration _shapeConfiguration = new();
-
     public ShapeType ShapeType => ShapeType.Ellipse;
-
-    /// <summary>
-    /// Get the shape's configuration data
-    /// </summary>
-    /// <returns></returns>
-    public ShapeConfiguration GetShapeConfiguration()
-    {
-        return _shapeConfiguration;
-    }
 
     /// <summary>
     /// Set the configuration details for the shape used to represent the graph node

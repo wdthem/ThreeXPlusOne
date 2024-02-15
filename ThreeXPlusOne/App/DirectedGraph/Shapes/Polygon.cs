@@ -1,13 +1,11 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 public class Polygon() : Shape, IShape
 {
-    private readonly int _numberOfSides = Random.Shared.Next(3, 11);
-    private readonly ShapeConfiguration _shapeConfiguration = new();
+    private readonly int _numberOfSides = Random.Shared.Next(3, 9); //min: triangle, max: octagon
 
     public ShapeType ShapeType => ShapeType.Polygon;
 
@@ -19,10 +17,10 @@ public class Polygon() : Shape, IShape
     /// <param name="skewFactor"></param>
     /// <param name="rotationRadians"></param>
     /// <returns></returns>
-    private static (double X, double Y) ApplyVertexPerspectiveSkew((double X, double Y) vertex,
-                                                                   (double X, double Y) center,
-                                                                   double skewFactor,
-                                                                   double rotationRadians)
+    private static (double X, double Y) ApplyVertexSkew((double X, double Y) vertex,
+                                                        (double X, double Y) center,
+                                                        double skewFactor,
+                                                        double rotationRadians)
     {
         double dx = vertex.X - center.X;
         double dy = vertex.Y - center.Y;
@@ -34,15 +32,6 @@ public class Polygon() : Shape, IShape
         double skewedY = rotatedY;
 
         return (center.X + skewedX, center.Y + skewedY);
-    }
-
-    /// <summary>
-    /// Get the shape's configuration data
-    /// </summary>
-    /// <returns></returns>
-    public ShapeConfiguration GetShapeConfiguration()
-    {
-        return _shapeConfiguration;
     }
 
     /// <summary>
@@ -82,7 +71,7 @@ public class Polygon() : Shape, IShape
             for (int lcv = 0; lcv < _shapeConfiguration.PolygonVertices.Count; lcv++)
             {
                 _shapeConfiguration.PolygonVertices[lcv] =
-                    ApplyVertexPerspectiveSkew(_shapeConfiguration.PolygonVertices[lcv], nodePosition, skewFactor.Value, rotationRadians);
+                    ApplyVertexSkew(_shapeConfiguration.PolygonVertices[lcv], nodePosition, skewFactor.Value, rotationRadians);
             }
         }
     }

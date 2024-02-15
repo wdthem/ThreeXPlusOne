@@ -184,8 +184,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         double maxX = _nodes.Values.Max(node => node.Position.X);
         double maxY = _nodes.Values.Max(node => node.Position.Y);
 
-        _canvasWidth = (int)(maxX + _appSettings.NodeAestheticSettings.XNodeSpacer + _appSettings.NodeAestheticSettings.NodeRadius);
-        _canvasHeight = (int)(maxY + _appSettings.NodeAestheticSettings.YNodeSpacer + _appSettings.NodeAestheticSettings.NodeRadius);
+        _canvasWidth = (int)(maxX + _appSettings.NodeAestheticSettings.NodeSpacerX + _appSettings.NodeAestheticSettings.NodeRadius);
+        _canvasHeight = (int)(maxY + _appSettings.NodeAestheticSettings.NodeSpacerY + _appSettings.NodeAestheticSettings.NodeRadius);
 
         _consoleService.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
     }

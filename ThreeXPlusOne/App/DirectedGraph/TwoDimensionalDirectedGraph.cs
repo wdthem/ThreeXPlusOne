@@ -42,8 +42,8 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     {
         // Set up the base nodes' positions
         (double X, double Y) base1 = (0, 0);                                    // Node '1' at the bottom
-        (double X, double Y) base2 = (0, base1.Y - _appSettings.NodeAestheticSettings.YNodeSpacer);      // Node '2' just above '1'
-        (double X, double Y) base4 = (0, base2.Y - _appSettings.NodeAestheticSettings.YNodeSpacer);      // Node '4' above '2'
+        (double X, double Y) base2 = (0, base1.Y - _appSettings.NodeAestheticSettings.NodeSpacerY);      // Node '2' just above '1'
+        (double X, double Y) base4 = (0, base2.Y - _appSettings.NodeAestheticSettings.NodeSpacerY);      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].IsPositioned = true;
@@ -69,8 +69,8 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         _consoleService.WriteDone();
 
         _nodePositions.MoveNodesToPositiveCoordinates(_nodes,
-                                                      _appSettings.NodeAestheticSettings.XNodeSpacer,
-                                                      _appSettings.NodeAestheticSettings.YNodeSpacer,
+                                                      _appSettings.NodeAestheticSettings.NodeSpacerX,
+                                                      _appSettings.NodeAestheticSettings.NodeSpacerY,
                                                       _appSettings.NodeAestheticSettings.NodeRadius);
     }
 
@@ -83,7 +83,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         {
             _nodeAesthetics.SetNodeShape(node,
                                          _appSettings.NodeAestheticSettings.NodeRadius,
-                                         _appSettings.NodeAestheticSettings.IncludePolygonsAsNodes);
+                                         _appSettings.NodeAestheticSettings.RandomizeNodeShapes);
         }
     }
 
@@ -130,11 +130,11 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                                             : positionedNodesAtDepth;
                     }
 
-                    xOffset = xOffset - (allNodesAtDepth / 2 * _appSettings.NodeAestheticSettings.XNodeSpacer) + (_appSettings.NodeAestheticSettings.XNodeSpacer * addedWidth);
+                    xOffset = xOffset - (allNodesAtDepth / 2 * _appSettings.NodeAestheticSettings.NodeSpacerX) + (_appSettings.NodeAestheticSettings.NodeSpacerX * addedWidth);
                 }
             }
 
-            double yOffset = node.Parent!.Position.Y - _appSettings.NodeAestheticSettings.YNodeSpacer;
+            double yOffset = node.Parent!.Position.Y - _appSettings.NodeAestheticSettings.NodeSpacerY;
 
             node.Position = (xOffset, yOffset);
 
@@ -153,16 +153,16 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
             //limit the x-axis distance between node and parent, because the distance calculated above based on allNodesAtDepth can push
             //parents and children too far away from each other on the x-axis
-            if (absoluteXAxisDistanceFromParent > _appSettings.NodeAestheticSettings.XNodeSpacer * 3)
+            if (absoluteXAxisDistanceFromParent > _appSettings.NodeAestheticSettings.NodeSpacerX * 3)
             {
                 //if the child node is to the left of the parent
                 if (signedXAxisDistanceFromParent < 0)
                 {
-                    node.Position = (node.Position.X + ((absoluteXAxisDistanceFromParent / 3) - _appSettings.NodeAestheticSettings.XNodeSpacer), node.Position.Y);
+                    node.Position = (node.Position.X + ((absoluteXAxisDistanceFromParent / 3) - _appSettings.NodeAestheticSettings.NodeSpacerX), node.Position.Y);
                 }
                 else
                 {
-                    node.Position = (node.Position.X - ((absoluteXAxisDistanceFromParent / 3) + _appSettings.NodeAestheticSettings.XNodeSpacer), node.Position.Y);
+                    node.Position = (node.Position.X - ((absoluteXAxisDistanceFromParent / 3) + _appSettings.NodeAestheticSettings.NodeSpacerX), node.Position.Y);
                 }
             }
 

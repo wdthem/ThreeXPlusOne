@@ -210,12 +210,6 @@ public class NodeAestheticSettings
     public bool DrawNumbersOnNodes { get; set; } = true;
 
     /// <summary>
-    /// Whether or not to draw polygons as nodes in addition to circles
-    /// </summary>
-    [AppSetting(description: "Whether or not to use polygons in addition to circles as graph nodes.", suggestedValue: "false")]
-    public bool IncludePolygonsAsNodes { get; set; }
-
-    /// <summary>
     /// Hex values to be used for node colours
     /// </summary>
     [AppSetting(description: "Comma-separated list of hex codes to use as colours for the nodes. Leave blank to use randomly-selected colours.", suggestedValue: "")]
@@ -240,13 +234,19 @@ public class NodeAestheticSettings
     /// The amount of x-axis space in pixels by which to separate nodes
     /// </summary>
     [AppSetting(description: "The default space between nodes on the x-axis.", suggestedValue: "125 for 2D, 250 for 3D")]
-    public int XNodeSpacer { get; set; } = 125;
+    public int NodeSpacerX { get; set; } = 125;
 
     /// <summary>
     /// The amount of y-axis space in pixels by which to separate nodes
     /// </summary>
     [AppSetting(description: "The default space between nodes on the y-axis.", suggestedValue: "125 for 2D, 225 for 3D")]
-    public int YNodeSpacer { get; set; } = 125;
+    public int NodeSpacerY { get; set; } = 125;
+
+    /// <summary>
+    /// Whether or not to use only circles, or circles + randomly selected shapes
+    /// </summary>
+    [AppSetting(description: "Whether or not to use only circles, or circles + randomly selected shapes as graph nodes.", suggestedValue: "false")]
+    public bool RandomizeNodeShapes { get; set; }
 }
 
 public class DirectedGraphAestheticSettings

@@ -1,23 +1,11 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 public class Pill() : Shape, IShape
 {
-    private readonly ShapeConfiguration _shapeConfiguration = new();
-
     public ShapeType ShapeType => ShapeType.Pill;
-
-    /// <summary>
-    /// Get the shape's configuration data
-    /// </summary>
-    /// <returns></returns>
-    public ShapeConfiguration GetShapeConfiguration()
-    {
-        return _shapeConfiguration;
-    }
 
     /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
@@ -29,16 +17,30 @@ public class Pill() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        (double skewX, double skewY) = (0, 0);
+        (double X, double Y) skew = (0, 0);
 
         if (skewFactor != null && skewFactor > 0)
         {
-            skewX = skewFactor.Value;
-            skewY = skewX * Random.Shared.NextDouble();
+            double skewX = skewFactor.Value;
+            double skewY = skewX * Random.Shared.NextDouble();
+
+            skew = (skewX, skewY);
         }
 
-        _shapeConfiguration.PillConfig = (nodeRadius * 2,
-                                          Random.Shared.Next(0, 360),
-                                          (skewX, skewY));
+        //unset
+        if (_shapeConfiguration.PillConfig.Height == 0)
+        {
+            _shapeConfiguration.PillConfig = (nodeRadius * 2,
+                                             Random.Shared.Next(0, 360),
+                                             skew);
+        }
+
+        //just adding skew
+        else
+        {
+            _shapeConfiguration.PillConfig = (_shapeConfiguration.PillConfig.Height,
+                                              _shapeConfiguration.PillConfig.RotationAngle,
+                                              skew);
+        }
     }
 }
