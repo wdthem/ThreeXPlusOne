@@ -28,18 +28,21 @@ public abstract partial class DirectedGraph
                                  double nodeRadius,
                                  bool includePolygonsAsNodes)
         {
-            if (node.Shape.Radius == 0)
+            double radius = node.Shape.Radius;
+
+            if (radius == 0)
             {
-                node.Shape.Radius = nodeRadius;
+                radius = nodeRadius;
             }
 
             IShape shape = includePolygonsAsNodes
                                     ? shapeFactory.CreateShape()
                                     : shapeFactory.CreateShape(ShapeType.Ellipse);
 
-            shape.SetShapeConfiguration(node);
-
+            shape.Radius = radius;
             node.Shape = shape;
+
+            node.Shape.SetShapeConfiguration(node);
         }
 
         /// <summary>

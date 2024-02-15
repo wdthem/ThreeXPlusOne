@@ -221,7 +221,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     {
         lock (_consoleLock)
         {
-            Console.SetCursorPosition(left, top);
+            //Console.SetCursorPosition(left, top);
         }
     }
 
