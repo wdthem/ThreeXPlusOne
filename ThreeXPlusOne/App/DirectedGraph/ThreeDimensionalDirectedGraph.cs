@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
+using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
@@ -9,8 +10,9 @@ namespace ThreeXPlusOne.App.DirectedGraph;
 public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                            IEnumerable<IDirectedGraphService> graphServices,
                                            ILightSourceService lightSourceService,
-                                           IConsoleService consoleService)
-                                                : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService),
+                                           IConsoleService consoleService,
+                                           IShapeFactory shapeFactory)
+                                                : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
                                                   IDirectedGraph
 {
     private int _nodesPositioned = 0;
@@ -83,43 +85,22 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     public void SetNodeShapes()
     {
         double noSkewProbability = 0.2;
-        double skewFactor;
+        double? skewFactor = null;
 
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
-            NodeAesthetics.SetNodeShape(node,
-                                        _appSettings.NodeAestheticSettings.NodeRadius,
-                                        _appSettings.NodeAestheticSettings.IncludePolygonsAsNodes);
+            _nodeAesthetics.SetNodeShape(node,
+                                         _appSettings.NodeAestheticSettings.NodeRadius,
+                                         _appSettings.NodeAestheticSettings.IncludePolygonsAsNodes);
 
-            double rotationRadians = -0.785 + Random.Shared.NextDouble() * 1.57; // Range of -π/4 to π/2 radians
-            skewFactor = 0.0;
+            skewFactor = null;
 
             if (Random.Shared.NextDouble() >= noSkewProbability)
             {
+                //ensure skewing happens to the right and left via the random double being less than or greter than 0.5
                 skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) * ((0.1 + Random.Shared.NextDouble()) * 0.6);
-            }
 
-            if (node.Shape.ShapeType == Enums.ShapeType.Circle)
-            {
-                node.Shape.ShapeType = Enums.ShapeType.Ellipse;
-
-                double horizontalOffset = node.Shape.Radius * (skewFactor * 0.6);     //reduce the skew impact for ellipses
-                double horizontalRadius = node.Shape.Radius + horizontalOffset;
-                double verticalRadius = node.Shape.Radius;
-
-                node.Shape.EllipseConfig = ((node.Position.X, node.Position.Y),
-                                            horizontalRadius,
-                                            verticalRadius);
-
-                continue;
-            }
-
-            for (int i = 0; i < node.Shape.PolygonVertices.Count; i++)
-            {
-                node.Shape.PolygonVertices[i] = ApplyVertexPerspectiveSkew(node.Shape.PolygonVertices[i],
-                                                                           node.Position,
-                                                                           skewFactor,
-                                                                           rotationRadians);
+                node.Shape.SetShapeConfiguration(node.Position, node.Shape.Radius, skewFactor);
             }
         }
     }
@@ -246,30 +227,5 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         double yPrime = node.Position.Y / (1 + node.Z / viewerDistance) - (_appSettings.NodeAestheticSettings.YNodeSpacer * 4);
 
         return (xPrime, yPrime);
-    }
-
-    /// <summary>
-    /// Apply a skew to a vertex of a polygon to give a pseudo-3D effect to the node shape
-    /// </summary>
-    /// <param name="vertex"></param>
-    /// <param name="center"></param>
-    /// <param name="skewFactor"></param>
-    /// <param name="rotationRadians"></param>
-    /// <returns></returns>
-    private static (double X, double Y) ApplyVertexPerspectiveSkew((double X, double Y) vertex,
-                                                                   (double X, double Y) center,
-                                                                   double skewFactor,
-                                                                   double rotationRadians)
-    {
-        double dx = vertex.X - center.X;
-        double dy = vertex.Y - center.Y;
-
-        double rotatedX = dx * Math.Cos(rotationRadians) - dy * Math.Sin(rotationRadians);
-        double rotatedY = dx * Math.Sin(rotationRadians) + dy * Math.Cos(rotationRadians);
-
-        double skewedX = rotatedX + skewFactor * rotatedY;
-        double skewedY = rotatedY;
-
-        return (center.X + skewedX, center.Y + skewedY);
     }
 }

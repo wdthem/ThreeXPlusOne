@@ -2,6 +2,7 @@
 using System.Drawing;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
+using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 
@@ -10,7 +11,8 @@ namespace ThreeXPlusOne.App.DirectedGraph;
 public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                             IEnumerable<IDirectedGraphService> graphServices,
                                             ILightSourceService lightSourceService,
-                                            IConsoleService consoleService)
+                                            IConsoleService consoleService,
+                                            IShapeFactory shapeFactory)
 {
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;
@@ -18,7 +20,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     protected readonly AppSettings _appSettings = appSettings.Value;
     protected readonly IConsoleService _consoleService = consoleService;
     protected readonly NodePositions _nodePositions = new(consoleService);
-    protected readonly NodeAesthetics _nodeAesthetics = new();
+    protected readonly NodeAesthetics _nodeAesthetics = new(shapeFactory);
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
+using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
@@ -9,8 +10,9 @@ namespace ThreeXPlusOne.App.DirectedGraph;
 public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                          IEnumerable<IDirectedGraphService> graphServices,
                                          ILightSourceService lightSourceService,
-                                         IConsoleService consoleService)
-                                                : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService),
+                                         IConsoleService consoleService,
+                                         IShapeFactory shapeFactory)
+                                                : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
                                                   IDirectedGraph
 {
     private int _nodesPositioned = 0;
@@ -79,9 +81,9 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     {
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
-            NodeAesthetics.SetNodeShape(node,
-                                        _appSettings.NodeAestheticSettings.NodeRadius,
-                                        _appSettings.NodeAestheticSettings.IncludePolygonsAsNodes);
+            _nodeAesthetics.SetNodeShape(node,
+                                         _appSettings.NodeAestheticSettings.NodeRadius,
+                                         _appSettings.NodeAestheticSettings.IncludePolygonsAsNodes);
         }
     }
 
