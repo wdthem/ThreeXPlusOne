@@ -29,7 +29,16 @@ public class Pill() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
+        (double skewX, double skewY) = (0, 0);
+
+        if (skewFactor != null && skewFactor > 0)
+        {
+            skewX = skewFactor.Value;
+            skewY = skewX * Random.Shared.NextDouble();
+        }
+
         _shapeConfiguration.PillConfig = (nodeRadius * 2,
-                                          Random.Shared.Next(0, 360));
+                                          Random.Shared.Next(0, 360),
+                                          (skewX, skewY));
     }
 }

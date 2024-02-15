@@ -349,6 +349,20 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                                                                      (float)node.Position.Y);
 
             pillPath.Transform(rotationMatrix);
+
+            if (shapeConfiguration.PillConfig.Skew.X > 0 &&
+                shapeConfiguration.PillConfig.Skew.Y > 0)
+            {
+                SKMatrix skewMatrix = SKMatrix.CreateSkew((float)shapeConfiguration.PillConfig.Skew.X,
+                                                          (float)shapeConfiguration.PillConfig.Skew.Y);
+
+                SKMatrix translateToOrigin = SKMatrix.CreateTranslation(-(float)node.Position.X, -(float)node.Position.Y);
+                SKMatrix translateBack = SKMatrix.CreateTranslation((float)node.Position.X, (float)node.Position.Y);
+                SKMatrix combinedMatrix = translateToOrigin.PostConcat(skewMatrix).PostConcat(translateBack);
+
+                pillPath.Transform(combinedMatrix);
+            }
+
             canvas.DrawPath(pillPath, paint);
             canvas.DrawPath(pillPath, borderPaint);
         }

@@ -17,7 +17,10 @@ public record ShapeConfiguration()
     /// </summary>
     public (double StartAngle, double SweepAngle, double Thickness) ArcConfig { get; set; }
 
-    public (double Height, double RotationAngle) PillConfig { get; set; }
+    /// <summary>
+    /// The config data for drawing a pill shape
+    /// </summary>
+    public (double Height, double RotationAngle, (double X, double Y) Skew) PillConfig { get; set; }
 
     /// <summary>
     /// The degree value of where the flat side of the semi-circle faces (0-359)

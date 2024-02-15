@@ -29,6 +29,8 @@ public class SemiCircle() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
+        //TODO: implement skewing
+
         _shapeConfiguration.SemiCircleOrientation = Random.Shared.Next(0, 360);
     }
 }
