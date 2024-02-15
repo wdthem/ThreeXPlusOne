@@ -2,7 +2,6 @@ namespace ThreeXPlusOne.App.Enums;
 
 public enum ShapeType
 {
-    Circle = 1,
-    Ellipse = 2,
-    Polygon = 3
+    Ellipse = 1,
+    Polygon = 2
 }

@@ -11,6 +11,8 @@ using ThreeXPlusOne.App.Services.SkiaSharp;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
+using ThreeXPlusOne.App.Models.Shapes;
+using ThreeXPlusOne.App.Factories;
 
 namespace ThreeXPlusOne;
 
@@ -76,6 +78,11 @@ public static class StartupExtensions
         services.AddScoped<IDirectedGraph, TwoDimensionalDirectedGraph>();
         services.AddScoped<IDirectedGraph, ThreeDimensionalDirectedGraph>();
         services.AddScoped<IDirectedGraphService, SkiaSharpDirectedGraphService>();
+
+        services.AddScoped<IShapeFactory, ShapeFactory>();
+
+        services.AddScoped<IShape, Ellipse>();
+        services.AddScoped<IShape, Polygon>();
 
         services.AddSingleton<IConsoleService, ConsoleService>();
 

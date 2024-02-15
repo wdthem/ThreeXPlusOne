@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Text.RegularExpressions;
 using ThreeXPlusOne.App.Enums;
+using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph;
@@ -10,7 +11,7 @@ public abstract partial class DirectedGraph
     /// <summary>
     /// Nested class to encapsulate all shared methods that manipulate node colour, shape and orientation
     /// </summary>
-    protected partial class NodeAesthetics()
+    protected partial class NodeAesthetics(IShapeFactory shapeFactory)
     {
         [GeneratedRegex("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")]
         private static partial Regex HexCodeRegEx();
@@ -23,40 +24,22 @@ public abstract partial class DirectedGraph
         /// <param name="node"></param>
         /// <param name="nodeRadius"></param>
         /// <param name="includePolygonsAsNodes"></param>
-        public static void SetNodeShape(DirectedGraphNode node,
-                                        double nodeRadius,
-                                        bool includePolygonsAsNodes)
+        public void SetNodeShape(DirectedGraphNode node,
+                                 double nodeRadius,
+                                 bool includePolygonsAsNodes)
         {
             if (node.Shape.Radius == 0)
             {
                 node.Shape.Radius = nodeRadius;
             }
 
-            int numberOfSides = Random.Shared.Next(0, 11);
+            IShape shape = includePolygonsAsNodes
+                                    ? shapeFactory.CreateShape()
+                                    : shapeFactory.CreateShape(ShapeType.Ellipse);
 
-            if (!includePolygonsAsNodes || numberOfSides == 0)
-            {
-                node.Shape.ShapeType = ShapeType.Circle;
+            shape.SetShapeConfiguration(node);
 
-                return;
-            }
-
-            if (numberOfSides == 1 || numberOfSides == 2)
-            {
-                numberOfSides = Random.Shared.Next(3, 11); //cannot have 1 or 2 sides, so re-select
-            }
-
-            node.Shape.ShapeType = ShapeType.Polygon;
-
-            double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
-
-            for (int i = 0; i < numberOfSides; i++)
-            {
-                double angle = (2 * Math.PI / numberOfSides * i) + rotationAngle;
-
-                node.Shape.PolygonVertices.Add((node.Position.X + node.Shape.Radius * Math.Cos(angle),
-                                                node.Position.Y + node.Shape.Radius * Math.Sin(angle)));
-            }
+            node.Shape = shape;
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Models.Shapes;
 
 namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
@@ -270,33 +271,20 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                                   SKPaint paint,
                                   SKPaint borderPaint)
     {
-        if (node.Shape.ShapeType == ShapeType.Circle)
-        {
-            canvas.DrawCircle(ConvertCoordinatesToSKPoint(node.Position.X, node.Position.Y),
-                              (float)node.Shape.Radius,
-                              paint);
-
-            canvas.DrawCircle(ConvertCoordinatesToSKPoint(node.Position.X, node.Position.Y),
-                              (float)node.Shape.Radius,
-                              borderPaint);
-
-            RenderNodeHaloEffect(canvas, node);
-
-            return;
-        }
+        ShapeConfiguration shapeConfiguration = node.Shape.GetShapeConfiguration();
 
         if (node.Shape.ShapeType == ShapeType.Ellipse)
         {
-            canvas.DrawOval((float)node.Shape.EllipseConfig.Center.X,
-                            (float)node.Shape.EllipseConfig.Center.Y,
-                            (float)node.Shape.EllipseConfig.RadiusX,
-                            (float)node.Shape.EllipseConfig.RadiusY,
+            canvas.DrawOval((float)shapeConfiguration.EllipseConfig.Center.X,
+                            (float)shapeConfiguration.EllipseConfig.Center.Y,
+                            (float)shapeConfiguration.EllipseConfig.RadiusX,
+                            (float)shapeConfiguration.EllipseConfig.RadiusY,
                             paint);
 
-            canvas.DrawOval((float)node.Shape.EllipseConfig.Center.X,
-                            (float)node.Shape.EllipseConfig.Center.Y,
-                            (float)node.Shape.EllipseConfig.RadiusX,
-                            (float)node.Shape.EllipseConfig.RadiusY,
+            canvas.DrawOval((float)shapeConfiguration.EllipseConfig.Center.X,
+                            (float)shapeConfiguration.EllipseConfig.Center.Y,
+                            (float)shapeConfiguration.EllipseConfig.RadiusX,
+                            (float)shapeConfiguration.EllipseConfig.RadiusY,
                             borderPaint);
 
             RenderNodeHaloEffect(canvas, node);
@@ -306,9 +294,9 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         SKPath path = new();
 
-        for (int i = 0; i < node.Shape.PolygonVertices.Count; i++)
+        for (int i = 0; i < shapeConfiguration.PolygonVertices.Count; i++)
         {
-            (double x, double y) = node.Shape.PolygonVertices[i];
+            (double x, double y) = shapeConfiguration.PolygonVertices[i];
 
             if (i == 0)
             {
