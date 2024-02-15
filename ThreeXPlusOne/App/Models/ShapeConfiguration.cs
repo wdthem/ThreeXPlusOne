@@ -11,4 +11,16 @@ public record ShapeConfiguration()
     /// The coordinates and radii of the ellipse (which was transformed from a circle)
     /// </summary>
     public ((double X, double Y) Center, double RadiusX, double RadiusY) EllipseConfig { get; set; }
+
+    /// <summary>
+    /// The config data for drawing an arc shape
+    /// </summary>
+    public (double StartAngle, double SweepAngle, double Thickness) ArcConfig { get; set; }
+
+    public (double Height, double RotationAngle) PillConfig { get; set; }
+
+    /// <summary>
+    /// The degree value of where the flat side of the semi-circle faces (0-359)
+    /// </summary>
+    public double SemiCircleOrientation { get; set; }
 }

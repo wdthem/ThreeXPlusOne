@@ -83,6 +83,9 @@ public static class StartupExtensions
 
         services.AddScoped<IShape, Ellipse>();
         services.AddScoped<IShape, Polygon>();
+        services.AddScoped<IShape, SemiCircle>();
+        services.AddScoped<IShape, Arc>();
+        services.AddScoped<IShape, Pill>();
 
         services.AddSingleton<IConsoleService, ConsoleService>();
 

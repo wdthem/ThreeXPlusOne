@@ -72,8 +72,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
         foreach (SKPoint point in points)
         {
             DrawStarWithBlur(_canvas,
-                             point,
-                             nodeRadius);
+                             point);
         }
 
         OnComplete?.Invoke();
@@ -285,31 +284,97 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                             (float)shapeConfiguration.EllipseConfig.RadiusX,
                             (float)shapeConfiguration.EllipseConfig.RadiusY,
                             borderPaint);
-
-            RenderNodeHaloEffect(canvas, node);
-
-            return;
         }
 
-        SKPath path = new();
-
-        for (int i = 0; i < shapeConfiguration.PolygonVertices.Count; i++)
+        if (node.Shape.ShapeType == ShapeType.SemiCircle)
         {
-            (double x, double y) = shapeConfiguration.PolygonVertices[i];
+            using SKPath semiCirclePath = new();
 
-            if (i == 0)
-            {
-                path.MoveTo(ConvertCoordinatesToSKPoint(x, y));
-            }
-            else
-            {
-                path.LineTo(ConvertCoordinatesToSKPoint(x, y));
-            }
+            semiCirclePath.AddArc(new SKRect((float)node.Position.X - (float)node.Shape.Radius,
+                                             (float)node.Position.Y - (float)node.Shape.Radius,
+                                             (float)node.Position.X + (float)node.Shape.Radius,
+                                             (float)node.Position.Y + (float)node.Shape.Radius),
+                                  (float)shapeConfiguration.SemiCircleOrientation,
+                                  180);
+
+            semiCirclePath.Close();
+
+            canvas.DrawPath(semiCirclePath, paint);
+            canvas.DrawPath(semiCirclePath, borderPaint);
         }
 
-        path.Close();
-        canvas.DrawPath(path, paint);
-        canvas.DrawPath(path, borderPaint);
+        if (node.Shape.ShapeType == ShapeType.Arc)
+        {
+            float innerRadius = (float)node.Shape.Radius - (float)shapeConfiguration.ArcConfig.Thickness / 2;
+            float outerRadius = (float)node.Shape.Radius + (float)shapeConfiguration.ArcConfig.Thickness / 2;
+
+            using SKPath arcPath = new();
+
+            // Top edge of the rainbow
+            arcPath.AddArc(new SKRect((float)node.Position.X - outerRadius,
+                                      (float)node.Position.Y - outerRadius,
+                                      (float)node.Position.X + outerRadius,
+                                      (float)node.Position.Y + outerRadius),
+                           (float)shapeConfiguration.ArcConfig.StartAngle,
+                           (float)shapeConfiguration.ArcConfig.SweepAngle);
+
+            // Bottom edge of the rainbow (drawn in reverse)
+            arcPath.AddArc(new SKRect((float)node.Position.X - innerRadius,
+                                      (float)node.Position.Y - innerRadius,
+                                      (float)node.Position.X + innerRadius,
+                                      (float)node.Position.Y + innerRadius),
+                           (float)shapeConfiguration.ArcConfig.StartAngle + (float)shapeConfiguration.ArcConfig.SweepAngle,
+                           (float)-shapeConfiguration.ArcConfig.SweepAngle);
+
+            canvas.DrawPath(arcPath, paint);
+            canvas.DrawPath(arcPath, borderPaint);
+        }
+
+        if (node.Shape.ShapeType == ShapeType.Pill)
+        {
+            using SKPath pillPath = new();
+
+            float pillWidth = (float)node.Shape.Radius;
+            float pillHeight = (float)shapeConfiguration.PillConfig.Height;
+
+            SKRect pillRect = new((float)node.Position.X - pillWidth / 2,
+                                  (float)node.Position.Y - pillHeight / 2,
+                                  (float)node.Position.X + pillWidth / 2,
+                                  (float)node.Position.Y + pillHeight / 2);
+
+            pillPath.AddRoundRect(pillRect, pillHeight / 2, pillHeight / 2, SKPathDirection.Clockwise);
+
+            SKMatrix rotationMatrix = SKMatrix.CreateRotationDegrees((float)shapeConfiguration.PillConfig.RotationAngle,
+                                                                     (float)node.Position.X,
+                                                                     (float)node.Position.Y);
+
+            pillPath.Transform(rotationMatrix);
+            canvas.DrawPath(pillPath, paint);
+            canvas.DrawPath(pillPath, borderPaint);
+        }
+
+        if (node.Shape.ShapeType == ShapeType.Polygon)
+        {
+            using SKPath polygonPath = new();
+
+            for (int i = 0; i < shapeConfiguration.PolygonVertices.Count; i++)
+            {
+                (double x, double y) = shapeConfiguration.PolygonVertices[i];
+
+                if (i == 0)
+                {
+                    polygonPath.MoveTo(ConvertCoordinatesToSKPoint(x, y));
+                }
+                else
+                {
+                    polygonPath.LineTo(ConvertCoordinatesToSKPoint(x, y));
+                }
+            }
+
+            polygonPath.Close();
+            canvas.DrawPath(polygonPath, paint);
+            canvas.DrawPath(polygonPath, borderPaint);
+        }
 
         RenderNodeHaloEffect(canvas, node);
     }
@@ -376,12 +441,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="point"></param>
-    /// <param name="nodeRadius"></param>
     private static void DrawStarWithBlur(SKCanvas canvas,
-                                         SKPoint point,
-                                         double nodeRadius)
+                                         SKPoint point)
     {
-        double starSize = Math.Clamp((1 - Random.Shared.NextDouble()) * nodeRadius, 0.01 * nodeRadius, 0.09 * nodeRadius);
+        double starSize = Random.Shared.Next(5, 16);
         double blurRadius = starSize * 0.9;
 
         using SKPaint blurPaint = new()
