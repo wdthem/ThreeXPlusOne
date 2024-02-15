@@ -100,7 +100,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                 //ensure skewing happens to the right and left via the random double being less than or greter than 0.5
                 skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) * ((0.1 + Random.Shared.NextDouble()) * 0.6);
 
-                node.Shape.SetShapeConfiguration(node, skewFactor);
+                node.Shape.SetShapeConfiguration(node.Position, node.Shape.Radius, skewFactor);
             }
         }
     }

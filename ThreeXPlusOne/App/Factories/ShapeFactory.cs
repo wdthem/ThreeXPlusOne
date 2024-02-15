@@ -1,6 +1,6 @@
+using ThreeXPlusOne.App.DirectedGraph.Shapes;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Models.Shapes;
 
 namespace ThreeXPlusOne.App.Factories;
 
@@ -9,7 +9,7 @@ public class ShapeFactory(IEnumerable<IShape> shapes) : IShapeFactory
     private readonly List<IShape> _shapesList = shapes.ToList();
 
     /// <summary>
-    /// Create either the shape specified or a randomly-selected ShapeType
+    /// Create either the ShapeType specified or a randomly-selected ShapeType
     /// </summary>
     /// <param name="shapeType"></param>
     /// <returns></returns>

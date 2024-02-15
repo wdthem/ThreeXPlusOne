@@ -1,7 +1,6 @@
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Models;
-using ThreeXPlusOne.App.Models.Shapes;
 
 namespace ThreeXPlusOne.App.Interfaces;
 
@@ -33,11 +32,12 @@ public interface IShape
     double Radius { get; set; }
 
     /// <summary>
-    /// Set the coordinates of the given shape, optionally skewing them
+    /// Set the configuration of the given shape, optionally skewing it
     /// </summary>
-    /// <param name="node"></param>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
     /// <param name="skewFactor"></param>
-    void SetShapeConfiguration(DirectedGraphNode node, double? skewFactor = null);
+    void SetShapeConfiguration((double X, double Y) nodePosition, double nodeRadius, double? skewFactor = null);
 
     /// <summary>
     /// Get the object storing the shape's configuration data

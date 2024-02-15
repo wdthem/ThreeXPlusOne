@@ -11,8 +11,8 @@ using ThreeXPlusOne.App.Services.SkiaSharp;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
-using ThreeXPlusOne.App.Models.Shapes;
 using ThreeXPlusOne.App.Factories;
+using ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 namespace ThreeXPlusOne;
 

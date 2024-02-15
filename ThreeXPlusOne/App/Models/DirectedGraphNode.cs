@@ -1,5 +1,5 @@
-﻿using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Models.Shapes;
+﻿using ThreeXPlusOne.App.DirectedGraph.Shapes;
+using ThreeXPlusOne.App.Interfaces;
 
 namespace ThreeXPlusOne.App.Models;
 
@@ -50,7 +50,7 @@ public record DirectedGraphNode(int NumberValue)
     public bool IsFirstChild { get; set; }
 
     /// <summary>
-    /// An object to store information about the node's rendered shape. Default to Circle.
+    /// An object to store information about the node's rendered shape. Default to Ellipse.
     /// </summary>
     public IShape Shape { get; set; } = new Ellipse();
 }

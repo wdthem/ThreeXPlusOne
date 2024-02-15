@@ -1,4 +1,4 @@
-namespace ThreeXPlusOne.App.Models.Shapes;
+namespace ThreeXPlusOne.App.Models;
 
 public record ShapeConfiguration()
 {

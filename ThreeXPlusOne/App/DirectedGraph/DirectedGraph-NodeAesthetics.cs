@@ -40,10 +40,9 @@ public abstract partial class DirectedGraph
                                     : shapeFactory.CreateShape(ShapeType.Ellipse);
 
             shape.Radius = radius;
-            node.Shape = shape;
+            shape.SetShapeConfiguration(node.Position, radius);
 
-            //TODO: decide whether to pass the radius into this method instead of setting it here
-            node.Shape.SetShapeConfiguration(node);
+            node.Shape = shape;
         }
 
         /// <summary>

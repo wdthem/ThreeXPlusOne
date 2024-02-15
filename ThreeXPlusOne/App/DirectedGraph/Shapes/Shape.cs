@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace ThreeXPlusOne.App.Models.Shapes;
+namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 public abstract class Shape()
 {

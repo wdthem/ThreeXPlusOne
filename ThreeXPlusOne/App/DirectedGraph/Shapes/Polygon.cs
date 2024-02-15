@@ -1,7 +1,8 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces;
+using ThreeXPlusOne.App.Models;
 
-namespace ThreeXPlusOne.App.Models.Shapes;
+namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 public class Polygon() : Shape, IShape
 {
@@ -35,10 +36,27 @@ public class Polygon() : Shape, IShape
         return (center.X + skewedX, center.Y + skewedY);
     }
 
-    public void SetShapeConfiguration(DirectedGraphNode node,
+    /// <summary>
+    /// Get the shape's configuration data
+    /// </summary>
+    /// <returns></returns>
+    public ShapeConfiguration GetShapeConfiguration()
+    {
+        return _shapeConfiguration;
+    }
+
+    /// <summary>
+    /// Set the configuration details for the shape used to represent the graph node
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
+    /// <param name="skewFactor"></param>
+    public void SetShapeConfiguration((double X, double Y) nodePosition,
+                                      double nodeRadius,
                                       double? skewFactor = null)
     {
-        if (skewFactor == null || skewFactor.Value == 0)
+        if (skewFactor == null ||
+            skewFactor.Value == 0)
         {
             double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
 
@@ -46,27 +64,26 @@ public class Polygon() : Shape, IShape
             {
                 double angle = (2 * Math.PI / _numberOfSides * i) + rotationAngle;
 
-                (double X, double Y) polygonVertex = (node.Position.X + node.Shape.Radius * Math.Cos(angle),
-                                                      node.Position.Y + node.Shape.Radius * Math.Sin(angle));
+                (double X, double Y) polygonVertex = (nodePosition.X + nodeRadius * Math.Cos(angle),
+                                                      nodePosition.Y + nodeRadius * Math.Sin(angle));
 
                 _shapeConfiguration.PolygonVertices.Add(polygonVertex);
             }
+
+            return;
         }
 
-        if (skewFactor != null && skewFactor.Value > 0 && _shapeConfiguration.PolygonVertices.Count > 0)
+        if (skewFactor != null &&
+            skewFactor.Value > 0 &&
+            _shapeConfiguration.PolygonVertices.Count > 0)
         {
             double rotationRadians = -0.785 + Random.Shared.NextDouble() * 1.57; // Range of -π/4 to π/2 radians
 
             for (int lcv = 0; lcv < _shapeConfiguration.PolygonVertices.Count; lcv++)
             {
                 _shapeConfiguration.PolygonVertices[lcv] =
-                    ApplyVertexPerspectiveSkew(_shapeConfiguration.PolygonVertices[lcv], node.Position, skewFactor.Value, rotationRadians);
+                    ApplyVertexPerspectiveSkew(_shapeConfiguration.PolygonVertices[lcv], nodePosition, skewFactor.Value, rotationRadians);
             }
         }
-    }
-
-    public ShapeConfiguration GetShapeConfiguration()
-    {
-        return _shapeConfiguration;
     }
 }
