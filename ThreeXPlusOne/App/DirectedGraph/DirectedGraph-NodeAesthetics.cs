@@ -42,6 +42,7 @@ public abstract partial class DirectedGraph
             shape.Radius = radius;
             node.Shape = shape;
 
+            //TODO: decide whether to pass the radius into this method instead of setting it here
             node.Shape.SetShapeConfiguration(node);
         }
 
