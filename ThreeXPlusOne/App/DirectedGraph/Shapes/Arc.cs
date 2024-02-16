@@ -30,9 +30,15 @@ public class Arc() : Shape, IShape
         //unset
         if (_shapeConfiguration.ArcConfig.StartAngle == 0)
         {
+            double thickness = Random.Shared.Next((int)nodeRadius / 2, (int)nodeRadius);
+
+            float innerRadius = (float)nodeRadius - (float)thickness / 2;
+            float outerRadius = (float)nodeRadius + (float)thickness / 2;
+
             _shapeConfiguration.ArcConfig = (Random.Shared.Next(0, 360),
                                              180,
-                                             Random.Shared.Next((int)nodeRadius / 2, (int)nodeRadius),
+                                             innerRadius,
+                                             outerRadius,
                                              skew);
         }
 
@@ -41,7 +47,8 @@ public class Arc() : Shape, IShape
         {
             _shapeConfiguration.ArcConfig = (_shapeConfiguration.ArcConfig.StartAngle,
                                              _shapeConfiguration.ArcConfig.SweepAngle,
-                                             _shapeConfiguration.ArcConfig.Thickness,
+                                             _shapeConfiguration.ArcConfig.InnerRadius,
+                                             _shapeConfiguration.ArcConfig.OuterRadius,
                                              skew);
         }
     }
