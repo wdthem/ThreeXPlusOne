@@ -19,7 +19,7 @@ public abstract partial class DirectedGraph
         private bool _parsedHexCodes = false;
 
         /// <summary>
-        /// Assign a ShapeType to the node and vertices if applicable
+        /// Assign an IShape object to the node
         /// </summary>
         /// <param name="node"></param>
         /// <param name="nodeRadius"></param>

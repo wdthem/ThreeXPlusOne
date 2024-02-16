@@ -506,7 +506,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     private static void DrawStarWithBlur(SKCanvas canvas,
                                          SKPoint point)
     {
-        double starSize = Random.Shared.Next(5, 16);
+        double starSize = Random.Shared.Next(1, 6);
         double blurRadius = starSize * 0.9;
 
         using SKPaint blurPaint = new()
