@@ -358,24 +358,21 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                                 SKPaint paint,
                                 SKPaint borderPaint)
     {
-        float innerRadius = (float)node.Shape.Radius - (float)shapeConfiguration.ArcConfig.Thickness / 2;
-        float outerRadius = (float)node.Shape.Radius + (float)shapeConfiguration.ArcConfig.Thickness / 2;
-
         using SKPath arcPath = new();
 
         // Top edge of the arc
-        arcPath.AddArc(new SKRect((float)node.Position.X - outerRadius,
-                                  (float)node.Position.Y - outerRadius,
-                                  (float)node.Position.X + outerRadius,
-                                  (float)node.Position.Y + outerRadius),
+        arcPath.AddArc(new SKRect((float)node.Position.X - (float)shapeConfiguration.ArcConfig.OuterRadius,
+                                  (float)node.Position.Y - (float)shapeConfiguration.ArcConfig.OuterRadius,
+                                  (float)node.Position.X + (float)shapeConfiguration.ArcConfig.OuterRadius,
+                                  (float)node.Position.Y + (float)shapeConfiguration.ArcConfig.OuterRadius),
                        (float)shapeConfiguration.ArcConfig.StartAngle,
                        (float)shapeConfiguration.ArcConfig.SweepAngle);
 
         // Bottom edge of the arc (drawn in reverse)
-        arcPath.AddArc(new SKRect((float)node.Position.X - innerRadius,
-                                  (float)node.Position.Y - innerRadius,
-                                  (float)node.Position.X + innerRadius,
-                                  (float)node.Position.Y + innerRadius),
+        arcPath.AddArc(new SKRect((float)node.Position.X - (float)shapeConfiguration.ArcConfig.InnerRadius,
+                                  (float)node.Position.Y - (float)shapeConfiguration.ArcConfig.InnerRadius,
+                                  (float)node.Position.X + (float)shapeConfiguration.ArcConfig.InnerRadius,
+                                  (float)node.Position.Y + (float)shapeConfiguration.ArcConfig.InnerRadius),
                        (float)shapeConfiguration.ArcConfig.StartAngle + (float)shapeConfiguration.ArcConfig.SweepAngle,
                        (float)-shapeConfiguration.ArcConfig.SweepAngle);
 
