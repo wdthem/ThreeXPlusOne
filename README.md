@@ -46,7 +46,7 @@ Directed Graphs are drawn via the SkiaSharp library. All output can be toggled o
 
 ## Example output
 
-These three images use the same number series with different settings applied to the graph. See <a href="https://github.com/wdthem/ThreeXPlusOne/raw/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt" target="_blank">ExampleOutputSettings.txt</a> for the full settings for each graph.
+These three images use the same number series with different settings applied to the graph. See <a href="https://github.com/wdthem/ThreeXPlusOne/raw/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt" target="_blank">ExampleOutputSettings.txt</a> for the full settings for each example.
 <table>
   <tr>
     <td><img src="https://github.com/wdthem/ThreeXPlusOne/raw/main/ThreeXPlusOne.ExampleOutput/2D-NoRotation.png" width="250" height="250" alt="ThreeXPlusOne - 2D without node rotation"><br />2D without node rotation</td>
