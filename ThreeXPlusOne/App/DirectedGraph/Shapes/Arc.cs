@@ -17,10 +17,32 @@ public class Arc() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        //TODO: implement skewing
+        (double X, double Y) skew = (0, 0);
 
-        _shapeConfiguration.ArcConfig = (Random.Shared.Next(0, 360),
-                                         180,
-                                         Random.Shared.Next((int)nodeRadius / 2, (int)nodeRadius));
+        if (skewFactor != null && skewFactor > 0)
+        {
+            double skewX = skewFactor.Value;
+            double skewY = skewX * Random.Shared.NextDouble();
+
+            skew = (skewX, skewY);
+        }
+
+        //unset
+        if (_shapeConfiguration.ArcConfig.StartAngle == 0)
+        {
+            _shapeConfiguration.ArcConfig = (Random.Shared.Next(0, 360),
+                                             180,
+                                             Random.Shared.Next((int)nodeRadius / 2, (int)nodeRadius),
+                                             skew);
+        }
+
+        //just adding skew
+        else
+        {
+            _shapeConfiguration.ArcConfig = (_shapeConfiguration.ArcConfig.StartAngle,
+                                             _shapeConfiguration.ArcConfig.SweepAngle,
+                                             _shapeConfiguration.ArcConfig.Thickness,
+                                             skew);
+        }
     }
 }

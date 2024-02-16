@@ -15,7 +15,7 @@ public record ShapeConfiguration()
     /// <summary>
     /// The config data for drawing an arc shape
     /// </summary>
-    public (double StartAngle, double SweepAngle, double Thickness) ArcConfig { get; set; }
+    public (double StartAngle, double SweepAngle, double Thickness, (double X, double Y) Skew) ArcConfig { get; set; }
 
     /// <summary>
     /// The config data for drawing a pill shape
@@ -23,7 +23,7 @@ public record ShapeConfiguration()
     public (double Height, double RotationAngle, (double X, double Y) Skew) PillConfig { get; set; }
 
     /// <summary>
-    /// The degree value of where the flat side of the semi-circle faces (0-359)
+    /// The config data for drawing a semicircle shape
     /// </summary>
-    public double SemiCircleOrientation { get; set; }
+    public (double Orientation, (double X, double Y) Skew) SemiCircleConfig { get; set; }
 }
