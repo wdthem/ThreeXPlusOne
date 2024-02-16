@@ -81,8 +81,12 @@ public static class StartupExtensions
 
         services.AddScoped<IShapeFactory, ShapeFactory>();
 
-        services.AddScoped<IShape, Ellipse>();
-        services.AddScoped<IShape, Polygon>();
+        //These are injected into the ShapeFactory for read-only purposes, so can be a singleton
+        services.AddSingleton<IShape, Ellipse>();
+        services.AddSingleton<IShape, Polygon>();
+        services.AddSingleton<IShape, SemiCircle>();
+        services.AddSingleton<IShape, Arc>();
+        services.AddSingleton<IShape, Pill>();
 
         services.AddSingleton<IConsoleService, ConsoleService>();
 

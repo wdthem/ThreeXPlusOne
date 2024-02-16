@@ -1,9 +1,15 @@
 using System.Drawing;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 public abstract class Shape()
 {
+    /// <summary>
+    /// The object holding the configuration details required for rendering a given shape
+    /// </summary>
+    protected readonly ShapeConfiguration _shapeConfiguration = new();
+
     /// <summary>
     /// The colour of the shape's border
     /// </summary>
@@ -23,4 +29,13 @@ public abstract class Shape()
     /// The radius of the shape
     /// </summary>
     public double Radius { get; set; }
+
+    /// <summary>
+    /// Get the shape's configuration data
+    /// </summary>
+    /// <returns></returns>
+    public ShapeConfiguration GetShapeConfiguration()
+    {
+        return _shapeConfiguration;
+    }
 }

@@ -19,14 +19,14 @@ public abstract partial class DirectedGraph
         private bool _parsedHexCodes = false;
 
         /// <summary>
-        /// Assign a ShapeType to the node and vertices if applicable
+        /// Assign an IShape object to the node
         /// </summary>
         /// <param name="node"></param>
         /// <param name="nodeRadius"></param>
-        /// <param name="includePolygonsAsNodes"></param>
+        /// <param name="randomizeNodeShapes"></param>
         public void SetNodeShape(DirectedGraphNode node,
                                  double nodeRadius,
-                                 bool includePolygonsAsNodes)
+                                 bool randomizeNodeShapes)
         {
             double radius = node.Shape.Radius;
 
@@ -35,7 +35,7 @@ public abstract partial class DirectedGraph
                 radius = nodeRadius;
             }
 
-            IShape shape = includePolygonsAsNodes
+            IShape shape = randomizeNodeShapes
                                     ? shapeFactory.CreateShape()
                                     : shapeFactory.CreateShape(ShapeType.Ellipse);
 

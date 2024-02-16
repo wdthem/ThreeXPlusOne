@@ -21,7 +21,10 @@ public class ShapeFactory(IEnumerable<IShape> shapes) : IShapeFactory
         {
             ShapeType.Ellipse => new Ellipse(),
             ShapeType.Polygon => new Polygon(),
-            _ => throw new ArgumentException("Unsupported ShapeType passed to ShapeFactory"),
+            ShapeType.SemiCircle => new SemiCircle(),
+            ShapeType.Arc => new Arc(),
+            ShapeType.Pill => new Pill(),
+            _ => throw new ArgumentException($"Unsupported ShapeType passed to ShapeFactory.CreateShape(): {shapeType}"),
         };
     }
 }

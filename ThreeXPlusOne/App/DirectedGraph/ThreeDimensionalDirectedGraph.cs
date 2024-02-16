@@ -42,8 +42,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     {
         // Set up the base nodes' positions
         (double X, double Y) base1 = (0, 0);                                          // Node '1' at the bottom
-        (double X, double Y) base2 = (0, base1.Y - (_appSettings.NodeAestheticSettings.YNodeSpacer * 6));      // Node '2' just above '1'
-        (double X, double Y) base4 = (0, base2.Y - (_appSettings.NodeAestheticSettings.YNodeSpacer * 5));      // Node '4' above '2'
+        (double X, double Y) base2 = (0, base1.Y - (_appSettings.NodeAestheticSettings.NodeSpacerY * 6));      // Node '2' just above '1'
+        (double X, double Y) base4 = (0, base2.Y - (_appSettings.NodeAestheticSettings.NodeSpacerY * 5));      // Node '4' above '2'
 
         _nodes[1].Position = base1;
         _nodes[1].Position = ApplyNodePerspectiveTransformation(_nodes[1], _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance);
@@ -73,8 +73,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         _consoleService.WriteDone();
 
         _nodePositions.MoveNodesToPositiveCoordinates(_nodes,
-                                                      _appSettings.NodeAestheticSettings.XNodeSpacer,
-                                                      _appSettings.NodeAestheticSettings.YNodeSpacer,
+                                                      _appSettings.NodeAestheticSettings.NodeSpacerX,
+                                                      _appSettings.NodeAestheticSettings.NodeSpacerY,
                                                       _appSettings.NodeAestheticSettings.NodeRadius);
     }
 
@@ -91,7 +91,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         {
             _nodeAesthetics.SetNodeShape(node,
                                          _appSettings.NodeAestheticSettings.NodeRadius,
-                                         _appSettings.NodeAestheticSettings.IncludePolygonsAsNodes);
+                                         _appSettings.NodeAestheticSettings.RandomizeNodeShapes);
 
             skewFactor = null;
 
@@ -134,8 +134,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         double scale = 0.99 - depthFactor * 0.1;
         double minScale = 0.2;
         double nodeRadius = baseRadius * Math.Max(scale - 0.02, minScale);
-        double xNodeSpacer = _appSettings.NodeAestheticSettings.XNodeSpacer;
-        double yNodeSpacer = _appSettings.NodeAestheticSettings.YNodeSpacer;
+        double xNodeSpacer = _appSettings.NodeAestheticSettings.NodeSpacerX;
+        double yNodeSpacer = _appSettings.NodeAestheticSettings.NodeSpacerY;
 
         //reduce bunching of nodes at lower depths by increasing the node spacers
         if (node.Depth < 10)
@@ -224,7 +224,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                                                     double viewerDistance)
     {
         double xPrime = node.Position.X / (1 + node.Z / viewerDistance);
-        double yPrime = node.Position.Y / (1 + node.Z / viewerDistance) - (_appSettings.NodeAestheticSettings.YNodeSpacer * 4);
+        double yPrime = node.Position.Y / (1 + node.Z / viewerDistance) - (_appSettings.NodeAestheticSettings.NodeSpacerY * 4);
 
         return (xPrime, yPrime);
     }
