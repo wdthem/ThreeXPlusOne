@@ -5,7 +5,7 @@
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>New Shapes: SemiCircle, Arc, Pill</TagMessage>
+    <TagMessage>New ShapesTypes: SemiCircle, Arc, Pill</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
