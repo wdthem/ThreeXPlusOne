@@ -19,37 +19,34 @@ public class Arc() : Shape, IShape
     {
         (double X, double Y) skew = (0, 0);
 
-        if (skewFactor != null && skewFactor > 0)
-        {
-            double skewX = skewFactor.Value;
-            double skewY = skewX * Random.Shared.NextDouble();
-
-            skew = (skewX, skewY);
-        }
-
-        //unset
-        if (_shapeConfiguration.ArcConfig.StartAngle == 0)
-        {
-            double thickness = Random.Shared.Next((int)nodeRadius / 2, (int)nodeRadius);
-
-            float innerRadius = (float)nodeRadius - (float)thickness / 2;
-            float outerRadius = (float)nodeRadius + (float)thickness / 2;
-
-            _shapeConfiguration.ArcConfig = (Random.Shared.Next(0, 360),
-                                             180,
-                                             innerRadius,
-                                             outerRadius,
-                                             skew);
-        }
-
         //just adding skew
-        else
+        if (_shapeConfiguration.ArcConfiguration != null)
         {
-            _shapeConfiguration.ArcConfig = (_shapeConfiguration.ArcConfig.StartAngle,
-                                             _shapeConfiguration.ArcConfig.SweepAngle,
-                                             _shapeConfiguration.ArcConfig.InnerRadius,
-                                             _shapeConfiguration.ArcConfig.OuterRadius,
-                                             skew);
+            if (skewFactor != null && skewFactor > 0)
+            {
+                double skewX = skewFactor.Value;
+                double skewY = skewX * Random.Shared.NextDouble();
+
+                skew = (skewX, skewY);
+            }
+
+            _shapeConfiguration.ArcConfiguration.Skew = skew;
+
+            return;
         }
+
+        double thickness = Random.Shared.Next((int)nodeRadius / 2, (int)nodeRadius);
+
+        float innerRadius = (float)nodeRadius - (float)thickness / 2;
+        float outerRadius = (float)nodeRadius + (float)thickness / 2;
+
+        _shapeConfiguration.ArcConfiguration = new()
+        {
+            StartAngle = Random.Shared.Next(0, 360),
+            SweepAngle = 180,
+            InnerRadius = innerRadius,
+            OuterRadius = outerRadius,
+            Skew = skew
+        };
     }
 }

@@ -28,7 +28,7 @@ public class SemiCircle() : Shape, IShape
         }
 
         //unset
-        if (_shapeConfiguration.ArcConfig.StartAngle == 0)
+        if (_shapeConfiguration.SemiCircleConfig.Orientation == 0)
         {
             _shapeConfiguration.SemiCircleConfig = (Random.Shared.Next(0, 360),
                                                     skew);

@@ -15,12 +15,12 @@ public record ShapeConfiguration()
     /// <summary>
     /// The config data for drawing an arc shape
     /// </summary>
-    public (double StartAngle, double SweepAngle, double InnerRadius, double OuterRadius, (double X, double Y) Skew) ArcConfig { get; set; }
+    public ArcConfiguration? ArcConfiguration { get; set; }
 
     /// <summary>
     /// The config data for drawing a pill shape
     /// </summary>
-    public (double Height, double RotationAngle, (double X, double Y) Skew) PillConfig { get; set; }
+    public PillConfiguration? PillConfiguration { get; set; }
 
     /// <summary>
     /// The config data for drawing a semicircle shape
