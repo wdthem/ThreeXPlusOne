@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Text.RegularExpressions;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph;

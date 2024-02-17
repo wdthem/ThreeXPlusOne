@@ -1,5 +1,5 @@
 ﻿using ThreeXPlusOne.App.DirectedGraph.Shapes;
-using ThreeXPlusOne.App.Interfaces;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.Models;
 

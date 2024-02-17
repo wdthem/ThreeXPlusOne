@@ -11,7 +11,6 @@ using ThreeXPlusOne.App.Services.SkiaSharp;
 using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
-using ThreeXPlusOne.App.Factories;
 using ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 namespace ThreeXPlusOne;
@@ -79,15 +78,7 @@ public static class StartupExtensions
         services.AddScoped<IDirectedGraph, ThreeDimensionalDirectedGraph>();
         services.AddScoped<IDirectedGraphService, SkiaSharpDirectedGraphService>();
 
-        services.AddScoped<IShapeFactory, ShapeFactory>();
-
-        //These are injected into the ShapeFactory for read-only purposes, so can be a singleton
-        services.AddSingleton<IShape, Ellipse>();
-        services.AddSingleton<IShape, Polygon>();
-        services.AddSingleton<IShape, SemiCircle>();
-        services.AddSingleton<IShape, Arc>();
-        services.AddSingleton<IShape, Pill>();
-
+        services.AddSingleton<IShapeFactory, ShapeFactory>();
         services.AddSingleton<IConsoleService, ConsoleService>();
 
         return services;
