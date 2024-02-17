@@ -98,41 +98,44 @@ public abstract partial class DirectedGraph
         /// If a light source is in place, it should impact the colour of nodes.
         /// The closer to the source, the more the impact.
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="nodes"></param>
         /// <param name="lightSourceCoordinates"></param>
         /// <param name="maxAffectDistance"></param>
         /// <param name="lightSourceColor"></param>
         /// <returns></returns>
-        public static void ApplyLightSourceToNode(DirectedGraphNode node,
-                                                  (double X, double Y) lightSourceCoordinates,
-                                                  double maxAffectDistance,
-                                                  Color lightSourceColor)
+        public static void ApplyLightSourceToNodes(Dictionary<int, DirectedGraphNode> nodes,
+                                                   (double X, double Y) lightSourceCoordinates,
+                                                   double maxAffectDistance,
+                                                   Color lightSourceColor)
         {
-            double distance = Distance(node.Position,
-                                       lightSourceCoordinates);
-
-            if (distance > maxAffectDistance)
+            foreach (DirectedGraphNode node in nodes.Values)
             {
-                return;
+                double distance = Distance(node.Position,
+                                           lightSourceCoordinates);
+
+                if (distance > maxAffectDistance)
+                {
+                    continue;
+                }
+
+                double lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
+                double normalizedDistance = distance / maxAffectDistance;
+                double smoothFactor = 1 - Math.Pow(normalizedDistance, 2); // Quadratic decay
+                double blendFactor = Math.Clamp(smoothFactor * lightIntensity, 0, 1); // Ensure it's within bounds
+
+                node.Shape.Color = BlendColor(node.Shape.Color, lightSourceColor, blendFactor);
+                node.Shape.BorderColor = BlendColor(node.Shape.BorderColor, lightSourceColor, blendFactor);
+
+                double haloRadius = node.Shape.Radius * 2;
+                double intensity = Math.Max(0, 1 - (distance / maxAffectDistance));
+
+                Color haloColor = Color.FromArgb((byte)(intensity * lightSourceColor.A),
+                                                 lightSourceColor.R,
+                                                 lightSourceColor.G,
+                                                 lightSourceColor.B);
+
+                node.Shape.HaloConfig = (haloRadius, haloColor);
             }
-
-            double lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
-            double normalizedDistance = distance / maxAffectDistance;
-            double smoothFactor = 1 - Math.Pow(normalizedDistance, 2); // Quadratic decay
-            double blendFactor = Math.Clamp(smoothFactor * lightIntensity, 0, 1); // Ensure it's within bounds
-
-            node.Shape.Color = BlendColor(node.Shape.Color, lightSourceColor, blendFactor);
-            node.Shape.BorderColor = BlendColor(node.Shape.BorderColor, lightSourceColor, blendFactor);
-
-            double haloRadius = node.Shape.Radius * 2;
-            double intensity = Math.Max(0, 1 - (distance / maxAffectDistance));
-
-            Color haloColor = Color.FromArgb((byte)(intensity * lightSourceColor.A),
-                                             lightSourceColor.R,
-                                             lightSourceColor.G,
-                                             lightSourceColor.B);
-
-            node.Shape.HaloConfig = (haloRadius, haloColor);
         }
 
         /// <summary>

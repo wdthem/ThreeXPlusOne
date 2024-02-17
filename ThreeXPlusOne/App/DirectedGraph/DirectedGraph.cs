@@ -104,17 +104,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
             throw new Exception($"Graph provider {_appSettings.GraphProvider} does not support graphs in {_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions} dimensions.");
         }
 
-        graphService.OnStart = (message) =>
-        {
-            _consoleService.Write(message);
-            _consoleService.ShowSpinningBar();
-        };
-
-        graphService.OnComplete = () =>
-        {
-            _consoleService.StopSpinningBar();
-            _consoleService.WriteDone();
-        };
+        ConfigureGraphServiceActions(graphService);
 
         Task.Run(() => graphService.Initialize([.. _nodes.Values],
                                                _canvasWidth,
@@ -139,13 +129,10 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                                             lightSourceService.Radius,
                                                             lightSourceService.LightSourceColor)).Wait();
 
-            foreach (DirectedGraphNode node in _nodes.Values)
-            {
-                NodeAesthetics.ApplyLightSourceToNode(node,
-                                                      lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
-                                                      lightSourceService.GetLightSourceMaxDistanceOfEffect(),
-                                                      lightSourceService.LightSourceColor);
-            }
+            NodeAesthetics.ApplyLightSourceToNodes(_nodes,
+                                                   lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
+                                                   lightSourceService.GetLightSourceMaxDistanceOfEffect(),
+                                                   lightSourceService.LightSourceColor);
         }
 
         Task.Run(() => graphService.Draw(drawNumbersOnNodes: _appSettings.NodeAestheticSettings.DrawNumbersOnNodes,
@@ -188,5 +175,24 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                      (double X, double Y) position2)
     {
         return Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
+    }
+
+    /// <summary>
+    /// Configure actions of the directed graph service
+    /// </summary>
+    /// <param name="graphService"></param>
+    private void ConfigureGraphServiceActions(IDirectedGraphService graphService)
+    {
+        graphService.OnStart = (message) =>
+        {
+            _consoleService.Write(message);
+            _consoleService.ShowSpinningBar();
+        };
+
+        graphService.OnComplete = () =>
+        {
+            _consoleService.StopSpinningBar();
+            _consoleService.WriteDone();
+        };
     }
 }
