@@ -233,7 +233,7 @@ public class NodeAestheticSettings
     /// <summary>
     /// Shapes to use to draw nodes
     /// </summary>
-    [AppSetting(description: "Comma-separated list of shapes to use for drawing nodes. Values are: Values are: {ShapesPlaceholder}. Leave blank to use randomly-selected shapes.", suggestedValue: "")]
+    [AppSetting(description: "Comma-separated list of shapes to use for drawing nodes. Values are: {ShapesPlaceholder}. Leave blank to use randomly-selected shapes.", suggestedValue: "")]
     public string NodeShapes { get; set; } = "";
 
     /// <summary>
