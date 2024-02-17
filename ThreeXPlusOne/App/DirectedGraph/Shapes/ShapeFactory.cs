@@ -1,12 +1,11 @@
-using ThreeXPlusOne.App.DirectedGraph.Shapes;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
-namespace ThreeXPlusOne.App.Factories;
+namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
-public class ShapeFactory(IEnumerable<IShape> shapes) : IShapeFactory
+public class ShapeFactory() : IShapeFactory
 {
-    private readonly List<IShape> _shapesList = shapes.ToList();
+    private readonly ShapeType[] _shapeTypes = (ShapeType[])Enum.GetValues(typeof(ShapeType));
 
     /// <summary>
     /// Create either the ShapeType specified or a randomly-selected ShapeType
@@ -15,7 +14,7 @@ public class ShapeFactory(IEnumerable<IShape> shapes) : IShapeFactory
     /// <returns></returns>
     public IShape CreateShape(ShapeType? shapeType = null)
     {
-        shapeType ??= _shapesList[Random.Shared.Next(0, _shapesList.Count)].ShapeType;
+        shapeType ??= _shapeTypes[Random.Shared.Next(_shapeTypes.Length)];
 
         return shapeType switch
         {

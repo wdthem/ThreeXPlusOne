@@ -2,7 +2,7 @@ using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Models;
 
-namespace ThreeXPlusOne.App.Interfaces;
+namespace ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 public interface IShape
 {

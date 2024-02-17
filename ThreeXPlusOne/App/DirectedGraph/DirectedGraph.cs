@@ -2,7 +2,7 @@
 using System.Drawing;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 

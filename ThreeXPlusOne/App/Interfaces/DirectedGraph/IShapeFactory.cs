@@ -1,6 +1,6 @@
 using ThreeXPlusOne.App.Enums;
 
-namespace ThreeXPlusOne.App.Interfaces;
+namespace ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 public interface IShapeFactory
 {
