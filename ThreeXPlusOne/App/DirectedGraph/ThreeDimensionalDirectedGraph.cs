@@ -40,7 +40,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        (double X, double Y) base1 = (0, 0);                                          // Node '1' at the bottom
+        (double X, double Y) base1 = (0, 0);                                                                   // Node '1' at the bottom
         (double X, double Y) base2 = (0, base1.Y - (_appSettings.NodeAestheticSettings.NodeSpacerY * 6));      // Node '2' just above '1'
         (double X, double Y) base4 = (0, base2.Y - (_appSettings.NodeAestheticSettings.NodeSpacerY * 5));      // Node '4' above '2'
 
@@ -59,15 +59,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         _nodes[4].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
         _nodes[4].IsPositioned = true;
 
-        List<DirectedGraphNode> nodesToDraw = _nodes.Values.Where(n => n.Depth == _nodes[4].Depth + 1)
-                                                           .ToList();
-
         _nodesPositioned = 3;
 
-        foreach (DirectedGraphNode node in nodesToDraw)
-        {
-            PositionNode(node);
-        }
+        //recursive method to position a nodes and its children
+        PositionNode(_nodes[1]);
 
         _consoleService.WriteDone();
 
@@ -120,101 +115,99 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
     {
-        if (node.IsPositioned)
+        if (!node.IsPositioned)
         {
-            return;
-        }
+            int allNodesAtDepth =
+                _nodes.Values.Count(n => n.Depth == node.Depth);
 
-        int allNodesAtDepth =
-            _nodes.Values.Count(n => n.Depth == node.Depth);
+            int positionedNodesAtDepth =
+                _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
 
-        int positionedNodesAtDepth =
-            _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
+            double baseRadius = _appSettings.NodeAestheticSettings.NodeRadius;
 
-        double baseRadius = _appSettings.NodeAestheticSettings.NodeRadius;
-
-        if (node.Parent != null && node.Parent.Shape.Radius > 0)
-        {
-            baseRadius = node.Parent.Shape.Radius;
-        }
-
-        double maxZ = _nodes.Values.Max(node => node.Z);
-        double depthFactor = node.Z / maxZ;
-        double scale = 0.99 - depthFactor * 0.1;
-        double minScale = 0.2;
-        double nodeRadius = baseRadius * Math.Max(scale - 0.02, minScale);
-        double xNodeSpacer = _appSettings.NodeAestheticSettings.NodeSpacerX;
-        double yNodeSpacer = _appSettings.NodeAestheticSettings.NodeSpacerY;
-
-        //reduce bunching of nodes at lower depths by increasing the node spacers
-        if (node.Depth < 10)
-        {
-            xNodeSpacer *= node.Depth;
-            yNodeSpacer *= node.Depth;
-        }
-
-        double xOffset = node.Parent == null
-                                ? 0
-                                : node.Parent.Position.X;
-
-
-        if (node.Parent!.Children.Count == 1)
-        {
-            xOffset = node.Parent.Position.X;
-            nodeRadius = node.Parent.Shape.Radius;
-        }
-        else
-        {
-            int addedWidth;
-
-            if (allNodesAtDepth % 2 == 0)
+            if (node.Parent != null && node.Parent.Shape.Radius > 0)
             {
-                addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth + 1;
+                baseRadius = node.Parent.Shape.Radius;
+            }
+
+            double maxZ = _nodes.Values.Max(node => node.Z);
+            double depthFactor = node.Z / maxZ;
+            double scale = 0.99 - depthFactor * 0.1;
+            double minScale = 0.2;
+            double nodeRadius = baseRadius * Math.Max(scale - 0.02, minScale);
+            double xNodeSpacer = _appSettings.NodeAestheticSettings.NodeSpacerX;
+            double yNodeSpacer = _appSettings.NodeAestheticSettings.NodeSpacerY;
+
+            //reduce bunching of nodes at lower depths by increasing the node spacers
+            if (node.Depth < 10)
+            {
+                xNodeSpacer *= node.Depth;
+                yNodeSpacer *= node.Depth;
+            }
+
+            double xOffset = node.Parent == null
+                                    ? 0
+                                    : node.Parent.Position.X;
+
+
+            if (node.Parent!.Children.Count == 1)
+            {
+                xOffset = node.Parent.Position.X;
+                nodeRadius = node.Parent.Shape.Radius;
             }
             else
             {
-                addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth;
+                int addedWidth;
+
+                if (allNodesAtDepth % 2 == 0)
+                {
+                    addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth + 1;
+                }
+                else
+                {
+                    addedWidth = positionedNodesAtDepth == 0 ? 0 : positionedNodesAtDepth;
+                }
+
+                if (node.IsFirstChild)
+                {
+                    xOffset = xOffset - (allNodesAtDepth / 2 * xNodeSpacer) - (xNodeSpacer * addedWidth);
+                    node.Z -= 35;
+                    nodeRadius = node.Parent.Shape.Radius * Math.Max(scale, minScale);
+                }
+                else
+                {
+                    xOffset = xOffset + (allNodesAtDepth / 2 * xNodeSpacer) + (xNodeSpacer * addedWidth);
+                    node.Z += 15;
+                    nodeRadius = node.Parent.Shape.Radius * Math.Max(scale - 0.02, minScale);
+                }
             }
 
-            if (node.IsFirstChild)
+            double yOffset = node.Parent!.Position.Y - (yNodeSpacer + yNodeSpacer / node.Depth + (positionedNodesAtDepth * (yNodeSpacer / 30)));
+
+            node.Position = (xOffset, yOffset);
+
+            if (_appSettings.NodeAestheticSettings.NodeRotationAngle != 0)
             {
-                xOffset = xOffset - (allNodesAtDepth / 2 * xNodeSpacer) - (xNodeSpacer * addedWidth);
-                node.Z -= 35;
-                nodeRadius = node.Parent.Shape.Radius * Math.Max(scale, minScale);
+                (double x, double y) = NodePositions.RotateNode(node.NumberValue,
+                                                                _appSettings.NodeAestheticSettings.NodeRotationAngle,
+                                                                xOffset,
+                                                                yOffset);
+
+                node.Position = (x, y);
             }
-            else
+
+            if (node.Parent != null && node.Parent.Children.Count == 2)
             {
-                xOffset = xOffset + (allNodesAtDepth / 2 * xNodeSpacer) + (xNodeSpacer * addedWidth);
-                node.Z += 15;
-                nodeRadius = node.Parent.Shape.Radius * Math.Max(scale - 0.02, minScale);
+                node.Position = ApplyNodePerspectiveTransformation(node,
+                                                                   _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance);
             }
+
+            node.Shape.Radius = nodeRadius;
+            node.IsPositioned = true;
+            _nodesPositioned += 1;
+
+            _consoleService.Write($"\r{_nodesPositioned} nodes positioned... ");
         }
-
-        double yOffset = node.Parent!.Position.Y - (yNodeSpacer + yNodeSpacer / node.Depth + (positionedNodesAtDepth * (yNodeSpacer / 30)));
-
-        node.Position = (xOffset, yOffset);
-
-        if (_appSettings.NodeAestheticSettings.NodeRotationAngle != 0)
-        {
-            (double x, double y) = NodePositions.RotateNode(node.NumberValue,
-                                                            _appSettings.NodeAestheticSettings.NodeRotationAngle,
-                                                            xOffset,
-                                                            yOffset);
-
-            node.Position = (x, y);
-        }
-
-        if (node.Parent != null && node.Parent.Children.Count == 2)
-        {
-            node.Position = ApplyNodePerspectiveTransformation(node,
-                                                               _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance);
-        }
-
-        node.Shape.Radius = nodeRadius;
-        node.IsPositioned = true;
-        _nodesPositioned += 1;
-
-        _consoleService.Write($"\r{_nodesPositioned} nodes positioned... ");
 
         foreach (DirectedGraphNode childNode in node.Children)
         {
