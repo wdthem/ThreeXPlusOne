@@ -1,7 +1,5 @@
-using System.Drawing;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
-using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
