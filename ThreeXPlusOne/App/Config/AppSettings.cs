@@ -231,6 +231,12 @@ public class NodeAestheticSettings
     public double NodeRotationAngle { get; set; } = 0;
 
     /// <summary>
+    /// Shapes to use to draw nodes
+    /// </summary>
+    [AppSetting(description: "Comma-separated list of shapes to use for drawing nodes. Values are: Values are: {ShapesPlaceholder}. Leave blank to use randomly-selected shapes.", suggestedValue: "")]
+    public string NodeShapes { get; set; } = "";
+
+    /// <summary>
     /// The amount of x-axis space in pixels by which to separate nodes
     /// </summary>
     [AppSetting(description: "The default space between nodes on the x-axis.", suggestedValue: "125 for 2D, 250 for 3D")]
