@@ -83,7 +83,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         {
             _nodeAesthetics.SetNodeShape(node,
                                          _appSettings.NodeAestheticSettings.NodeRadius,
-                                         _appSettings.NodeAestheticSettings.RandomizeNodeShapes);
+                                         _appSettings.NodeAestheticSettings.NodeShapes);
         }
     }
 

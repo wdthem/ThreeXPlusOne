@@ -91,7 +91,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         {
             _nodeAesthetics.SetNodeShape(node,
                                          _appSettings.NodeAestheticSettings.NodeRadius,
-                                         _appSettings.NodeAestheticSettings.RandomizeNodeShapes);
+                                         _appSettings.NodeAestheticSettings.NodeShapes);
 
             skewFactor = null;
 

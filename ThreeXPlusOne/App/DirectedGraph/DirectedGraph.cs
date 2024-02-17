@@ -142,8 +142,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         foreach (DirectedGraphNode node in _nodes.Values)
         {
-            Color nodeColor = _nodeAesthetics.GenerateNodeColor(_appSettings.NodeAestheticSettings.NodeColors);
-            Color nodeBorderColor = NodeAesthetics.GenerateNodeBorderColor(nodeColor);
+            Color nodeColor = _nodeAesthetics.SetNodeColor(_appSettings.NodeAestheticSettings.NodeColors);
+            Color nodeBorderColor = NodeAesthetics.SetNodeBorderColor(nodeColor);
 
             if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
             {

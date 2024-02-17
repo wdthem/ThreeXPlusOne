@@ -16,18 +16,27 @@ public abstract partial class DirectedGraph
         [GeneratedRegex("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")]
         private static partial Regex HexCodeRegEx();
         private List<Color> _nodeColors = [];
+        private List<ShapeType> _nodeShapes = [];
         private bool _parsedHexCodes = false;
+        private bool _parsedNodeShapes = false;
 
         /// <summary>
         /// Assign an IShape object to the node
         /// </summary>
         /// <param name="node"></param>
         /// <param name="nodeRadius"></param>
-        /// <param name="randomizeNodeShapes"></param>
+        /// <param name="nodeShapes"></param>
         public void SetNodeShape(DirectedGraphNode node,
                                  double nodeRadius,
-                                 bool randomizeNodeShapes)
+                                 string nodeShapes)
         {
+            if (!_parsedNodeShapes)
+            {
+                _nodeShapes = ParseShapeTypes(nodeShapes);
+
+                _parsedNodeShapes = true;
+            }
+
             double radius = node.Shape.Radius;
 
             if (radius == 0)
@@ -35,9 +44,11 @@ public abstract partial class DirectedGraph
                 radius = nodeRadius;
             }
 
-            IShape shape = randomizeNodeShapes
+            IShape shape = _nodeShapes.Count == 0
                                     ? shapeFactory.CreateShape()
-                                    : shapeFactory.CreateShape(ShapeType.Ellipse);
+                                    : shapeFactory.CreateShape(_nodeShapes.Count == 1
+                                                                            ? _nodeShapes[0]
+                                                                            : _nodeShapes[Random.Shared.Next(_nodeShapes.Count)]);
 
             shape.Radius = radius;
             shape.SetShapeConfiguration(node.Position, radius);
@@ -50,7 +61,7 @@ public abstract partial class DirectedGraph
         /// </summary>
         /// <returns></returns>
         /// <param name="nodeColors"></param>
-        public Color GenerateNodeColor(string nodeColors)
+        public Color SetNodeColor(string nodeColors)
         {
             if (string.IsNullOrWhiteSpace(nodeColors))
             {
@@ -80,7 +91,7 @@ public abstract partial class DirectedGraph
         /// </summary>
         /// <param name="nodeColor"></param>
         /// <returns></returns>
-        public static Color GenerateNodeBorderColor(Color nodeColor)
+        public static Color SetNodeBorderColor(Color nodeColor)
         {
             return AdjustColorBrightness(nodeColor, 1.75f);
         }
@@ -138,6 +149,27 @@ public abstract partial class DirectedGraph
                                              lightSourceColor.B);
 
             node.Shape.HaloConfig = (haloRadius, haloColor);
+        }
+
+        /// <summary>
+        /// Get valid ShapeTypes from the user-provided data
+        /// </summary>
+        /// <param name="rawShapeTypes"></param>
+        /// <returns></returns>
+        private static List<ShapeType> ParseShapeTypes(string rawShapeTypes)
+        {
+            List<ShapeType> shapeTypes = [];
+            List<string> rawShapesTypesList = [.. rawShapeTypes.Split(',')];
+
+            foreach (string rawShape in rawShapesTypesList)
+            {
+                if (Enum.TryParse(rawShape, out ShapeType shapeType))
+                {
+                    shapeTypes.Add(shapeType);
+                }
+            }
+
+            return shapeTypes;
         }
 
         /// <summary>

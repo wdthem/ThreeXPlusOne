@@ -15,9 +15,9 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "NodeColors": "",
     "NodeRadius": 50,
     "NodeRotationAngle": 0,
+    "NodeShapes": "",
     "NodeSpacerX": 125,
-    "NodeSpacerY": 125,
-    "RandomizeNodeShapes": true
+    "NodeSpacerY": 125
   },
   "DirectedGraphAestheticSettings": {
     "GenerateBackgroundStars": false,
@@ -42,9 +42,9 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "NodeColors": "",
     "NodeRadius": 50,
     "NodeRotationAngle": 0.8,
+    "NodeShapes": "",
     "NodeSpacerX": 125,
-    "NodeSpacerY": 125,
-    "RandomizeNodeShapes": true
+    "NodeSpacerY": 125
   },
   "DirectedGraphAestheticSettings": {
     "GenerateBackgroundStars": false,
@@ -69,9 +69,9 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "NodeColors": "",
     "NodeRadius": 275,
     "NodeRotationAngle": 0.8,
+    "NodeShapes": "",
     "NodeSpacerX": 250,
-    "NodeSpacerY": 225,
-    "RandomizeNodeShapes": true
+    "NodeSpacerY": 225
   },
   "DirectedGraphAestheticSettings": {
     "GenerateBackgroundStars": false,
