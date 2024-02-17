@@ -40,7 +40,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     public void PositionNodes()
     {
         // Set up the base nodes' positions
-        (double X, double Y) base1 = (0, 0);                                    // Node '1' at the bottom
+        (double X, double Y) base1 = (0, 0);                                                             // Node '1' at the bottom
         (double X, double Y) base2 = (0, base1.Y - _appSettings.NodeAestheticSettings.NodeSpacerY);      // Node '2' just above '1'
         (double X, double Y) base4 = (0, base2.Y - _appSettings.NodeAestheticSettings.NodeSpacerY);      // Node '4' above '2'
 
@@ -56,14 +56,10 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         _nodes[4].IsPositioned = true;
         _nodes[4].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
 
-        List<DirectedGraphNode> nodesToDraw = _nodes.Values.Where(n => n.Depth == _nodes[4].Depth + 1)
-                                                           .ToList();
         _nodesPositioned = 3;
 
-        foreach (DirectedGraphNode node in nodesToDraw)
-        {
-            PositionNode(node);
-        }
+        //recursive method to position a node and its children
+        PositionNode(_nodes[1]);
 
         _consoleService.WriteDone();
 
@@ -103,10 +99,10 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
     {
-        double nodeRadius = _appSettings.NodeAestheticSettings.NodeRadius;
-
         if (!node.IsPositioned)
         {
+            double nodeRadius = _appSettings.NodeAestheticSettings.NodeRadius;
+
             int allNodesAtDepth =
                 _nodes.Values.Count(n => n.Depth == node.Depth);
 
@@ -193,11 +189,11 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
             _nodesPositioned += 1;
 
             _consoleService.Write($"\r{_nodesPositioned} nodes positioned... ");
+        }
 
-            foreach (DirectedGraphNode childNode in node.Children)
-            {
-                PositionNode(childNode);
-            }
+        foreach (DirectedGraphNode childNode in node.Children)
+        {
+            PositionNode(childNode);
         }
     }
 
