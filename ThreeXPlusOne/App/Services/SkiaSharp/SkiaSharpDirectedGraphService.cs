@@ -496,7 +496,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     }
 
     /// <summary>
-    /// Apply a blur effect to the stars
+    /// Draw a white point on the canvas with a blur effect
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="point"></param>
