@@ -161,9 +161,9 @@ public abstract partial class DirectedGraph
             List<ShapeType> shapeTypes = [];
             List<string> rawShapesTypesList = [.. rawShapeTypes.Split(',')];
 
-            foreach (string rawShape in rawShapesTypesList)
+            foreach (string rawShapeType in rawShapesTypesList)
             {
-                if (Enum.TryParse(rawShape, out ShapeType shapeType))
+                if (Enum.TryParse(rawShapeType, out ShapeType shapeType))
                 {
                     shapeTypes.Add(shapeType);
                 }
