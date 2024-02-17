@@ -59,8 +59,8 @@ public class Process(IOptions<AppSettings> appSettings,
 
         graph.AddSeries(seriesLists);
         graph.PositionNodes();
-        graph.SetNodeShapes();
         graph.SetCanvasDimensions();
+        graph.SetNodeAesthetics();
 
         //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
         bool confirmedGenerateGraph = consoleService.ReadYKeyToProceed($"Generate {graph.Dimensions}D visualization?");

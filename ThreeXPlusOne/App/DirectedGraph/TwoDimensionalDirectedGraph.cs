@@ -68,23 +68,34 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         _consoleService.WriteDone();
 
-        _nodePositions.MoveNodesToPositiveCoordinates(_nodes,
-                                                      _appSettings.NodeAestheticSettings.NodeSpacerX,
-                                                      _appSettings.NodeAestheticSettings.NodeSpacerY,
-                                                      _appSettings.NodeAestheticSettings.NodeRadius);
+        NodePositions.MoveNodesToPositiveCoordinates(_nodes,
+                                                     _appSettings.NodeAestheticSettings.NodeSpacerX,
+                                                     _appSettings.NodeAestheticSettings.NodeSpacerY,
+                                                     _appSettings.NodeAestheticSettings.NodeRadius);
     }
 
     /// <summary>
-    /// Set the shapes of the positioned nodes
+    /// Set the shapes and colours of the positioned nodes
     /// </summary>
-    public void SetNodeShapes()
+    public void SetNodeAesthetics()
     {
+        int lcv = 1;
+
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
             _nodeAesthetics.SetNodeShape(node,
                                          _appSettings.NodeAestheticSettings.NodeRadius,
                                          _appSettings.NodeAestheticSettings.NodeShapes);
+
+            _nodeAesthetics.SetNodeColor(node,
+                                         _appSettings.NodeAestheticSettings.NodeColors);
+
+            _consoleService.Write($"\r{lcv} nodes styled... ");
+
+            lcv++;
         }
+
+        _consoleService.WriteDone();
     }
 
     /// <summary>

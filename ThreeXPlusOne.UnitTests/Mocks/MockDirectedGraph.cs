@@ -29,7 +29,7 @@ public class MockDirectedGraph(IOptions<AppSettings> appSettings,
     {
     }
 
-    public void SetNodeShapes()
+    public void SetNodeAesthetics()
     {
     }
 

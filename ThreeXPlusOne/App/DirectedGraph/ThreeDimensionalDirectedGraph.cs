@@ -1,3 +1,4 @@
+using System.Drawing;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces;
@@ -72,20 +73,21 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         _consoleService.WriteDone();
 
-        _nodePositions.MoveNodesToPositiveCoordinates(_nodes,
-                                                      _appSettings.NodeAestheticSettings.NodeSpacerX,
-                                                      _appSettings.NodeAestheticSettings.NodeSpacerY,
-                                                      _appSettings.NodeAestheticSettings.NodeRadius);
+        NodePositions.MoveNodesToPositiveCoordinates(_nodes,
+                                                     _appSettings.NodeAestheticSettings.NodeSpacerX,
+                                                     _appSettings.NodeAestheticSettings.NodeSpacerY,
+                                                     _appSettings.NodeAestheticSettings.NodeRadius);
     }
 
     /// <summary>
-    /// Set the shapes of the positioned nodes. Apply a pseudo-3D skewing effect to polygons, and make circles become ellipses
+    /// Set the shapes and colours of the positioned nodes. Apply a pseudo-3D skewing effect to shapes.
     /// (use a random number to determine if the given node is skewed or not)
     /// </summary>
-    public void SetNodeShapes()
+    public void SetNodeAesthetics()
     {
         double noSkewProbability = 0.2;
         double? skewFactor = null;
+        int lcv = 1;
 
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
         {
@@ -102,7 +104,16 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
                 node.Shape.SetShapeConfiguration(node.Position, node.Shape.Radius, skewFactor);
             }
+
+            _nodeAesthetics.SetNodeColor(node,
+                                         _appSettings.NodeAestheticSettings.NodeColors);
+
+            _consoleService.Write($"\r{lcv} nodes styled... ");
+
+            lcv++;
         }
+
+        _consoleService.WriteDone();
     }
 
     /// <summary>

@@ -21,7 +21,7 @@ public interface IDirectedGraph
     /// <summary>
     /// Set the shape of each node to either circle or polygon, depending on app settings
     /// </summary>
-    void SetNodeShapes();
+    void SetNodeAesthetics();
 
     /// <summary>
     /// Assign sizes to the canvas width and height after having positioned the nodes

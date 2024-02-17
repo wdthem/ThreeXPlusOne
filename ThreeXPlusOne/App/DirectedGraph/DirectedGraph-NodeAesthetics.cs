@@ -60,12 +60,17 @@ public abstract partial class DirectedGraph
         /// Generate a random colour for the node
         /// </summary>
         /// <returns></returns>
+        /// <param name="node"></param>
         /// <param name="nodeColors"></param>
-        public Color SetNodeColor(string nodeColors)
+        public void SetNodeColor(DirectedGraphNode node,
+                                  string nodeColors)
         {
             if (string.IsNullOrWhiteSpace(nodeColors))
             {
-                return GenerateRandomNodeColor();
+                node.Shape.Color = GenerateRandomNodeColor();
+                node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, 1.75f);
+
+                return;
             }
 
             if (!_parsedHexCodes)
@@ -76,79 +81,61 @@ public abstract partial class DirectedGraph
 
             if (_nodeColors.Count == 0)
             {
-                return GenerateRandomNodeColor();
+                node.Shape.Color = GenerateRandomNodeColor();
+                node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, 1.75f);
+
+                return;
             }
 
-            Color nodeColor = _nodeColors.Count == 1
-                                    ? _nodeColors[0]
-                                    : _nodeColors[Random.Shared.Next(0, _nodeColors.Count)];
+            node.Shape.Color = _nodeColors.Count == 1
+                                                ? _nodeColors[0]
+                                                : _nodeColors[Random.Shared.Next(0, _nodeColors.Count)];
 
-            return nodeColor;
-        }
-
-        /// <summary>
-        /// Generate a colour for the node's border based on the node's colour
-        /// </summary>
-        /// <param name="nodeColor"></param>
-        /// <returns></returns>
-        public static Color SetNodeBorderColor(Color nodeColor)
-        {
-            return AdjustColorBrightness(nodeColor, 1.75f);
+            node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, 1.75f);
         }
 
         /// <summary>
         /// If a light source is in place, it should impact the colour of nodes.
         /// The closer to the source, the more the impact.
         /// </summary>
-        /// <param name="node"></param>
-        /// <param name="nodeBaseColor"></param>
-        /// <param name="nodeBorderBaseColor"></param>
+        /// <param name="nodes"></param>
         /// <param name="lightSourceCoordinates"></param>
-        /// <param name="lightSourceMaxDistanceEffect"></param>
+        /// <param name="maxAffectDistance"></param>
         /// <param name="lightSourceColor"></param>
         /// <returns></returns>
-        public static void ApplyLightSourceToNode(DirectedGraphNode node,
-                                                  Color nodeBaseColor,
-                                                  Color nodeBorderBaseColor,
-                                                  (double X, double Y) lightSourceCoordinates,
-                                                  double lightSourceMaxDistanceEffect,
-                                                  Color lightSourceColor)
+        public static void ApplyLightSourceToNodes(Dictionary<int, DirectedGraphNode> nodes,
+                                                   (double X, double Y) lightSourceCoordinates,
+                                                   double maxAffectDistance,
+                                                   Color lightSourceColor)
         {
-            Color nodeColor;
-            Color nodeBorderColor;
-            double distance = Distance((node.Position.X, node.Position.Y),
-                                       (lightSourceCoordinates.X, lightSourceCoordinates.Y));
-
-            double lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
-
-            if (distance < lightSourceMaxDistanceEffect)
+            foreach (DirectedGraphNode node in nodes.Values)
             {
-                double normalizedDistance = distance / lightSourceMaxDistanceEffect;
+                double distance = Distance(node.Position,
+                                           lightSourceCoordinates);
+
+                if (distance > maxAffectDistance)
+                {
+                    continue;
+                }
+
+                double lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
+                double normalizedDistance = distance / maxAffectDistance;
                 double smoothFactor = 1 - Math.Pow(normalizedDistance, 2); // Quadratic decay
+                double blendFactor = Math.Clamp(smoothFactor * lightIntensity, 0, 1); // Ensure it's within bounds
 
-                double blendFactor = smoothFactor * lightIntensity;
-                blendFactor = Math.Clamp(blendFactor, 0, 1); // Ensure it's within bounds
+                node.Shape.Color = BlendColor(node.Shape.Color, lightSourceColor, blendFactor);
+                node.Shape.BorderColor = BlendColor(node.Shape.BorderColor, lightSourceColor, blendFactor);
 
-                nodeColor = BlendColor(nodeBaseColor, lightSourceColor, blendFactor);
-                nodeBorderColor = BlendColor(nodeBorderBaseColor, lightSourceColor, blendFactor);
+                double haloRadius = node.Shape.Radius * 2;
+                double intensity = Math.Max(0, 1 - (distance / maxAffectDistance));
+
+                Color haloColor = Color.FromArgb((byte)(intensity * lightSourceColor.A),
+                                                 lightSourceColor.R,
+                                                 lightSourceColor.G,
+                                                 lightSourceColor.B);
+
+                node.Shape.HaloConfig = (haloRadius, haloColor);
             }
-            else
-            {
-                nodeColor = nodeBaseColor;
-                nodeBorderColor = nodeBorderBaseColor;
-            }
-
-            node.Shape.Color = Color.FromArgb(nodeBaseColor.A, nodeColor.R, nodeColor.G, nodeColor.B);
-            node.Shape.BorderColor = Color.FromArgb(nodeBorderBaseColor.A, nodeBorderColor.R, nodeBorderColor.G, nodeBorderColor.B);
-
-            double haloRadius = node.Shape.Radius * 2;
-            double intensity = Math.Max(0, 1 - (distance / lightSourceMaxDistanceEffect));
-            Color haloColor = Color.FromArgb((byte)(intensity * lightSourceColor.A),
-                                             lightSourceColor.R,
-                                             lightSourceColor.G,
-                                             lightSourceColor.B);
-
-            node.Shape.HaloConfig = (haloRadius, haloColor);
         }
 
         /// <summary>
@@ -201,7 +188,7 @@ public abstract partial class DirectedGraph
             byte g = (byte)((baseColor.G * (1 - blendFactor)) + (blendColor.G * blendFactor));
             byte b = (byte)((baseColor.B * (1 - blendFactor)) + (blendColor.B * blendFactor));
 
-            return Color.FromArgb(255, r, g, b);
+            return Color.FromArgb(baseColor.A, r, g, b);
         }
 
         /// <summary>
