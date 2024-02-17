@@ -73,7 +73,7 @@ public class ProcessTests
         _algorithmMock.Verify(algorithm => algorithm.Run(It.IsAny<List<int>>()), Times.Once);
         _directedGraph.Verify(graph => graph.AddSeries(It.IsAny<List<List<int>>>()), Times.AtLeastOnce);
         _directedGraph.Verify(graph => graph.PositionNodes(), Times.Once);
-        _directedGraph.Verify(graph => graph.SetNodeShapes(), Times.Once);
+        _directedGraph.Verify(graph => graph.SetNodeAesthetics(), Times.Once);
         _directedGraph.Verify(graph => graph.SetCanvasDimensions(), Times.Once);
         _directedGraph.Verify(graph => graph.Draw(), Times.Once);
         _histogramMock.Verify(histogram => histogram.GenerateHistogram(It.IsAny<List<List<int>>>()), Times.Once);

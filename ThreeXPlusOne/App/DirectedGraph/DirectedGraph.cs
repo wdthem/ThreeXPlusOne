@@ -19,7 +19,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
     protected readonly AppSettings _appSettings = appSettings.Value;
     protected readonly IConsoleService _consoleService = consoleService;
-    protected readonly NodePositions _nodePositions = new(consoleService);
+    protected readonly NodePositions _nodePositions = new();
     protected readonly NodeAesthetics _nodeAesthetics = new(shapeFactory);
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
 
@@ -138,23 +138,10 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
             Task.Run(() => graphService.GenerateLightSource(lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
                                                             lightSourceService.Radius,
                                                             lightSourceService.LightSourceColor)).Wait();
-        }
 
-        foreach (DirectedGraphNode node in _nodes.Values)
-        {
-            Color nodeColor = _nodeAesthetics.SetNodeColor(_appSettings.NodeAestheticSettings.NodeColors);
-            Color nodeBorderColor = NodeAesthetics.SetNodeBorderColor(nodeColor);
-
-            if (lightSourceService.LightSourcePosition == LightSourcePosition.None)
-            {
-                node.Shape.Color = nodeColor;
-                node.Shape.BorderColor = nodeBorderColor;
-            }
-            else
+            foreach (DirectedGraphNode node in _nodes.Values)
             {
                 NodeAesthetics.ApplyLightSourceToNode(node,
-                                                      nodeColor,
-                                                      nodeBorderColor,
                                                       lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
                                                       lightSourceService.GetLightSourceMaxDistanceOfEffect(),
                                                       lightSourceService.LightSourceColor);
@@ -187,7 +174,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         _canvasWidth = (int)(maxX + _appSettings.NodeAestheticSettings.NodeSpacerX + _appSettings.NodeAestheticSettings.NodeRadius);
         _canvasHeight = (int)(maxY + _appSettings.NodeAestheticSettings.NodeSpacerY + _appSettings.NodeAestheticSettings.NodeRadius);
 
-        _consoleService.WriteLine($"Canvas dimensions set to {_canvasWidth}w x {_canvasHeight}h (in pixels)\n");
+        _consoleService.Write($"Setting canvas dimensions to {_canvasWidth}w x {_canvasHeight}h... ");
+        _consoleService.WriteDone();
     }
 
     /// <summary>
