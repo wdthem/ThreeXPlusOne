@@ -8,7 +8,7 @@ public record ShapeConfiguration()
     public List<(double X, double Y)> PolygonVertices { get; set; } = [];
 
     /// <summary>
-    /// The coordinates and radii of the ellipse (which was transformed from a circle)
+    /// The coordinates and radii of the ellipse
     /// </summary>
     public ((double X, double Y) Center, double RadiusX, double RadiusY) EllipseConfig { get; set; }
 
