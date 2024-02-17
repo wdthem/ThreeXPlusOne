@@ -247,12 +247,6 @@ public class NodeAestheticSettings
     /// </summary>
     [AppSetting(description: "The default space between nodes on the y-axis.", suggestedValue: "125 for 2D, 225 for 3D")]
     public int NodeSpacerY { get; set; } = 125;
-
-    /// <summary>
-    /// Whether or not to use only circles, or circles + randomly selected shapes
-    /// </summary>
-    [AppSetting(description: "Whether or not to use only circles, or circles + randomly selected shapes as graph nodes.", suggestedValue: "false")]
-    public bool RandomizeNodeShapes { get; set; }
 }
 
 public class DirectedGraphAestheticSettings
