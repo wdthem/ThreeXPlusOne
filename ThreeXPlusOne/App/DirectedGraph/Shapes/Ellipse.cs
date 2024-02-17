@@ -21,6 +21,7 @@ public class Ellipse() : Shape, IShape
                                       double? skewFactor = null)
     {
         double horizontalOffset = 0;
+        double verticalOffset = 0;
 
         if (skewFactor != null && skewFactor.Value > 0)
         {
@@ -29,10 +30,12 @@ public class Ellipse() : Shape, IShape
         }
 
         double horizontalRadius = nodeRadius + horizontalOffset;
-        double verticalRadius = nodeRadius;
+        double verticalRadius = nodeRadius + verticalOffset;
 
-        _shapeConfiguration.EllipseConfig = ((nodePosition.X, nodePosition.Y),
-                                             horizontalRadius,
-                                             verticalRadius);
+        _shapeConfiguration.EllipseConfiguration = new()
+        {
+            RadiusX = horizontalRadius,
+            RadiusY = verticalRadius
+        };
     }
 }

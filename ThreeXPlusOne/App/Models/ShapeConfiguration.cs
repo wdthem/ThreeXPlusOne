@@ -10,7 +10,7 @@ public record ShapeConfiguration()
     /// <summary>
     /// The coordinates and radii of an ellipse
     /// </summary>
-    public ((double X, double Y) Center, double RadiusX, double RadiusY) EllipseConfig { get; set; }
+    public EllipseConfiguration? EllipseConfiguration { get; set; }
 
     /// <summary>
     /// The config data for drawing an arc shape
@@ -25,5 +25,5 @@ public record ShapeConfiguration()
     /// <summary>
     /// The config data for drawing a semicircle shape
     /// </summary>
-    public (double Orientation, (double X, double Y) Skew) SemiCircleConfig { get; set; }
+    public SemiCircleConfiguration? SemiCircleConfiguration { get; set; }
 }

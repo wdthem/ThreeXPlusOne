@@ -241,7 +241,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
         switch (node.Shape.ShapeType)
         {
             case ShapeType.Ellipse:
-                DrawEllipse(canvas, shapeConfiguration, paint, borderPaint);
+                DrawEllipse(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
             case ShapeType.Polygon:
@@ -283,20 +283,26 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     }
 
     private static void DrawEllipse(SKCanvas canvas,
+                                    DirectedGraphNode node,
                                     ShapeConfiguration shapeConfiguration,
                                     SKPaint paint,
                                     SKPaint borderPaint)
     {
-        canvas.DrawOval((float)shapeConfiguration.EllipseConfig.Center.X,
-                        (float)shapeConfiguration.EllipseConfig.Center.Y,
-                        (float)shapeConfiguration.EllipseConfig.RadiusX,
-                        (float)shapeConfiguration.EllipseConfig.RadiusY,
+        if (shapeConfiguration.EllipseConfiguration == null)
+        {
+            throw new Exception("DrawEllipse: Ellipse configuration settings were null");
+        }
+
+        canvas.DrawOval((float)node.Position.X,
+                        (float)node.Position.Y,
+                        (float)shapeConfiguration.EllipseConfiguration.RadiusX,
+                        (float)shapeConfiguration.EllipseConfiguration.RadiusY,
                         paint);
 
-        canvas.DrawOval((float)shapeConfiguration.EllipseConfig.Center.X,
-                        (float)shapeConfiguration.EllipseConfig.Center.Y,
-                        (float)shapeConfiguration.EllipseConfig.RadiusX,
-                        (float)shapeConfiguration.EllipseConfig.RadiusY,
+        canvas.DrawOval((float)node.Position.X,
+                        (float)node.Position.Y,
+                        (float)shapeConfiguration.EllipseConfiguration.RadiusX,
+                        (float)shapeConfiguration.EllipseConfiguration.RadiusY,
                         borderPaint);
     }
 
@@ -333,19 +339,24 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                                        SKPaint paint,
                                        SKPaint borderPaint)
     {
+        if (shapeConfiguration.SemiCircleConfiguration == null)
+        {
+            throw new Exception("DrawSemiCircle: SemiCircle configuration settings were null");
+        }
+
         using SKPath semiCirclePath = new();
 
         semiCirclePath.AddArc(new SKRect((float)node.Position.X - (float)node.Shape.Radius,
                                          (float)node.Position.Y - (float)node.Shape.Radius,
                                          (float)node.Position.X + (float)node.Shape.Radius,
                                          (float)node.Position.Y + (float)node.Shape.Radius),
-                              (float)shapeConfiguration.SemiCircleConfig.Orientation,
+                              (float)shapeConfiguration.SemiCircleConfiguration.Orientation,
                               180);
 
-        if (shapeConfiguration.SemiCircleConfig.Skew.X > 0 &&
-            shapeConfiguration.SemiCircleConfig.Skew.Y > 0)
+        if (shapeConfiguration.SemiCircleConfiguration.Skew.X > 0 &&
+            shapeConfiguration.SemiCircleConfiguration.Skew.Y > 0)
         {
-            semiCirclePath.Transform(GetSkewSKMatrix(node.Position, shapeConfiguration.SemiCircleConfig.Skew));
+            semiCirclePath.Transform(GetSkewSKMatrix(node.Position, shapeConfiguration.SemiCircleConfiguration.Skew));
         }
 
         canvas.DrawPath(semiCirclePath, paint);

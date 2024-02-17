@@ -44,8 +44,7 @@ public class Polygon() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        if (skewFactor == null ||
-            skewFactor.Value == 0)
+        if (_shapeConfiguration.PolygonVertices.Count == 0)
         {
             double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
 
@@ -62,6 +61,7 @@ public class Polygon() : Shape, IShape
             return;
         }
 
+        //apply skew
         if (skewFactor != null &&
             skewFactor.Value > 0 &&
             _shapeConfiguration.PolygonVertices.Count > 0)

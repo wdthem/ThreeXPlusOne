@@ -19,26 +19,26 @@ public class SemiCircle() : Shape, IShape
     {
         (double X, double Y) skew = (0, 0);
 
-        if (skewFactor != null && skewFactor > 0)
-        {
-            double skewX = skewFactor.Value;
-            double skewY = skewX * Random.Shared.NextDouble();
-
-            skew = (skewX, skewY);
-        }
-
-        //unset
-        if (_shapeConfiguration.SemiCircleConfig.Orientation == 0)
-        {
-            _shapeConfiguration.SemiCircleConfig = (Random.Shared.Next(0, 360),
-                                                    skew);
-        }
-
         //just adding skew
-        else
+        if (_shapeConfiguration.SemiCircleConfiguration != null)
         {
-            _shapeConfiguration.SemiCircleConfig = (_shapeConfiguration.SemiCircleConfig.Orientation,
-                                                    skew);
+            if (skewFactor != null && skewFactor > 0)
+            {
+                double skewX = skewFactor.Value;
+                double skewY = skewX * Random.Shared.NextDouble();
+
+                skew = (skewX, skewY);
+            }
+
+            _shapeConfiguration.SemiCircleConfiguration.Skew = skew;
+
+            return;
         }
+
+        _shapeConfiguration.SemiCircleConfiguration = new()
+        {
+            Orientation = Random.Shared.Next(0, 360),
+            Skew = skew
+        };
     }
 }
