@@ -394,20 +394,20 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
         using SKPath arcPath = new();
 
         // Top edge of the arc
-        arcPath.AddArc(new SKRect((float)node.Position.X - (float)shapeConfiguration.ArcConfiguration.OuterRadius,
-                                  (float)node.Position.Y - (float)shapeConfiguration.ArcConfiguration.OuterRadius,
-                                  (float)node.Position.X + (float)shapeConfiguration.ArcConfiguration.OuterRadius,
-                                  (float)node.Position.Y + (float)shapeConfiguration.ArcConfiguration.OuterRadius),
-                       (float)shapeConfiguration.ArcConfiguration.StartAngle,
-                       (float)shapeConfiguration.ArcConfiguration.SweepAngle);
+        arcPath.AddArc(new SKRect((float)shapeConfiguration.ArcConfiguration.TopArcBounds.Left,
+                                  (float)shapeConfiguration.ArcConfiguration.TopArcBounds.Top,
+                                  (float)shapeConfiguration.ArcConfiguration.TopArcBounds.Right,
+                                  (float)shapeConfiguration.ArcConfiguration.TopArcBounds.Bottom),
+                       (float)shapeConfiguration.ArcConfiguration.TopArcStartAngle,
+                       (float)shapeConfiguration.ArcConfiguration.TopArcSweepAngle);
 
         // Bottom edge of the arc (drawn in reverse)
-        arcPath.AddArc(new SKRect((float)node.Position.X - (float)shapeConfiguration.ArcConfiguration.InnerRadius,
-                                  (float)node.Position.Y - (float)shapeConfiguration.ArcConfiguration.InnerRadius,
-                                  (float)node.Position.X + (float)shapeConfiguration.ArcConfiguration.InnerRadius,
-                                  (float)node.Position.Y + (float)shapeConfiguration.ArcConfiguration.InnerRadius),
-                       (float)shapeConfiguration.ArcConfiguration.StartAngle + (float)shapeConfiguration.ArcConfiguration.SweepAngle,
-                       (float)-shapeConfiguration.ArcConfiguration.SweepAngle);
+        arcPath.AddArc(new SKRect((float)shapeConfiguration.ArcConfiguration.BottomArcBounds.Left,
+                                  (float)shapeConfiguration.ArcConfiguration.BottomArcBounds.Top,
+                                  (float)shapeConfiguration.ArcConfiguration.BottomArcBounds.Right,
+                                  (float)shapeConfiguration.ArcConfiguration.BottomArcBounds.Bottom),
+                       (float)shapeConfiguration.ArcConfiguration.BottomArcStartAngle,
+                       (float)shapeConfiguration.ArcConfiguration.BottomArcSweepAngle);
 
         if (shapeConfiguration.ArcConfiguration.Skew != null)
         {

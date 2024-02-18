@@ -1,5 +1,6 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
@@ -29,13 +30,29 @@ public class Arc() : Shape, IShape
 
         float innerRadius = (float)nodeRadius - (float)thickness / 2;
         float outerRadius = (float)nodeRadius + (float)thickness / 2;
+        int startAngle = Random.Shared.Next(0, 360);
+        int sweepAngle = 180;
 
         _shapeConfiguration.ArcConfiguration = new()
         {
-            StartAngle = Random.Shared.Next(0, 360),
-            SweepAngle = 180,
-            InnerRadius = innerRadius,
-            OuterRadius = outerRadius
+            TopArcStartAngle = startAngle,
+            BottomArcStartAngle = startAngle + sweepAngle,
+            TopArcSweepAngle = sweepAngle,
+            BottomArcSweepAngle = -sweepAngle,
+            TopArcBounds = new ShapeBounds
+            {
+                Left = nodePosition.X - outerRadius,
+                Top = nodePosition.Y - outerRadius,
+                Right = nodePosition.X + outerRadius,
+                Bottom = nodePosition.Y + outerRadius
+            },
+            BottomArcBounds = new ShapeBounds
+            {
+                Left = nodePosition.X - innerRadius,
+                Top = nodePosition.Y - innerRadius,
+                Right = nodePosition.X + innerRadius,
+                Bottom = nodePosition.Y + innerRadius
+            }
         };
     }
 }
