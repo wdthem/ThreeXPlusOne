@@ -19,7 +19,7 @@ public class Polygon() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        //just adding skew
+        //adding skew
         if (_shapeConfiguration.PolygonConfiguration != null)
         {
             _shapeConfiguration.PolygonConfiguration.Skew = GetShapeSkew(skewFactor);

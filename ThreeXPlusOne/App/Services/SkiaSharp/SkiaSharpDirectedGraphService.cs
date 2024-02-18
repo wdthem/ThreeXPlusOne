@@ -1,7 +1,6 @@
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using ThreeXPlusOne.App.DirectedGraph.Shapes;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
@@ -267,12 +266,9 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         if (drawNumbersOnNodes)
         {
-            // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
-            double textY = node.Position.Y + 8;
-
             canvas.DrawText(node.NumberValue.ToString(),
                             (float)node.Position.X,
-                            (float)textY,
+                            (float)node.NumberTextYPosition,
                             textPaint);
         }
 
@@ -296,10 +292,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         using SKPath ellipsePath = new();
 
-        ellipsePath.AddOval(new SKRect((float)node.Position.X - (float)shapeConfiguration.EllipseConfiguration.RadiusX,
-                                       (float)node.Position.Y - (float)shapeConfiguration.EllipseConfiguration.RadiusY,
-                                       (float)node.Position.X + (float)shapeConfiguration.EllipseConfiguration.RadiusX,
-                                       (float)node.Position.Y + (float)shapeConfiguration.EllipseConfiguration.RadiusY));
+        ellipsePath.AddOval(new SKRect((float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Left,
+                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Top,
+                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Right,
+                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Bottom));
 
         if (shapeConfiguration.EllipseConfiguration.Skew != null)
         {

@@ -18,7 +18,7 @@ public class Arc() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        //just adding skew
+        //adding skew
         if (_shapeConfiguration.ArcConfiguration != null)
         {
             _shapeConfiguration.ArcConfiguration.Skew = GetShapeSkew(skewFactor);
@@ -30,7 +30,7 @@ public class Arc() : Shape, IShape
 
         float innerRadius = (float)nodeRadius - (float)thickness / 2;
         float outerRadius = (float)nodeRadius + (float)thickness / 2;
-        int startAngle = Random.Shared.Next(0, 360);
+        int startAngle = Random.Shared.Next(360);
         int sweepAngle = 180;
 
         _shapeConfiguration.ArcConfiguration = new()

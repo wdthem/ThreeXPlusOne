@@ -18,7 +18,7 @@ public class SemiCircle() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        //just adding skew
+        //adding skew
         if (_shapeConfiguration.SemiCircleConfiguration != null)
         {
             _shapeConfiguration.SemiCircleConfiguration.Skew = GetShapeSkew(skewFactor);
@@ -28,7 +28,7 @@ public class SemiCircle() : Shape, IShape
 
         _shapeConfiguration.SemiCircleConfiguration = new()
         {
-            Orientation = Random.Shared.Next(0, 360),
+            Orientation = Random.Shared.Next(360),
             ShapeBounds = new ShapeBounds
             {
                 Left = nodePosition.X - nodeRadius,

@@ -18,7 +18,7 @@ public class Pill() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        //just adding skew
+        //adding skew
         if (_shapeConfiguration.PillConfiguration != null)
         {
             _shapeConfiguration.PillConfiguration.Skew = GetShapeSkew(skewFactor);
@@ -32,7 +32,7 @@ public class Pill() : Shape, IShape
         _shapeConfiguration.PillConfiguration = new()
         {
             Height = pillHeight,
-            RotationAngle = Random.Shared.Next(0, 360),
+            RotationAngle = Random.Shared.Next(360),
             ShapeBounds = new ShapeBounds
             {
                 Left = nodePosition.X - pillWidth / 2,

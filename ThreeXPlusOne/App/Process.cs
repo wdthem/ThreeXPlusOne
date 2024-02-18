@@ -139,7 +139,7 @@ public class Process(IOptions<AppSettings> appSettings,
                 break;
             }
 
-            int randomValue = Random.Shared.Next(0, _appSettings.AlgorithmSettings.RandomNumberMax) + 1;
+            int randomValue = Random.Shared.Next(_appSettings.AlgorithmSettings.RandomNumberMax) + 1;
 
             if (_appSettings.AlgorithmSettings.ListOfNumbersToExclude.Contains(randomValue))
             {
