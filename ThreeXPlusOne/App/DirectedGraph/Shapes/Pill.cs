@@ -17,30 +17,18 @@ public class Pill() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        (double X, double Y) skew = (0, 0);
-
-        if (skewFactor != null && skewFactor > 0)
-        {
-            double skewX = skewFactor.Value;
-            double skewY = skewX * Random.Shared.NextDouble();
-
-            skew = (skewX, skewY);
-        }
-
-        //unset
-        if (_shapeConfiguration.PillConfig.Height == 0)
-        {
-            _shapeConfiguration.PillConfig = (nodeRadius * 2,
-                                             Random.Shared.Next(0, 360),
-                                             skew);
-        }
-
         //just adding skew
-        else
+        if (_shapeConfiguration.PillConfiguration != null)
         {
-            _shapeConfiguration.PillConfig = (_shapeConfiguration.PillConfig.Height,
-                                              _shapeConfiguration.PillConfig.RotationAngle,
-                                              skew);
+            _shapeConfiguration.PillConfiguration.Skew = GetShapeSkew(skewFactor);
+
+            return;
         }
+
+        _shapeConfiguration.PillConfiguration = new()
+        {
+            Height = nodeRadius * 2,
+            RotationAngle = Random.Shared.Next(0, 360)
+        };
     }
 }
