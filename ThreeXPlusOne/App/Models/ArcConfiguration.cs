@@ -31,9 +31,4 @@ public record ArcConfiguration
     /// The bounding box used to render the top arc shape
     /// </summary>
     public ShapeBounds BottomArcBounds { get; set; } = new();
-
-    /// <summary>
-    /// Skew values applied to the arc shape in psuedo-3D graphs
-    /// </summary>
-    public (double X, double Y)? Skew { get; set; }
 }

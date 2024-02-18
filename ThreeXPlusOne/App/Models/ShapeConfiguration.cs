@@ -30,6 +30,16 @@ public record ShapeConfiguration()
     public SemiCircleConfiguration? SemiCircleConfiguration { get; set; }
 
     /// <summary>
+    /// The config data for drawing a star shape
+    /// </summary>
+    public StarConfiguration? StarConfiguration { get; set; }
+
+    /// <summary>
+    /// Skew values applied to the shape in psuedo-3D graphs
+    /// </summary>
+    public (double X, double Y)? Skew { get; set; }
+
+    /// <summary>
     /// The radius and colour of the node's halo when a light source exists
     /// </summary>
     public (double Radius, Color Color)? HaloConfiguration { get; set; }
