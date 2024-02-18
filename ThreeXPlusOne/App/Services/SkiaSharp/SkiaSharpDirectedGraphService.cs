@@ -293,17 +293,21 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
             throw new Exception("DrawEllipse: Ellipse configuration settings were null");
         }
 
-        canvas.DrawOval((float)node.Position.X,
-                        (float)node.Position.Y,
-                        (float)shapeConfiguration.EllipseConfiguration.RadiusX,
-                        (float)shapeConfiguration.EllipseConfiguration.RadiusY,
-                        paint);
+        using SKPath ellipsePath = new();
 
-        canvas.DrawOval((float)node.Position.X,
-                        (float)node.Position.Y,
-                        (float)shapeConfiguration.EllipseConfiguration.RadiusX,
-                        (float)shapeConfiguration.EllipseConfiguration.RadiusY,
-                        borderPaint);
+        ellipsePath.AddOval(new SKRect((float)node.Position.X - (float)shapeConfiguration.EllipseConfiguration.RadiusX,
+                                       (float)node.Position.Y - (float)shapeConfiguration.EllipseConfiguration.RadiusY,
+                                       (float)node.Position.X + (float)shapeConfiguration.EllipseConfiguration.RadiusX,
+                                       (float)node.Position.Y + (float)shapeConfiguration.EllipseConfiguration.RadiusY));
+
+        if (shapeConfiguration.EllipseConfiguration.Skew != null)
+        {
+            ellipsePath.Transform(GetSkewSKMatrix(node.Position,
+                                                  shapeConfiguration.EllipseConfiguration.Skew.Value));
+        }
+
+        canvas.DrawPath(ellipsePath, paint);
+        canvas.DrawPath(ellipsePath, borderPaint);
     }
 
     private static void DrawPolygon(SKCanvas canvas,

@@ -11,4 +11,9 @@ public record EllipseConfiguration
     /// The y-radius of the ellipse
     /// </summary>
     public double RadiusY { get; set; }
+
+    /// <summary>
+    /// Skew values applied to the arc shape in psuedo-3D graphs
+    /// </summary>
+    public (double X, double Y)? Skew { get; set; }
 }

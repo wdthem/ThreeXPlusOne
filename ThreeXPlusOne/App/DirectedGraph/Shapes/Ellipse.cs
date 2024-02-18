@@ -20,22 +20,31 @@ public class Ellipse() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        double horizontalOffset = 0;
-        double verticalOffset = 0;
-
-        if (skewFactor != null && skewFactor.Value != 0)
+        //adding skew
+        //For ellipses, stretch radii in addition to adding skew
+        if (_shapeConfiguration.EllipseConfiguration != null)
         {
-            skewFactor *= 0.6;  //reduce the skew impact for ellipses
-            horizontalOffset = nodeRadius * skewFactor.Value;
-        }
+            double horizontalOffset = 0;
+            double verticalOffset = 0;
 
-        double horizontalRadius = nodeRadius + horizontalOffset;
-        double verticalRadius = nodeRadius + verticalOffset;
+            if (skewFactor != null && skewFactor.Value != 0)
+            {
+                skewFactor *= 0.6;  //reduce the skew impact for ellipses
+                horizontalOffset = nodeRadius * skewFactor.Value;
+                verticalOffset = nodeRadius * (skewFactor.Value * Random.Shared.NextDouble());
+            }
+
+            _shapeConfiguration.EllipseConfiguration.RadiusX = nodeRadius + horizontalOffset;
+            _shapeConfiguration.EllipseConfiguration.RadiusY = nodeRadius + verticalOffset;
+            _shapeConfiguration.EllipseConfiguration.Skew = GetShapeSkew(skewFactor);
+
+            return;
+        }
 
         _shapeConfiguration.EllipseConfiguration = new()
         {
-            RadiusX = horizontalRadius,
-            RadiusY = verticalRadius
+            RadiusX = nodeRadius,
+            RadiusY = nodeRadius
         };
     }
 }
