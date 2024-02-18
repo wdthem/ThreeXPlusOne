@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
+using ThreeXPlusOne.App.DirectedGraph.Shapes;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
@@ -10,7 +11,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                          IEnumerable<IDirectedGraphService> graphServices,
                                          ILightSourceService lightSourceService,
                                          IConsoleService consoleService,
-                                         IShapeFactory shapeFactory)
+                                         ShapeFactory shapeFactory)
                                                 : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
                                                   IDirectedGraph
 {

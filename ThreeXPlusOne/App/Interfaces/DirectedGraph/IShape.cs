@@ -22,11 +22,6 @@ public interface IShape
     Color Color { get; set; }
 
     /// <summary>
-    /// The radius and colour of the node's halo when a light source exists
-    /// </summary>
-    (double Radius, Color Color) HaloConfig { get; set; }
-
-    /// <summary>
     /// The radius of the shape
     /// </summary>
     double Radius { get; set; }
@@ -44,4 +39,11 @@ public interface IShape
     /// </summary>
     /// <returns></returns>
     ShapeConfiguration GetShapeConfiguration();
+
+    /// <summary>
+    /// Set the configuration data for the node's halo
+    /// </summary>
+    /// <param name="radius"></param>
+    /// <param name="color"></param>
+    void SetNodeHaloConfiguration(double radius, Color color);
 }

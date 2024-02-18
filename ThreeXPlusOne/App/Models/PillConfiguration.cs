@@ -16,6 +16,21 @@ public record PillConfiguration
     public double RotationAngle { get; set; }
 
     /// <summary>
+    /// The x-radius of the curve of the pill shape
+    /// </summary>
+    public double CurveRadiusX { get; set; }
+
+    /// <summary>
+    /// The y-radius of the curve of the pill shape
+    /// </summary>
+    public double CurveRadiusY { get; set; }
+
+    /// <summary>
+    /// The bounding box used to render the pill shape
+    /// </summary>
+    public ShapeBounds ShapeBounds { get; set; } = new();
+
+    /// <summary>
     /// Skew values applied to the pill shape in psuedo-3D graphs
     /// </summary>
     public (double X, double Y)? Skew { get; set; }

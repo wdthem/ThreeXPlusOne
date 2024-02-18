@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
-public class ShapeFactory() : IShapeFactory
+public class ShapeFactory()
 {
     private readonly ShapeType[] _shapeTypes = (ShapeType[])Enum.GetValues(typeof(ShapeType));
 
@@ -23,7 +23,7 @@ public class ShapeFactory() : IShapeFactory
             ShapeType.SemiCircle => new SemiCircle(),
             ShapeType.Arc => new Arc(),
             ShapeType.Pill => new Pill(),
-            _ => throw new ArgumentException($"Unsupported ShapeType passed to ShapeFactory.CreateShape(): {shapeType}"),
+            _ => throw new ArgumentException($"Unsupported ShapeType in ShapeFactory.CreateShape(): {shapeType}"),
         };
     }
 }

@@ -39,6 +39,14 @@ public record DirectedGraphNode(int NumberValue)
     public double Z { get; set; }
 
     /// <summary>
+    /// If numbers are drawn on nodes, the adjusted y position of the text
+    /// </summary>
+    /// <remarks>
+    /// Required to center the text vertically
+    /// </remarks>
+    public double NumberTextYPosition => Position.Y + 8;
+
+    /// <summary>
     /// Whether or not the node's coordinates have been calculated
     /// </summary>
     public bool IsPositioned { get; set; }

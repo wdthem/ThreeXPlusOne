@@ -41,11 +41,6 @@ public abstract class Shape()
     public Color Color { get; set; } = Color.Empty;
 
     /// <summary>
-    /// The radius and colour of the node's halo when a light source exists
-    /// </summary>
-    public (double Radius, Color Color) HaloConfig { get; set; } = (0, Color.Empty);
-
-    /// <summary>
     /// The radius of the shape
     /// </summary>
     public double Radius { get; set; }
@@ -57,5 +52,15 @@ public abstract class Shape()
     public ShapeConfiguration GetShapeConfiguration()
     {
         return _shapeConfiguration;
+    }
+
+    /// <summary>
+    /// Set the halo configuration for the shape
+    /// </summary>
+    /// <param name="radius"></param>
+    /// <param name="color"></param>
+    public void SetNodeHaloConfiguration(double radius, Color color)
+    {
+        _shapeConfiguration.HaloConfiguration = (radius, color);
     }
 }

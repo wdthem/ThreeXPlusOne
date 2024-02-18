@@ -245,7 +245,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                 break;
 
             case ShapeType.Polygon:
-                DrawPolygon(canvas, shapeConfiguration, paint, borderPaint);
+                DrawPolygon(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
             case ShapeType.SemiCircle:
@@ -266,16 +266,13 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         if (drawNumbersOnNodes)
         {
-            // Adjust the Y coordinate to account for text height (this centers the text vertically in the circle)
-            double textY = node.Position.Y + 8;
-
             canvas.DrawText(node.NumberValue.ToString(),
                             (float)node.Position.X,
-                            (float)textY,
+                            (float)node.NumberTextYPosition,
                             textPaint);
         }
 
-        DrawNodeHalo(canvas, node);
+        DrawNodeHalo(canvas, node, shapeConfiguration);
 
         paint.Dispose();
         borderPaint.Dispose();
@@ -293,29 +290,39 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
             throw new Exception("DrawEllipse: Ellipse configuration settings were null");
         }
 
-        canvas.DrawOval((float)node.Position.X,
-                        (float)node.Position.Y,
-                        (float)shapeConfiguration.EllipseConfiguration.RadiusX,
-                        (float)shapeConfiguration.EllipseConfiguration.RadiusY,
-                        paint);
+        using SKPath ellipsePath = new();
 
-        canvas.DrawOval((float)node.Position.X,
-                        (float)node.Position.Y,
-                        (float)shapeConfiguration.EllipseConfiguration.RadiusX,
-                        (float)shapeConfiguration.EllipseConfiguration.RadiusY,
-                        borderPaint);
+        ellipsePath.AddOval(new SKRect((float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Left,
+                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Top,
+                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Right,
+                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Bottom));
+
+        if (shapeConfiguration.EllipseConfiguration.Skew != null)
+        {
+            ellipsePath.Transform(GetSkewSKMatrix(node.Position,
+                                                  shapeConfiguration.EllipseConfiguration.Skew.Value));
+        }
+
+        canvas.DrawPath(ellipsePath, paint);
+        canvas.DrawPath(ellipsePath, borderPaint);
     }
 
     private static void DrawPolygon(SKCanvas canvas,
+                                    DirectedGraphNode node,
                                     ShapeConfiguration shapeConfiguration,
                                     SKPaint paint,
                                     SKPaint borderPaint)
     {
+        if (shapeConfiguration.PolygonConfiguration == null)
+        {
+            throw new Exception("DrawPolygon: Polygon configuration settings were null");
+        }
+
         using SKPath polygonPath = new();
 
-        for (int i = 0; i < shapeConfiguration.PolygonVertices.Count; i++)
+        for (int i = 0; i < shapeConfiguration.PolygonConfiguration.Vertices.Count; i++)
         {
-            (double X, double Y) vertex = shapeConfiguration.PolygonVertices[i];
+            (double X, double Y) vertex = shapeConfiguration.PolygonConfiguration.Vertices[i];
 
             if (i == 0)
             {
@@ -328,6 +335,12 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
         }
 
         polygonPath.Close();
+
+        if (shapeConfiguration.PolygonConfiguration.Skew != null)
+        {
+            polygonPath.Transform(GetSkewSKMatrix(node.Position,
+                                                  shapeConfiguration.PolygonConfiguration.Skew.Value));
+        }
 
         canvas.DrawPath(polygonPath, paint);
         canvas.DrawPath(polygonPath, borderPaint);
@@ -346,12 +359,12 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         using SKPath semiCirclePath = new();
 
-        semiCirclePath.AddArc(new SKRect((float)node.Position.X - (float)node.Shape.Radius,
-                                         (float)node.Position.Y - (float)node.Shape.Radius,
-                                         (float)node.Position.X + (float)node.Shape.Radius,
-                                         (float)node.Position.Y + (float)node.Shape.Radius),
+        semiCirclePath.AddArc(new SKRect((float)shapeConfiguration.SemiCircleConfiguration.ShapeBounds.Left,
+                                         (float)shapeConfiguration.SemiCircleConfiguration.ShapeBounds.Top,
+                                         (float)shapeConfiguration.SemiCircleConfiguration.ShapeBounds.Right,
+                                         (float)shapeConfiguration.SemiCircleConfiguration.ShapeBounds.Bottom),
                               (float)shapeConfiguration.SemiCircleConfiguration.Orientation,
-                              180);
+                              (float)shapeConfiguration.SemiCircleConfiguration.SweepAngle);
 
         if (shapeConfiguration.SemiCircleConfiguration.Skew != null)
         {
@@ -377,20 +390,20 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
         using SKPath arcPath = new();
 
         // Top edge of the arc
-        arcPath.AddArc(new SKRect((float)node.Position.X - (float)shapeConfiguration.ArcConfiguration.OuterRadius,
-                                  (float)node.Position.Y - (float)shapeConfiguration.ArcConfiguration.OuterRadius,
-                                  (float)node.Position.X + (float)shapeConfiguration.ArcConfiguration.OuterRadius,
-                                  (float)node.Position.Y + (float)shapeConfiguration.ArcConfiguration.OuterRadius),
-                       (float)shapeConfiguration.ArcConfiguration.StartAngle,
-                       (float)shapeConfiguration.ArcConfiguration.SweepAngle);
+        arcPath.AddArc(new SKRect((float)shapeConfiguration.ArcConfiguration.TopArcBounds.Left,
+                                  (float)shapeConfiguration.ArcConfiguration.TopArcBounds.Top,
+                                  (float)shapeConfiguration.ArcConfiguration.TopArcBounds.Right,
+                                  (float)shapeConfiguration.ArcConfiguration.TopArcBounds.Bottom),
+                       (float)shapeConfiguration.ArcConfiguration.TopArcStartAngle,
+                       (float)shapeConfiguration.ArcConfiguration.TopArcSweepAngle);
 
         // Bottom edge of the arc (drawn in reverse)
-        arcPath.AddArc(new SKRect((float)node.Position.X - (float)shapeConfiguration.ArcConfiguration.InnerRadius,
-                                  (float)node.Position.Y - (float)shapeConfiguration.ArcConfiguration.InnerRadius,
-                                  (float)node.Position.X + (float)shapeConfiguration.ArcConfiguration.InnerRadius,
-                                  (float)node.Position.Y + (float)shapeConfiguration.ArcConfiguration.InnerRadius),
-                       (float)shapeConfiguration.ArcConfiguration.StartAngle + (float)shapeConfiguration.ArcConfiguration.SweepAngle,
-                       (float)-shapeConfiguration.ArcConfiguration.SweepAngle);
+        arcPath.AddArc(new SKRect((float)shapeConfiguration.ArcConfiguration.BottomArcBounds.Left,
+                                  (float)shapeConfiguration.ArcConfiguration.BottomArcBounds.Top,
+                                  (float)shapeConfiguration.ArcConfiguration.BottomArcBounds.Right,
+                                  (float)shapeConfiguration.ArcConfiguration.BottomArcBounds.Bottom),
+                       (float)shapeConfiguration.ArcConfiguration.BottomArcStartAngle,
+                       (float)shapeConfiguration.ArcConfiguration.BottomArcSweepAngle);
 
         if (shapeConfiguration.ArcConfiguration.Skew != null)
         {
@@ -415,15 +428,15 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         using SKPath pillPath = new();
 
-        float pillWidth = (float)node.Shape.Radius;
-        float pillHeight = (float)shapeConfiguration.PillConfiguration.Height;
+        SKRect pillBounds = new((float)shapeConfiguration.PillConfiguration.ShapeBounds.Left,
+                                (float)shapeConfiguration.PillConfiguration.ShapeBounds.Top,
+                                (float)shapeConfiguration.PillConfiguration.ShapeBounds.Right,
+                                (float)shapeConfiguration.PillConfiguration.ShapeBounds.Bottom);
 
-        SKRect pillRect = new((float)node.Position.X - pillWidth / 2,
-                              (float)node.Position.Y - pillHeight / 2,
-                              (float)node.Position.X + pillWidth / 2,
-                              (float)node.Position.Y + pillHeight / 2);
-
-        pillPath.AddRoundRect(pillRect, pillHeight / 2, pillHeight / 2, SKPathDirection.Clockwise);
+        pillPath.AddRoundRect(pillBounds,
+                              (float)shapeConfiguration.PillConfiguration.CurveRadiusX,
+                              (float)shapeConfiguration.PillConfiguration.CurveRadiusY,
+                              SKPathDirection.Clockwise);
 
         SKMatrix rotationMatrix = SKMatrix.CreateRotationDegrees((float)shapeConfiguration.PillConfiguration.RotationAngle,
                                                                  (float)node.Position.X,
@@ -465,19 +478,20 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     /// <param name="canvas"></param>
     /// <param name="node"></param>
     private static void DrawNodeHalo(SKCanvas canvas,
-                                     DirectedGraphNode node)
+                                     DirectedGraphNode node,
+                                     ShapeConfiguration shapeConfiguration)
     {
-        if (node.Shape.HaloConfig.Color == Color.Empty)
+        if (shapeConfiguration.HaloConfiguration == null)
         {
             return;
         }
 
-        SKColor skColor = ConvertColorToSKColor(node.Shape.HaloConfig.Color);
+        SKColor skColor = ConvertColorToSKColor(shapeConfiguration.HaloConfiguration.Value.Color);
 
         using SKPaint haloPaint = new()
         {
             Shader = SKShader.CreateRadialGradient(ConvertCoordinatesToSKPoint(node.Position),
-                                                   (float)node.Shape.HaloConfig.Radius,
+                                                   (float)shapeConfiguration.HaloConfiguration.Value.Radius,
                                                    new[] { skColor, SKColors.Transparent },
                                                    null,
                                                    SKShaderTileMode.Clamp),
@@ -485,7 +499,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
         };
 
         canvas.DrawCircle(ConvertCoordinatesToSKPoint(node.Position),
-                          (float)node.Shape.HaloConfig.Radius,
+                          (float)shapeConfiguration.HaloConfiguration.Value.Radius,
                           haloPaint);
     }
 

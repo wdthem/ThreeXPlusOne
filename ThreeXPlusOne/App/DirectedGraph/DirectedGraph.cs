@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Drawing;
 using ThreeXPlusOne.App.Config;
+using ThreeXPlusOne.App.DirectedGraph.Shapes;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 
@@ -12,7 +12,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                             IEnumerable<IDirectedGraphService> graphServices,
                                             ILightSourceService lightSourceService,
                                             IConsoleService consoleService,
-                                            IShapeFactory shapeFactory)
+                                            ShapeFactory shapeFactory)
 {
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;

@@ -1,11 +1,13 @@
+using System.Drawing;
+
 namespace ThreeXPlusOne.App.Models;
 
 public record ShapeConfiguration()
 {
     /// <summary>
-    /// A list of all the vertices of a polygon
+    /// The config data for drawing a polygon
     /// </summary>
-    public List<(double X, double Y)> PolygonVertices { get; set; } = [];
+    public PolygonConfiguration? PolygonConfiguration { get; set; }
 
     /// <summary>
     /// The coordinates and radii of an ellipse
@@ -26,4 +28,9 @@ public record ShapeConfiguration()
     /// The config data for drawing a semicircle shape
     /// </summary>
     public SemiCircleConfiguration? SemiCircleConfiguration { get; set; }
+
+    /// <summary>
+    /// The radius and colour of the node's halo when a light source exists
+    /// </summary>
+    public (double Radius, Color Color)? HaloConfiguration { get; set; }
 }
