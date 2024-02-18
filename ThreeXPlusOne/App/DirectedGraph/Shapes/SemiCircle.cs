@@ -17,28 +17,17 @@ public class SemiCircle() : Shape, IShape
                                       double nodeRadius,
                                       double? skewFactor = null)
     {
-        (double X, double Y) skew = (0, 0);
-
         //just adding skew
         if (_shapeConfiguration.SemiCircleConfiguration != null)
         {
-            if (skewFactor != null && skewFactor > 0)
-            {
-                double skewX = skewFactor.Value;
-                double skewY = skewX * Random.Shared.NextDouble();
-
-                skew = (skewX, skewY);
-            }
-
-            _shapeConfiguration.SemiCircleConfiguration.Skew = skew;
+            _shapeConfiguration.SemiCircleConfiguration.Skew = GetShapeSkew(skewFactor);
 
             return;
         }
 
         _shapeConfiguration.SemiCircleConfiguration = new()
         {
-            Orientation = Random.Shared.Next(0, 360),
-            Skew = skew
+            Orientation = Random.Shared.Next(0, 360)
         };
     }
 }

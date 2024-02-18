@@ -353,10 +353,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                               (float)shapeConfiguration.SemiCircleConfiguration.Orientation,
                               180);
 
-        if (shapeConfiguration.SemiCircleConfiguration.Skew.X > 0 &&
-            shapeConfiguration.SemiCircleConfiguration.Skew.Y > 0)
+        if (shapeConfiguration.SemiCircleConfiguration.Skew != null)
         {
-            semiCirclePath.Transform(GetSkewSKMatrix(node.Position, shapeConfiguration.SemiCircleConfiguration.Skew));
+            semiCirclePath.Transform(GetSkewSKMatrix(node.Position,
+                                                     shapeConfiguration.SemiCircleConfiguration.Skew.Value));
         }
 
         canvas.DrawPath(semiCirclePath, paint);
@@ -392,10 +392,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                        (float)shapeConfiguration.ArcConfiguration.StartAngle + (float)shapeConfiguration.ArcConfiguration.SweepAngle,
                        (float)-shapeConfiguration.ArcConfiguration.SweepAngle);
 
-        if (shapeConfiguration.ArcConfiguration.Skew.X > 0 &&
-            shapeConfiguration.ArcConfiguration.Skew.Y > 0)
+        if (shapeConfiguration.ArcConfiguration.Skew != null)
         {
-            arcPath.Transform(GetSkewSKMatrix(node.Position, shapeConfiguration.ArcConfiguration.Skew));
+            arcPath.Transform(GetSkewSKMatrix(node.Position,
+                                              shapeConfiguration.ArcConfiguration.Skew.Value));
         }
 
         canvas.DrawPath(arcPath, paint);
@@ -431,10 +431,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         pillPath.Transform(rotationMatrix);
 
-        if (shapeConfiguration.PillConfiguration.Skew.X > 0 &&
-            shapeConfiguration.PillConfiguration.Skew.Y > 0)
+        if (shapeConfiguration.PillConfiguration.Skew != null)
         {
-            pillPath.Transform(GetSkewSKMatrix(node.Position, shapeConfiguration.PillConfiguration.Skew));
+            pillPath.Transform(GetSkewSKMatrix(node.Position,
+                                               shapeConfiguration.PillConfiguration.Skew.Value));
         }
 
         canvas.DrawPath(pillPath, paint);

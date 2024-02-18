@@ -63,7 +63,7 @@ public class Polygon() : Shape, IShape
 
         //apply skew
         if (skewFactor != null &&
-            skewFactor.Value > 0 &&
+            skewFactor.Value != 0 &&
             _shapeConfiguration.PolygonVertices.Count > 0)
         {
             double rotationRadians = -0.785 + Random.Shared.NextDouble() * 1.57; // Range of -π/4 to π/2 radians

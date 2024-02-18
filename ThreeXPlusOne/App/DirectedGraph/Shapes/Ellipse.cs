@@ -23,7 +23,7 @@ public class Ellipse() : Shape, IShape
         double horizontalOffset = 0;
         double verticalOffset = 0;
 
-        if (skewFactor != null && skewFactor.Value > 0)
+        if (skewFactor != null && skewFactor.Value != 0)
         {
             skewFactor *= 0.6;  //reduce the skew impact for ellipses
             horizontalOffset = nodeRadius * skewFactor.Value;

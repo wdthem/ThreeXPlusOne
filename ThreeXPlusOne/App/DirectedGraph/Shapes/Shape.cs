@@ -11,6 +11,26 @@ public abstract class Shape()
     protected readonly ShapeConfiguration _shapeConfiguration = new();
 
     /// <summary>
+    /// Generate skew data for the given shape
+    /// </summary>
+    /// <param name="skewFactor"></param>
+    /// <returns></returns>
+    protected static (double X, double Y)? GetShapeSkew(double? skewFactor)
+    {
+        (double X, double Y)? skew = null;
+
+        if (skewFactor != null && skewFactor != 0)
+        {
+            double skewX = skewFactor.Value;
+            double skewY = skewX * Random.Shared.NextDouble();
+
+            skew = (skewX, skewY);
+        }
+
+        return skew;
+    }
+
+    /// <summary>
     /// The colour of the shape's border
     /// </summary>
     public Color BorderColor { get; set; } = Color.Empty;

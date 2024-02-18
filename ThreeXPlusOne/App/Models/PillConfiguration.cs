@@ -18,5 +18,5 @@ public record PillConfiguration
     /// <summary>
     /// Skew values applied to the pill shape in psuedo-3D graphs
     /// </summary>
-    public (double X, double Y) Skew { get; set; }
+    public (double X, double Y)? Skew { get; set; }
 }
