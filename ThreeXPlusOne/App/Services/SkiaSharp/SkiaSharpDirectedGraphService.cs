@@ -432,15 +432,15 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         using SKPath pillPath = new();
 
-        float pillWidth = (float)node.Shape.Radius;
-        float pillHeight = (float)shapeConfiguration.PillConfiguration.Height;
+        SKRect pillBounds = new((float)shapeConfiguration.PillConfiguration.PillBounds.Left,
+                                (float)shapeConfiguration.PillConfiguration.PillBounds.Top,
+                                (float)shapeConfiguration.PillConfiguration.PillBounds.Right,
+                                (float)shapeConfiguration.PillConfiguration.PillBounds.Bottom);
 
-        SKRect pillRect = new((float)node.Position.X - pillWidth / 2,
-                              (float)node.Position.Y - pillHeight / 2,
-                              (float)node.Position.X + pillWidth / 2,
-                              (float)node.Position.Y + pillHeight / 2);
-
-        pillPath.AddRoundRect(pillRect, pillHeight / 2, pillHeight / 2, SKPathDirection.Clockwise);
+        pillPath.AddRoundRect(pillBounds,
+                              (float)shapeConfiguration.PillConfiguration.PillCurveRadiusX,
+                              (float)shapeConfiguration.PillConfiguration.PillCurveRadiusY,
+                              SKPathDirection.Clockwise);
 
         SKMatrix rotationMatrix = SKMatrix.CreateRotationDegrees((float)shapeConfiguration.PillConfiguration.RotationAngle,
                                                                  (float)node.Position.X,

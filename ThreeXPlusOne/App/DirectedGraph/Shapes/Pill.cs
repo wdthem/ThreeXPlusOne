@@ -1,5 +1,6 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
@@ -25,10 +26,22 @@ public class Pill() : Shape, IShape
             return;
         }
 
+        double pillWidth = nodeRadius;
+        double pillHeight = nodeRadius * 2;
+
         _shapeConfiguration.PillConfiguration = new()
         {
-            Height = nodeRadius * 2,
-            RotationAngle = Random.Shared.Next(0, 360)
+            Height = pillHeight,
+            RotationAngle = Random.Shared.Next(0, 360),
+            PillBounds = new ShapeBounds
+            {
+                Left = nodePosition.X - pillWidth / 2,
+                Top = nodePosition.Y - pillHeight / 2,
+                Right = nodePosition.X + pillWidth / 2,
+                Bottom = nodePosition.Y + pillHeight / 2
+            },
+            PillCurveRadiusX = pillHeight / 2,
+            PillCurveRadiusY = pillHeight / 2
         };
     }
 }
