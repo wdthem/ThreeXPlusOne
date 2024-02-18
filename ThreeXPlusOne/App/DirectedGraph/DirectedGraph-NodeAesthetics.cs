@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Text.RegularExpressions;
+using ThreeXPlusOne.App.DirectedGraph.Shapes;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Models;
@@ -11,7 +12,7 @@ public abstract partial class DirectedGraph
     /// <summary>
     /// Nested class to encapsulate all shared methods that manipulate node colour, shape and orientation
     /// </summary>
-    protected partial class NodeAesthetics(IShapeFactory shapeFactory)
+    protected partial class NodeAesthetics(ShapeFactory shapeFactory)
     {
         [GeneratedRegex("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")]
         private static partial Regex HexCodeRegEx();

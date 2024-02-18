@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
-public class ShapeFactory() : IShapeFactory
+public class ShapeFactory()
 {
     private readonly ShapeType[] _shapeTypes = (ShapeType[])Enum.GetValues(typeof(ShapeType));
 
