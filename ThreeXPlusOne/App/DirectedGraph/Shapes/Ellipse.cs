@@ -1,5 +1,6 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
@@ -36,6 +37,15 @@ public class Ellipse() : Shape, IShape
 
             _shapeConfiguration.EllipseConfiguration.RadiusX = nodeRadius + horizontalOffset;
             _shapeConfiguration.EllipseConfiguration.RadiusY = nodeRadius + verticalOffset;
+
+            _shapeConfiguration.EllipseConfiguration.ShapeBounds = new ShapeBounds
+            {
+                Left = nodePosition.X - _shapeConfiguration.EllipseConfiguration.RadiusX,
+                Top = nodePosition.Y - _shapeConfiguration.EllipseConfiguration.RadiusY,
+                Right = nodePosition.X + _shapeConfiguration.EllipseConfiguration.RadiusX,
+                Bottom = nodePosition.Y + _shapeConfiguration.EllipseConfiguration.RadiusY
+            };
+
             _shapeConfiguration.EllipseConfiguration.Skew = GetShapeSkew(skewFactor);
 
             return;
@@ -44,7 +54,14 @@ public class Ellipse() : Shape, IShape
         _shapeConfiguration.EllipseConfiguration = new()
         {
             RadiusX = nodeRadius,
-            RadiusY = nodeRadius
+            RadiusY = nodeRadius,
+            ShapeBounds = new ShapeBounds
+            {
+                Left = nodePosition.X - nodeRadius,
+                Top = nodePosition.Y - nodeRadius,
+                Right = nodePosition.X + nodeRadius,
+                Bottom = nodePosition.Y + nodeRadius
+            }
         };
     }
 }

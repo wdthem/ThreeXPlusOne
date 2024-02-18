@@ -363,10 +363,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         using SKPath semiCirclePath = new();
 
-        semiCirclePath.AddArc(new SKRect((float)shapeConfiguration.SemiCircleConfiguration.SemiCircleBounds.Left,
-                                         (float)shapeConfiguration.SemiCircleConfiguration.SemiCircleBounds.Top,
-                                         (float)shapeConfiguration.SemiCircleConfiguration.SemiCircleBounds.Right,
-                                         (float)shapeConfiguration.SemiCircleConfiguration.SemiCircleBounds.Bottom),
+        semiCirclePath.AddArc(new SKRect((float)shapeConfiguration.SemiCircleConfiguration.ShapeBounds.Left,
+                                         (float)shapeConfiguration.SemiCircleConfiguration.ShapeBounds.Top,
+                                         (float)shapeConfiguration.SemiCircleConfiguration.ShapeBounds.Right,
+                                         (float)shapeConfiguration.SemiCircleConfiguration.ShapeBounds.Bottom),
                               (float)shapeConfiguration.SemiCircleConfiguration.Orientation,
                               (float)shapeConfiguration.SemiCircleConfiguration.SweepAngle);
 
@@ -432,14 +432,14 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         using SKPath pillPath = new();
 
-        SKRect pillBounds = new((float)shapeConfiguration.PillConfiguration.PillBounds.Left,
-                                (float)shapeConfiguration.PillConfiguration.PillBounds.Top,
-                                (float)shapeConfiguration.PillConfiguration.PillBounds.Right,
-                                (float)shapeConfiguration.PillConfiguration.PillBounds.Bottom);
+        SKRect pillBounds = new((float)shapeConfiguration.PillConfiguration.ShapeBounds.Left,
+                                (float)shapeConfiguration.PillConfiguration.ShapeBounds.Top,
+                                (float)shapeConfiguration.PillConfiguration.ShapeBounds.Right,
+                                (float)shapeConfiguration.PillConfiguration.ShapeBounds.Bottom);
 
         pillPath.AddRoundRect(pillBounds,
-                              (float)shapeConfiguration.PillConfiguration.PillCurveRadiusX,
-                              (float)shapeConfiguration.PillConfiguration.PillCurveRadiusY,
+                              (float)shapeConfiguration.PillConfiguration.CurveRadiusX,
+                              (float)shapeConfiguration.PillConfiguration.CurveRadiusY,
                               SKPathDirection.Clockwise);
 
         SKMatrix rotationMatrix = SKMatrix.CreateRotationDegrees((float)shapeConfiguration.PillConfiguration.RotationAngle,

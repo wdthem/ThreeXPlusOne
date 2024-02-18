@@ -33,15 +33,15 @@ public class Pill() : Shape, IShape
         {
             Height = pillHeight,
             RotationAngle = Random.Shared.Next(0, 360),
-            PillBounds = new ShapeBounds
+            ShapeBounds = new ShapeBounds
             {
                 Left = nodePosition.X - pillWidth / 2,
                 Top = nodePosition.Y - pillHeight / 2,
                 Right = nodePosition.X + pillWidth / 2,
                 Bottom = nodePosition.Y + pillHeight / 2
             },
-            PillCurveRadiusX = pillHeight / 2,
-            PillCurveRadiusY = pillHeight / 2
+            CurveRadiusX = pillHeight / 2,
+            CurveRadiusY = pillHeight / 2
         };
     }
 }

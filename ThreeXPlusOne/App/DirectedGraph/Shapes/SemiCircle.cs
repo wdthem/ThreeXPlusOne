@@ -29,7 +29,7 @@ public class SemiCircle() : Shape, IShape
         _shapeConfiguration.SemiCircleConfiguration = new()
         {
             Orientation = Random.Shared.Next(0, 360),
-            SemiCircleBounds = new ShapeBounds
+            ShapeBounds = new ShapeBounds
             {
                 Left = nodePosition.X - nodeRadius,
                 Top = nodePosition.Y - nodeRadius,

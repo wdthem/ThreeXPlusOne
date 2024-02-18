@@ -20,7 +20,7 @@ public record SemiCircleConfiguration
     /// <summary>
     /// The bounding box used to render the semicircle shape
     /// </summary>
-    public ShapeBounds SemiCircleBounds { get; set; } = new();
+    public ShapeBounds ShapeBounds { get; set; } = new();
 
     /// <summary>
     /// Skew values applied to the pill shape in psuedo-3D graphs
