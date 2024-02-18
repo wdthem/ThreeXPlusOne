@@ -1,5 +1,6 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
@@ -27,7 +28,14 @@ public class SemiCircle() : Shape, IShape
 
         _shapeConfiguration.SemiCircleConfiguration = new()
         {
-            Orientation = Random.Shared.Next(0, 360)
+            Orientation = Random.Shared.Next(0, 360),
+            SemiCircleBounds = new ShapeBounds
+            {
+                Left = nodePosition.X - nodeRadius,
+                Top = nodePosition.Y - nodeRadius,
+                Right = nodePosition.X + nodeRadius,
+                Bottom = nodePosition.Y + nodeRadius
+            }
         };
     }
 }

@@ -363,12 +363,12 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         using SKPath semiCirclePath = new();
 
-        semiCirclePath.AddArc(new SKRect((float)node.Position.X - (float)node.Shape.Radius,
-                                         (float)node.Position.Y - (float)node.Shape.Radius,
-                                         (float)node.Position.X + (float)node.Shape.Radius,
-                                         (float)node.Position.Y + (float)node.Shape.Radius),
+        semiCirclePath.AddArc(new SKRect((float)shapeConfiguration.SemiCircleConfiguration.SemiCircleBounds.Left,
+                                         (float)shapeConfiguration.SemiCircleConfiguration.SemiCircleBounds.Top,
+                                         (float)shapeConfiguration.SemiCircleConfiguration.SemiCircleBounds.Right,
+                                         (float)shapeConfiguration.SemiCircleConfiguration.SemiCircleBounds.Bottom),
                               (float)shapeConfiguration.SemiCircleConfiguration.Orientation,
-                              180);
+                              (float)shapeConfiguration.SemiCircleConfiguration.SweepAngle);
 
         if (shapeConfiguration.SemiCircleConfiguration.Skew != null)
         {
