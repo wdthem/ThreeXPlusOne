@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.6.4</Version>
+    <Version>1.7.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Move all shape config into new dedicated classes</TagMessage>
+    <TagMessage>Add a star shape</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
