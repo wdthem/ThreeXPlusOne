@@ -89,7 +89,7 @@ public abstract partial class DirectedGraph
 
             node.Shape.Color = _nodeColors.Count == 1
                                                 ? _nodeColors[0]
-                                                : _nodeColors[Random.Shared.Next(0, _nodeColors.Count)];
+                                                : _nodeColors[Random.Shared.Next(_nodeColors.Count)];
 
             node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, 1.75f);
         }
