@@ -23,7 +23,7 @@ public class ShapeFactory()
             ShapeType.SemiCircle => new SemiCircle(),
             ShapeType.Arc => new Arc(),
             ShapeType.Pill => new Pill(),
-            _ => throw new ArgumentException($"Unsupported ShapeType passed to ShapeFactory.CreateShape(): {shapeType}"),
+            _ => throw new ArgumentException($"Unsupported ShapeType in ShapeFactory.CreateShape(): {shapeType}"),
         };
     }
 }

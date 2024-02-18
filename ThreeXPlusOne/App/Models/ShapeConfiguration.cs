@@ -3,9 +3,9 @@ namespace ThreeXPlusOne.App.Models;
 public record ShapeConfiguration()
 {
     /// <summary>
-    /// A list of all the vertices of a polygon
+    /// The config data for drawing a polygon
     /// </summary>
-    public List<(double X, double Y)> PolygonVertices { get; set; } = [];
+    public PolygonConfiguration? PolygonConfiguration { get; set; }
 
     /// <summary>
     /// The coordinates and radii of an ellipse

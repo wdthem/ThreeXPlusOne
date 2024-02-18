@@ -245,7 +245,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                 break;
 
             case ShapeType.Polygon:
-                DrawPolygon(canvas, shapeConfiguration, paint, borderPaint);
+                DrawPolygon(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
             case ShapeType.SemiCircle:
@@ -311,15 +311,21 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     }
 
     private static void DrawPolygon(SKCanvas canvas,
+                                    DirectedGraphNode node,
                                     ShapeConfiguration shapeConfiguration,
                                     SKPaint paint,
                                     SKPaint borderPaint)
     {
+        if (shapeConfiguration.PolygonConfiguration == null)
+        {
+            throw new Exception("DrawPolygon: Polygon configuration settings were null");
+        }
+
         using SKPath polygonPath = new();
 
-        for (int i = 0; i < shapeConfiguration.PolygonVertices.Count; i++)
+        for (int i = 0; i < shapeConfiguration.PolygonConfiguration.Vertices.Count; i++)
         {
-            (double X, double Y) vertex = shapeConfiguration.PolygonVertices[i];
+            (double X, double Y) vertex = shapeConfiguration.PolygonConfiguration.Vertices[i];
 
             if (i == 0)
             {
@@ -332,6 +338,12 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
         }
 
         polygonPath.Close();
+
+        if (shapeConfiguration.PolygonConfiguration.Skew != null)
+        {
+            polygonPath.Transform(GetSkewSKMatrix(node.Position,
+                                                  shapeConfiguration.PolygonConfiguration.Skew.Value));
+        }
 
         canvas.DrawPath(polygonPath, paint);
         canvas.DrawPath(polygonPath, borderPaint);
