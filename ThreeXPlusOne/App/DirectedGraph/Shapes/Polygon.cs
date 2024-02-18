@@ -36,7 +36,7 @@ public class Polygon() : Shape, IShape
             double angle = (2 * Math.PI / _numberOfSides * i) + rotationAngle;
 
             (double X, double Y) vertex = (nodePosition.X + nodeRadius * Math.Cos(angle),
-                                                  nodePosition.Y + nodeRadius * Math.Sin(angle));
+                                           nodePosition.Y + nodeRadius * Math.Sin(angle));
 
             _shapeConfiguration.PolygonConfiguration.Vertices.Add(vertex);
         }

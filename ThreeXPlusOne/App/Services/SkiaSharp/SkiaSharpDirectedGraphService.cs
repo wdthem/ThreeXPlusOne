@@ -1,6 +1,7 @@
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using ThreeXPlusOne.App.DirectedGraph.Shapes;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
@@ -275,7 +276,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                             textPaint);
         }
 
-        DrawNodeHalo(canvas, node);
+        DrawNodeHalo(canvas, node, shapeConfiguration);
 
         paint.Dispose();
         borderPaint.Dispose();
@@ -481,19 +482,20 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
     /// <param name="canvas"></param>
     /// <param name="node"></param>
     private static void DrawNodeHalo(SKCanvas canvas,
-                                     DirectedGraphNode node)
+                                     DirectedGraphNode node,
+                                     ShapeConfiguration shapeConfiguration)
     {
-        if (node.Shape.HaloConfig.Color == Color.Empty)
+        if (shapeConfiguration.HaloConfiguration == null)
         {
             return;
         }
 
-        SKColor skColor = ConvertColorToSKColor(node.Shape.HaloConfig.Color);
+        SKColor skColor = ConvertColorToSKColor(shapeConfiguration.HaloConfiguration.Value.Color);
 
         using SKPaint haloPaint = new()
         {
             Shader = SKShader.CreateRadialGradient(ConvertCoordinatesToSKPoint(node.Position),
-                                                   (float)node.Shape.HaloConfig.Radius,
+                                                   (float)shapeConfiguration.HaloConfiguration.Value.Radius,
                                                    new[] { skColor, SKColors.Transparent },
                                                    null,
                                                    SKShaderTileMode.Clamp),
@@ -501,7 +503,7 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
         };
 
         canvas.DrawCircle(ConvertCoordinatesToSKPoint(node.Position),
-                          (float)node.Shape.HaloConfig.Radius,
+                          (float)shapeConfiguration.HaloConfiguration.Value.Radius,
                           haloPaint);
     }
 

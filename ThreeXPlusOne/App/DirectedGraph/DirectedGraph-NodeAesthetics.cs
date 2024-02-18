@@ -135,7 +135,7 @@ public abstract partial class DirectedGraph
                                                  lightSourceColor.G,
                                                  lightSourceColor.B);
 
-                node.Shape.HaloConfig = (haloRadius, haloColor);
+                node.Shape.SetNodeHaloConfiguration(haloRadius, haloColor);
             }
         }
 

@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace ThreeXPlusOne.App.Models;
 
 public record ShapeConfiguration()
@@ -26,4 +28,9 @@ public record ShapeConfiguration()
     /// The config data for drawing a semicircle shape
     /// </summary>
     public SemiCircleConfiguration? SemiCircleConfiguration { get; set; }
+
+    /// <summary>
+    /// The radius and colour of the node's halo when a light source exists
+    /// </summary>
+    public (double Radius, Color Color)? HaloConfiguration { get; set; }
 }
