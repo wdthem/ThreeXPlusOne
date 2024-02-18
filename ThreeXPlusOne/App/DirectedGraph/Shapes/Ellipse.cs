@@ -46,7 +46,7 @@ public class Ellipse() : Shape, IShape
                 Bottom = nodePosition.Y + _shapeConfiguration.EllipseConfiguration.RadiusY
             };
 
-            _shapeConfiguration.EllipseConfiguration.Skew = GetShapeSkew(skewFactor);
+            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
 
             return;
         }

@@ -21,7 +21,7 @@ public class SemiCircle() : Shape, IShape
         //adding skew
         if (_shapeConfiguration.SemiCircleConfiguration != null)
         {
-            _shapeConfiguration.SemiCircleConfiguration.Skew = GetShapeSkew(skewFactor);
+            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
 
             return;
         }

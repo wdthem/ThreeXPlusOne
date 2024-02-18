@@ -21,7 +21,7 @@ public class Pill() : Shape, IShape
         //adding skew
         if (_shapeConfiguration.PillConfiguration != null)
         {
-            _shapeConfiguration.PillConfiguration.Skew = GetShapeSkew(skewFactor);
+            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
 
             return;
         }

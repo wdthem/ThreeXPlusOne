@@ -21,7 +21,7 @@ public class Arc() : Shape, IShape
         //adding skew
         if (_shapeConfiguration.ArcConfiguration != null)
         {
-            _shapeConfiguration.ArcConfiguration.Skew = GetShapeSkew(skewFactor);
+            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
 
             return;
         }

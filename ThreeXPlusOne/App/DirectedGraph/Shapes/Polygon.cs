@@ -22,7 +22,7 @@ public class Polygon() : Shape, IShape
         //adding skew
         if (_shapeConfiguration.PolygonConfiguration != null)
         {
-            _shapeConfiguration.PolygonConfiguration.Skew = GetShapeSkew(skewFactor);
+            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
 
             return;
         }

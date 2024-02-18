@@ -6,5 +6,6 @@ public enum ShapeType
     Polygon = 2,
     SemiCircle = 3,
     Arc = 4,
-    Pill = 5
+    Pill = 5,
+    Star = 6
 }

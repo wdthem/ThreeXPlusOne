@@ -260,6 +260,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                 DrawPill(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
+            case ShapeType.Star:
+                DrawStar(canvas, node, shapeConfiguration, paint, borderPaint);
+                break;
+
             default:
                 throw new Exception($"No drawing method for ShapeType {node.Shape.ShapeType}");
         }
@@ -297,10 +301,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                                        (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Right,
                                        (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Bottom));
 
-        if (shapeConfiguration.EllipseConfiguration.Skew != null)
+        if (shapeConfiguration.Skew != null)
         {
             ellipsePath.Transform(GetSkewSKMatrix(node.Position,
-                                                  shapeConfiguration.EllipseConfiguration.Skew.Value));
+                                                  shapeConfiguration.Skew.Value));
         }
 
         canvas.DrawPath(ellipsePath, paint);
@@ -336,10 +340,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         polygonPath.Close();
 
-        if (shapeConfiguration.PolygonConfiguration.Skew != null)
+        if (shapeConfiguration.Skew != null)
         {
             polygonPath.Transform(GetSkewSKMatrix(node.Position,
-                                                  shapeConfiguration.PolygonConfiguration.Skew.Value));
+                                                  shapeConfiguration.Skew.Value));
         }
 
         canvas.DrawPath(polygonPath, paint);
@@ -366,10 +370,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                               (float)shapeConfiguration.SemiCircleConfiguration.Orientation,
                               (float)shapeConfiguration.SemiCircleConfiguration.SweepAngle);
 
-        if (shapeConfiguration.SemiCircleConfiguration.Skew != null)
+        if (shapeConfiguration.Skew != null)
         {
             semiCirclePath.Transform(GetSkewSKMatrix(node.Position,
-                                                     shapeConfiguration.SemiCircleConfiguration.Skew.Value));
+                                                     shapeConfiguration.Skew.Value));
         }
 
         canvas.DrawPath(semiCirclePath, paint);
@@ -405,10 +409,10 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
                        (float)shapeConfiguration.ArcConfiguration.BottomArcStartAngle,
                        (float)shapeConfiguration.ArcConfiguration.BottomArcSweepAngle);
 
-        if (shapeConfiguration.ArcConfiguration.Skew != null)
+        if (shapeConfiguration.Skew != null)
         {
             arcPath.Transform(GetSkewSKMatrix(node.Position,
-                                              shapeConfiguration.ArcConfiguration.Skew.Value));
+                                              shapeConfiguration.Skew.Value));
         }
 
         canvas.DrawPath(arcPath, paint);
@@ -444,14 +448,53 @@ public class SkiaSharpDirectedGraphService(IFileService fileService) : IDirected
 
         pillPath.Transform(rotationMatrix);
 
-        if (shapeConfiguration.PillConfiguration.Skew != null)
+        if (shapeConfiguration.Skew != null)
         {
             pillPath.Transform(GetSkewSKMatrix(node.Position,
-                                               shapeConfiguration.PillConfiguration.Skew.Value));
+                                               shapeConfiguration.Skew.Value));
         }
 
         canvas.DrawPath(pillPath, paint);
         canvas.DrawPath(pillPath, borderPaint);
+    }
+
+    private static void DrawStar(SKCanvas canvas,
+                                 DirectedGraphNode node,
+                                 ShapeConfiguration shapeConfiguration,
+                                 SKPaint paint,
+                                 SKPaint borderPaint)
+    {
+        if (shapeConfiguration.StarConfiguration == null)
+        {
+            throw new Exception("DrawStar: Star configuration settings were null");
+        }
+
+        using SKPath starPath = new();
+
+        for (int lcv = 0; lcv < shapeConfiguration.StarConfiguration.AngleVertices.Count; lcv++)
+        {
+            SKPoint point = ConvertCoordinatesToSKPoint(shapeConfiguration.StarConfiguration.AngleVertices[lcv]);
+
+            if (lcv == 0)
+            {
+                starPath.MoveTo(point);
+            }
+            else
+            {
+                starPath.LineTo(point);
+            }
+        }
+
+        starPath.Close();
+
+        if (shapeConfiguration.Skew != null)
+        {
+            starPath.Transform(GetSkewSKMatrix(node.Position,
+                                               shapeConfiguration.Skew.Value));
+        }
+
+        canvas.DrawPath(starPath, paint);
+        canvas.DrawPath(starPath, borderPaint);
     }
 
     /// <summary>
