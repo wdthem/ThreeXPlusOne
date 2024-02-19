@@ -13,19 +13,9 @@ public class Pill() : Shape, IShape
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
-    /// <param name="skewFactor"></param>
     public void SetShapeConfiguration((double X, double Y) nodePosition,
-                                      double nodeRadius,
-                                      double? skewFactor = null)
+                                      double nodeRadius)
     {
-        //adding skew
-        if (_shapeConfiguration.PillConfiguration != null)
-        {
-            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
-
-            return;
-        }
-
         double pillWidth = nodeRadius;
         double pillHeight = nodeRadius * 2;
 
@@ -43,5 +33,16 @@ public class Pill() : Shape, IShape
             CurveRadiusX = pillHeight / 2,
             CurveRadiusY = pillHeight / 2
         };
+    }
+
+    /// <summary>
+    /// Apply skew settings to the shape
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
+    public void GenerateShapeSkew((double X, double Y) nodePosition,
+                                  double nodeRadius)
+    {
+        SetShapeSkew();
     }
 }
