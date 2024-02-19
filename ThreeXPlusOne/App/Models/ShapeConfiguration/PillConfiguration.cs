@@ -1,4 +1,4 @@
-namespace ThreeXPlusOne.App.Models;
+namespace ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 public record PillConfiguration
 {

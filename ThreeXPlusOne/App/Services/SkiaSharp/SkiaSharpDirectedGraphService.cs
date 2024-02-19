@@ -4,6 +4,7 @@ using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
