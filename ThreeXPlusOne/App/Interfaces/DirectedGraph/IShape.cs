@@ -1,6 +1,6 @@
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 namespace ThreeXPlusOne.App.Interfaces.DirectedGraph;
 

@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace ThreeXPlusOne.App.Models;
+namespace ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 public record ShapeConfiguration()
 {

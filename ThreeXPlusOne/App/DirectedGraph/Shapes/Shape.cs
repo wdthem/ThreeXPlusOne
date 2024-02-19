@@ -1,5 +1,5 @@
 using System.Drawing;
-using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
