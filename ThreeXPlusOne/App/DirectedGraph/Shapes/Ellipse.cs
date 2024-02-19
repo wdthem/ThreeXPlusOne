@@ -21,16 +21,12 @@ public class Ellipse() : Shape, IShape
     {
         if (_shapeConfiguration.EllipseConfiguration != null)
         {
-            double skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) * ((0.1 + Random.Shared.NextDouble()) * 0.6);
-            double horizontalOffset = 0;
-            double verticalOffset = 0;
+            double skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) *
+                                ((0.1 + Random.Shared.NextDouble()) * 0.6) *
+                                0.6;  //reduce the overall impact to ellipses
 
-            if (skewFactor != 0)
-            {
-                skewFactor *= 0.6;
-                horizontalOffset = nodeRadius * skewFactor;
-                verticalOffset = nodeRadius * (skewFactor * Random.Shared.NextDouble());
-            }
+            double horizontalOffset = nodeRadius * skewFactor;
+            double verticalOffset = nodeRadius * (skewFactor * Random.Shared.NextDouble());
 
             _shapeConfiguration.EllipseConfiguration.RadiusX = nodeRadius + horizontalOffset;
             _shapeConfiguration.EllipseConfiguration.RadiusY = nodeRadius + verticalOffset;
