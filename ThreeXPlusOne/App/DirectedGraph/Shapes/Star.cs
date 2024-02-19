@@ -14,19 +14,9 @@ public class Star() : Shape, IShape
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
-    /// <param name="skewFactor"></param>
     public void SetShapeConfiguration((double X, double Y) nodePosition,
-                                      double nodeRadius,
-                                      double? skewFactor = null)
+                                      double nodeRadius)
     {
-        //adding skew
-        if (_shapeConfiguration.StarConfiguration != null)
-        {
-            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
-
-            return;
-        }
-
         _shapeConfiguration.StarConfiguration = new()
         {
             InnerRadius = nodeRadius * 0.4,
@@ -36,8 +26,8 @@ public class Star() : Shape, IShape
         for (int i = 0; i < _numberOfPoints * 2; i++)
         {
             double angle = i * _shapeConfiguration.StarConfiguration.AngleIncrement;
-            double radius = (i % 2 == 0) 
-                                    ? nodeRadius 
+            double radius = (i % 2 == 0)
+                                    ? nodeRadius
                                     : _shapeConfiguration.StarConfiguration.InnerRadius;
 
             double x = nodePosition.X + (radius * Math.Cos(angle));
@@ -45,5 +35,16 @@ public class Star() : Shape, IShape
 
             _shapeConfiguration.StarConfiguration.AngleVertices.Add((x, y));
         }
+    }
+
+    /// <summary>
+    /// Apply skew settings to the shape
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
+    public void GenerateShapeSkew((double X, double Y) nodePosition,
+                                  double nodeRadius)
+    {
+        SetShapeSkew();
     }
 }

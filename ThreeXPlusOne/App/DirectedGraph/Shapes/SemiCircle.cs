@@ -13,19 +13,9 @@ public class SemiCircle() : Shape, IShape
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
-    /// <param name="skewFactor"></param>
     public void SetShapeConfiguration((double X, double Y) nodePosition,
-                                      double nodeRadius,
-                                      double? skewFactor = null)
+                                      double nodeRadius)
     {
-        //adding skew
-        if (_shapeConfiguration.SemiCircleConfiguration != null)
-        {
-            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
-
-            return;
-        }
-
         _shapeConfiguration.SemiCircleConfiguration = new()
         {
             Orientation = Random.Shared.Next(360),
@@ -37,5 +27,16 @@ public class SemiCircle() : Shape, IShape
                 Bottom = nodePosition.Y + nodeRadius
             }
         };
+    }
+
+    /// <summary>
+    /// Apply skew settings to the shape
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
+    public void GenerateShapeSkew((double X, double Y) nodePosition,
+                                  double nodeRadius)
+    {
+        SetShapeSkew();
     }
 }

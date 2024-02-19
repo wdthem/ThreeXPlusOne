@@ -13,21 +13,18 @@ public abstract class Shape()
     /// <summary>
     /// Generate skew data for the given shape
     /// </summary>
-    /// <param name="skewFactor"></param>
     /// <returns></returns>
-    protected static (double X, double Y)? GetShapeSkew(double? skewFactor)
+    protected void SetShapeSkew()
     {
-        (double X, double Y)? skew = null;
+        double skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) * ((0.1 + Random.Shared.NextDouble()) * 0.6);
 
-        if (skewFactor != null && skewFactor != 0)
+        if (skewFactor != 0)
         {
-            double skewX = skewFactor.Value;
+            double skewX = skewFactor;
             double skewY = skewX * Random.Shared.NextDouble();
 
-            skew = (skewX, skewY);
+            _shapeConfiguration.Skew = (skewX, skewY);
         }
-
-        return skew;
     }
 
     /// <summary>

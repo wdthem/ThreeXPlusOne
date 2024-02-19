@@ -13,19 +13,9 @@ public class Arc() : Shape, IShape
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
-    /// <param name="skewFactor"></param>
     public void SetShapeConfiguration((double X, double Y) nodePosition,
-                                      double nodeRadius,
-                                      double? skewFactor = null)
+                                      double nodeRadius)
     {
-        //adding skew
-        if (_shapeConfiguration.ArcConfiguration != null)
-        {
-            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
-
-            return;
-        }
-
         double thickness = Random.Shared.Next((int)nodeRadius / 2, (int)nodeRadius);
 
         float innerRadius = (float)nodeRadius - (float)thickness / 2;
@@ -54,5 +44,16 @@ public class Arc() : Shape, IShape
                 Bottom = nodePosition.Y + innerRadius
             }
         };
+    }
+
+    /// <summary>
+    /// Apply skew settings to the shape
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
+    public void GenerateShapeSkew((double X, double Y) nodePosition,
+                                  double nodeRadius)
+    {
+        SetShapeSkew();
     }
 }

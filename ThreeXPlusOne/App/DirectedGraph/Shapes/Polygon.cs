@@ -14,19 +14,9 @@ public class Polygon() : Shape, IShape
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
-    /// <param name="skewFactor"></param>
     public void SetShapeConfiguration((double X, double Y) nodePosition,
-                                      double nodeRadius,
-                                      double? skewFactor = null)
+                                      double nodeRadius)
     {
-        //adding skew
-        if (_shapeConfiguration.PolygonConfiguration != null)
-        {
-            _shapeConfiguration.Skew = GetShapeSkew(skewFactor);
-
-            return;
-        }
-
         _shapeConfiguration.PolygonConfiguration = new();
 
         double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
@@ -40,5 +30,16 @@ public class Polygon() : Shape, IShape
 
             _shapeConfiguration.PolygonConfiguration.Vertices.Add(vertex);
         }
+    }
+
+    /// <summary>
+    /// Apply skew settings to the shape
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
+    public void GenerateShapeSkew((double X, double Y) nodePosition,
+                                  double nodeRadius)
+    {
+        SetShapeSkew();
     }
 }

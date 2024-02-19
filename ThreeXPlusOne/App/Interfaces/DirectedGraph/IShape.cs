@@ -31,8 +31,7 @@ public interface IShape
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
-    /// <param name="skewFactor"></param>
-    void SetShapeConfiguration((double X, double Y) nodePosition, double nodeRadius, double? skewFactor = null);
+    void SetShapeConfiguration((double X, double Y) nodePosition, double nodeRadius);
 
     /// <summary>
     /// Get the object storing the shape's configuration data
@@ -46,4 +45,11 @@ public interface IShape
     /// <param name="radius"></param>
     /// <param name="color"></param>
     void SetNodeHaloConfiguration(double radius, Color color);
+
+    /// <summary>
+    /// Assign random skew values to the shape
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
+    void GenerateShapeSkew((double X, double Y) nodePosition, double nodeRadius);
 }

@@ -80,7 +80,6 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     public void SetNodeAesthetics()
     {
         double noSkewProbability = 0.2;
-        double? skewFactor = null;
         int lcv = 1;
 
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
@@ -89,14 +88,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                          _appSettings.NodeAestheticSettings.NodeRadius,
                                          _appSettings.NodeAestheticSettings.NodeShapes);
 
-            skewFactor = null;
-
             if (Random.Shared.NextDouble() >= noSkewProbability)
             {
-                //ensure skewing happens to the right and left via the random double being less than or greter than 0.5
-                skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) * ((0.1 + Random.Shared.NextDouble()) * 0.6);
-
-                node.Shape.SetShapeConfiguration(node.Position, node.Shape.Radius, skewFactor);
+                node.Shape.GenerateShapeSkew(node.Position, node.Shape.Radius);
             }
 
             _nodeAesthetics.SetNodeColor(node,
