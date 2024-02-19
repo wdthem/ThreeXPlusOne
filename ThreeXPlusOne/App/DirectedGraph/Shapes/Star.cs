@@ -36,12 +36,13 @@ public class Star() : Shape, IShape
         for (int i = 0; i < _numberOfPoints * 2; i++)
         {
             double angle = i * _shapeConfiguration.StarConfiguration.AngleIncrement;
-            double radius = (i % 2 == 0) ? nodeRadius : _shapeConfiguration.StarConfiguration.InnerRadius;
+            double radius = (i % 2 == 0) 
+                                    ? nodeRadius 
+                                    : _shapeConfiguration.StarConfiguration.InnerRadius;
 
             double x = nodePosition.X + (radius * Math.Cos(angle));
             double y = nodePosition.Y + (radius * Math.Sin(angle));
 
-            // Add the point to the list
             _shapeConfiguration.StarConfiguration.AngleVertices.Add((x, y));
         }
     }
