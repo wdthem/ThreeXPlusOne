@@ -7,5 +7,6 @@ public enum ShapeType
     SemiCircle = 3,
     Arc = 4,
     Pill = 5,
-    Star = 6
+    Star = 6,
+    Seashell = 7
 }

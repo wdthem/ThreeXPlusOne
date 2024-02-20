@@ -24,6 +24,7 @@ public class ShapeFactory()
             ShapeType.Arc => new Arc(),
             ShapeType.Pill => new Pill(),
             ShapeType.Star => new Star(),
+            ShapeType.Seashell => new Seashell(),
             _ => throw new ArgumentException($"Unsupported ShapeType in ShapeFactory.CreateShape(): {shapeType}"),
         };
     }
