@@ -35,6 +35,11 @@ public record ShapeConfiguration()
     public StarConfiguration? StarConfiguration { get; set; }
 
     /// <summary>
+    /// The config data for drawing a seashell shape
+    /// </summary>
+    public SeashellConfiguration? SeashellConfiguration { get; set; }
+
+    /// <summary>
     /// Skew values applied to the shape in psuedo-3D graphs
     /// </summary>
     public (double X, double Y)? Skew { get; set; }
