@@ -93,6 +93,8 @@ public partial class SkiaSharpDirectedGraphService
                               (float)shapeConfiguration.SemiCircleConfiguration.Orientation,
                               (float)shapeConfiguration.SemiCircleConfiguration.SweepAngle);
 
+        semiCirclePath.Close();
+
         if (shapeConfiguration.Skew != null)
         {
             semiCirclePath.Transform(GetSkewSKMatrix(node.Position,
@@ -134,12 +136,33 @@ public partial class SkiaSharpDirectedGraphService
 
         if (shapeConfiguration.Skew != null)
         {
-            arcPath.Transform(GetSkewSKMatrix(node.Position,
-                                              shapeConfiguration.Skew.Value));
+            arcPath.Transform(GetSkewSKMatrix(node.Position, shapeConfiguration.Skew.Value));
         }
 
         canvas.DrawPath(arcPath, paint);
         canvas.DrawPath(arcPath, borderPaint);
+
+        //Draw the border of the two ends of the arc
+
+        // Use SKPathMeasure to get the start and end points of the top and bottom arcs
+        SKPathMeasure pathMeasure = new(arcPath, false);
+        float topArcLength = pathMeasure.Length;
+
+        // Get the start and end points of the top arc
+        pathMeasure.GetPosition(0, out SKPoint topArcStartPoint);
+        pathMeasure.GetPosition(topArcLength, out SKPoint topArcEndPoint);
+
+        // Move to the next contour (the bottom arc)
+        pathMeasure.NextContour();
+        float bottomArcLength = pathMeasure.Length;
+
+        // Get the start and end points of the bottom arc (reversed)
+        pathMeasure.GetPosition(0, out SKPoint bottomArcEndPoint);
+        pathMeasure.GetPosition(bottomArcLength, out SKPoint bottomArcStartPoint);
+
+        // Draw lines connecting the end points of the arcs
+        canvas.DrawLine(topArcStartPoint.X, topArcStartPoint.Y, bottomArcStartPoint.X, bottomArcStartPoint.Y, borderPaint);
+        canvas.DrawLine(topArcEndPoint.X, topArcEndPoint.Y, bottomArcEndPoint.X, bottomArcEndPoint.Y, borderPaint);
     }
 
     private static void DrawPill(SKCanvas canvas,
