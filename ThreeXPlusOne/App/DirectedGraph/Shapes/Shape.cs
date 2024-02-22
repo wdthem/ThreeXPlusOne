@@ -14,7 +14,7 @@ public abstract class Shape()
     /// Generate skew data for the given shape
     /// </summary>
     /// <returns></returns>
-    protected void SetShapeSkew()
+    protected void GenerateShapeSkew()
     {
         double skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) * ((0.1 + Random.Shared.NextDouble()) * 0.6);
         double skewX = skewFactor;

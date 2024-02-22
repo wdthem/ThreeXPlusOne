@@ -51,5 +51,5 @@ public interface IShape
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
-    void GenerateShapeSkew((double X, double Y) nodePosition, double nodeRadius);
+    void SetShapeSkew((double X, double Y) nodePosition, double nodeRadius);
 }
