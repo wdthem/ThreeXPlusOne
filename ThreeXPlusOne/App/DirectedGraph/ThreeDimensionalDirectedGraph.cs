@@ -90,7 +90,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
             if (Random.Shared.NextDouble() >= noSkewProbability)
             {
-                node.Shape.GenerateShapeSkew(node.Position, node.Shape.Radius);
+                node.Shape.SetShapeSkew(node.Position, node.Shape.Radius);
             }
 
             _nodeAesthetics.SetNodeColor(node,

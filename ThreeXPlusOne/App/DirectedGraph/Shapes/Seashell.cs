@@ -46,9 +46,9 @@ public class Seashell() : Shape, IShape
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
-    public void GenerateShapeSkew((double X, double Y) nodePosition,
-                                  double nodeRadius)
+    public void SetShapeSkew((double X, double Y) nodePosition,
+                             double nodeRadius)
     {
-        SetShapeSkew();
+        GenerateShapeSkew();
     }
 }
