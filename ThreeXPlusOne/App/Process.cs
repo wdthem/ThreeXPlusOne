@@ -46,7 +46,7 @@ public class Process(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Generate the correct directed graph based on app settings
+    /// Generate the directed graph based on app settings
     /// </summary>
     /// <param name="seriesLists"></param>
     private void GenerateDirectedGraph(List<List<int>> seriesLists)
