@@ -8,5 +8,6 @@ public enum ShapeType
     Arc = 4,
     Pill = 5,
     Star = 6,
-    Seashell = 7
+    Seashell = 7,
+    Trapezoid = 8
 }
