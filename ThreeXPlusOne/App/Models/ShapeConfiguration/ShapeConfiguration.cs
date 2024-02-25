@@ -40,6 +40,11 @@ public record ShapeConfiguration()
     public SeashellConfiguration? SeashellConfiguration { get; set; }
 
     /// <summary>
+    /// The config data for drawing a trapezoid shape
+    /// </summary>
+    public TrapezoidConfiguration? TrapezoidConfiguration { get; set; }
+
+    /// <summary>
     /// Skew values applied to the shape in psuedo-3D graphs
     /// </summary>
     public (double X, double Y)? Skew { get; set; }
