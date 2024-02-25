@@ -274,34 +274,4 @@ public partial class SkiaSharpDirectedGraphService
         canvas.DrawPath(seashellPath, paint);
         canvas.DrawPath(seashellPath, borderPaint);
     }
-
-    private static void DrawTrapezoid(SKCanvas canvas,
-                                      DirectedGraphNode node,
-                                      ShapeConfiguration shapeConfiguration,
-                                      SKPaint paint,
-                                      SKPaint borderPaint)
-    {
-        if (shapeConfiguration.TrapezoidConfiguration == null)
-        {
-            throw new Exception("DrawTrapezoid: Trapezoid configuration settings were null");
-        }
-
-        using SKPath trapezoidPath = new();
-
-        trapezoidPath.MoveTo(ConvertCoordinatesToSKPoint(shapeConfiguration.TrapezoidConfiguration.TopLeftVertex));
-        trapezoidPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.TrapezoidConfiguration.TopRightVertex));
-        trapezoidPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.TrapezoidConfiguration.BottomRightVertex));
-        trapezoidPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.TrapezoidConfiguration.BottomLeftVertex));
-
-        trapezoidPath.Close();
-
-        if (shapeConfiguration.Skew != null)
-        {
-            trapezoidPath.Transform(GetSkewSKMatrix(node.Position,
-                                                    shapeConfiguration.Skew.Value));
-        }
-
-        canvas.DrawPath(trapezoidPath, paint);
-        canvas.DrawPath(trapezoidPath, borderPaint);
-    }
 }

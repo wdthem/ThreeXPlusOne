@@ -8,6 +8,26 @@ public class Polygon() : Shape, IShape
     public ShapeType ShapeType => ShapeType.Polygon;
 
     /// <summary>
+    /// Rotate the points so the shape is not always drawn in the same orientation
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="center"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    protected static (double X, double Y) RotateVertex((double X, double Y) point,
+                                                       (double X, double Y) center,
+                                                       double angle)
+    {
+        double cosAngle = Math.Cos(angle);
+        double sinAngle = Math.Sin(angle);
+
+        double x = cosAngle * (point.X - center.X) - sinAngle * (point.Y - center.Y) + center.X;
+        double y = sinAngle * (point.X - center.X) + cosAngle * (point.Y - center.Y) + center.Y;
+
+        return (x, y);
+    }
+
+    /// <summary>
     /// Draw a regular polygon, from sides 3-8, including squares but not including other 4-sided shapes
     /// </summary>
     /// <param name="nodePosition"></param>
@@ -98,6 +118,30 @@ public class Polygon() : Shape, IShape
     }
 
     /// <summary>
+    /// Configure the points of a trapezoid
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
+    /// <param name="rotationAngle"></param>
+    private void ConfigureTrapezoid((double X, double Y) nodePosition,
+                                    double nodeRadius,
+                                    double rotationAngle)
+    {
+        _shapeConfiguration.PolygonConfiguration = new();
+
+        double topWidth = nodeRadius * 0.667;
+        double height = nodeRadius / 2;
+
+        double halfTopWidth = topWidth / 2;
+        double halfBottomWidth = nodeRadius / 2;
+
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X - halfTopWidth, nodePosition.Y), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X + halfTopWidth, nodePosition.Y), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X + halfBottomWidth, nodePosition.Y + height), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X - halfBottomWidth, nodePosition.Y + height), nodePosition, rotationAngle));
+    }
+
+    /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
     /// </summary>
     /// <param name="nodePosition"></param>
@@ -115,7 +159,7 @@ public class Polygon() : Shape, IShape
             return;
         }
 
-        int fourSidedShapeChoice = Random.Shared.Next(1, 5);
+        int fourSidedShapeChoice = Random.Shared.Next(1, 6);
 
         switch (fourSidedShapeChoice)
         {
@@ -133,6 +177,10 @@ public class Polygon() : Shape, IShape
 
             case 4:
                 ConfigureParallelogram(nodePosition, nodeRadius, rotationAngle);
+                break;
+
+            case 5:
+                ConfigureTrapezoid(nodePosition, nodeRadius, rotationAngle);
                 break;
         }
     }
