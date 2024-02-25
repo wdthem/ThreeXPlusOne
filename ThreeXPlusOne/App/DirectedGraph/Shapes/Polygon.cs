@@ -1,5 +1,6 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
@@ -22,19 +23,13 @@ public class Polygon() : Shape, IShape
     {
         int[] weights = [1, 5, 1, 1, 1, 1];  // Weights for numbers 3, 4, 5, 6, 7, 8
 
-        int[] cumulativeWeights = new int[weights.Length];
-        int totalWeight = 0;
+        List<KeyValuePair<ShapeType, ShapeSelectionWeight>> shapeWeightsList = ShapeHelper.ConfigureShapeSelectionWeights(weights);
 
-        for (int i = 0; i < weights.Length; i++)
-        {
-            totalWeight += weights[i];
-            cumulativeWeights[i] = totalWeight;
-        }
-
+        int totalWeight = shapeWeightsList.Sum(pair => pair.Value.Weight);
         int randomNumber = Random.Shared.Next(1, totalWeight + 1);
 
-        int numberOfSides = Enumerable.Range(0, cumulativeWeights.Length)
-                                      .FirstOrDefault(i => randomNumber <= cumulativeWeights[i]) + 3; // Add 3 to the index to get the correct number in the range
+        int numberOfSides = Enumerable.Range(0, shapeWeightsList.Count)
+                                      .FirstOrDefault(i => randomNumber <= shapeWeightsList[i].Value.CumulativeWeight) + 3; // Add 3 to the index to get the correct number in the range
 
         return numberOfSides;
     }

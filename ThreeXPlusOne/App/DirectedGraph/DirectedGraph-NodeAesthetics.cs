@@ -47,9 +47,7 @@ public abstract partial class DirectedGraph
 
             IShape shape = _nodeShapes.Count == 0
                                     ? shapeFactory.CreateShape()
-                                    : shapeFactory.CreateShape(_nodeShapes.Count == 1
-                                                                            ? _nodeShapes[0]
-                                                                            : _nodeShapes[Random.Shared.Next(_nodeShapes.Count)]);
+                                    : shapeFactory.CreateShape(_nodeShapes);
 
             shape.Radius = radius;
             shape.SetShapeConfiguration(node.Position, radius);
