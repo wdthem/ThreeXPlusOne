@@ -11,6 +11,8 @@ public class Ellipse() : Shape, IShape
 {
     public ShapeType ShapeType => ShapeType.Ellipse;
 
+    public int SelectionWeight => 1;
+
     /// <summary>
     /// Stretch the ellipse radii for skewed shapes
     /// </summary>

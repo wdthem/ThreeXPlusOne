@@ -27,6 +27,14 @@ public interface IShape
     double Radius { get; set; }
 
     /// <summary>
+    /// The weight assigned to the given shape with respect to it being randomly selected as the shape for the node
+    /// <remarks>
+    /// Used to bias the selection toward shapes with higher weights
+    /// </remarks>
+    /// </summary>
+    int SelectionWeight { get; }
+
+    /// <summary>
     /// Set the configuration of the given shape, optionally skewing it
     /// </summary>
     /// <param name="nodePosition"></param>

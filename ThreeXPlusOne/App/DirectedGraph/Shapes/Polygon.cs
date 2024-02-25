@@ -7,6 +7,38 @@ public class Polygon() : Shape, IShape
 {
     public ShapeType ShapeType => ShapeType.Polygon;
 
+    //This class can generate 10 different polygons, thus the weighting of 10 to 
+    //put each polygon type on equal footing to all other distinct shapes
+    public int SelectionWeight => 10;
+
+    /// <summary>
+    /// Get a randomly-selected number of sides from 3 to 8 (min: triangle, max: octagon)
+    /// </summary>
+    /// <remarks>
+    /// More weight is applied toward selecting a four-sided shape given there are multiple 4-sided shapes
+    /// </remarks>
+    /// <returns></returns>
+    private static int GenerateNumberOfSides()
+    {
+        int[] weights = [1, 5, 1, 1, 1, 1];  // Weights for numbers 3, 4, 5, 6, 7, 8
+
+        int[] cumulativeWeights = new int[weights.Length];
+        int totalWeight = 0;
+
+        for (int i = 0; i < weights.Length; i++)
+        {
+            totalWeight += weights[i];
+            cumulativeWeights[i] = totalWeight;
+        }
+
+        int randomNumber = Random.Shared.Next(1, totalWeight + 1);
+
+        int numberOfSides = Enumerable.Range(0, cumulativeWeights.Length)
+                                      .FirstOrDefault(i => randomNumber <= cumulativeWeights[i]) + 3; // Add 3 to the index to get the correct number in the range
+
+        return numberOfSides;
+    }
+
     /// <summary>
     /// Rotate the points so the shape is not always drawn in the same orientation
     /// </summary>
@@ -64,8 +96,8 @@ public class Polygon() : Shape, IShape
     {
         _shapeConfiguration.PolygonConfiguration = new();
 
-        double width = nodeRadius;
-        double height = width / 2;
+        double width = nodeRadius * 2;
+        double height = nodeRadius;
 
         _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X - width / 2, nodePosition.Y - height / 2), nodePosition, rotationAngle));
         _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X + width / 2, nodePosition.Y - height / 2), nodePosition, rotationAngle));
@@ -85,13 +117,13 @@ public class Polygon() : Shape, IShape
     {
         _shapeConfiguration.PolygonConfiguration = new();
 
-        double angleRadians = Math.PI * 60 / 180;
-        double halfDiagonal = nodeRadius * Math.Cos(angleRadians / 2);
+        double horizontalDistance = nodeRadius * 1.5 * Math.Cos(Math.PI / 6); // 30 degrees
+        double verticalDistance = nodeRadius * 1.5 * Math.Sin(Math.PI / 6); // 30 degrees
 
-        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y - halfDiagonal), nodePosition, rotationAngle));
-        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X + halfDiagonal, nodePosition.Y), nodePosition, rotationAngle));
-        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y + halfDiagonal), nodePosition, rotationAngle));
-        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X - halfDiagonal, nodePosition.Y), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y - verticalDistance), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X + horizontalDistance, nodePosition.Y), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y + verticalDistance), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X - horizontalDistance, nodePosition.Y), nodePosition, rotationAngle));
     }
 
     /// <summary>
@@ -101,13 +133,13 @@ public class Polygon() : Shape, IShape
     /// <param name="nodeRadius"></param>
     /// <param name="rotationAngle"></param>
     private void ConfigureParallelogram((double X, double Y) nodePosition,
-                                   double nodeRadius,
-                                   double rotationAngle)
+                                        double nodeRadius,
+                                        double rotationAngle)
     {
         _shapeConfiguration.PolygonConfiguration = new();
 
-        double baseLength = nodeRadius / 2;
-        double sideLength = nodeRadius;
+        double baseLength = nodeRadius * 2;
+        double sideLength = nodeRadius * 1.75;
         double angleRadians = Math.PI * 30 / 180;
         double height = sideLength * Math.Sin(angleRadians);
 
@@ -129,11 +161,11 @@ public class Polygon() : Shape, IShape
     {
         _shapeConfiguration.PolygonConfiguration = new();
 
-        double topWidth = nodeRadius * 0.667;
-        double height = nodeRadius / 2;
+        double topWidth = nodeRadius * 2 * 0.667;
+        double height = nodeRadius * 1.4;
 
         double halfTopWidth = topWidth / 2;
-        double halfBottomWidth = nodeRadius / 2;
+        double halfBottomWidth = topWidth;
 
         _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X - halfTopWidth, nodePosition.Y), nodePosition, rotationAngle));
         _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X + halfTopWidth, nodePosition.Y), nodePosition, rotationAngle));
@@ -149,7 +181,7 @@ public class Polygon() : Shape, IShape
     public void SetShapeConfiguration((double X, double Y) nodePosition,
                                       double nodeRadius)
     {
-        int numberOfSides = Random.Shared.Next(3, 9); //min: triangle, max: octagon
+        int numberOfSides = GenerateNumberOfSides();
         double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
 
         if (numberOfSides != 4)
