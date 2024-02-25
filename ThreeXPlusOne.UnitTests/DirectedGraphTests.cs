@@ -11,6 +11,7 @@ using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.UnitTests.Mocks;
 using Xunit;
+using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.UnitTests;
 
@@ -32,7 +33,7 @@ public class DirectedGraphTests
         _lightSourceServiceMock = new Mock<ILightSourceService>();
         _graphServiceMock = new Mock<IDirectedGraphService>();
         _graphServicesList = [_graphServiceMock.Object];
-        _shapeFactory = new ShapeFactory();
+        _shapeFactory = new ShapeFactory([]);
     }
 
     [Fact]

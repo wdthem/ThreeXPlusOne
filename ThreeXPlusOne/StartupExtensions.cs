@@ -78,6 +78,14 @@ public static class StartupExtensions
         services.AddScoped<IDirectedGraph, ThreeDimensionalDirectedGraph>();
         services.AddScoped<IDirectedGraphService, SkiaSharpDirectedGraphService>();
 
+        services.AddSingleton<IShape, Arc>();
+        services.AddSingleton<IShape, Ellipse>();
+        services.AddSingleton<IShape, Pill>();
+        services.AddSingleton<IShape, Polygon>();
+        services.AddSingleton<IShape, Seashell>();
+        services.AddSingleton<IShape, SemiCircle>();
+        services.AddSingleton<IShape, Star>();
+
         services.AddSingleton<ShapeFactory>();
         services.AddSingleton<IConsoleService, ConsoleService>();
 

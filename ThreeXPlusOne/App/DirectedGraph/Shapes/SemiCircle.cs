@@ -8,6 +8,8 @@ public class SemiCircle() : Shape, IShape
 {
     public ShapeType ShapeType => ShapeType.SemiCircle;
 
+    public int SelectionWeight => 1;
+
     /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
     /// </summary>

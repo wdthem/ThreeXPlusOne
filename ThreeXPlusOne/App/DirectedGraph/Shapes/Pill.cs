@@ -8,6 +8,8 @@ public class Pill() : Shape, IShape
 {
     public ShapeType ShapeType => ShapeType.Pill;
 
+    public int SelectionWeight => 1;
+
     /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
     /// </summary>
