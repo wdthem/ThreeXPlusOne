@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.8.0</Version>
+    <Version>1.8.1</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Add trapezoid, and permutations of 4-sided polygon (Square, Rhombus, Rectangle, Parallelogram)</TagMessage>
+    <TagMessage>Move trapezoid code to Polygon class</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
