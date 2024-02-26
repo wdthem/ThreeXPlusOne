@@ -212,8 +212,14 @@ public class NodeAestheticSettings
     /// <summary>
     /// Hex values to be used for node colours
     /// </summary>
-    [AppSetting(description: "Comma-separated list of hex codes to use as colours for the nodes. Leave blank to use randomly-selected colours.", suggestedValue: "")]
+    [AppSetting(description: $"Comma-separated list of hex codes to use as colours for the nodes. Leave blank to use randomly-selected colours. Overrides {nameof(NodeColorsBias)}.", suggestedValue: "")]
     public string NodeColors { get; set; } = "";
+
+    /// <summary>
+    /// Hex values to be used to bias random colour selection toward - so a certain percentage are guaranteed to be in an around these colours
+    /// </summary>
+    [AppSetting(description: $"Comma-separated list of hex codes to bias random colour selection toward. Leave blank for 100% randomly-selected colours. Ignored if {nameof(NodeColors)} is set.", suggestedValue: "")]
+    public string NodeColorsBias { get; set; } = "";
 
     /// <summary>
     /// The radius of the node

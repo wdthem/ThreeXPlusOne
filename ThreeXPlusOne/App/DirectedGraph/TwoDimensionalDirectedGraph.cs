@@ -84,7 +84,8 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                          _appSettings.NodeAestheticSettings.NodeShapes);
 
             _nodeAesthetics.SetNodeColor(node,
-                                         _appSettings.NodeAestheticSettings.NodeColors);
+                                         _appSettings.NodeAestheticSettings.NodeColors,
+                                         _appSettings.NodeAestheticSettings.NodeColorsBias);
 
             _consoleService.Write($"\r{lcv} nodes styled... ");
 

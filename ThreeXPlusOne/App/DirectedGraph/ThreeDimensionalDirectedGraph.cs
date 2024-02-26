@@ -94,7 +94,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
             }
 
             _nodeAesthetics.SetNodeColor(node,
-                                         _appSettings.NodeAestheticSettings.NodeColors);
+                                         _appSettings.NodeAestheticSettings.NodeColors,
+                                         _appSettings.NodeAestheticSettings.NodeColorsBias);
 
             _consoleService.Write($"\r{lcv} nodes styled... ");
 
