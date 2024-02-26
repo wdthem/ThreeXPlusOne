@@ -5,7 +5,7 @@
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage></TagMessage>
+    <TagMessage>Allow user-defined colors to bias the random colour selection</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
