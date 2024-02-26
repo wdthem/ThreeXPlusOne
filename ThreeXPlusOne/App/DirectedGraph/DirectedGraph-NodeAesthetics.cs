@@ -60,12 +60,20 @@ public abstract partial class DirectedGraph
         /// </summary>
         /// <returns></returns>
         /// <param name="node"></param>
-        /// <param name="nodeColors"></param>
+        /// <param name="nodeColors">Exclusive colours for nodes</param>
+        /// <param name="nodeColorsBias">Random colours but with some bias toward these</param>
         public void SetNodeColor(DirectedGraphNode node,
-                                  string nodeColors)
+                                 string nodeColors,
+                                 string nodeColorsBias)
         {
             if (string.IsNullOrWhiteSpace(nodeColors))
             {
+                if (!_parsedHexCodes && !string.IsNullOrWhiteSpace(nodeColorsBias))
+                {
+                    _nodeColors = GetColorsFromHexCodes(nodeColorsBias);
+                    _parsedHexCodes = true;
+                }
+
                 node.Shape.Color = GenerateRandomNodeColor();
                 node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, 1.75f);
 
@@ -159,11 +167,19 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Generate a random colour for the node
+        /// Generate a random colour for the node, optionally biased toward selecting user-defined colours
         /// </summary>
         /// <returns></returns>
-        private static Color GenerateRandomNodeColor()
+        private Color GenerateRandomNodeColor()
         {
+            double bias = 0.20;
+
+            if (_nodeColors.Count > 0 &&
+                Random.Shared.NextDouble() <= bias)
+            {
+                return _nodeColors[Random.Shared.Next(_nodeColors.Count)];
+            }
+
             byte alpha = (byte)Random.Shared.Next(30, 231); //avoid too transparent, and avoid fully opaque
             byte red = (byte)Random.Shared.Next(1, 256);    //for rgb, skip 0 to avoid black
             byte green = (byte)Random.Shared.Next(1, 256);
@@ -239,12 +255,12 @@ public abstract partial class DirectedGraph
             List<Color> colors = [];
 
             // Lighter colors
-            colors.Add(AdjustColorBrightness(baseColor, 1.1f));
-            colors.Add(AdjustColorBrightness(baseColor, 1.2f));
+            colors.Add(AdjustColorBrightness(baseColor, 1.02f));
+            colors.Add(AdjustColorBrightness(baseColor, 1.5f));
 
             // Darker colors
-            colors.Add(AdjustColorBrightness(baseColor, 0.9f));
-            colors.Add(AdjustColorBrightness(baseColor, 0.8f));
+            colors.Add(AdjustColorBrightness(baseColor, 0.98f));
+            colors.Add(AdjustColorBrightness(baseColor, 0.95f));
 
             return colors;
         }
