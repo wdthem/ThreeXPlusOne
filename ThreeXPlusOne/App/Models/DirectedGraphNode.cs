@@ -10,6 +10,8 @@ public record DirectedGraphNode(int NumberValue)
     /// </summary>
     public int NumberValue { get; set; } = NumberValue;
 
+    public int SeriesNumber { get; set; } = 0;
+
     /// <summary>
     /// The node's parent node
     /// </summary>

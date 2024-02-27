@@ -31,6 +31,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     {
         _consoleService.Write($"Adding {seriesLists.Count} series to the graph... ");
 
+        int lcv = 1;
+
         foreach (List<int> series in seriesLists)
         {
             DirectedGraphNode? previousNode = null;
@@ -42,7 +44,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                 {
                     currentNode = new DirectedGraphNode(number)
                     {
-                        Depth = currentDepth
+                        Depth = currentDepth,
+                        SeriesNumber = lcv  //only set the series number if this is a new node
                     };
 
                     _nodes.Add(number, currentNode);
@@ -84,6 +87,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
             {
                 node.Z = maxNodeDepth - node.Depth;
             }
+
+            lcv++;
         }
 
         _consoleService.WriteDone();

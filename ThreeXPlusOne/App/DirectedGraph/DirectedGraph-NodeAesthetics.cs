@@ -16,6 +16,8 @@ public abstract partial class DirectedGraph
     {
         [GeneratedRegex("^#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$")]
         private static partial Regex HexCodeRegEx();
+        private readonly HashSet<Color> _seriesColors = [];
+        private readonly Dictionary<int, Color> _seriesColorMappings = [];
         private List<Color> _nodeColors = [];
         private List<ShapeType> _nodeShapes = [];
         private bool _parsedHexCodes = false;
@@ -56,16 +58,28 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Generate a random colour for the node
+        /// Generate a colour for the node
         /// </summary>
         /// <returns></returns>
         /// <param name="node"></param>
         /// <param name="nodeColors">Exclusive colours for nodes</param>
         /// <param name="nodeColorsBias">Random colours but with some bias toward these</param>
+        /// <param name="colorCodeSeries">Each number series has its own random colour</param>
         public void SetNodeColor(DirectedGraphNode node,
                                  string nodeColors,
-                                 string nodeColorsBias)
+                                 string nodeColorsBias,
+                                 bool colorCodeSeries)
         {
+            float borderColorAdjustment = 1.75f;
+
+            if (colorCodeSeries)
+            {
+                node.Shape.Color = GetNodeSeriesColor(node.SeriesNumber);
+                node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, borderColorAdjustment);
+
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(nodeColors))
             {
                 if (!_parsedHexCodes && !string.IsNullOrWhiteSpace(nodeColorsBias))
@@ -75,7 +89,7 @@ public abstract partial class DirectedGraph
                 }
 
                 node.Shape.Color = GenerateRandomNodeColor();
-                node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, 1.75f);
+                node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, borderColorAdjustment);
 
                 return;
             }
@@ -89,7 +103,7 @@ public abstract partial class DirectedGraph
             if (_nodeColors.Count == 0)
             {
                 node.Shape.Color = GenerateRandomNodeColor();
-                node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, 1.75f);
+                node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, borderColorAdjustment);
 
                 return;
             }
@@ -98,7 +112,7 @@ public abstract partial class DirectedGraph
                                                 ? _nodeColors[0]
                                                 : _nodeColors[Random.Shared.Next(_nodeColors.Count)];
 
-            node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, 1.75f);
+            node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, borderColorAdjustment);
         }
 
         /// <summary>
@@ -186,6 +200,28 @@ public abstract partial class DirectedGraph
             byte blue = (byte)Random.Shared.Next(1, 256);
 
             return Color.FromArgb(alpha, red, green, blue);
+        }
+
+        /// <summary>
+        /// Get the random colour assigned to the given number series,
+        /// generating the colour if required
+        /// </summary>
+        /// <param name="seriesNumber"></param>
+        /// <returns></returns>
+        private Color GetNodeSeriesColor(int seriesNumber)
+        {
+            if (!_seriesColorMappings.TryGetValue(seriesNumber, out Color seriesColor))
+            {
+                do
+                {
+                    seriesColor = GenerateRandomNodeColor();
+                } while (_seriesColors.Contains(seriesColor));
+
+                _seriesColorMappings.Add(seriesNumber, seriesColor);
+                _seriesColors.Add(seriesColor);
+            }
+
+            return seriesColor;
         }
 
         /// <summary>
