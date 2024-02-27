@@ -95,8 +95,9 @@ public static class StartupExtensions
     {
         Assembly assembly = typeof(IShape).Assembly;
 
-        IEnumerable<Type> shapeTypes = assembly.GetTypes()
-                                               .Where(type => typeof(IShape).IsAssignableFrom(type) && !type.IsAbstract);
+        List<Type> shapeTypes = assembly.GetTypes()
+                                        .Where(type => typeof(IShape).IsAssignableFrom(type) && !type.IsAbstract)
+                                        .ToList();
 
         foreach (Type type in shapeTypes)
         {
