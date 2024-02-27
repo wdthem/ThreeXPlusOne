@@ -60,6 +60,9 @@ public class ShapeFactory(IEnumerable<IShape> shapes)
                               .FirstOrDefault()
             ?? throw new ArgumentException($"Unsupported ShapeType in ShapeFactory.CreateShape(): {shapeType}");
 
-        return (IShape)Activator.CreateInstance(shape.GetType())!;
+        IShape? instance = (IShape?)Activator.CreateInstance(shape.GetType())
+            ?? throw new ArgumentException($"Could not create instance of: {shape.GetType()}");
+
+        return instance;
     }
 }
