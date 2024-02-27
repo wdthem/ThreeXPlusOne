@@ -11,6 +11,11 @@ public record DirectedGraphNode(int NumberValue)
     public int NumberValue { get; set; } = NumberValue;
 
     /// <summary>
+    /// The series of numbers to which this node belongs
+    /// </summary>
+    public int SeriesNumber { get; set; } = 0;
+
+    /// <summary>
     /// The node's parent node
     /// </summary>
     public DirectedGraphNode? Parent { get; set; }

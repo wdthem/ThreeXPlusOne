@@ -198,6 +198,12 @@ public class AlgorithmSettings
 public class NodeAestheticSettings
 {
     /// <summary>
+    /// Whether or not to draw the number at the center of the node that the node represents
+    /// </summary>
+    [AppSetting(description: $"Whether or not to use the same randomly-selected colour for numbers generated as part of the same series. Overrides {nameof(NodeColors)} and {nameof(NodeColorsBias)}", suggestedValue: "false")]
+    public bool ColorCodeNumberSeries { get; set; } = true;
+
+    /// <summary>
     /// Whether or not to draw the connections between nodes on the graph
     /// </summary>
     [AppSetting(description: "Whether or not to draw connections between the nodes in the graph. If set to true, image file size may increase substantially.", suggestedValue: "true")]
