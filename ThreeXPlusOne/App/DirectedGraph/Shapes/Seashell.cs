@@ -20,6 +20,8 @@ public class Seashell() : Shape, IShape
     public void SetShapeConfiguration((double X, double Y) nodePosition,
                                       double nodeRadius)
     {
+        double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
+
         _shapeConfiguration.SeashellConfiguration = new();
 
         // the spiral part of the seashell
@@ -29,7 +31,7 @@ public class Seashell() : Shape, IShape
             double x = nodePosition.X + radius * Math.Cos(angle);
             double y = nodePosition.Y + radius * Math.Sin(angle);
 
-            _shapeConfiguration.SeashellConfiguration.SpiralCoordinates.Add((x, y));
+            _shapeConfiguration.SeashellConfiguration.SpiralCoordinates.Add(RotateVertex((x, y), nodePosition, rotationAngle));
         }
 
         // the outer edge of the seashell
@@ -39,7 +41,7 @@ public class Seashell() : Shape, IShape
             double x = nodePosition.X + radius * Math.Cos(angle);
             double y = nodePosition.Y + radius * Math.Sin(angle);
 
-            _shapeConfiguration.SeashellConfiguration.SpiralCoordinates.Add((x, y));
+            _shapeConfiguration.SeashellConfiguration.SpiralCoordinates.Add(RotateVertex((x, y), nodePosition, rotationAngle));
         }
     }
 

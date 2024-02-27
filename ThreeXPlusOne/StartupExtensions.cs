@@ -85,6 +85,7 @@ public static class StartupExtensions
         services.AddSingleton<IShape, Seashell>();
         services.AddSingleton<IShape, SemiCircle>();
         services.AddSingleton<IShape, Star>();
+        services.AddSingleton<IShape, Plus>();
 
         services.AddSingleton<ShapeFactory>();
         services.AddSingleton<IConsoleService, ConsoleService>();

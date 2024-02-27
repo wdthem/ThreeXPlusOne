@@ -19,6 +19,8 @@ public class Star() : Shape, IShape
     public void SetShapeConfiguration((double X, double Y) nodePosition,
                                       double nodeRadius)
     {
+        double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
+
         _shapeConfiguration.StarConfiguration = new()
         {
             InnerRadius = nodeRadius * 0.4,
@@ -35,7 +37,7 @@ public class Star() : Shape, IShape
             double x = nodePosition.X + (radius * Math.Cos(angle));
             double y = nodePosition.Y + (radius * Math.Sin(angle));
 
-            _shapeConfiguration.StarConfiguration.AngleVertices.Add((x, y));
+            _shapeConfiguration.StarConfiguration.AngleVertices.Add(RotateVertex((x, y), nodePosition, rotationAngle));
         }
     }
 

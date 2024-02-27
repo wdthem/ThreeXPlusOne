@@ -269,6 +269,10 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
                 DrawSeashell(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
+            case ShapeType.Plus:
+                DrawPlus(canvas, node, shapeConfiguration, paint, borderPaint);
+                break;
+
             default:
                 throw new Exception($"No drawing method for ShapeType {node.Shape.ShapeType}");
         }

@@ -9,5 +9,5 @@ public enum ShapeType
     Pill = 5,
     Star = 6,
     Seashell = 7,
-    Trapezoid = 8
+    Plus = 8
 }
