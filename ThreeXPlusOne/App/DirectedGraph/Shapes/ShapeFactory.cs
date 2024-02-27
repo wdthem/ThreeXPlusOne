@@ -56,17 +56,10 @@ public class ShapeFactory(IEnumerable<IShape> shapes)
     {
         ShapeType shapeType = SelectShapeType(shapeTypes);
 
-        return shapeType switch
-        {
-            ShapeType.Ellipse => new Ellipse(),
-            ShapeType.Polygon => new Polygon(),
-            ShapeType.SemiCircle => new SemiCircle(),
-            ShapeType.Arc => new Arc(),
-            ShapeType.Pill => new Pill(),
-            ShapeType.Star => new Star(),
-            ShapeType.Seashell => new Seashell(),
-            ShapeType.Plus => new Plus(),
-            _ => throw new ArgumentException($"Unsupported ShapeType in ShapeFactory.CreateShape(): {shapeType}"),
-        };
+        IShape? shape = shapes.Where(shape => shape.ShapeType == shapeType)
+                              .FirstOrDefault()
+            ?? throw new ArgumentException($"Unsupported ShapeType in ShapeFactory.CreateShape(): {shapeType}");
+
+        return (IShape)Activator.CreateInstance(shape.GetType())!;
     }
 }
