@@ -274,4 +274,42 @@ public partial class SkiaSharpDirectedGraphService
         canvas.DrawPath(seashellPath, paint);
         canvas.DrawPath(seashellPath, borderPaint);
     }
+
+    private static void DrawPlus(SKCanvas canvas,
+                                 DirectedGraphNode node,
+                                 ShapeConfiguration shapeConfiguration,
+                                 SKPaint paint,
+                                 SKPaint borderPaint)
+    {
+        if (shapeConfiguration.PlusConfiguration == null)
+        {
+            throw new Exception("DrawPlus: Plus configuration settings were null");
+        }
+
+        using SKPath plusPath = new();
+
+        plusPath.MoveTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[0]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[1]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[2]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[3]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[4]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[5]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[6]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[7]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[8]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[9]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[10]));
+        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[11]));
+
+        plusPath.Close();
+
+        if (shapeConfiguration.Skew != null)
+        {
+            plusPath.Transform(GetSkewSKMatrix(node.Position,
+                                               shapeConfiguration.Skew.Value));
+        }
+
+        canvas.DrawPath(plusPath, paint);
+        canvas.DrawPath(plusPath, borderPaint);
+    }
 }

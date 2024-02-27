@@ -65,6 +65,7 @@ public class ShapeFactory(IEnumerable<IShape> shapes)
             ShapeType.Pill => new Pill(),
             ShapeType.Star => new Star(),
             ShapeType.Seashell => new Seashell(),
+            ShapeType.Plus => new Plus(),
             _ => throw new ArgumentException($"Unsupported ShapeType in ShapeFactory.CreateShape(): {shapeType}"),
         };
     }
