@@ -12,6 +12,7 @@ using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
 using ThreeXPlusOne.App.DirectedGraph.Shapes;
+using System.Reflection;
 
 namespace ThreeXPlusOne;
 
@@ -78,18 +79,28 @@ public static class StartupExtensions
         services.AddScoped<IDirectedGraph, ThreeDimensionalDirectedGraph>();
         services.AddScoped<IDirectedGraphService, SkiaSharpDirectedGraphService>();
 
-        services.AddSingleton<IShape, Arc>();
-        services.AddSingleton<IShape, Ellipse>();
-        services.AddSingleton<IShape, Pill>();
-        services.AddSingleton<IShape, Polygon>();
-        services.AddSingleton<IShape, Seashell>();
-        services.AddSingleton<IShape, SemiCircle>();
-        services.AddSingleton<IShape, Star>();
-        services.AddSingleton<IShape, Plus>();
+        services.AddShapes();
 
         services.AddSingleton<ShapeFactory>();
         services.AddSingleton<IConsoleService, ConsoleService>();
 
         return services;
+    }
+
+    /// <summary>
+    /// Add all implementers of IShape to the DI container
+    /// </summary>
+    /// <param name="services"></param>
+    private static void AddShapes(this IServiceCollection services)
+    {
+        Assembly assembly = typeof(IShape).Assembly;
+
+        IEnumerable<Type> shapeTypes = assembly.GetTypes()
+                                               .Where(type => typeof(IShape).IsAssignableFrom(type) && !type.IsAbstract);
+
+        foreach (Type type in shapeTypes)
+        {
+            services.AddSingleton(typeof(IShape), type);
+        }
     }
 }
