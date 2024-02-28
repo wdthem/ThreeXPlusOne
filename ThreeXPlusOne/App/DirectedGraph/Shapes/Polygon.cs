@@ -21,7 +21,7 @@ public class Polygon() : Shape, IShape
     /// <returns></returns>
     private static int GenerateNumberOfSides()
     {
-        int[] weights = [1, 5, 1, 1, 1, 1];  // Weights for numbers 3, 4, 5, 6, 7, 8
+        int[] weights = [1, 6, 1, 1, 1, 1];  // Weights for numbers 3, 4, 5, 6, 7, 8
 
         List<KeyValuePair<ShapeType, ShapeSelectionWeight>> shapeWeightsList = ShapeHelper.ConfigureShapeSelectionWeights(weights);
 
@@ -149,6 +149,27 @@ public class Polygon() : Shape, IShape
     }
 
     /// <summary>
+    /// Configure the points of a kite
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="nodeRadius"></param>
+    /// <param name="rotationAngle"></param>
+    private void ConfigureKite((double X, double Y) nodePosition,
+                               double nodeRadius,
+                               double rotationAngle)
+    {
+        _shapeConfiguration.PolygonConfiguration = new();
+
+        double angleLeft = Math.PI / 4;         // 45° in radians
+        double angleRight = 3 * Math.PI / 4;    // 135° in radians
+
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y - nodeRadius), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X + nodeRadius * Math.Cos(angleRight), nodePosition.Y + nodeRadius * Math.Sin(angleRight)), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y + nodeRadius), nodePosition, rotationAngle));
+        _shapeConfiguration.PolygonConfiguration.Vertices.Add(RotateVertex((nodePosition.X + nodeRadius * Math.Cos(angleLeft), nodePosition.Y + nodeRadius * Math.Sin(angleLeft)), nodePosition, rotationAngle));
+    }
+
+    /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
     /// </summary>
     /// <param name="nodePosition"></param>
@@ -166,7 +187,7 @@ public class Polygon() : Shape, IShape
             return;
         }
 
-        int fourSidedShapeChoice = Random.Shared.Next(1, 6);
+        int fourSidedShapeChoice = Random.Shared.Next(1, 7);
 
         switch (fourSidedShapeChoice)
         {
@@ -188,6 +209,10 @@ public class Polygon() : Shape, IShape
 
             case 5:
                 ConfigureTrapezoid(nodePosition, nodeRadius, rotationAngle);
+                break;
+
+            case 6:
+                ConfigureKite(nodePosition, nodeRadius, rotationAngle);
                 break;
         }
     }
