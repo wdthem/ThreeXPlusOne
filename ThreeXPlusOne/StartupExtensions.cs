@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 using ThreeXPlusOne.CommandLine;
 using ThreeXPlusOne.App;
 using ThreeXPlusOne.App.DirectedGraph;
@@ -12,7 +13,6 @@ using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
 using ThreeXPlusOne.App.DirectedGraph.Shapes;
-using System.Reflection;
 
 namespace ThreeXPlusOne;
 
