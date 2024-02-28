@@ -24,7 +24,6 @@ public class Plus() : Shape, IShape
         _shapeConfiguration.PlusConfiguration = new();
 
         _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X - thickness / 2, nodePosition.Y - size / 2), nodePosition, rotationAngle));
-
         _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y - size / 2), nodePosition, rotationAngle));
         _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
         _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X + size / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
