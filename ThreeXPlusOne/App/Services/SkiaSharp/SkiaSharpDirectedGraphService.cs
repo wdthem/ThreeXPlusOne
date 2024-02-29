@@ -224,7 +224,8 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
             IsAntialias = true,
             Style = SKPaintStyle.Stroke,
             Color = ConvertColorToSKColor(node.Shape.BorderColor),
-            StrokeWidth = 5
+            StrokeWidth = 5,
+            StrokeJoin = SKStrokeJoin.Miter
         };
 
         SKPaint textPaint = new()

@@ -302,7 +302,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Adjust the brightness of the given color to geta  slightly different shade
+        /// Adjust the brightness of the given color to get a slightly different shade
         /// </summary>
         /// <param name="color"></param>
         /// <param name="factor"></param>
