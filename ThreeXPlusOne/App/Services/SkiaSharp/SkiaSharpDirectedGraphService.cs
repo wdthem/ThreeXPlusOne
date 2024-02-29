@@ -245,8 +245,11 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
                 DrawEllipse(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
+            case ShapeType.Plus:
             case ShapeType.Polygon:
-                DrawPolygon(canvas, node, shapeConfiguration, paint, borderPaint);
+            case ShapeType.Seashell:
+            case ShapeType.Star:
+                DrawShapeWithVertices(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
             case ShapeType.SemiCircle:
@@ -259,18 +262,6 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
 
             case ShapeType.Pill:
                 DrawPill(canvas, node, shapeConfiguration, paint, borderPaint);
-                break;
-
-            case ShapeType.Star:
-                DrawStar(canvas, node, shapeConfiguration, paint, borderPaint);
-                break;
-
-            case ShapeType.Seashell:
-                DrawSeashell(canvas, node, shapeConfiguration, paint, borderPaint);
-                break;
-
-            case ShapeType.Plus:
-                DrawPlus(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
             default:
@@ -290,24 +281,6 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
         paint.Dispose();
         borderPaint.Dispose();
         textPaint.Dispose();
-    }
-
-    /// <summary>
-    /// Generate a skew matrix to skew the drawn shape by pre-determined amounts
-    /// </summary>
-    /// <param name="nodePosition"></param>
-    /// <param name="skew"></param>
-    /// <returns></returns>
-    private static SKMatrix GetSkewSKMatrix((double X, double Y) nodePosition, (double X, double Y) skew)
-    {
-        SKMatrix skewMatrix = SKMatrix.CreateSkew((float)skew.X,
-                                                  (float)skew.Y);
-
-        SKMatrix translateToOrigin = SKMatrix.CreateTranslation(-(float)nodePosition.X, -(float)nodePosition.Y);
-        SKMatrix translateBack = SKMatrix.CreateTranslation((float)nodePosition.X, (float)nodePosition.Y);
-
-        return translateToOrigin.PostConcat(skewMatrix)
-                                .PostConcat(translateBack);
     }
 
     /// <summary>

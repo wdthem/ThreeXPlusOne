@@ -34,22 +34,22 @@ public partial class SkiaSharpDirectedGraphService
         canvas.DrawPath(ellipsePath, borderPaint);
     }
 
-    private static void DrawPolygon(SKCanvas canvas,
-                                    DirectedGraphNode node,
-                                    ShapeConfiguration shapeConfiguration,
-                                    SKPaint paint,
-                                    SKPaint borderPaint)
+    private static void DrawShapeWithVertices(SKCanvas canvas,
+                                              DirectedGraphNode node,
+                                              ShapeConfiguration shapeConfiguration,
+                                              SKPaint paint,
+                                              SKPaint borderPaint)
     {
-        if (shapeConfiguration.PolygonConfiguration == null)
+        if (shapeConfiguration.Vertices == null)
         {
-            throw new Exception("DrawPolygon: Polygon configuration settings were null");
+            throw new Exception("DrawShapeWithVertices: Vertices were null");
         }
 
         using SKPath polygonPath = new();
 
-        for (int i = 0; i < shapeConfiguration.PolygonConfiguration.Vertices.Count; i++)
+        for (int i = 0; i < shapeConfiguration.Vertices.Count; i++)
         {
-            (double X, double Y) vertex = shapeConfiguration.PolygonConfiguration.Vertices[i];
+            (double X, double Y) vertex = shapeConfiguration.Vertices[i];
 
             if (i == 0)
             {
@@ -204,112 +204,21 @@ public partial class SkiaSharpDirectedGraphService
         canvas.DrawPath(pillPath, borderPaint);
     }
 
-    private static void DrawStar(SKCanvas canvas,
-                                 DirectedGraphNode node,
-                                 ShapeConfiguration shapeConfiguration,
-                                 SKPaint paint,
-                                 SKPaint borderPaint)
+    /// <summary>
+    /// Generate a skew matrix to skew the drawn shape by pre-determined amounts
+    /// </summary>
+    /// <param name="nodePosition"></param>
+    /// <param name="skew"></param>
+    /// <returns></returns>
+    private static SKMatrix GetSkewSKMatrix((double X, double Y) nodePosition, (double X, double Y) skew)
     {
-        if (shapeConfiguration.StarConfiguration == null)
-        {
-            throw new Exception("DrawStar: Star configuration settings were null");
-        }
+        SKMatrix skewMatrix = SKMatrix.CreateSkew((float)skew.X,
+                                                  (float)skew.Y);
 
-        using SKPath starPath = new();
+        SKMatrix translateToOrigin = SKMatrix.CreateTranslation(-(float)nodePosition.X, -(float)nodePosition.Y);
+        SKMatrix translateBack = SKMatrix.CreateTranslation((float)nodePosition.X, (float)nodePosition.Y);
 
-        for (int lcv = 0; lcv < shapeConfiguration.StarConfiguration.AngleVertices.Count; lcv++)
-        {
-            SKPoint point = ConvertCoordinatesToSKPoint(shapeConfiguration.StarConfiguration.AngleVertices[lcv]);
-
-            if (lcv == 0)
-            {
-                starPath.MoveTo(point);
-            }
-            else
-            {
-                starPath.LineTo(point);
-            }
-        }
-
-        starPath.Close();
-
-        if (shapeConfiguration.Skew != null)
-        {
-            starPath.Transform(GetSkewSKMatrix(node.Position,
-                                               shapeConfiguration.Skew.Value));
-        }
-
-        canvas.DrawPath(starPath, paint);
-        canvas.DrawPath(starPath, borderPaint);
-    }
-
-    private static void DrawSeashell(SKCanvas canvas,
-                                     DirectedGraphNode node,
-                                     ShapeConfiguration shapeConfiguration,
-                                     SKPaint paint,
-                                     SKPaint borderPaint)
-    {
-        if (shapeConfiguration.SeashellConfiguration == null)
-        {
-            throw new Exception("DrawSeashell: Seashell configuration settings were null");
-        }
-
-        using SKPath seashellPath = new();
-
-        seashellPath.MoveTo(ConvertCoordinatesToSKPoint(node.Position));
-
-        foreach ((double x, double y) coordinate in shapeConfiguration.SeashellConfiguration.SpiralCoordinates)
-        {
-            seashellPath.LineTo(ConvertCoordinatesToSKPoint(coordinate));
-        }
-
-        seashellPath.Close();
-
-        if (shapeConfiguration.Skew != null)
-        {
-            seashellPath.Transform(GetSkewSKMatrix(node.Position,
-                                                   shapeConfiguration.Skew.Value));
-        }
-
-        canvas.DrawPath(seashellPath, paint);
-        canvas.DrawPath(seashellPath, borderPaint);
-    }
-
-    private static void DrawPlus(SKCanvas canvas,
-                                 DirectedGraphNode node,
-                                 ShapeConfiguration shapeConfiguration,
-                                 SKPaint paint,
-                                 SKPaint borderPaint)
-    {
-        if (shapeConfiguration.PlusConfiguration == null)
-        {
-            throw new Exception("DrawPlus: Plus configuration settings were null");
-        }
-
-        using SKPath plusPath = new();
-
-        plusPath.MoveTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[0]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[1]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[2]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[3]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[4]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[5]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[6]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[7]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[8]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[9]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[10]));
-        plusPath.LineTo(ConvertCoordinatesToSKPoint(shapeConfiguration.PlusConfiguration.Vertices[11]));
-
-        plusPath.Close();
-
-        if (shapeConfiguration.Skew != null)
-        {
-            plusPath.Transform(GetSkewSKMatrix(node.Position,
-                                               shapeConfiguration.Skew.Value));
-        }
-
-        canvas.DrawPath(plusPath, paint);
-        canvas.DrawPath(plusPath, borderPaint);
+        return translateToOrigin.PostConcat(skewMatrix)
+                                .PostConcat(translateBack);
     }
 }

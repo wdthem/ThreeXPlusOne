@@ -21,20 +21,20 @@ public class Plus() : Shape, IShape
         double thickness = nodeRadius / 2.5;
         double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
 
-        _shapeConfiguration.PlusConfiguration = new();
+        _shapeConfiguration.Vertices = [];
 
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X - thickness / 2, nodePosition.Y - size / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y - size / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X + size / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X + size / 2, nodePosition.Y + thickness / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y + thickness / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y + size / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X - thickness / 2, nodePosition.Y + size / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X - thickness / 2, nodePosition.Y + thickness / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X - size / 2, nodePosition.Y + thickness / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X - size / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.PlusConfiguration.Vertices.Add(RotateVertex((nodePosition.X - thickness / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - thickness / 2, nodePosition.Y - size / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y - size / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + size / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + size / 2, nodePosition.Y + thickness / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y + thickness / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + thickness / 2, nodePosition.Y + size / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - thickness / 2, nodePosition.Y + size / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - thickness / 2, nodePosition.Y + thickness / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - size / 2, nodePosition.Y + thickness / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - size / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
+        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - thickness / 2, nodePosition.Y - thickness / 2), nodePosition, rotationAngle));
     }
 
     /// <summary>
