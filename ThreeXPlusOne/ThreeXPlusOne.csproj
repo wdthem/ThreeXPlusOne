@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.10.1</Version>
+    <Version>1.11.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Consolidate shape drawing where possible</TagMessage>
+    <TagMessage>3D shapes</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
