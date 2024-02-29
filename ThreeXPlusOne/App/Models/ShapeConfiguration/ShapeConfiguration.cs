@@ -5,9 +5,9 @@ namespace ThreeXPlusOne.App.Models.ShapeConfiguration;
 public record ShapeConfiguration()
 {
     /// <summary>
-    /// The config data for drawing a polygon
+    /// The vertices of the given shape
     /// </summary>
-    public PolygonConfiguration? PolygonConfiguration { get; set; }
+    public List<(double X, double Y)>? Vertices { get; set; }
 
     /// <summary>
     /// The coordinates and radii of an ellipse
@@ -28,21 +28,6 @@ public record ShapeConfiguration()
     /// The config data for drawing a semicircle shape
     /// </summary>
     public SemiCircleConfiguration? SemiCircleConfiguration { get; set; }
-
-    /// <summary>
-    /// The config data for drawing a star shape
-    /// </summary>
-    public StarConfiguration? StarConfiguration { get; set; }
-
-    /// <summary>
-    /// The config data for drawing a seashell shape
-    /// </summary>
-    public SeashellConfiguration? SeashellConfiguration { get; set; }
-
-    /// <summary>
-    /// The config data for drawing a plus shape
-    /// </summary>
-    public PlusConfiguration? PlusConfiguration { get; set; }
 
     /// <summary>
     /// Skew values applied to the shape in psuedo-3D graphs

@@ -20,24 +20,22 @@ public class Star() : Shape, IShape
                                       double nodeRadius)
     {
         double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
+        double innerRadius = nodeRadius * 0.4;
+        double angleIncrement = 2 * Math.PI / (_numberOfPoints * 2);
 
-        _shapeConfiguration.StarConfiguration = new()
-        {
-            InnerRadius = nodeRadius * 0.4,
-            AngleIncrement = 2 * Math.PI / (_numberOfPoints * 2)
-        };
+        _shapeConfiguration.Vertices = [];
 
         for (int i = 0; i < _numberOfPoints * 2; i++)
         {
-            double angle = i * _shapeConfiguration.StarConfiguration.AngleIncrement;
+            double angle = i * angleIncrement;
             double radius = (i % 2 == 0)
                                     ? nodeRadius
-                                    : _shapeConfiguration.StarConfiguration.InnerRadius;
+                                    : innerRadius;
 
             double x = nodePosition.X + (radius * Math.Cos(angle));
             double y = nodePosition.Y + (radius * Math.Sin(angle));
 
-            _shapeConfiguration.StarConfiguration.AngleVertices.Add(RotateVertex((x, y), nodePosition, rotationAngle));
+            _shapeConfiguration.Vertices.Add(RotateVertex((x, y), nodePosition, rotationAngle));
         }
     }
 
