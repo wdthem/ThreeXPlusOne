@@ -139,6 +139,8 @@ public abstract partial class DirectedGraph
                     continue;
                 }
 
+                node.Shape.HasLightSourceImpact = true;
+
                 double lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
                 double normalizedDistance = distance / maxAffectDistance;
                 double smoothFactor = 1 - Math.Pow(normalizedDistance, 2); // Quadratic decay
@@ -156,12 +158,12 @@ public abstract partial class DirectedGraph
                 (double normalizedLightDirectionX, double normalizedLightDirectionY) =
                     (lightDirectionX / lightDirectionMagnitude, lightDirectionY / lightDirectionMagnitude);
 
-                node.Shape.ThreeDimensionalSideGradientStartColor = BlendColor(node.Shape.ThreeDimensionalSideGradientStartColor, lightSourceColor, blendFactor);
+                node.Shape.GradientStartColor = BlendColor(node.Shape.GradientStartColor, lightSourceColor, blendFactor);
 
-                node.Shape.SetNodeThreeDimensionalGradientPoints(frontFaceStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius * 0.5),
-                                                                 frontFaceEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius * 0.5),
-                                                                 sideStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius),
-                                                                 sideEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius));
+                node.Shape.SetNodeGradientPoints(frontFaceStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius * 0.5),
+                                                 frontFaceEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius * 0.5),
+                                                 sideStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius),
+                                                 sideEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius));
             }
         }
 

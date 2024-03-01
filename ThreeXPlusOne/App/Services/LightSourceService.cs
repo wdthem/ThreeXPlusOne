@@ -90,9 +90,7 @@ public class LightSourceService() : ILightSourceService
     /// <returns></returns>
     public double GetLightSourceMaxDistanceOfEffect()
     {
-        return _graphDimensions == 3
-                                    ? _canvasDimensions.Height / 1.1
-                                    : _canvasDimensions.Height / 2.0;
+        return _canvasDimensions.Height;
     }
 
     /// <summary>
@@ -122,12 +120,9 @@ public class LightSourceService() : ILightSourceService
         {
             { LightSourcePosition.None, (-1, -1) },
 
-            { LightSourcePosition.TopLeft,
-                _graphDimensions == 2 ? (-halfWidth, -halfHeight) : (0, 0) },
-            { LightSourcePosition.TopCenter,
-                _graphDimensions == 2 ? (_canvasDimensions.Width / 2, -halfHeight) : (_canvasDimensions.Width / 2, 0) },
-            { LightSourcePosition.TopRight,
-                _graphDimensions == 2 ? (_canvasDimensions.Width + halfWidth, -halfHeight) : (_canvasDimensions.Width, 0) },
+            { LightSourcePosition.TopLeft, (0, 0) },
+            { LightSourcePosition.TopCenter, (_canvasDimensions.Width / 2, 0) },
+            { LightSourcePosition.TopRight, (_canvasDimensions.Width, 0) },
 
             { LightSourcePosition.BottomLeft, (-halfWidth, _canvasDimensions.Height + halfHeight)},
             { LightSourcePosition.BottomCenter, (_canvasDimensions.Width / 2, _canvasDimensions.Height + halfHeight) },
@@ -136,6 +131,5 @@ public class LightSourceService() : ILightSourceService
             { LightSourcePosition.LeftCenter, (-halfWidth, _canvasDimensions.Height / 2) },
             { LightSourcePosition.RightCenter, (_canvasDimensions.Width + halfWidth, _canvasDimensions.Height / 2) }
         };
-
     }
 }

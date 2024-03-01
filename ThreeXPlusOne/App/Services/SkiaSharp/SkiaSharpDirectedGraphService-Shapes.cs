@@ -37,8 +37,12 @@ public partial class SkiaSharpDirectedGraphService
 
         if (shapeConfiguration.Skew == null)
         {
-            canvas.DrawPath(polygonPath, paint);
-            canvas.DrawPath(polygonPath, borderPaint);
+            Draw2DShape(polygonPath,
+                        canvas,
+                        paint,
+                        borderPaint,
+                        node,
+                        shapeConfiguration);
 
             return;
         }
@@ -71,8 +75,12 @@ public partial class SkiaSharpDirectedGraphService
 
         if (shapeConfiguration.Skew == null)
         {
-            canvas.DrawPath(ellipsePath, paint);
-            canvas.DrawPath(ellipsePath, borderPaint);
+            Draw2DShape(ellipsePath,
+                        canvas,
+                        paint,
+                        borderPaint,
+                        node,
+                        shapeConfiguration);
 
             return;
         }
@@ -109,8 +117,12 @@ public partial class SkiaSharpDirectedGraphService
 
         if (shapeConfiguration.Skew == null)
         {
-            canvas.DrawPath(semiCirclePath, paint);
-            canvas.DrawPath(semiCirclePath, borderPaint);
+            Draw2DShape(semiCirclePath,
+                        canvas,
+                        paint,
+                        borderPaint,
+                        node,
+                        shapeConfiguration);
 
             return;
         }
@@ -154,8 +166,12 @@ public partial class SkiaSharpDirectedGraphService
 
         if (shapeConfiguration.Skew == null)
         {
-            canvas.DrawPath(arcPath, paint);
-            canvas.DrawPath(arcPath, borderPaint);
+            Draw2DShape(arcPath,
+                        canvas,
+                        paint,
+                        borderPaint,
+                        node,
+                        shapeConfiguration);
 
             DrawArcBottomBorders(arcPath, canvas, borderPaint);
 
@@ -201,8 +217,12 @@ public partial class SkiaSharpDirectedGraphService
 
         if (shapeConfiguration.Skew == null)
         {
-            canvas.DrawPath(pillPath, paint);
-            canvas.DrawPath(pillPath, borderPaint);
+            Draw2DShape(pillPath,
+                        canvas,
+                        paint,
+                        borderPaint,
+                        node,
+                        shapeConfiguration);
 
             return;
         }
@@ -216,7 +236,56 @@ public partial class SkiaSharpDirectedGraphService
     }
 
     /// <summary>
-    /// Draw two offset faces with the same skew and add sides with a colour gradient to create depth
+    /// Draw a 2D shape with one face
+    /// Use a gradient for the colour of the face if the shape is impacted by the light source
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="canvas"></param>
+    /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
+    /// <param name="node"></param>
+    /// <param name="shapeConfiguration"></param>
+    private static void Draw2DShape(SKPath path,
+                                    SKCanvas canvas,
+                                    SKPaint paint,
+                                    SKPaint borderPaint,
+                                    DirectedGraphNode node,
+                                    ShapeConfiguration shapeConfiguration)
+    {
+        if (node.Shape.HasLightSourceImpact)
+        {
+            SKPoint frontFaceGradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientStartPoint);
+            SKPoint frontFaceGradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientEndPoint);
+
+            SKColor[] gradientColors = [ConvertColorToSKColor(node.Shape.GradientStartColor),
+                                        ConvertColorToSKColor(node.Shape.GradientEndColor)];
+
+            SKColor[] borderGradientColors = [ConvertColorToSKColor(node.Shape.BorderGradientStartColor),
+                                              ConvertColorToSKColor(node.Shape.BorderGradientEndColor)];
+
+            SKShader frontFaceShader = SKShader.CreateLinearGradient(frontFaceGradientStartPoint,
+                                                                     frontFaceGradientEndPoint,
+                                                                     gradientColors,
+                                                                     null,
+                                                                     SKShaderTileMode.Clamp);
+
+            SKShader borderShader = SKShader.CreateLinearGradient(frontFaceGradientStartPoint,
+                                                                  frontFaceGradientEndPoint,
+                                                                  borderGradientColors,
+                                                                  null,
+                                                                  SKShaderTileMode.Clamp);
+
+            paint.Shader = frontFaceShader;
+            borderPaint.Shader = borderShader;
+        }
+
+        canvas.DrawPath(path, paint);
+        canvas.DrawPath(path, borderPaint);
+    }
+
+    /// <summary>
+    /// Draw two offset faces with the same skew and add sides
+    /// Use gradients for the colours if the shape is impacted by the light source
     /// </summary>
     /// <param name="path"></param>
     /// <param name="canvas"></param>
@@ -247,40 +316,53 @@ public partial class SkiaSharpDirectedGraphService
         SKPath backPath = new(path);
         backPath.Transform(offsetMatrix);
 
+        using SKPaint sidePaint = new()
+        {
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill
+        };
+
         int sidePoints = shapeConfiguration.ThreeDimensionalSideCount;  // Number of points to use for the sides
 
         SKPoint[] frontPoints = GetPointsOnPath(path, sidePoints);
         SKPoint[] backPoints = GetPointsOnPath(backPath, sidePoints);
 
-        SKPoint frontFaceGradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalFrontFaceGradientStartPoint);
-        SKPoint frontFaceGradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalFrontFaceGradientEndPoint);
-
-        SKPoint sideGradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalSideGradientStartPoint);
-        SKPoint sideGradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalSideGradientEndPoint);
-
-        SKColor[] gradientColors = [ConvertColorToSKColor(node.Shape.ThreeDimensionalSideGradientStartColor),
-                                    ConvertColorToSKColor(node.Shape.ThreeDimensionalSideGradientEndColor)];
-
-        SKShader frontFaceShader = SKShader.CreateLinearGradient(frontFaceGradientStartPoint,
-                                                                 frontFaceGradientEndPoint,
-                                                                 gradientColors,
-                                                                 null,
-                                                                 SKShaderTileMode.Clamp);
-
-        SKShader sideShader = SKShader.CreateLinearGradient(sideGradientStartPoint,
-                                                            sideGradientEndPoint,
-                                                            gradientColors,
-                                                            null,
-                                                            SKShaderTileMode.Clamp);
-
-        paint.Shader = frontFaceShader;
-
-        using SKPaint sidePaint = new()
+        if (node.Shape.HasLightSourceImpact)
         {
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            Shader = sideShader
-        };
+            SKPoint frontFaceGradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientStartPoint);
+            SKPoint frontFaceGradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientEndPoint);
+
+            SKPoint sideGradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.SideFaceGradientStartPoint);
+            SKPoint sideGradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.SideFaceGradientEndPoint);
+
+            SKColor[] gradientColors = [ConvertColorToSKColor(node.Shape.GradientStartColor),
+                                        ConvertColorToSKColor(node.Shape.GradientEndColor)];
+
+            SKColor[] borderGradientColors = [ConvertColorToSKColor(node.Shape.BorderGradientStartColor),
+                                              ConvertColorToSKColor(node.Shape.BorderGradientEndColor)];
+
+            SKShader frontFaceShader = SKShader.CreateLinearGradient(frontFaceGradientStartPoint,
+                                                                     frontFaceGradientEndPoint,
+                                                                     gradientColors,
+                                                                     null,
+                                                                     SKShaderTileMode.Clamp);
+
+            SKShader sideShader = SKShader.CreateLinearGradient(sideGradientStartPoint,
+                                                                sideGradientEndPoint,
+                                                                gradientColors,
+                                                                null,
+                                                                SKShaderTileMode.Clamp);
+
+            SKShader borderShader = SKShader.CreateLinearGradient(frontFaceGradientStartPoint,
+                                                                  frontFaceGradientEndPoint,
+                                                                  borderGradientColors,
+                                                                  null,
+                                                                  SKShaderTileMode.Clamp);
+
+            paint.Shader = frontFaceShader;
+            sidePaint.Shader = sideShader;
+            borderPaint.Shader = borderShader;
+        }
 
         //draw back face
         canvas.DrawPath(backPath, paint);
