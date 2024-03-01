@@ -380,7 +380,7 @@ public partial class SkiaSharpDirectedGraphService
         byte g = (byte)Math.Clamp(color.Green * factor, 0, 255);
         byte b = (byte)Math.Clamp(color.Blue * factor, 0, 255);
 
-        return new SKColor(r, g, b).WithAlpha(color.Alpha);
+        return new SKColor(r, g, b).WithAlpha(255);
     }
 
     /// <summary>
