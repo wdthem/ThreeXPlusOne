@@ -352,17 +352,24 @@ public partial class SkiaSharpDirectedGraphService
         return backPath;
     }
 
-    private static SKPoint[] GetPointsOnPath(SKPath path, int count)
+    /// <summary>
+    /// Get an array of the coordinates of all points around the shape path
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="pointCount"></param>
+    /// <returns></returns>
+    private static SKPoint[] GetPointsOnPath(SKPath path,
+                                             int pointCount)
     {
-        SKPoint[] points = new SKPoint[count];
+        SKPoint[] points = new SKPoint[pointCount];
 
         using SKPathMeasure pathMeasure = new(path, false);
 
         float length = pathMeasure.Length;
         float distance = 0;
-        float interval = length / (count - 1);
+        float interval = length / (pointCount - 1);
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < pointCount; i++)
         {
             pathMeasure.GetPosition(distance, out points[i]);
             distance += interval;
