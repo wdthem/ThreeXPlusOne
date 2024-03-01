@@ -147,15 +147,21 @@ public abstract partial class DirectedGraph
                 node.Shape.Color = BlendColor(node.Shape.Color, lightSourceColor, blendFactor);
                 node.Shape.BorderColor = BlendColor(node.Shape.BorderColor, lightSourceColor, blendFactor);
 
-                double haloRadius = node.Shape.Radius * 2;
-                double intensity = Math.Max(0, 1 - (distance / maxAffectDistance));
+                // Calculate and set the gradient start and end points of the 3D shape front face and sides
+                (double lightDirectionX, double lightDirectionY) =
+                    (node.Position.X - lightSourceCoordinates.X, node.Position.Y - lightSourceCoordinates.Y);
 
-                Color haloColor = Color.FromArgb((byte)(intensity * lightSourceColor.A),
-                                                 lightSourceColor.R,
-                                                 lightSourceColor.G,
-                                                 lightSourceColor.B);
+                double lightDirectionMagnitude = Math.Sqrt(lightDirectionX * lightDirectionX + lightDirectionY * lightDirectionY);
 
-                node.Shape.SetNodeHaloConfiguration(haloRadius, haloColor);
+                (double normalizedLightDirectionX, double normalizedLightDirectionY) =
+                    (lightDirectionX / lightDirectionMagnitude, lightDirectionY / lightDirectionMagnitude);
+
+                node.Shape.ThreeDimensionalSideGradientStartColor = BlendColor(node.Shape.ThreeDimensionalSideGradientStartColor, lightSourceColor, blendFactor);
+
+                node.Shape.SetNodeThreeDimensionalGradientPoints(frontFaceStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius * 0.5),
+                                                                 frontFaceEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius * 0.5),
+                                                                 sideStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius),
+                                                                 sideEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius));
             }
         }
 
@@ -302,7 +308,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Adjust the brightness of the given color to geta  slightly different shade
+        /// Adjust the brightness of the given color to get a slightly different shade
         /// </summary>
         /// <param name="color"></param>
         /// <param name="factor"></param>

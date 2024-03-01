@@ -5,13 +5,17 @@ namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 public abstract class Shape()
 {
+    private Color _threeDimensionalSideGradientStartColor = Color.Empty;
+
+    private Color _threeDimensionalSideGradientEndColor = Color.Empty;
+
     /// <summary>
     /// The object holding the configuration details required for rendering a given shape
     /// </summary>
     protected readonly ShapeConfiguration _shapeConfiguration = new();
 
     /// <summary>
-    /// Generate skew data for the given shape
+    /// Generate a skewed position for the given shape
     /// </summary>
     /// <returns></returns>
     protected void GenerateShapeSkew()
@@ -59,6 +63,51 @@ public abstract class Shape()
     public double Radius { get; set; }
 
     /// <summary>
+    /// The color to use to start the gradient on the side of the shape in pseudo-3D
+    /// </summary>
+    public Color ThreeDimensionalSideGradientStartColor
+    {
+        get
+        {
+            if (_threeDimensionalSideGradientStartColor == Color.Empty)
+            {
+                _threeDimensionalSideGradientStartColor = Color.FromArgb(200,
+                                                                         Color.R,
+                                                                         Color.G,
+                                                                         Color.B);
+            }
+
+            return _threeDimensionalSideGradientStartColor;
+        }
+        set
+        {
+            _threeDimensionalSideGradientStartColor = value;
+        }
+    }
+
+    /// <summary>
+    /// The color to use to end the gradient on the side of the shape in pseudo-3D
+    /// </summary>
+    public Color ThreeDimensionalSideGradientEndColor
+    {
+        get
+        {
+            if (_threeDimensionalSideGradientEndColor == Color.Empty)
+            {
+                float factor = 0.6f;
+
+                int r = (int)Math.Clamp(Color.R * factor, 0, 255);
+                int g = (int)Math.Clamp(Color.G * factor, 0, 255);
+                int b = (int)Math.Clamp(Color.B * factor, 0, 255);
+
+                _threeDimensionalSideGradientEndColor = Color.FromArgb(Color.A, r, g, b);
+            }
+
+            return _threeDimensionalSideGradientEndColor;
+        }
+    }
+
+    /// <summary>
     /// Get the shape's configuration data
     /// </summary>
     /// <returns></returns>
@@ -68,12 +117,20 @@ public abstract class Shape()
     }
 
     /// <summary>
-    /// Set the halo configuration for the shape
+    /// Set the start and end of the gradient of the front and sides of the 3D shape
     /// </summary>
-    /// <param name="radius"></param>
-    /// <param name="color"></param>
-    public void SetNodeHaloConfiguration(double radius, Color color)
+    /// <param name="frontFaceStartPoint"></param>
+    /// <param name="frontFaceEndPoint"></param>
+    /// <param name="sideStartPoint"></param>
+    /// <param name="sideEndPoint"></param>
+    public void SetNodeThreeDimensionalGradientPoints((double X, double Y) frontFaceStartPoint,
+                                                      (double X, double Y) frontFaceEndPoint,
+                                                      (double X, double Y) sideStartPoint,
+                                                      (double X, double Y) sideEndPoint)
     {
-        _shapeConfiguration.HaloConfiguration = (radius, color);
+        _shapeConfiguration.ThreeDimensionalFrontFaceGradientStartPoint = frontFaceStartPoint;
+        _shapeConfiguration.ThreeDimensionalFrontFaceGradientEndPoint = frontFaceEndPoint;
+        _shapeConfiguration.ThreeDimensionalSideGradientStartPoint = sideStartPoint;
+        _shapeConfiguration.ThreeDimensionalSideGradientEndPoint = sideEndPoint;
     }
 }

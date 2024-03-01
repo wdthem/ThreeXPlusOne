@@ -11,6 +11,8 @@ public class Star() : Shape, IShape
 
     public int SelectionWeight => 1;
 
+    public bool HasGap => false;
+
     /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
     /// </summary>

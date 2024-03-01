@@ -13,6 +13,8 @@ public class Ellipse() : Shape, IShape
 
     public int SelectionWeight => 1;
 
+    public bool HasGap => false;
+
     /// <summary>
     /// Stretch the ellipse radii for skewed shapes
     /// </summary>

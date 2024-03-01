@@ -10,6 +10,8 @@ public class Arc() : Shape, IShape
 
     public int SelectionWeight => 1;
 
+    public bool HasGap => true;
+
     /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
     /// </summary>

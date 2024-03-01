@@ -22,9 +22,24 @@ public interface IShape
     Color Color { get; set; }
 
     /// <summary>
+    /// Whether or not the shape has a gap when it is drawn (e.g. the gap between the bottom parts of an arc)
+    /// </summary>
+    bool HasGap { get; }
+
+    /// <summary>
     /// The radius of the shape
     /// </summary>
     double Radius { get; set; }
+
+    /// <summary>
+    /// The color to use to start the gradient on the side of the shape in pseudo-3D
+    /// </summary>
+    public Color ThreeDimensionalSideGradientStartColor { get; set; }
+
+    /// <summary>
+    /// The color to use to end the gradient on the side of the shape in pseudo-3D
+    /// </summary>
+    public Color ThreeDimensionalSideGradientEndColor { get; }
 
     /// <summary>
     /// The weight assigned to the given shape with respect to it being randomly selected as the shape for the node
@@ -48,11 +63,16 @@ public interface IShape
     ShapeConfiguration GetShapeConfiguration();
 
     /// <summary>
-    /// Set the configuration data for the node's halo
+    /// Set the start and end of the gradient of the front and sides of the 3D shape
     /// </summary>
-    /// <param name="radius"></param>
-    /// <param name="color"></param>
-    void SetNodeHaloConfiguration(double radius, Color color);
+    /// <param name="frontFaceStartPoint"></param>
+    /// <param name="frontFaceEndPoint"></param>
+    /// <param name="sideStartPoint"></param>
+    /// <param name="sideEndPoint"></param>
+    void SetNodeThreeDimensionalGradientPoints((double X, double Y) frontFaceStartPoint,
+                                               (double X, double Y) frontFaceEndPoint,
+                                               (double X, double Y) sideStartPoint,
+                                               (double X, double Y) sideEndPoint);
 
     /// <summary>
     /// Assign random skew values to the shape

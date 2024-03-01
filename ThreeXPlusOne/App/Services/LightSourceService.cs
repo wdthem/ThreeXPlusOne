@@ -90,12 +90,9 @@ public class LightSourceService() : ILightSourceService
     /// <returns></returns>
     public double GetLightSourceMaxDistanceOfEffect()
     {
-        if (_graphDimensions == 3)
-        {
-            return _canvasDimensions.Height / 1.2;
-        }
-
-        return _canvasDimensions.Height / 2.0;
+        return _graphDimensions == 3
+                                    ? _canvasDimensions.Height / 1.1
+                                    : _canvasDimensions.Height / 2.0;
     }
 
     /// <summary>

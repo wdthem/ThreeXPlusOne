@@ -40,6 +40,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
             foreach (int number in series)
             {
+                //only add a new node to the dictionary if the number value is not already there,
+                // as each number can only have one node on the graph, even if it is repeated across series
                 if (!_nodes.TryGetValue(number, out DirectedGraphNode? currentNode))
                 {
                     currentNode = new DirectedGraphNode(number)
@@ -119,8 +121,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         if (_appSettings.DirectedGraphAestheticSettings.GenerateBackgroundStars)
         {
-            Task.Run(() => graphService.GenerateBackgroundStars(100,
-                                                                _appSettings.NodeAestheticSettings.NodeRadius)).Wait();
+            Task.Run(() => graphService.GenerateBackgroundStars(100)).Wait();
         }
 
         lightSourceService.Initialize(_canvasWidth,

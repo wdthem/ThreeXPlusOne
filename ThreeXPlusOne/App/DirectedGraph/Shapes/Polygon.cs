@@ -12,6 +12,8 @@ public class Polygon() : Shape, IShape
     //put each polygon type on equal footing to all other distinct shapes
     public int SelectionWeight => 10;
 
+    public bool HasGap => false;
+
     /// <summary>
     /// Get a randomly-selected number of sides from 3 to 8 (min: triangle, max: octagon)
     /// </summary>
