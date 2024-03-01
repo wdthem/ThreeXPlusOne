@@ -252,11 +252,14 @@ public partial class SkiaSharpDirectedGraphService
         SKPoint[] frontPoints = GetPointsOnPath(path, sidePoints);
         SKPoint[] backPoints = GetPointsOnPath(backPath, sidePoints);
 
-        SKPoint gradientStartPoint = frontPoints[0]; // Starting point of the gradient (e.g., top front point)
-        SKPoint gradientEndPoint = backPoints[0]; // Ending point of the gradient (e.g., top back point)
+        SKPoint gradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalSideGradientStartPoint);
+        SKPoint gradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalSideGradientEndPoint);
+
+        // Define the gradient colors
         SKColor[] gradientColors = [ConvertColorToSKColor(node.Shape.ThreeDimensionalSideGradientStartColor),
                                     ConvertColorToSKColor(node.Shape.ThreeDimensionalSideGradientEndColor)];
 
+        // Create the gradient shader
         SKShader shader = SKShader.CreateLinearGradient(gradientStartPoint,
                                                         gradientEndPoint,
                                                         gradientColors,

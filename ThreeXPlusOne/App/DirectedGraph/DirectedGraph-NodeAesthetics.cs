@@ -147,15 +147,17 @@ public abstract partial class DirectedGraph
                 node.Shape.Color = BlendColor(node.Shape.Color, lightSourceColor, blendFactor);
                 node.Shape.BorderColor = BlendColor(node.Shape.BorderColor, lightSourceColor, blendFactor);
 
-                double haloRadius = node.Shape.Radius * 2;
-                double intensity = Math.Max(0, 1 - (distance / maxAffectDistance));
+                // Calculate and set the gradient start and end points of the 3D shape sides
+                (double X, double Y) lightDirection = (node.Position.X - lightSourceCoordinates.X, node.Position.Y - lightSourceCoordinates.Y);
+                double lightDirectionMagnitude = Math.Sqrt(lightDirection.X * lightDirection.X + lightDirection.Y * lightDirection.Y);
+                (double X, double Y) normalizedLightDirection = (lightDirection.X / lightDirectionMagnitude, lightDirection.Y / lightDirectionMagnitude);
 
-                Color haloColor = Color.FromArgb((byte)(intensity * lightSourceColor.A),
-                                                 lightSourceColor.R,
-                                                 lightSourceColor.G,
-                                                 lightSourceColor.B);
+                node.Shape.ThreeDimensionalSideGradientStartColor = BlendColor(node.Shape.ThreeDimensionalSideGradientStartColor, lightSourceColor, blendFactor);
 
-                node.Shape.SetNodeHaloConfiguration(haloRadius, haloColor);
+                node.Shape.SetNodeThreeDimensionalGradientPoints((node.Position.X - normalizedLightDirection.X * node.Shape.Radius,
+                                                                  node.Position.Y - normalizedLightDirection.Y * node.Shape.Radius),
+                                                                  (node.Position.X + normalizedLightDirection.X * node.Shape.Radius,
+                                                                  node.Position.Y + normalizedLightDirection.Y * node.Shape.Radius));
             }
         }
 

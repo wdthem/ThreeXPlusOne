@@ -39,11 +39,6 @@ public record ShapeConfiguration()
     public (double X, double Y)? Skew { get; set; }
 
     /// <summary>
-    /// The radius and colour of the node's halo when a light source exists
-    /// </summary>
-    public (double Radius, Color Color)? HaloConfiguration { get; set; }
-
-    /// <summary>
     /// The depth of the shape when rendered in pseudo-3D, based on the node radius
     /// </summary>
     /// <param name="nodeRadius"></param>
@@ -57,4 +52,8 @@ public record ShapeConfiguration()
     /// The number of sides to render when drawing the shape in pseudo-3D
     /// </summary>
     public int ThreeDimensionalSideCount => _threeDimensionalSideCount;
+
+    public (double X, double Y) ThreeDimensionalSideGradientStartPoint { get; set; }
+
+    public (double X, double Y) ThreeDimensionalSideGradientEndPoint { get; set; }
 }

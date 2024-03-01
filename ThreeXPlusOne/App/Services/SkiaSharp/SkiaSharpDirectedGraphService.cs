@@ -275,39 +275,6 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
                             (float)node.NumberTextYPosition,
                             textPaint);
         }
-
-        DrawNodeHalo(canvas, node, shapeConfiguration);
-    }
-
-    /// <summary>
-    /// Draw a light halo around nodes, with decreasing intensity as distance from the light source increases
-    /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    private static void DrawNodeHalo(SKCanvas canvas,
-                                     DirectedGraphNode node,
-                                     ShapeConfiguration shapeConfiguration)
-    {
-        if (shapeConfiguration.HaloConfiguration == null)
-        {
-            return;
-        }
-
-        SKColor skColor = ConvertColorToSKColor(shapeConfiguration.HaloConfiguration.Value.Color);
-
-        using SKPaint haloPaint = new()
-        {
-            Shader = SKShader.CreateRadialGradient(ConvertCoordinatesToSKPoint(node.Position),
-                                                   (float)shapeConfiguration.HaloConfiguration.Value.Radius,
-                                                   new[] { skColor, SKColors.Transparent },
-                                                   null,
-                                                   SKShaderTileMode.Clamp),
-            Style = SKPaintStyle.Fill
-        };
-
-        canvas.DrawCircle(ConvertCoordinatesToSKPoint(node.Position),
-                          (float)shapeConfiguration.HaloConfiguration.Value.Radius,
-                          haloPaint);
     }
 
     /// <summary>

@@ -34,7 +34,7 @@ public interface IShape
     /// <summary>
     /// The color to use to start the gradient on the side of the shape in pseudo-3D
     /// </summary>
-    public Color ThreeDimensionalSideGradientStartColor { get; }
+    public Color ThreeDimensionalSideGradientStartColor { get; set; }
 
     /// <summary>
     /// The color to use to end the gradient on the side of the shape in pseudo-3D
@@ -63,11 +63,12 @@ public interface IShape
     ShapeConfiguration GetShapeConfiguration();
 
     /// <summary>
-    /// Set the configuration data for the node's halo
+    /// Set the start and end of the gradient of the sides of the 3D shape
     /// </summary>
-    /// <param name="radius"></param>
-    /// <param name="color"></param>
-    void SetNodeHaloConfiguration(double radius, Color color);
+    /// <param name="startPoint"></param>
+    /// <param name="endPoint"></param>
+    void SetNodeThreeDimensionalGradientPoints((double X, double Y) startPoint,
+                                               (double X, double Y) endPoint);
 
     /// <summary>
     /// Assign random skew values to the shape

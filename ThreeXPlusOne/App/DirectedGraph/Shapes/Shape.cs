@@ -79,6 +79,10 @@ public abstract class Shape()
 
             return _threeDimensionalSideGradientStartColor;
         }
+        set
+        {
+            _threeDimensionalSideGradientStartColor = value;
+        }
     }
 
     /// <summary>
@@ -113,12 +117,14 @@ public abstract class Shape()
     }
 
     /// <summary>
-    /// Set the halo configuration for the shape
+    /// Set the start and end of the gradient of the sides of the 3D shape
     /// </summary>
-    /// <param name="radius"></param>
-    /// <param name="color"></param>
-    public void SetNodeHaloConfiguration(double radius, Color color)
+    /// <param name="startPoint"></param>
+    /// <param name="endPoint"></param>
+    public void SetNodeThreeDimensionalGradientPoints((double X, double Y) startPoint,
+                                                      (double X, double Y) endPoint)
     {
-        _shapeConfiguration.HaloConfiguration = (radius, color);
+        _shapeConfiguration.ThreeDimensionalSideGradientStartPoint = startPoint;
+        _shapeConfiguration.ThreeDimensionalSideGradientEndPoint = endPoint;
     }
 }
