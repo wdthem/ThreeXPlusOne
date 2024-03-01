@@ -321,8 +321,8 @@ public partial class SkiaSharpDirectedGraphService
         };
 
         //draw back face
-        //canvas.DrawPath(backPath, paint);
-        //canvas.DrawPath(backPath, borderPaint);
+        canvas.DrawPath(backPath, paint);
+        canvas.DrawPath(backPath, borderPaint);
 
         for (int i = 0; i < sidePoints; i++)
         {
