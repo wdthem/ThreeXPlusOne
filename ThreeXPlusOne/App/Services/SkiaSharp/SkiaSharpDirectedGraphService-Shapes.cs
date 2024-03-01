@@ -32,54 +32,14 @@ public partial class SkiaSharpDirectedGraphService
             return;
         }
 
-        DrawSpheroid(canvas,
-                     node.Position,
-                     shapeConfiguration.EllipseConfiguration.RadiusX,
-                     shapeConfiguration.EllipseConfiguration.RadiusY,
-                     shapeConfiguration.Skew.Value);
-
         //skewed 3D shape
-        /*
-        DrawThreeDimensionalDepth(ellipsePath,
-                                  canvas,
-                                  paint,
-                                  borderPaint,
-                                  node,
-                                  shapeConfiguration.Skew.Value,
-                                  true);
-
-                                  */
-    }
-
-    public static void DrawSpheroid(SKCanvas canvas, (double X, double Y) position, double width, double height, (double X, double Y) skewPosition)
-    {
-        // Create an elliptical gradient to simulate lighting on the spheroid
-        SKPoint center = new((float)position.X, (float)position.Y);
-        SKColor[] colors = [SKColors.White.WithAlpha(200), SKColors.LightGray.WithAlpha(200), SKColors.DarkGray.WithAlpha(200)];
-        float[] colorPositions = [0.0f, 0.5f, 1.0f];
-
-        // Define the gradient's transformation matrix to create an elliptical shape
-        SKMatrix gradientMatrix = SKMatrix.CreateScale((float)width / (float)height, 1.0f, center.X, center.Y);
-        SKShader shader = SKShader.CreateRadialGradient(center, (float)height, colors, colorPositions, SKShaderTileMode.Clamp, gradientMatrix);
-
-        // Create a paint with the gradient shader
-        SKPaint paint = new()
-        {
-            Shader = shader,
-            IsAntialias = true
-        };
-
-        canvas.Save();
-
-        SKMatrix skewMatrix = GetSkewSKMatrix(position,
-                                              skewPosition);
-
-        canvas.Concat(ref skewMatrix);
-
-        // Draw the ellipse representing the spheroid
-        canvas.DrawOval((float)center.X - (float)width / 2, (float)center.Y - (float)height / 2, (float)width, (float)height, paint);
-
-        canvas.Restore();
+        Draw3DShapeFromPath(ellipsePath,
+                            canvas,
+                            paint,
+                            borderPaint,
+                            node.Position,
+                            node.Shape.Radius * 0.1,
+                            shapeConfiguration.Skew.Value);
     }
 
     private static void DrawShapeWithVertices(SKCanvas canvas,
@@ -120,13 +80,13 @@ public partial class SkiaSharpDirectedGraphService
         }
 
         //skewed 3D shape
-        DrawThreeDimensionalDepth(polygonPath,
-                                  canvas,
-                                  paint,
-                                  borderPaint,
-                                  node,
-                                  shapeConfiguration.Skew.Value,
-                                  true);
+        Draw3DShapeFromPath(polygonPath,
+                            canvas,
+                            paint,
+                            borderPaint,
+                            node.Position,
+                            node.Shape.Radius * 0.1,
+                            shapeConfiguration.Skew.Value);
     }
 
     private static void DrawSemiCircle(SKCanvas canvas,
@@ -160,13 +120,13 @@ public partial class SkiaSharpDirectedGraphService
         }
 
         //skewed 3D shape
-        DrawThreeDimensionalDepth(semiCirclePath,
-                                  canvas,
-                                  paint,
-                                  borderPaint,
-                                  node,
-                                  shapeConfiguration.Skew.Value,
-                                  false);
+        Draw3DShapeFromPath(semiCirclePath,
+                            canvas,
+                            paint,
+                            borderPaint,
+                            node.Position,
+                            node.Shape.Radius * 0.1,
+                            shapeConfiguration.Skew.Value);
     }
 
     private static void DrawArc(SKCanvas canvas,
@@ -228,13 +188,14 @@ public partial class SkiaSharpDirectedGraphService
         }
 
         //skewed 3D shape
-        SKPath backFacePath = DrawThreeDimensionalDepth(arcPath,
-                                                        canvas,
-                                                        paint,
-                                                        borderPaint,
-                                                        node,
-                                                        shapeConfiguration.Skew.Value,
-                                                        false);
+        SKPath backFacePath = Draw3DShapeFromPath(arcPath,
+                                                  canvas,
+                                                  paint,
+                                                  borderPaint,
+                                                  node.Position,
+                                                  node.Shape.Radius * 0.1,
+                                                  shapeConfiguration.Skew.Value,
+                                                  true);
 
         //Draw the border of the two ends of the arc
         // Use SKPathMeasure to get the start and end points of the top and bottom arcs
@@ -312,66 +273,99 @@ public partial class SkiaSharpDirectedGraphService
         }
 
         //skewed 3D shape
-        DrawThreeDimensionalDepth(pillPath,
-                                  canvas,
-                                  paint,
-                                  borderPaint,
-                                  node,
-                                  shapeConfiguration.Skew.Value,
-                                  false);
+        Draw3DShapeFromPath(pillPath,
+                            canvas,
+                            paint,
+                            borderPaint,
+                            node.Position,
+                            node.Shape.Radius * 0.1,
+                            shapeConfiguration.Skew.Value);
     }
 
-    private static SKPath DrawThreeDimensionalDepth(SKPath path,
-                                                SKCanvas canvas,
-                                                SKPaint paint,
-                                                SKPaint borderPaint,
-                                                DirectedGraphNode node,
-                                                (double X, double Y) skewPosition,
-                                                bool drawSidePath)
+    public static SKPath Draw3DShapeFromPath(SKPath path,
+                                             SKCanvas canvas,
+                                             SKPaint paint,
+                                             SKPaint borderPaint,
+                                             (double X, double Y) position,
+                                             double depth,
+                                             (double X, double Y) skewPosition,
+                                             bool shapeHasGap = false)
     {
-        double threeDimensionalDepth = node.Shape.Radius * 0.1;
+        path.Transform(GetSkewSKMatrix(position, skewPosition));
 
-        path.Transform(GetSkewSKMatrix(node.Position, skewPosition));
+        SKMatrix offsetMatrix = SKMatrix.CreateTranslation((float)depth, -(float)depth);
 
-        SKPath backFacePath = new(path);
-        SKMatrix offsetMatrix = SKMatrix.CreateTranslation((float)threeDimensionalDepth, (float)-threeDimensionalDepth);
-        backFacePath.Transform(offsetMatrix);
+        SKPath backPath = new(path);
+        backPath.Transform(offsetMatrix);
 
-        canvas.DrawPath(path, paint);
-        canvas.DrawPath(backFacePath, paint);
+        int sidePoints = 360;  // Number of points to use for the sides
 
-        SKPoint[] frontPoints = path.Points;
-        SKPoint[] backPoints = backFacePath.Points;
+        SKPoint[] frontPoints = GetPointsOnPath(path, sidePoints);
+        SKPoint[] backPoints = GetPointsOnPath(backPath, sidePoints);
 
-        if (drawSidePath)
+        SKPoint gradientStartPoint = frontPoints[0]; // Starting point of the gradient (e.g., top front point)
+        SKPoint gradientEndPoint = backPoints[0]; // Ending point of the gradient (e.g., top back point)
+        SKColor[] gradientColors = [paint.Color.WithAlpha(220), AdjustColorBrightness(paint.Color, 0.6f)];
+
+        SKShader shader = SKShader.CreateLinearGradient(gradientStartPoint,
+                                                        gradientEndPoint,
+                                                        gradientColors,
+                                                        null,
+                                                        SKShaderTileMode.Clamp);
+
+        using SKPaint sidePaint = new()
         {
-            for (int i = 0; i < path.PointCount; i++)
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill,
+            Shader = shader
+        };
+
+        //draw back face
+        //canvas.DrawPath(backPath, paint);
+        //canvas.DrawPath(backPath, borderPaint);
+
+        for (int i = 0; i < sidePoints; i++)
+        {
+            if (shapeHasGap && i == sidePoints - 1)
             {
-                SKPath sidePath = new();
-                sidePath.MoveTo(frontPoints[i]);
-                sidePath.LineTo(backPoints[i]);
-                sidePath.LineTo(backPoints[(i + 1) % path.PointCount]);
-                sidePath.LineTo(frontPoints[(i + 1) % path.PointCount]);
-                sidePath.Close();
-
-                SKPoint startPoint = frontPoints[i];
-                SKPoint endPoint = backPoints[i];
-                SKColor[] colors = [paint.Color, AdjustColorBrightness(paint.Color, 0.6f)];
-                SKShader shader = SKShader.CreateLinearGradient(startPoint, endPoint, colors, null, SKShaderTileMode.Clamp);
-
-                using (SKPaint sidePaint = new() { IsAntialias = true, Style = SKPaintStyle.Fill, Shader = shader })
-                {
-                    canvas.DrawPath(sidePath, sidePaint);
-                }
-
-                canvas.DrawLine(frontPoints[i], backPoints[i], borderPaint);
+                // Skip the last side for shapes with a gap
+                continue;
             }
+
+            SKPath sidePath = new();
+            sidePath.MoveTo(frontPoints[i]);
+            sidePath.LineTo(backPoints[i]);
+            sidePath.LineTo(backPoints[(i + 1) % sidePoints]);
+            sidePath.LineTo(frontPoints[(i + 1) % sidePoints]);
+            sidePath.Close();
+
+            canvas.DrawPath(sidePath, sidePaint);
         }
 
-        canvas.DrawPath(path, borderPaint);
-        canvas.DrawPath(backFacePath, borderPaint);
+        //draw front face
+        canvas.DrawPath(path, paint);
+        canvas.DrawPath(backPath, borderPaint);
 
-        return backFacePath;
+        return backPath;
+    }
+
+    private static SKPoint[] GetPointsOnPath(SKPath path, int count)
+    {
+        SKPoint[] points = new SKPoint[count];
+
+        using SKPathMeasure pathMeasure = new(path, false);
+
+        float length = pathMeasure.Length;
+        float distance = 0;
+        float interval = length / (count - 1);
+
+        for (int i = 0; i < count; i++)
+        {
+            pathMeasure.GetPosition(distance, out points[i]);
+            distance += interval;
+        }
+
+        return points;
     }
 
     private static SKColor AdjustColorBrightness(SKColor color, float factor)
