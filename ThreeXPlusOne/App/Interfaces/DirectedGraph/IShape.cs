@@ -27,19 +27,34 @@ public interface IShape
     bool HasGap { get; }
 
     /// <summary>
+    /// The color to use to start the gradient if the node is influenced by the light source
+    /// </summary>
+    public Color GradientStartColor { get; set; }
+
+    /// <summary>
+    /// The color to use to end the gradient if the node is influenced by the light source
+    /// </summary>
+    public Color GradientEndColor { get; }
+
+    /// <summary>
+    /// The color to use to start the gradient if the node is influenced by the light source
+    /// </summary>
+    public Color BorderGradientStartColor { get; set; }
+
+    /// <summary>
+    /// The color to use to end the gradient if the node is influenced by the light source
+    /// </summary>
+    public Color BorderGradientEndColor { get; }
+
+    /// <summary>
+    /// Whether or not this shape is influenced by the light source
+    /// </summary>
+    public bool HasLightSourceImpact { get; set; }
+
+    /// <summary>
     /// The radius of the shape
     /// </summary>
     double Radius { get; set; }
-
-    /// <summary>
-    /// The color to use to start the gradient on the side of the shape in pseudo-3D
-    /// </summary>
-    public Color ThreeDimensionalSideGradientStartColor { get; set; }
-
-    /// <summary>
-    /// The color to use to end the gradient on the side of the shape in pseudo-3D
-    /// </summary>
-    public Color ThreeDimensionalSideGradientEndColor { get; }
 
     /// <summary>
     /// The weight assigned to the given shape with respect to it being randomly selected as the shape for the node
@@ -63,13 +78,13 @@ public interface IShape
     ShapeConfiguration GetShapeConfiguration();
 
     /// <summary>
-    /// Set the start and end of the gradient of the front and sides of the 3D shape
+    /// Set the start and end of the gradient of the front and sides of the shape
     /// </summary>
     /// <param name="frontFaceStartPoint"></param>
     /// <param name="frontFaceEndPoint"></param>
     /// <param name="sideStartPoint"></param>
     /// <param name="sideEndPoint"></param>
-    void SetNodeThreeDimensionalGradientPoints((double X, double Y) frontFaceStartPoint,
+    void SetNodeGradientPoints((double X, double Y) frontFaceStartPoint,
                                                (double X, double Y) frontFaceEndPoint,
                                                (double X, double Y) sideStartPoint,
                                                (double X, double Y) sideEndPoint);
