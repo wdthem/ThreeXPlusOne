@@ -63,12 +63,16 @@ public interface IShape
     ShapeConfiguration GetShapeConfiguration();
 
     /// <summary>
-    /// Set the start and end of the gradient of the sides of the 3D shape
+    /// Set the start and end of the gradient of the front and sides of the 3D shape
     /// </summary>
-    /// <param name="startPoint"></param>
-    /// <param name="endPoint"></param>
-    void SetNodeThreeDimensionalGradientPoints((double X, double Y) startPoint,
-                                               (double X, double Y) endPoint);
+    /// <param name="frontFaceStartPoint"></param>
+    /// <param name="frontFaceEndPoint"></param>
+    /// <param name="sideStartPoint"></param>
+    /// <param name="sideEndPoint"></param>
+    void SetNodeThreeDimensionalGradientPoints((double X, double Y) frontFaceStartPoint,
+                                               (double X, double Y) frontFaceEndPoint,
+                                               (double X, double Y) sideStartPoint,
+                                               (double X, double Y) sideEndPoint);
 
     /// <summary>
     /// Assign random skew values to the shape

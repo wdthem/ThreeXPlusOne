@@ -117,14 +117,20 @@ public abstract class Shape()
     }
 
     /// <summary>
-    /// Set the start and end of the gradient of the sides of the 3D shape
+    /// Set the start and end of the gradient of the front and sides of the 3D shape
     /// </summary>
-    /// <param name="startPoint"></param>
-    /// <param name="endPoint"></param>
-    public void SetNodeThreeDimensionalGradientPoints((double X, double Y) startPoint,
-                                                      (double X, double Y) endPoint)
+    /// <param name="frontFaceStartPoint"></param>
+    /// <param name="frontFaceEndPoint"></param>
+    /// <param name="sideStartPoint"></param>
+    /// <param name="sideEndPoint"></param>
+    public void SetNodeThreeDimensionalGradientPoints((double X, double Y) frontFaceStartPoint,
+                                                      (double X, double Y) frontFaceEndPoint,
+                                                      (double X, double Y) sideStartPoint,
+                                                      (double X, double Y) sideEndPoint)
     {
-        _shapeConfiguration.ThreeDimensionalSideGradientStartPoint = startPoint;
-        _shapeConfiguration.ThreeDimensionalSideGradientEndPoint = endPoint;
+        _shapeConfiguration.ThreeDimensionalFrontFaceGradientStartPoint = frontFaceStartPoint;
+        _shapeConfiguration.ThreeDimensionalFrontFaceGradientEndPoint = frontFaceEndPoint;
+        _shapeConfiguration.ThreeDimensionalSideGradientStartPoint = sideStartPoint;
+        _shapeConfiguration.ThreeDimensionalSideGradientEndPoint = sideEndPoint;
     }
 }

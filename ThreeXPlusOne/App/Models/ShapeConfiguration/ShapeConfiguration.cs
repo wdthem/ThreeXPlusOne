@@ -53,7 +53,23 @@ public record ShapeConfiguration()
     /// </summary>
     public int ThreeDimensionalSideCount => _threeDimensionalSideCount;
 
+    /// <summary>
+    /// The start point of the gradient for the shape's side
+    /// </summary>
     public (double X, double Y) ThreeDimensionalSideGradientStartPoint { get; set; }
 
+    /// <summary>
+    /// The end point of the gradient for the shape's side
+    /// </summary>
     public (double X, double Y) ThreeDimensionalSideGradientEndPoint { get; set; }
+
+    /// <summary>
+    /// The start point of the gradient for the shape's front face
+    /// </summary>
+    public (double X, double Y) ThreeDimensionalFrontFaceGradientStartPoint { get; set; }
+
+    /// <summary>
+    /// The end point of the gradient for the shape's front face
+    /// </summary>
+    public (double X, double Y) ThreeDimensionalFrontFaceGradientEndPoint { get; set; }
 }

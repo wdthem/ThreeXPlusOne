@@ -252,25 +252,34 @@ public partial class SkiaSharpDirectedGraphService
         SKPoint[] frontPoints = GetPointsOnPath(path, sidePoints);
         SKPoint[] backPoints = GetPointsOnPath(backPath, sidePoints);
 
-        SKPoint gradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalSideGradientStartPoint);
-        SKPoint gradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalSideGradientEndPoint);
+        SKPoint frontFaceGradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalFrontFaceGradientStartPoint);
+        SKPoint frontFaceGradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalFrontFaceGradientEndPoint);
 
-        // Define the gradient colors
+        SKPoint sideGradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalSideGradientStartPoint);
+        SKPoint sideGradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.ThreeDimensionalSideGradientEndPoint);
+
         SKColor[] gradientColors = [ConvertColorToSKColor(node.Shape.ThreeDimensionalSideGradientStartColor),
                                     ConvertColorToSKColor(node.Shape.ThreeDimensionalSideGradientEndColor)];
 
-        // Create the gradient shader
-        SKShader shader = SKShader.CreateLinearGradient(gradientStartPoint,
-                                                        gradientEndPoint,
-                                                        gradientColors,
-                                                        null,
-                                                        SKShaderTileMode.Clamp);
+        SKShader frontFaceShader = SKShader.CreateLinearGradient(frontFaceGradientStartPoint,
+                                                                 frontFaceGradientEndPoint,
+                                                                 gradientColors,
+                                                                 null,
+                                                                 SKShaderTileMode.Clamp);
+
+        SKShader sideShader = SKShader.CreateLinearGradient(sideGradientStartPoint,
+                                                            sideGradientEndPoint,
+                                                            gradientColors,
+                                                            null,
+                                                            SKShaderTileMode.Clamp);
+
+        paint.Shader = frontFaceShader;
 
         using SKPaint sidePaint = new()
         {
             IsAntialias = true,
             Style = SKPaintStyle.Fill,
-            Shader = shader
+            Shader = sideShader
         };
 
         //draw back face
