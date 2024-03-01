@@ -5,6 +5,10 @@ namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 public abstract class Shape()
 {
+    private Color _threeDimensionalSideGradientStartColor = Color.Empty;
+
+    private Color _threeDimensionalSideGradientEndColor = Color.Empty;
+
     /// <summary>
     /// The object holding the configuration details required for rendering a given shape
     /// </summary>
@@ -57,6 +61,47 @@ public abstract class Shape()
     /// The radius of the shape
     /// </summary>
     public double Radius { get; set; }
+
+    /// <summary>
+    /// The color to use to start the gradient on the side of the shape in pseudo-3D
+    /// </summary>
+    public Color ThreeDimensionalSideGradientStartColor
+    {
+        get
+        {
+            if (_threeDimensionalSideGradientStartColor == Color.Empty)
+            {
+                _threeDimensionalSideGradientStartColor = Color.FromArgb(220,
+                                                                         Color.R,
+                                                                         Color.G,
+                                                                         Color.B);
+            }
+
+            return _threeDimensionalSideGradientStartColor;
+        }
+    }
+
+    /// <summary>
+    /// The color to use to end the gradient on the side of the shape in pseudo-3D
+    /// </summary>
+    public Color ThreeDimensionalSideGradientEndColor
+    {
+        get
+        {
+            if (_threeDimensionalSideGradientEndColor == Color.Empty)
+            {
+                float factor = 0.6f;
+
+                int r = (int)Math.Clamp(Color.R * factor, 0, 255);
+                int g = (int)Math.Clamp(Color.G * factor, 0, 255);
+                int b = (int)Math.Clamp(Color.B * factor, 0, 255);
+
+                _threeDimensionalSideGradientEndColor = Color.FromArgb(Color.A, r, g, b);
+            }
+
+            return _threeDimensionalSideGradientEndColor;
+        }
+    }
 
     /// <summary>
     /// Get the shape's configuration data

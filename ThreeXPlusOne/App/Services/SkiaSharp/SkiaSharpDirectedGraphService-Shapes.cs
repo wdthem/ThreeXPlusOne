@@ -37,9 +37,8 @@ public partial class SkiaSharpDirectedGraphService
                             canvas,
                             paint,
                             borderPaint,
-                            node.Position,
-                            node.Shape.Radius * 0.1,
-                            shapeConfiguration.Skew.Value);
+                            node,
+                            shapeConfiguration);
     }
 
     private static void DrawShapeWithVertices(SKCanvas canvas,
@@ -84,9 +83,8 @@ public partial class SkiaSharpDirectedGraphService
                             canvas,
                             paint,
                             borderPaint,
-                            node.Position,
-                            node.Shape.Radius * 0.1,
-                            shapeConfiguration.Skew.Value);
+                            node,
+                            shapeConfiguration);
     }
 
     private static void DrawSemiCircle(SKCanvas canvas,
@@ -124,9 +122,8 @@ public partial class SkiaSharpDirectedGraphService
                             canvas,
                             paint,
                             borderPaint,
-                            node.Position,
-                            node.Shape.Radius * 0.1,
-                            shapeConfiguration.Skew.Value);
+                            node,
+                            shapeConfiguration);
     }
 
     private static void DrawArc(SKCanvas canvas,
@@ -192,10 +189,8 @@ public partial class SkiaSharpDirectedGraphService
                                                   canvas,
                                                   paint,
                                                   borderPaint,
-                                                  node.Position,
-                                                  node.Shape.Radius * 0.1,
-                                                  shapeConfiguration.Skew.Value,
-                                                  true);
+                                                  node,
+                                                  shapeConfiguration);
 
         //Draw the border of the two ends of the arc
         // Use SKPathMeasure to get the start and end points of the top and bottom arcs
@@ -277,35 +272,40 @@ public partial class SkiaSharpDirectedGraphService
                             canvas,
                             paint,
                             borderPaint,
-                            node.Position,
-                            node.Shape.Radius * 0.1,
-                            shapeConfiguration.Skew.Value);
+                            node,
+                            shapeConfiguration);
     }
 
     public static SKPath Draw3DShapeFromPath(SKPath path,
                                              SKCanvas canvas,
                                              SKPaint paint,
                                              SKPaint borderPaint,
-                                             (double X, double Y) position,
-                                             double depth,
-                                             (double X, double Y) skewPosition,
-                                             bool shapeHasGap = false)
+                                             DirectedGraphNode node,
+                                             ShapeConfiguration shapeConfiguration)
     {
-        path.Transform(GetSkewSKMatrix(position, skewPosition));
+        if (shapeConfiguration.Skew == null)
+        {
+            throw new Exception($"{nameof(Draw3DShapeFromPath)}: Skew settings were null");
+        }
+
+        double depth = shapeConfiguration.ThreeDimensionalDepth(node.Shape.Radius);
+
+        path.Transform(GetSkewSKMatrix(node.Position, shapeConfiguration.Skew.Value));
 
         SKMatrix offsetMatrix = SKMatrix.CreateTranslation((float)depth, -(float)depth);
 
         SKPath backPath = new(path);
         backPath.Transform(offsetMatrix);
 
-        int sidePoints = 360;  // Number of points to use for the sides
+        int sidePoints = shapeConfiguration.ThreeDimensionalSideCount;  // Number of points to use for the sides
 
         SKPoint[] frontPoints = GetPointsOnPath(path, sidePoints);
         SKPoint[] backPoints = GetPointsOnPath(backPath, sidePoints);
 
         SKPoint gradientStartPoint = frontPoints[0]; // Starting point of the gradient (e.g., top front point)
         SKPoint gradientEndPoint = backPoints[0]; // Ending point of the gradient (e.g., top back point)
-        SKColor[] gradientColors = [paint.Color.WithAlpha(220), AdjustColorBrightness(paint.Color, 0.6f)];
+        SKColor[] gradientColors = [ConvertColorToSKColor(node.Shape.ThreeDimensionalSideGradientStartColor),
+                                    ConvertColorToSKColor(node.Shape.ThreeDimensionalSideGradientEndColor)];
 
         SKShader shader = SKShader.CreateLinearGradient(gradientStartPoint,
                                                         gradientEndPoint,
@@ -326,17 +326,20 @@ public partial class SkiaSharpDirectedGraphService
 
         for (int i = 0; i < sidePoints; i++)
         {
-            if (shapeHasGap && i == sidePoints - 1)
+            if (node.Shape.HasGap &&
+                i == sidePoints - 1)
             {
                 // Skip the last side for shapes with a gap
                 continue;
             }
 
-            SKPath sidePath = new();
+            using SKPath sidePath = new();
+
             sidePath.MoveTo(frontPoints[i]);
             sidePath.LineTo(backPoints[i]);
             sidePath.LineTo(backPoints[(i + 1) % sidePoints]);
             sidePath.LineTo(frontPoints[(i + 1) % sidePoints]);
+
             sidePath.Close();
 
             canvas.DrawPath(sidePath, sidePaint);
@@ -366,15 +369,6 @@ public partial class SkiaSharpDirectedGraphService
         }
 
         return points;
-    }
-
-    private static SKColor AdjustColorBrightness(SKColor color, float factor)
-    {
-        byte r = (byte)Math.Clamp(color.Red * factor, 0, 255);
-        byte g = (byte)Math.Clamp(color.Green * factor, 0, 255);
-        byte b = (byte)Math.Clamp(color.Blue * factor, 0, 255);
-
-        return new SKColor(r, g, b).WithAlpha(255);
     }
 
     /// <summary>

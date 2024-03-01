@@ -4,6 +4,10 @@ namespace ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 public record ShapeConfiguration()
 {
+    private readonly double _threeDimensionalDepthMultiplier = 0.1;
+
+    private readonly int _threeDimensionalSideCount = 360;
+
     /// <summary>
     /// The vertices of the given shape
     /// </summary>
@@ -38,4 +42,19 @@ public record ShapeConfiguration()
     /// The radius and colour of the node's halo when a light source exists
     /// </summary>
     public (double Radius, Color Color)? HaloConfiguration { get; set; }
+
+    /// <summary>
+    /// The depth of the shape when rendered in pseudo-3D, based on the node radius
+    /// </summary>
+    /// <param name="nodeRadius"></param>
+    /// <returns></returns>
+    public double ThreeDimensionalDepth(double nodeRadius)
+    {
+        return nodeRadius * _threeDimensionalDepthMultiplier;
+    }
+
+    /// <summary>
+    /// The number of sides to render when drawing the shape in pseudo-3D
+    /// </summary>
+    public int ThreeDimensionalSideCount => _threeDimensionalSideCount;
 }

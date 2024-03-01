@@ -22,9 +22,24 @@ public interface IShape
     Color Color { get; set; }
 
     /// <summary>
+    /// Whether or not the shape has a gap when it is drawn (e.g. the gap between the bottom parts of an arc)
+    /// </summary>
+    bool HasGap { get; }
+
+    /// <summary>
     /// The radius of the shape
     /// </summary>
     double Radius { get; set; }
+
+    /// <summary>
+    /// The color to use to start the gradient on the side of the shape in pseudo-3D
+    /// </summary>
+    public Color ThreeDimensionalSideGradientStartColor { get; }
+
+    /// <summary>
+    /// The color to use to end the gradient on the side of the shape in pseudo-3D
+    /// </summary>
+    public Color ThreeDimensionalSideGradientEndColor { get; }
 
     /// <summary>
     /// The weight assigned to the given shape with respect to it being randomly selected as the shape for the node
