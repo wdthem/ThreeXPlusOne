@@ -40,9 +40,8 @@ public interface IDirectedGraphService : IDisposable
     /// Optionally generate white points in the background to mimic stars
     /// </summary>
     /// <param name="starCount"></param>
-    /// <param name="nodeRadius"></param>
     /// <exception cref="Exception"></exception>
-    void GenerateBackgroundStars(int starCount, double nodeRadius);
+    void GenerateBackgroundStars(int starCount);
 
     /// <summary>
     /// Add a light source to the graph emanating from the supplied coordinates

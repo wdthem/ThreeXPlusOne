@@ -15,7 +15,7 @@ public abstract class Shape()
     protected readonly ShapeConfiguration _shapeConfiguration = new();
 
     /// <summary>
-    /// Generate skew data for the given shape
+    /// Generate a skewed position for the given shape
     /// </summary>
     /// <returns></returns>
     protected void GenerateShapeSkew()
@@ -71,7 +71,7 @@ public abstract class Shape()
         {
             if (_threeDimensionalSideGradientStartColor == Color.Empty)
             {
-                _threeDimensionalSideGradientStartColor = Color.FromArgb(220,
+                _threeDimensionalSideGradientStartColor = Color.FromArgb(200,
                                                                          Color.R,
                                                                          Color.G,
                                                                          Color.B);

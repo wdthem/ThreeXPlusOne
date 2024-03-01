@@ -49,9 +49,8 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
     /// Optionally generate white points in the background to mimic stars
     /// </summary>
     /// <param name="starCount"></param>
-    /// <param name="nodeRadius"></param>
     /// <exception cref="Exception"></exception>
-    public void GenerateBackgroundStars(int starCount, double nodeRadius)
+    public void GenerateBackgroundStars(int starCount)
     {
         if (_canvas == null)
         {
@@ -203,7 +202,7 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
     }
 
     /// <summary>
-    /// Draw in individual node
+    /// Draw an individual node
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -212,23 +211,23 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
                                  DirectedGraphNode node,
                                  bool drawNumbersOnNodes)
     {
-        SKPaint paint = new()
+        using SKPaint paint = new()
         {
             IsAntialias = true,
             Style = SKPaintStyle.Fill,
             Color = ConvertColorToSKColor(node.Shape.Color)
         };
 
-        SKPaint borderPaint = new()
+        using SKPaint borderPaint = new()
         {
             IsAntialias = true,
             Style = SKPaintStyle.Stroke,
             Color = ConvertColorToSKColor(node.Shape.BorderColor),
             StrokeWidth = 5,
-            StrokeJoin = SKStrokeJoin.Miter
+            StrokeJoin = SKStrokeJoin.Bevel
         };
 
-        SKPaint textPaint = new()
+        using SKPaint textPaint = new()
         {
             Color = SKColors.White,
             IsAntialias = true,
@@ -242,27 +241,27 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
 
         switch (node.Shape.ShapeType)
         {
+            case ShapeType.Arc:
+                DrawArc(canvas, node, shapeConfiguration, paint, borderPaint);
+                break;
+
             case ShapeType.Ellipse:
                 DrawEllipse(canvas, node, shapeConfiguration, paint, borderPaint);
+                break;
+
+            case ShapeType.Pill:
+                DrawPill(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
             case ShapeType.Plus:
             case ShapeType.Polygon:
             case ShapeType.Seashell:
             case ShapeType.Star:
-                DrawShapeWithVertices(canvas, node, shapeConfiguration, paint, borderPaint);
+                DrawShapeFromVertices(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
             case ShapeType.SemiCircle:
                 DrawSemiCircle(canvas, node, shapeConfiguration, paint, borderPaint);
-                break;
-
-            case ShapeType.Arc:
-                DrawArc(canvas, node, shapeConfiguration, paint, borderPaint);
-                break;
-
-            case ShapeType.Pill:
-                DrawPill(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
             default:
@@ -278,10 +277,6 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
         }
 
         DrawNodeHalo(canvas, node, shapeConfiguration);
-
-        paint.Dispose();
-        borderPaint.Dispose();
-        textPaint.Dispose();
     }
 
     /// <summary>
@@ -316,7 +311,7 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
     }
 
     /// <summary>
-    /// Draw the lines connecting nodes to their parent/children
+    /// Draw a line connecting two nodes, terminating with a circle head
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>

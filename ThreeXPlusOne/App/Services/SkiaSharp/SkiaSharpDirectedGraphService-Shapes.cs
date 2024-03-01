@@ -6,42 +6,7 @@ namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
 public partial class SkiaSharpDirectedGraphService
 {
-    private static void DrawEllipse(SKCanvas canvas,
-                                    DirectedGraphNode node,
-                                    ShapeConfiguration shapeConfiguration,
-                                    SKPaint paint,
-                                    SKPaint borderPaint)
-    {
-        if (shapeConfiguration.EllipseConfiguration == null)
-        {
-            throw new Exception($"{nameof(DrawEllipse)}: Ellipse configuration settings were null");
-        }
-
-        using SKPath ellipsePath = new();
-
-        ellipsePath.AddOval(new SKRect((float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Left,
-                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Top,
-                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Right,
-                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Bottom));
-
-        if (shapeConfiguration.Skew == null)
-        {
-            canvas.DrawPath(ellipsePath, paint);
-            canvas.DrawPath(ellipsePath, borderPaint);
-
-            return;
-        }
-
-        //skewed 3D shape
-        Draw3DShapeFromPath(ellipsePath,
-                            canvas,
-                            paint,
-                            borderPaint,
-                            node,
-                            shapeConfiguration);
-    }
-
-    private static void DrawShapeWithVertices(SKCanvas canvas,
+    private static void DrawShapeFromVertices(SKCanvas canvas,
                                               DirectedGraphNode node,
                                               ShapeConfiguration shapeConfiguration,
                                               SKPaint paint,
@@ -49,7 +14,7 @@ public partial class SkiaSharpDirectedGraphService
     {
         if (shapeConfiguration.Vertices == null)
         {
-            throw new Exception($"{nameof(DrawShapeWithVertices)}: Vertices were null");
+            throw new Exception($"{nameof(DrawShapeFromVertices)}: Vertices were null");
         }
 
         using SKPath polygonPath = new();
@@ -78,13 +43,46 @@ public partial class SkiaSharpDirectedGraphService
             return;
         }
 
-        //skewed 3D shape
-        Draw3DShapeFromPath(polygonPath,
-                            canvas,
-                            paint,
-                            borderPaint,
-                            node,
-                            shapeConfiguration);
+        DrawSkewed3DShape(polygonPath,
+                          canvas,
+                          paint,
+                          borderPaint,
+                          node,
+                          shapeConfiguration);
+    }
+
+    private static void DrawEllipse(SKCanvas canvas,
+                                    DirectedGraphNode node,
+                                    ShapeConfiguration shapeConfiguration,
+                                    SKPaint paint,
+                                    SKPaint borderPaint)
+    {
+        if (shapeConfiguration.EllipseConfiguration == null)
+        {
+            throw new Exception($"{nameof(DrawEllipse)}: Ellipse configuration settings were null");
+        }
+
+        using SKPath ellipsePath = new();
+
+        ellipsePath.AddOval(new SKRect((float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Left,
+                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Top,
+                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Right,
+                                       (float)shapeConfiguration.EllipseConfiguration.ShapeBounds.Bottom));
+
+        if (shapeConfiguration.Skew == null)
+        {
+            canvas.DrawPath(ellipsePath, paint);
+            canvas.DrawPath(ellipsePath, borderPaint);
+
+            return;
+        }
+
+        DrawSkewed3DShape(ellipsePath,
+                          canvas,
+                          paint,
+                          borderPaint,
+                          node,
+                          shapeConfiguration);
     }
 
     private static void DrawSemiCircle(SKCanvas canvas,
@@ -117,13 +115,12 @@ public partial class SkiaSharpDirectedGraphService
             return;
         }
 
-        //skewed 3D shape
-        Draw3DShapeFromPath(semiCirclePath,
-                            canvas,
-                            paint,
-                            borderPaint,
-                            node,
-                            shapeConfiguration);
+        DrawSkewed3DShape(semiCirclePath,
+                          canvas,
+                          paint,
+                          borderPaint,
+                          node,
+                          shapeConfiguration);
     }
 
     private static void DrawArc(SKCanvas canvas,
@@ -160,74 +157,17 @@ public partial class SkiaSharpDirectedGraphService
             canvas.DrawPath(arcPath, paint);
             canvas.DrawPath(arcPath, borderPaint);
 
-            //Draw the border of the two ends of the arc
-            // Use SKPathMeasure to get the start and end points of the top and bottom arcs
-            SKPathMeasure pathMeasure = new(arcPath, false);
-            float topArcLength = pathMeasure.Length;
-
-            // Get the start and end points of the top arc
-            pathMeasure.GetPosition(0, out SKPoint topArcStartPoint);
-            pathMeasure.GetPosition(topArcLength, out SKPoint topArcEndPoint);
-
-            // Move to the next contour (the bottom arc)
-            pathMeasure.NextContour();
-            float bottomArcLength = pathMeasure.Length;
-
-            // Get the start and end points of the bottom arc (reversed)
-            pathMeasure.GetPosition(0, out SKPoint bottomArcEndPoint);
-            pathMeasure.GetPosition(bottomArcLength, out SKPoint bottomArcStartPoint);
-
-            // Draw lines connecting the end points of the arcs
-            canvas.DrawLine(topArcStartPoint.X, topArcStartPoint.Y, bottomArcStartPoint.X, bottomArcStartPoint.Y, borderPaint);
-            canvas.DrawLine(topArcEndPoint.X, topArcEndPoint.Y, bottomArcEndPoint.X, bottomArcEndPoint.Y, borderPaint);
+            DrawArcBottomBorders(arcPath, canvas, borderPaint);
 
             return;
         }
 
-        //skewed 3D shape
-        SKPath backFacePath = Draw3DShapeFromPath(arcPath,
-                                                  canvas,
-                                                  paint,
-                                                  borderPaint,
-                                                  node,
-                                                  shapeConfiguration);
-
-        //Draw the border of the two ends of the arc
-        // Use SKPathMeasure to get the start and end points of the top and bottom arcs
-        SKPathMeasure pathMeasure1 = new(arcPath, false);
-        float topArcLength1 = pathMeasure1.Length;
-
-        // Get the start and end points of the top arc
-        pathMeasure1.GetPosition(0, out SKPoint topArcStartPoint1);
-        pathMeasure1.GetPosition(topArcLength1, out SKPoint topArcEndPoint1);
-
-        // Move to the next contour (the bottom arc)
-        pathMeasure1.NextContour();
-        float bottomArcLength1 = pathMeasure1.Length;
-
-        // Get the start and end points of the bottom arc (reversed)
-        pathMeasure1.GetPosition(0, out SKPoint bottomArcEndPoint1);
-        pathMeasure1.GetPosition(bottomArcLength1, out SKPoint bottomArcStartPoint1);
-
-        // Draw lines connecting the end points of the arcs
-        canvas.DrawLine(topArcStartPoint1.X, topArcStartPoint1.Y, bottomArcStartPoint1.X, bottomArcStartPoint1.Y, borderPaint);
-        canvas.DrawLine(topArcEndPoint1.X, topArcEndPoint1.Y, bottomArcEndPoint1.X, bottomArcEndPoint1.Y, borderPaint);
-
-        //repeat drawing the bottom of the arc for the back face
-        SKPathMeasure pathMeasure2 = new(backFacePath, false);
-        float topArcLength2 = pathMeasure2.Length;
-
-        pathMeasure2.GetPosition(0, out SKPoint topArcStartPoint2);
-        pathMeasure2.GetPosition(topArcLength2, out SKPoint topArcEndPoint2);
-
-        pathMeasure2.NextContour();
-        float bottomArcLength2 = pathMeasure2.Length;
-
-        pathMeasure2.GetPosition(0, out SKPoint bottomArcEndPoint2);
-        pathMeasure2.GetPosition(bottomArcLength2, out SKPoint bottomArcStartPoint2);
-
-        canvas.DrawLine(topArcStartPoint2.X, topArcStartPoint2.Y, bottomArcStartPoint2.X, bottomArcStartPoint2.Y, borderPaint);
-        canvas.DrawLine(topArcEndPoint2.X, topArcEndPoint2.Y, bottomArcEndPoint2.X, bottomArcEndPoint2.Y, borderPaint);
+        DrawSkewed3DShape(arcPath,
+                          canvas,
+                          paint,
+                          borderPaint,
+                          node,
+                          shapeConfiguration);
     }
 
     private static void DrawPill(SKCanvas canvas,
@@ -267,25 +207,35 @@ public partial class SkiaSharpDirectedGraphService
             return;
         }
 
-        //skewed 3D shape
-        Draw3DShapeFromPath(pillPath,
-                            canvas,
-                            paint,
-                            borderPaint,
-                            node,
-                            shapeConfiguration);
+        DrawSkewed3DShape(pillPath,
+                          canvas,
+                          paint,
+                          borderPaint,
+                          node,
+                          shapeConfiguration);
     }
 
-    public static SKPath Draw3DShapeFromPath(SKPath path,
-                                             SKCanvas canvas,
-                                             SKPaint paint,
-                                             SKPaint borderPaint,
-                                             DirectedGraphNode node,
-                                             ShapeConfiguration shapeConfiguration)
+    /// <summary>
+    /// Draw two offset faces with the same skew and add sides with a colour gradient to create depth
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="canvas"></param>
+    /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
+    /// <param name="node"></param>
+    /// <param name="shapeConfiguration"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    private static void DrawSkewed3DShape(SKPath path,
+                                          SKCanvas canvas,
+                                          SKPaint paint,
+                                          SKPaint borderPaint,
+                                          DirectedGraphNode node,
+                                          ShapeConfiguration shapeConfiguration)
     {
         if (shapeConfiguration.Skew == null)
         {
-            throw new Exception($"{nameof(Draw3DShapeFromPath)}: Skew settings were null");
+            throw new Exception($"{nameof(DrawSkewed3DShape)}: Skew settings were null");
         }
 
         double depth = shapeConfiguration.ThreeDimensionalDepth(node.Shape.Radius);
@@ -322,7 +272,7 @@ public partial class SkiaSharpDirectedGraphService
 
         //draw back face
         canvas.DrawPath(backPath, paint);
-        canvas.DrawPath(backPath, borderPaint);
+        //note: don't draw back face border as it creates a feeling of bluriness when viewed at a distance
 
         for (int i = 0; i < sidePoints; i++)
         {
@@ -347,13 +297,20 @@ public partial class SkiaSharpDirectedGraphService
 
         //draw front face
         canvas.DrawPath(path, paint);
-        canvas.DrawPath(backPath, borderPaint);
+        canvas.DrawPath(path, borderPaint);
 
-        return backPath;
+        if (node.Shape.ShapeType == Enums.ShapeType.Arc)
+        {
+            //front face
+            DrawArcBottomBorders(path, canvas, borderPaint);
+
+            //rear face
+            DrawArcBottomBorders(backPath, canvas, borderPaint);
+        }
     }
 
     /// <summary>
-    /// Get an array of the coordinates of all points around the shape path
+    /// Get an array of the coordinates of all points around the shape's path
     /// </summary>
     /// <param name="path"></param>
     /// <param name="pointCount"></param>
@@ -384,15 +341,59 @@ public partial class SkiaSharpDirectedGraphService
     /// <param name="nodePosition"></param>
     /// <param name="skew"></param>
     /// <returns></returns>
-    private static SKMatrix GetSkewSKMatrix((double X, double Y) nodePosition, (double X, double Y) skew)
+    private static SKMatrix GetSkewSKMatrix((double X, double Y) nodePosition,
+                                            (double X, double Y) skew)
     {
         SKMatrix skewMatrix = SKMatrix.CreateSkew((float)skew.X,
                                                   (float)skew.Y);
 
-        SKMatrix translateToOrigin = SKMatrix.CreateTranslation(-(float)nodePosition.X, -(float)nodePosition.Y);
-        SKMatrix translateBack = SKMatrix.CreateTranslation((float)nodePosition.X, (float)nodePosition.Y);
+        SKMatrix translateToOrigin = SKMatrix.CreateTranslation(-(float)nodePosition.X,
+                                                                -(float)nodePosition.Y);
+
+        SKMatrix translateBack = SKMatrix.CreateTranslation((float)nodePosition.X,
+                                                            (float)nodePosition.Y);
 
         return translateToOrigin.PostConcat(skewMatrix)
                                 .PostConcat(translateBack);
+    }
+
+    /// <summary>
+    /// Draw the border of the two ends of the arc without drawing across the gap of the arc
+    /// </summary>
+    /// <param name="arcPath"></param>
+    /// <param name="canvas"></param>
+    /// <param name="borderPaint"></param>
+    private static void DrawArcBottomBorders(SKPath arcPath,
+                                             SKCanvas canvas,
+                                             SKPaint borderPaint)
+    {
+        // Get the start and end points of the top and bottom arcs
+        SKPathMeasure pathMeasure = new(arcPath, false);
+        float topArcLength = pathMeasure.Length;
+
+        // Get the start and end points of the top arc
+        pathMeasure.GetPosition(0, out SKPoint topArcStartPoint);
+        pathMeasure.GetPosition(topArcLength, out SKPoint topArcEndPoint);
+
+        // Move to the next contour (the bottom arc)
+        pathMeasure.NextContour();
+        float bottomArcLength = pathMeasure.Length;
+
+        // Get the start and end points of the bottom arc (reversed)
+        pathMeasure.GetPosition(0, out SKPoint bottomArcEndPoint);
+        pathMeasure.GetPosition(bottomArcLength, out SKPoint bottomArcStartPoint);
+
+        // Draw lines connecting the end points of the arcs
+        canvas.DrawLine(topArcStartPoint.X,
+                        topArcStartPoint.Y,
+                        bottomArcStartPoint.X,
+                        bottomArcStartPoint.Y,
+                        borderPaint);
+
+        canvas.DrawLine(topArcEndPoint.X,
+                        topArcEndPoint.Y,
+                        bottomArcEndPoint.X,
+                        bottomArcEndPoint.Y,
+                        borderPaint);
     }
 }
