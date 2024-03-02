@@ -74,12 +74,11 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Set the shapes and colours of the positioned nodes. Apply a pseudo-3D skewing effect to shapes.
-    /// (use a random number to determine if the given node is skewed or not)
+    /// Set the shapes and colours of the positioned nodes. 
+    /// Apply a pseudo-3D skewing effect to shapes.
     /// </summary>
     public void SetNodeAesthetics()
     {
-        double noSkewProbability = 0.2;
         int lcv = 1;
 
         foreach (DirectedGraphNode node in _nodes.Values.Where(node => node.IsPositioned))
@@ -88,10 +87,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                          _appSettings.NodeAestheticSettings.NodeRadius,
                                          _appSettings.NodeAestheticSettings.NodeShapes);
 
-            if (Random.Shared.NextDouble() >= noSkewProbability)
-            {
-                node.Shape.SetShapeSkew(node.Position, node.Shape.Radius);
-            }
+            node.Shape.SetShapeSkew(node.Position, node.Shape.Radius);
 
             _nodeAesthetics.SetNodeColor(node,
                                          _appSettings.NodeAestheticSettings.NodeColors,
