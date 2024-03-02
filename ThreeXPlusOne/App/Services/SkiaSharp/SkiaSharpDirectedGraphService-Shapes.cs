@@ -309,7 +309,9 @@ public partial class SkiaSharpDirectedGraphService
 
         double depth = shapeConfiguration.ThreeDimensionalDepth(node.Shape.Radius);
 
-        path.Transform(GetSkewSKMatrix(node.Position, shapeConfiguration.Skew.Value));
+        SKMatrix skewMatrix = GetSkewSKMatrix(node.Position, shapeConfiguration.Skew.Value);
+
+        path.Transform(skewMatrix);
 
         SKMatrix offsetMatrix = SKMatrix.CreateTranslation((float)depth, -(float)depth);
 
@@ -329,11 +331,11 @@ public partial class SkiaSharpDirectedGraphService
 
         if (node.Shape.HasLightSourceImpact)
         {
-            SKPoint frontFaceGradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientStartPoint);
-            SKPoint frontFaceGradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientEndPoint);
+            SKPoint frontFaceGradientStartPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientStartPoint));
+            SKPoint frontFaceGradientEndPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientEndPoint));
 
-            SKPoint sideGradientStartPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.SideFaceGradientStartPoint);
-            SKPoint sideGradientEndPoint = ConvertCoordinatesToSKPoint(shapeConfiguration.SideFaceGradientEndPoint);
+            SKPoint sideGradientStartPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(shapeConfiguration.SideFaceGradientStartPoint));
+            SKPoint sideGradientEndPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(shapeConfiguration.SideFaceGradientEndPoint));
 
             SKColor[] gradientColors = [ConvertColorToSKColor(node.Shape.GradientStartColor),
                                         ConvertColorToSKColor(node.Shape.GradientEndColor)];
