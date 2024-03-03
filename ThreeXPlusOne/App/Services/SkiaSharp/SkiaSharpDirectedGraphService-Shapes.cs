@@ -530,19 +530,27 @@ public partial class SkiaSharpDirectedGraphService
     }
 
     /// <summary>
-    /// 
+    /// Projects a point onto a vector originating from a specified origin point.
     /// </summary>
-    /// <param name="point"></param>
-    /// <param name="vector"></param>
-    /// <param name="origin"></param>
-    /// <returns></returns>
-    private static SKPoint ProjectPointOntoVector(SKPoint point, SKPoint vector, SKPoint origin)
+    /// <param name="point">The point to be projected onto the vector.</param>
+    /// <param name="vector">The vector onto which the point is projected. The vector is defined relative to the origin.</param>
+    /// <param name="origin">The origin point from which the vector originates.</param>
+    /// <returns>The projected point on the vector.</returns>
+    /// <remarks>
+    /// This method calculates the projection of a point onto a vector, effectively
+    /// finding the closest point on the vector to the original point. The projection
+    /// is performed in the direction of the vector, starting from the origin point.
+    /// </remarks>
+    private static SKPoint ProjectPointOntoVector(SKPoint point,
+                                                  SKPoint vector,
+                                                  SKPoint origin)
     {
         SKPoint relativePoint = point - origin;
         float projectionLength = DotProduct(relativePoint, vector) / Length(vector);
         SKPoint normalizedVector = Normalize(vector);
 
-        return new SKPoint(origin.X + normalizedVector.X * projectionLength, origin.Y + normalizedVector.Y * projectionLength);
+        return new SKPoint(origin.X + normalizedVector.X * projectionLength,
+                           origin.Y + normalizedVector.Y * projectionLength);
     }
 
     /// <summary>
@@ -553,7 +561,9 @@ public partial class SkiaSharpDirectedGraphService
     private static SKPoint Normalize(SKPoint point)
     {
         float length = Length(point);
-        return new SKPoint(point.X / length, point.Y / length);
+
+        return new SKPoint(point.X / length,
+                           point.Y / length);
     }
 
     /// <summary>
@@ -562,7 +572,8 @@ public partial class SkiaSharpDirectedGraphService
     /// <param name="point1"></param>
     /// <param name="point2"></param>
     /// <returns></returns>
-    private static float DotProduct(SKPoint point1, SKPoint point2)
+    private static float DotProduct(SKPoint point1,
+                                    SKPoint point2)
     {
         return point1.X * point2.X + point1.Y * point2.Y;
     }
