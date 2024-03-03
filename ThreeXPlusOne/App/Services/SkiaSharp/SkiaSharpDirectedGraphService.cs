@@ -15,6 +15,8 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
     private SKCanvas? _canvas;
     private SKImage? _image;
 
+    private (double X, double Y)? _lightSourceCoordinates;
+
     public Action<string>? OnStart { get; set; }
     public Action? OnComplete { get; set; }
 
@@ -95,6 +97,8 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
         }
 
         OnStart?.Invoke("Generating light source... ");
+
+        _lightSourceCoordinates = lightSourceCoordinates;
 
         SKColor startColor = ConvertColorToSKColor(color);
         SKColor endColor = SKColors.Transparent;
@@ -207,9 +211,9 @@ public partial class SkiaSharpDirectedGraphService(IFileService fileService) : I
     /// <param name="canvas"></param>
     /// <param name="node"></param>
     /// <param name="drawNumbersOnNodes"></param>
-    private static void DrawNode(SKCanvas canvas,
-                                 DirectedGraphNode node,
-                                 bool drawNumbersOnNodes)
+    private void DrawNode(SKCanvas canvas,
+                          DirectedGraphNode node,
+                          bool drawNumbersOnNodes)
     {
         using SKPaint paint = new()
         {

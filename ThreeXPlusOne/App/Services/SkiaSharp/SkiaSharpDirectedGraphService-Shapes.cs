@@ -6,11 +6,11 @@ namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
 public partial class SkiaSharpDirectedGraphService
 {
-    private static void DrawShapeFromVertices(SKCanvas canvas,
-                                              DirectedGraphNode node,
-                                              ShapeConfiguration shapeConfiguration,
-                                              SKPaint paint,
-                                              SKPaint borderPaint)
+    private void DrawShapeFromVertices(SKCanvas canvas,
+                                       DirectedGraphNode node,
+                                       ShapeConfiguration shapeConfiguration,
+                                       SKPaint paint,
+                                       SKPaint borderPaint)
     {
         if (shapeConfiguration.Vertices == null)
         {
@@ -55,11 +55,11 @@ public partial class SkiaSharpDirectedGraphService
                           shapeConfiguration);
     }
 
-    private static void DrawEllipse(SKCanvas canvas,
-                                    DirectedGraphNode node,
-                                    ShapeConfiguration shapeConfiguration,
-                                    SKPaint paint,
-                                    SKPaint borderPaint)
+    private void DrawEllipse(SKCanvas canvas,
+                             DirectedGraphNode node,
+                             ShapeConfiguration shapeConfiguration,
+                             SKPaint paint,
+                             SKPaint borderPaint)
     {
         if (shapeConfiguration.EllipseConfiguration == null)
         {
@@ -93,11 +93,11 @@ public partial class SkiaSharpDirectedGraphService
                           shapeConfiguration);
     }
 
-    private static void DrawSemiCircle(SKCanvas canvas,
-                                       DirectedGraphNode node,
-                                       ShapeConfiguration shapeConfiguration,
-                                       SKPaint paint,
-                                       SKPaint borderPaint)
+    private void DrawSemiCircle(SKCanvas canvas,
+                                DirectedGraphNode node,
+                                ShapeConfiguration shapeConfiguration,
+                                SKPaint paint,
+                                SKPaint borderPaint)
     {
         if (shapeConfiguration.SemiCircleConfiguration == null)
         {
@@ -135,11 +135,11 @@ public partial class SkiaSharpDirectedGraphService
                           shapeConfiguration);
     }
 
-    private static void DrawArc(SKCanvas canvas,
-                                DirectedGraphNode node,
-                                ShapeConfiguration shapeConfiguration,
-                                SKPaint paint,
-                                SKPaint borderPaint)
+    private void DrawArc(SKCanvas canvas,
+                         DirectedGraphNode node,
+                         ShapeConfiguration shapeConfiguration,
+                         SKPaint paint,
+                         SKPaint borderPaint)
     {
         if (shapeConfiguration.ArcConfiguration == null)
         {
@@ -186,11 +186,11 @@ public partial class SkiaSharpDirectedGraphService
                           shapeConfiguration);
     }
 
-    private static void DrawPill(SKCanvas canvas,
-                                 DirectedGraphNode node,
-                                 ShapeConfiguration shapeConfiguration,
-                                 SKPaint paint,
-                                 SKPaint borderPaint)
+    private void DrawPill(SKCanvas canvas,
+                          DirectedGraphNode node,
+                          ShapeConfiguration shapeConfiguration,
+                          SKPaint paint,
+                          SKPaint borderPaint)
     {
         if (shapeConfiguration.PillConfiguration == null)
         {
@@ -295,12 +295,12 @@ public partial class SkiaSharpDirectedGraphService
     /// <param name="shapeConfiguration"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    private static void DrawSkewed3DShape(SKPath path,
-                                          SKCanvas canvas,
-                                          SKPaint paint,
-                                          SKPaint borderPaint,
-                                          DirectedGraphNode node,
-                                          ShapeConfiguration shapeConfiguration)
+    private void DrawSkewed3DShape(SKPath path,
+                                   SKCanvas canvas,
+                                   SKPaint paint,
+                                   SKPaint borderPaint,
+                                   DirectedGraphNode node,
+                                   ShapeConfiguration shapeConfiguration)
     {
         if (shapeConfiguration.Skew == null)
         {
@@ -331,6 +331,11 @@ public partial class SkiaSharpDirectedGraphService
 
         if (node.Shape.HasLightSourceImpact)
         {
+            if (_lightSourceCoordinates == null)
+            {
+                throw new Exception("Node has light source impact but light source coordinates were null");
+            }
+
             SKPoint frontFaceGradientStartPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientStartPoint));
             SKPoint frontFaceGradientEndPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(shapeConfiguration.FrontFaceGradientEndPoint));
 
@@ -342,6 +347,21 @@ public partial class SkiaSharpDirectedGraphService
 
             SKColor[] borderGradientColors = [ConvertColorToSKColor(node.Shape.BorderGradientStartColor),
                                               ConvertColorToSKColor(node.Shape.BorderGradientEndColor)];
+
+            SKPoint skPointLightSourceCoordinates = ConvertCoordinatesToSKPoint(_lightSourceCoordinates.Value);
+
+            // Calculate the direction of the light source relative to the skewed shape
+            SKPoint skewedCenter = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(node.Position));
+            SKPoint lightDirection = skPointLightSourceCoordinates - skewedCenter;
+
+            // Project the gradient start and end points onto the light direction vector
+            SKPoint projectedStartPoint = ProjectPointOntoVector(frontFaceGradientStartPoint, lightDirection, skewedCenter);
+            SKPoint projectedEndPoint = ProjectPointOntoVector(frontFaceGradientEndPoint, lightDirection, skewedCenter);
+
+            frontFaceGradientStartPoint = projectedStartPoint;
+            frontFaceGradientEndPoint = projectedEndPoint;
+            sideGradientStartPoint = projectedStartPoint;
+            sideGradientEndPoint = projectedEndPoint;
 
             SKShader frontFaceShader = SKShader.CreateLinearGradient(frontFaceGradientStartPoint,
                                                                      frontFaceGradientEndPoint,
@@ -364,6 +384,10 @@ public partial class SkiaSharpDirectedGraphService
             paint.Shader = frontFaceShader;
             sidePaint.Shader = sideShader;
             borderPaint.Shader = borderShader;
+        }
+        else
+        {
+            sidePaint.Color = paint.Color;
         }
 
         //draw back face
@@ -491,5 +515,76 @@ public partial class SkiaSharpDirectedGraphService
                         bottomArcEndPoint.X,
                         bottomArcEndPoint.Y,
                         borderPaint);
+    }
+
+    /// <summary>
+    /// Calculate the Euclidean distance between two node positions
+    /// </summary>
+    /// <param name="position1"></param>
+    /// <param name="position2"></param>
+    /// <returns></returns>
+    protected static double Distance(SKPoint position1,
+                                     SKPoint position2)
+    {
+        return Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
+    }
+
+    /// <summary>
+    /// Projects a point onto a vector originating from a specified origin point.
+    /// </summary>
+    /// <param name="point">The point to be projected onto the vector.</param>
+    /// <param name="vector">The vector onto which the point is projected. The vector is defined relative to the origin.</param>
+    /// <param name="origin">The origin point from which the vector originates.</param>
+    /// <returns>The projected point on the vector.</returns>
+    /// <remarks>
+    /// This method calculates the projection of a point onto a vector, effectively
+    /// finding the closest point on the vector to the original point. The projection
+    /// is performed in the direction of the vector, starting from the origin point.
+    /// </remarks>
+    private static SKPoint ProjectPointOntoVector(SKPoint point,
+                                                  SKPoint vector,
+                                                  SKPoint origin)
+    {
+        SKPoint relativePoint = point - origin;
+        float projectionLength = DotProduct(relativePoint, vector) / Length(vector);
+        SKPoint normalizedVector = Normalize(vector);
+
+        return new SKPoint(origin.X + normalizedVector.X * projectionLength,
+                           origin.Y + normalizedVector.Y * projectionLength);
+    }
+
+    /// <summary>
+    /// Normalize a point (vector)
+    /// </summary>
+    /// <param name="point"></param>
+    /// <returns></returns>
+    private static SKPoint Normalize(SKPoint point)
+    {
+        float length = Length(point);
+
+        return new SKPoint(point.X / length,
+                           point.Y / length);
+    }
+
+    /// <summary>
+    /// Calculate the dot product of two points (vectors)
+    /// </summary>
+    /// <param name="point1"></param>
+    /// <param name="point2"></param>
+    /// <returns></returns>
+    private static float DotProduct(SKPoint point1,
+                                    SKPoint point2)
+    {
+        return point1.X * point2.X + point1.Y * point2.Y;
+    }
+
+    /// <summary>
+    /// Calculate the length of a point (vector)
+    /// </summary>
+    /// <param name="point"></param>
+    /// <returns></returns>
+    private static float Length(SKPoint point)
+    {
+        return (float)Math.Sqrt(point.X * point.X + point.Y * point.Y);
     }
 }

@@ -159,6 +159,7 @@ public abstract partial class DirectedGraph
                     (lightDirectionX / lightDirectionMagnitude, lightDirectionY / lightDirectionMagnitude);
 
                 node.Shape.GradientStartColor = BlendColor(node.Shape.GradientStartColor, lightSourceColor, blendFactor);
+                node.Shape.BorderGradientStartColor = BlendColor(node.Shape.BorderGradientStartColor, lightSourceColor, blendFactor);
 
                 node.Shape.SetNodeGradientPoints(frontFaceStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius * 0.5),
                                                  frontFaceEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius * 0.5),

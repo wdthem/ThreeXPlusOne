@@ -70,7 +70,7 @@ public abstract class Shape()
         {
             if (_gradientStartColor == Color.Empty)
             {
-                _gradientStartColor = Color.FromArgb(200,
+                _gradientStartColor = Color.FromArgb(Color.A,
                                                      Color.R,
                                                      Color.G,
                                                      Color.B);
@@ -115,7 +115,7 @@ public abstract class Shape()
         {
             if (_borderGradientStartColor == Color.Empty)
             {
-                _borderGradientStartColor = Color.FromArgb(200,
+                _borderGradientStartColor = Color.FromArgb(BorderColor.A,
                                                            BorderColor.R,
                                                            BorderColor.G,
                                                            BorderColor.B);
