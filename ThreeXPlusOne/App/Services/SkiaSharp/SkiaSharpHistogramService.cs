@@ -58,7 +58,7 @@ public class SkiaSharpHistogramService() : IHistogramService
 
         // Scale the bars to leave space for the count text
         int adjustedMaxCount = maxCount + (maxCount / 10); // Adjust for space above the tallest bar
-        double scaleFactor = (effectiveCanvasHeight - xAxisLabelHeight - topPadding) / adjustedMaxCount;
+        double scaleFactor = (effectiveCanvasHeight - xAxisLabelHeight - topPadding) / (double)adjustedMaxCount;
 
         // Define maximum height and segment count
         const int maxSegmentCount = 10;
