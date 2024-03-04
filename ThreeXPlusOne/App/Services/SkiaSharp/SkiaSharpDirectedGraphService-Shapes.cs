@@ -17,7 +17,7 @@ public partial class SkiaSharpDirectedGraphService
             throw new Exception($"{nameof(DrawShapeFromVertices)}: Vertices were null");
         }
 
-        using SKPath polygonPath = new();
+        using SKPath shapePath = new();
 
         for (int i = 0; i < shapeConfiguration.Vertices.Count; i++)
         {
@@ -25,19 +25,19 @@ public partial class SkiaSharpDirectedGraphService
 
             if (i == 0)
             {
-                polygonPath.MoveTo(ConvertCoordinatesToSKPoint(vertex));
+                shapePath.MoveTo(ConvertCoordinatesToSKPoint(vertex));
             }
             else
             {
-                polygonPath.LineTo(ConvertCoordinatesToSKPoint(vertex));
+                shapePath.LineTo(ConvertCoordinatesToSKPoint(vertex));
             }
         }
 
-        polygonPath.Close();
+        path.Close();
 
         if (shapeConfiguration.Skew == null)
         {
-            Draw2DShape(polygonPath,
+            Draw2DShape(shapePath,
                         canvas,
                         paint,
                         borderPaint,
@@ -47,7 +47,7 @@ public partial class SkiaSharpDirectedGraphService
             return;
         }
 
-        DrawSkewed3DShape(polygonPath,
+        DrawSkewed3DShape(shapePath,
                           canvas,
                           paint,
                           borderPaint,
