@@ -33,7 +33,7 @@ public partial class SkiaSharpDirectedGraphService
             }
         }
 
-        path.Close();
+        shapePath.Close();
 
         if (shapeConfiguration.Skew == null)
         {
