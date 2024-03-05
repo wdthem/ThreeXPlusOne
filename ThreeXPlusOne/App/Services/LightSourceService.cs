@@ -94,7 +94,7 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// Parse the value from app  into a LightSourcePosition enum value
+    /// Parse the value from appSettings into a LightSourcePosition enum value
     /// </summary>
     /// <param name="appSettingsValue"></param>
     /// <returns></returns>
