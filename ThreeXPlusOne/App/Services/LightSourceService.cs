@@ -7,7 +7,6 @@ namespace ThreeXPlusOne.App.Services;
 public class LightSourceService() : ILightSourceService
 {
     private (int Width, int Height) _canvasDimensions;
-    private int _graphDimensions;
     private LightSourcePosition _lightSourcePosition = LightSourcePosition.None;
     private Dictionary<LightSourcePosition, (double X, double Y)>? _positionMappings;
 
@@ -60,7 +59,6 @@ public class LightSourceService() : ILightSourceService
                            string lightSourcePositionSetting)
     {
         _canvasDimensions = (canvasWidth, canvasHeight);
-        _graphDimensions = graphDimensions;
         _lightSourcePosition = ParseLightSourcePosition(lightSourcePositionSetting);
 
         InitializePositionMappings();
@@ -113,9 +111,6 @@ public class LightSourceService() : ILightSourceService
     /// </summary>
     private void InitializePositionMappings()
     {
-        double halfWidth = _canvasDimensions.Width / 2;
-        double halfHeight = _canvasDimensions.Height / 2;
-
         _positionMappings = new Dictionary<LightSourcePosition, (double X, double Y)>
         {
             { LightSourcePosition.None, (-1, -1) },
@@ -124,12 +119,12 @@ public class LightSourceService() : ILightSourceService
             { LightSourcePosition.TopCenter, (_canvasDimensions.Width / 2, 0) },
             { LightSourcePosition.TopRight, (_canvasDimensions.Width, 0) },
 
-            { LightSourcePosition.BottomLeft, (-halfWidth, _canvasDimensions.Height + halfHeight)},
-            { LightSourcePosition.BottomCenter, (_canvasDimensions.Width / 2, _canvasDimensions.Height + halfHeight) },
-            { LightSourcePosition.BottomRight, (_canvasDimensions.Width + halfWidth, _canvasDimensions.Height + halfHeight) },
+            { LightSourcePosition.BottomLeft, (0, _canvasDimensions.Height)},
+            { LightSourcePosition.BottomCenter, (_canvasDimensions.Width / 2, _canvasDimensions.Height) },
+            { LightSourcePosition.BottomRight, (_canvasDimensions.Width, _canvasDimensions.Height) },
 
-            { LightSourcePosition.LeftCenter, (-halfWidth, _canvasDimensions.Height / 2) },
-            { LightSourcePosition.RightCenter, (_canvasDimensions.Width + halfWidth, _canvasDimensions.Height / 2) }
+            { LightSourcePosition.LeftCenter, (0, _canvasDimensions.Height / 2) },
+            { LightSourcePosition.RightCenter, (_canvasDimensions.Width, _canvasDimensions.Height / 2) }
         };
     }
 }
