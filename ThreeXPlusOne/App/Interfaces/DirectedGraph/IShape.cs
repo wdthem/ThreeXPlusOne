@@ -85,9 +85,9 @@ public interface IShape
     /// <param name="sideStartPoint"></param>
     /// <param name="sideEndPoint"></param>
     void SetNodeGradientPoints((double X, double Y) frontFaceStartPoint,
-                                               (double X, double Y) frontFaceEndPoint,
-                                               (double X, double Y) sideStartPoint,
-                                               (double X, double Y) sideEndPoint);
+                               (double X, double Y) frontFaceEndPoint,
+                               (double X, double Y) sideStartPoint,
+                               (double X, double Y) sideEndPoint);
 
     /// <summary>
     /// Assign random skew values to the shape
