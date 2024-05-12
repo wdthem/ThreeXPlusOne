@@ -25,9 +25,9 @@ public interface ILightSourceService
     /// </summary>
     /// <param name="canvasWidth"></param>
     /// <param name="canvasHeight"></param>
-    /// <param name="graphDimensions"></param>
     /// <param name="lightSourcePositionSetting"></param>
-    void Initialize(int canvasWidth, int canvasHeight, int graphDimensions, string lightSourcePositionSetting);
+    /// <param name="lightSourceColor"></param>
+    void Initialize(int canvasWidth, int canvasHeight, string lightSourcePositionSetting, string lightSourceColor);
 
     /// <summary>
     /// Get canvas coordinates for the light source based on where the user specified that it should exist

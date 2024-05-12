@@ -264,6 +264,12 @@ public class NodeAestheticSettings
 public class DirectedGraphAestheticSettings
 {
     /// <summary>
+    /// Hex code for the background colour of the canvas.
+    /// </summary>
+    [AppSetting(description: "The hex code for the background colour of the canvas. Leave blank for black", suggestedValue: "")]
+    public string CanvasColor { get; set; } = "";
+
+    /// <summary>
     /// Whether or not to draw stars on the graph's background
     /// </summary>
     [AppSetting(description: "Whether or not to generate random points of white light in the background of the graph.", suggestedValue: "false")]
@@ -275,6 +281,12 @@ public class DirectedGraphAestheticSettings
     /// <remarks>2 or 3</remarks>
     [AppSetting(description: "The number of dimensions to render in the graph. Values are: 2, 3", suggestedValue: "2")]
     public int GraphDimensions { get; set; } = 2;
+
+    /// <summary>
+    /// The colour of the light source. Leave blank for default "LightYellow".
+    /// </summary>
+    [AppSetting(description: "The hex code for the colour of the light source. Leave blank for Light Yellow", suggestedValue: "")]
+    public string LightSourceColor { get; set; } = "";
 
     /// <summary>
     /// The position of the light source. Use "None" to not generate the light source.
