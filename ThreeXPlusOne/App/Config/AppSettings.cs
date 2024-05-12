@@ -266,7 +266,7 @@ public class DirectedGraphAestheticSettings
     /// <summary>
     /// Hex code for the background colour of the canvas.
     /// </summary>
-    [AppSetting(description: "The hex code for the background colour of the canvas. Leave blank for black", suggestedValue: "")]
+    [AppSetting(description: "The hex code for the background colour of the canvas. Leave blank for black.", suggestedValue: "")]
     public string CanvasColor { get; set; } = "";
 
     /// <summary>
@@ -285,7 +285,7 @@ public class DirectedGraphAestheticSettings
     /// <summary>
     /// The colour of the light source. Leave blank for default "LightYellow".
     /// </summary>
-    [AppSetting(description: "The hex code for the colour of the light source. Leave blank for Light Yellow", suggestedValue: "")]
+    [AppSetting(description: "The hex code for the colour of the light source. Leave blank for Light Yellow.", suggestedValue: "")]
     public string LightSourceColor { get; set; } = "";
 
     /// <summary>
