@@ -22,8 +22,10 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "NodeSpacerY": 125
   },
   "DirectedGraphAestheticSettings": {
+    "CanvasColor": "",
     "GenerateBackgroundStars": false,
     "GraphDimensions": 2,
+    "LightSourceColor": "",
     "LightSourcePosition": "None",
     "Pseudo3DViewerDistance": 200
   },
@@ -51,8 +53,10 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "NodeSpacerY": 125
   },
   "DirectedGraphAestheticSettings": {
+    "CanvasColor": "",
     "GenerateBackgroundStars": false,
     "GraphDimensions": 2,
+    "LightSourceColor": "",
     "LightSourcePosition": "None",
     "Pseudo3DViewerDistance": 200
   },
@@ -80,8 +84,10 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "NodeSpacerY": 225
   },
   "DirectedGraphAestheticSettings": {
+    "CanvasColor": "",
     "GenerateBackgroundStars": false,
     "GraphDimensions": 3,
+    "LightSourceColor": "",
     "LightSourcePosition": "None",
     "Pseudo3DViewerDistance": 200
   },

@@ -8,6 +8,7 @@ public class LightSourceService() : ILightSourceService
 {
     private (int Width, int Height) _canvasDimensions;
     private LightSourcePosition _lightSourcePosition = LightSourcePosition.None;
+    private Color _lightSourceColor = Color.LightYellow;
     private Dictionary<LightSourcePosition, (double X, double Y)>? _positionMappings;
 
     /// <summary>
@@ -39,10 +40,7 @@ public class LightSourceService() : ILightSourceService
     {
         get
         {
-            return Color.FromArgb(200,
-                                  Color.LightYellow.R,
-                                  Color.LightYellow.G,
-                                  Color.LightYellow.B);
+            return _lightSourceColor;
         }
     }
 
@@ -51,15 +49,16 @@ public class LightSourceService() : ILightSourceService
     /// </summary>
     /// <param name="canvasWidth"></param>
     /// <param name="canvasHeight"></param>
-    /// <param name="graphDimensions"></param>
     /// <param name="lightSourcePositionSetting"></param>
+    /// <param name="lightSourceColor"></param>
     public void Initialize(int canvasWidth,
                            int canvasHeight,
-                           int graphDimensions,
-                           string lightSourcePositionSetting)
+                           string lightSourcePositionSetting,
+                           string lightSourceColor)
     {
         _canvasDimensions = (canvasWidth, canvasHeight);
         _lightSourcePosition = ParseLightSourcePosition(lightSourcePositionSetting);
+        _lightSourceColor = SetLightSourceColor(lightSourceColor);
 
         InitializePositionMappings();
     }
@@ -89,6 +88,30 @@ public class LightSourceService() : ILightSourceService
     public double GetLightSourceMaxDistanceOfEffect()
     {
         return _canvasDimensions.Height;
+    }
+
+    /// <summary>
+    /// Set the light source colour based on app settings
+    /// </summary>
+    /// <param name="hexCode"></param>
+    private static Color SetLightSourceColor(string hexCode)
+    {
+        if (string.IsNullOrWhiteSpace(hexCode))
+        {
+            return Color.LightYellow;
+        }
+
+        Color colorFromHexCode = ColorTranslator.FromHtml(hexCode);
+
+        if (colorFromHexCode == Color.Empty)
+        {
+            return Color.LightYellow;
+        }
+
+        return Color.FromArgb(200,
+                              colorFromHexCode.R,
+                              colorFromHexCode.G,
+                              colorFromHexCode.B);
     }
 
     /// <summary>

@@ -116,7 +116,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         Task.Run(() => graphService.Initialize([.. _nodes.Values],
                                                _canvasWidth,
                                                _canvasHeight,
-                                               Color.Black)).Wait();
+                                               GetCanvasColor())).Wait();
 
 
         if (_appSettings.DirectedGraphAestheticSettings.GenerateBackgroundStars)
@@ -126,8 +126,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         lightSourceService.Initialize(_canvasWidth,
                                       _canvasHeight,
-                                      _appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions,
-                                      _appSettings.DirectedGraphAestheticSettings.LightSourcePosition);
+                                      _appSettings.DirectedGraphAestheticSettings.LightSourcePosition,
+                                      _appSettings.DirectedGraphAestheticSettings.LightSourceColor);
 
         if (lightSourceService.LightSourcePosition != LightSourcePosition.None)
         {
@@ -154,6 +154,30 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                               TaskScheduler.Default).Wait();
 
         Task.Run(graphService.Dispose).Wait();
+    }
+
+    /// <summary>
+    /// Get the a colour object to use for the canvas background colour
+    /// </summary>
+    /// <returns></returns>
+    private Color GetCanvasColor()
+    {
+        if (string.IsNullOrWhiteSpace(_appSettings.DirectedGraphAestheticSettings.CanvasColor))
+        {
+            return Color.Black;
+        }
+
+        Color colorFromHexCode = ColorTranslator.FromHtml(_appSettings.DirectedGraphAestheticSettings.CanvasColor);
+
+        if (colorFromHexCode == Color.Empty)
+        {
+            return Color.Black;
+        }
+
+        return Color.FromArgb(255,
+                              colorFromHexCode.R,
+                              colorFromHexCode.G,
+                              colorFromHexCode.B);
     }
 
     /// <summary>
