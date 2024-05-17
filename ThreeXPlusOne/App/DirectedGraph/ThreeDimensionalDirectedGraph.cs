@@ -62,7 +62,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         _nodesPositioned = 3;
 
-        //recursive method to position a nodes and its children
+        //recursive method to position a node and its children
         PositionNode(_nodes[1]);
 
         _consoleService.WriteDone();
