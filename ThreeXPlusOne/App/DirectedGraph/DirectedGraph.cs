@@ -157,30 +157,6 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Get the a colour object to use for the canvas background colour
-    /// </summary>
-    /// <returns></returns>
-    private Color GetCanvasColor()
-    {
-        if (string.IsNullOrWhiteSpace(_appSettings.DirectedGraphAestheticSettings.CanvasColor))
-        {
-            return Color.Black;
-        }
-
-        Color colorFromHexCode = ColorTranslator.FromHtml(_appSettings.DirectedGraphAestheticSettings.CanvasColor);
-
-        if (colorFromHexCode == Color.Empty)
-        {
-            return Color.Black;
-        }
-
-        return Color.FromArgb(255,
-                              colorFromHexCode.R,
-                              colorFromHexCode.G,
-                              colorFromHexCode.B);
-    }
-
-    /// <summary>
     /// Set the canvas dimensions to a bit more than the bounding box of all the nodes
     /// </summary>
     protected void SetCanvasSize()
@@ -205,6 +181,30 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                      (double X, double Y) position2)
     {
         return Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
+    }
+
+    /// <summary>
+    /// Get the a colour object to use for the canvas background colour
+    /// </summary>
+    /// <returns></returns>
+    private Color GetCanvasColor()
+    {
+        if (string.IsNullOrWhiteSpace(_appSettings.DirectedGraphAestheticSettings.CanvasColor))
+        {
+            return Color.Black;
+        }
+
+        Color colorFromHexCode = ColorTranslator.FromHtml(_appSettings.DirectedGraphAestheticSettings.CanvasColor);
+
+        if (colorFromHexCode == Color.Empty)
+        {
+            return Color.Black;
+        }
+
+        return Color.FromArgb(255,                  //fully opaque background
+                              colorFromHexCode.R,
+                              colorFromHexCode.G,
+                              colorFromHexCode.B);
     }
 
     /// <summary>

@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.12.7</Version>
+    <Version>1.12.8</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Canvas background colour as app setting</TagMessage>
+    <TagMessage>Code cleanup</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
