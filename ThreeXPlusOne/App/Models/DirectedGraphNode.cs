@@ -3,12 +3,12 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.Models;
 
-public record DirectedGraphNode(int NumberValue)
+public record DirectedGraphNode(int numberValue)
 {
     /// <summary>
     /// The number value of the node from the series of generated numbers
     /// </summary>
-    public int NumberValue { get; set; } = NumberValue;
+    public int NumberValue { get; set; } = numberValue;
 
     /// <summary>
     /// The series of numbers to which this node belongs
