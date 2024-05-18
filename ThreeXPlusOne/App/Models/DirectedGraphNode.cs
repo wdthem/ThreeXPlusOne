@@ -13,7 +13,7 @@ public record DirectedGraphNode(int NumberValue)
     /// <summary>
     /// The series of numbers to which this node belongs
     /// </summary>
-    public int SeriesNumber { get; set; } = 0;
+    public int SeriesNumber { get; set; }
 
     /// <summary>
     /// The node's parent node
@@ -31,7 +31,7 @@ public record DirectedGraphNode(int NumberValue)
     /// <remarks>
     /// When running the algorithm on many numbers, there can be many numbers at any given depth.
     /// </remarks>
-    public int Depth { get; set; } = -1;
+    public int Depth { get; set; }
 
     /// <summary>
     /// The x,y position of the node on the graph
