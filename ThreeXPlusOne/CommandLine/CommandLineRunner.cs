@@ -32,21 +32,29 @@ public class CommandLineRunner(Process process,
         {
             consoleService.WriteError(string.Join(", ", commandExecutionSettings.CommandParsingMessages));
             consoleService.WriteCommandUsage(commandExecutionSettings.OptionsMetadata);
+
+            return;
         }
 
         if (commandExecutionSettings.WriteHelpText)
         {
             consoleService.WriteHelpText(commandExecutionSettings.OptionsMetadata);
+
+            return;
         }
 
         if (commandExecutionSettings.WriteVersionText)
         {
             consoleService.WriteVersionText();
+
+            return;
         }
 
         if (commandExecutionSettings.WriteConfigText)
         {
             consoleService.WriteConfigText();
+
+            return;
         }
 
         //user provided a path, but the path was invalid
