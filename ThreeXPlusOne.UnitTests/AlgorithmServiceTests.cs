@@ -6,12 +6,12 @@ using Xunit;
 
 namespace ThreeXPlusOne.UnitTests;
 
-public class AlgorithmTests
+public class AlgorithmServiceTests
 {
     private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly AlgorithmService _algorithmService;
 
-    public AlgorithmTests()
+    public AlgorithmServiceTests()
     {
         _consoleServiceMock = new Mock<IConsoleService>();
         _algorithmService = new AlgorithmService(_consoleServiceMock.Object);
