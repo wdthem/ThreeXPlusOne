@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using ThreeXPlusOne.App.Config;
-using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 
@@ -13,7 +12,7 @@ public class Process(IOptions<AppSettings> appSettings,
                      IHistogramService histogramService,
                      IMetadataService metadataService,
                      IFileService fileService,
-                     IConsoleService consoleService) : IProcess
+                     IConsoleService consoleService)
 {
     private readonly AppSettings _appSettings = appSettings.Value;
     private bool _generatedRandomNumbers = false;

@@ -1,10 +1,10 @@
-using ThreeXPlusOne.App.Interfaces;
+using ThreeXPlusOne.App;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.CommandLine.Models;
 
 namespace ThreeXPlusOne.CommandLine;
 
-public class CommandLineRunner(IProcess process,
+public class CommandLineRunner(Process process,
                                IConsoleService consoleService)
 {
     /// <summary>
