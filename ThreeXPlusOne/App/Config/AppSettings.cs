@@ -216,15 +216,15 @@ public class NodeAestheticSettings
     public bool DrawNumbersOnNodes { get; set; } = true;
 
     /// <summary>
-    /// Hex values to be used for node colours
+    /// Hex values to be used for node colours (include the '#' with each code)
     /// </summary>
-    [AppSetting(description: $"Comma-separated list of hex codes to use as colours for the nodes. Leave blank to use randomly-selected colours. Overrides {nameof(NodeColorsBias)}.", suggestedValue: "")]
+    [AppSetting(description: $"Comma-separated list of hex codes to use as colours for the nodes (include the '#' with each code). Leave blank to use randomly-selected colours. Overrides {nameof(NodeColorsBias)}.", suggestedValue: "")]
     public string NodeColors { get; set; } = "";
 
     /// <summary>
-    /// Hex values to be used to bias random colour selection toward - so a certain percentage are guaranteed to be in an around these colours
+    /// Hex values to be used to bias random colour selection toward (include the '#' with each code). This makes it so a certain percentage of nodes are guaranteed to be in and around these colours
     /// </summary>
-    [AppSetting(description: $"Comma-separated list of hex codes to bias random colour selection toward. Leave blank for 100% randomly-selected colours. Ignored if {nameof(NodeColors)} is set.", suggestedValue: "")]
+    [AppSetting(description: $"Comma-separated list of hex codes to bias random colour selection toward (include the '#' with each code). Leave blank for 100% randomly-selected colours. Ignored if {nameof(NodeColors)} is set.", suggestedValue: "")]
     public string NodeColorsBias { get; set; } = "";
 
     /// <summary>
@@ -264,9 +264,9 @@ public class NodeAestheticSettings
 public class DirectedGraphAestheticSettings
 {
     /// <summary>
-    /// Hex code for the background colour of the canvas.
+    /// Hex code for the background colour of the canvas (include the '#' with the code).
     /// </summary>
-    [AppSetting(description: "The hex code for the background colour of the canvas. Leave blank for black.", suggestedValue: "")]
+    [AppSetting(description: "The hex code for the background colour of the canvas (include the '#' with the code). Leave blank for black.", suggestedValue: "")]
     public string CanvasColor { get; set; } = "";
 
     /// <summary>
@@ -283,9 +283,9 @@ public class DirectedGraphAestheticSettings
     public int GraphDimensions { get; set; } = 2;
 
     /// <summary>
-    /// The colour of the light source. Leave blank for default "LightYellow".
+    /// The colour of the light source (include the '#' with the code). Leave blank for default "LightYellow".
     /// </summary>
-    [AppSetting(description: "The hex code for the colour of the light source. Leave blank for Light Yellow.", suggestedValue: "")]
+    [AppSetting(description: "The hex code for the colour of the light source (include the '#' with the code). Leave blank for Light Yellow.", suggestedValue: "")]
     public string LightSourceColor { get; set; } = "";
 
     /// <summary>
