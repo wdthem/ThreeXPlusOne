@@ -1,11 +1,10 @@
 ﻿using System.Text;
-using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.Services;
 
-namespace ThreeXPlusOne.App;
+namespace ThreeXPlusOne.App.Services;
 
-public class Metadata(IFileService fileService,
-                      IConsoleService consoleService) : IMetadata
+public class MetadataService(IFileService fileService,
+                             IConsoleService consoleService) : IMetadataService
 {
     public void GenerateMedatadataFile(List<List<int>> seriesData)
     {

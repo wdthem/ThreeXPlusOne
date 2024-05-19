@@ -1,6 +1,6 @@
-﻿namespace ThreeXPlusOne.App.Interfaces;
+﻿namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IMetadata
+public interface IMetadataService
 {
     /// <summary>
     /// Generate a file with various metadata about the specific run of process with the generated or supplied numbers

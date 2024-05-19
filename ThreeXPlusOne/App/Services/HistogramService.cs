@@ -1,11 +1,10 @@
-﻿using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Services;
+﻿using ThreeXPlusOne.App.Interfaces.Services;
 
-namespace ThreeXPlusOne.App;
+namespace ThreeXPlusOne.App.Services;
 
-public class Histogram(IHistogramService histogramService,
-                       IFileService fileService,
-                       IConsoleService consoleService) : IHistogram
+public class HistogramService(IHistogramDrawingService histogramDrawingService,
+                              IFileService fileService,
+                              IConsoleService consoleService) : IHistogramService
 {
     public void GenerateHistogram(List<List<int>> seriesData)
     {
@@ -26,10 +25,10 @@ public class Histogram(IHistogramService histogramService,
         int width = 500;
         int height = 400;
 
-        histogramService.Initialize(width, height);
-        histogramService.Draw(digitCounts, "Numbers in series starting from 1-9");
-        histogramService.SaveImage(filePath);
-        histogramService.Dispose();
+        histogramDrawingService.Initialize(width, height);
+        histogramDrawingService.Draw(digitCounts, "Numbers in series starting from 1-9");
+        histogramDrawingService.SaveImage(filePath);
+        histogramDrawingService.Dispose();
 
         consoleService.WriteDone();
     }

@@ -8,11 +8,11 @@ using ThreeXPlusOne.App.Models;
 namespace ThreeXPlusOne.App.DirectedGraph;
 
 public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
-                                           IEnumerable<IDirectedGraphService> graphServices,
+                                           IEnumerable<IDirectedGraphDrawingService> directedGraphDrawingServices,
                                            ILightSourceService lightSourceService,
                                            IConsoleService consoleService,
                                            ShapeFactory shapeFactory)
-                                                : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
+                                                : DirectedGraph(appSettings, directedGraphDrawingServices, lightSourceService, consoleService, shapeFactory),
                                                   IDirectedGraph
 {
     private int _nodesPositioned = 0;

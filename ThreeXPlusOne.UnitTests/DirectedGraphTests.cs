@@ -11,7 +11,6 @@ using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.UnitTests.Mocks;
 using Xunit;
-using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.UnitTests;
 
@@ -19,8 +18,8 @@ public class DirectedGraphTests
 {
     private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly Mock<ILightSourceService> _lightSourceServiceMock;
-    private readonly IEnumerable<IDirectedGraphService> _graphServicesList;
-    private readonly Mock<IDirectedGraphService> _graphServiceMock;
+    private readonly IEnumerable<IDirectedGraphDrawingService> _graphServicesList;
+    private readonly Mock<IDirectedGraphDrawingService> _graphServiceMock;
     private readonly ShapeFactory _shapeFactory;
     private readonly IOptions<AppSettings> _appSettings = new OptionsWrapper<AppSettings>
     (
@@ -31,7 +30,7 @@ public class DirectedGraphTests
     {
         _consoleServiceMock = new Mock<IConsoleService>();
         _lightSourceServiceMock = new Mock<ILightSourceService>();
-        _graphServiceMock = new Mock<IDirectedGraphService>();
+        _graphServiceMock = new Mock<IDirectedGraphDrawingService>();
         _graphServicesList = [_graphServiceMock.Object];
         _shapeFactory = new ShapeFactory([]);
     }

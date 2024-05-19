@@ -9,7 +9,7 @@ using ThreeXPlusOne.App.Models;
 namespace ThreeXPlusOne.App.DirectedGraph;
 
 public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
-                                            IEnumerable<IDirectedGraphService> graphServices,
+                                            IEnumerable<IDirectedGraphDrawingService> graphServices,
                                             ILightSourceService lightSourceService,
                                             IConsoleService consoleService,
                                             ShapeFactory shapeFactory)
@@ -102,7 +102,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     /// <exception cref="Exception"></exception>
     protected void DrawDirectedGraph()
     {
-        IDirectedGraphService graphService = graphServices.ToList()
+        IDirectedGraphDrawingService graphService = graphServices.ToList()
                                                           .Where(graphService => graphService.GraphProvider == _appSettings.GraphProvider)
                                                           .First();
 
@@ -211,7 +211,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     /// Configure actions of the directed graph service
     /// </summary>
     /// <param name="graphService"></param>
-    private void ConfigureGraphServiceActions(IDirectedGraphService graphService)
+    private void ConfigureGraphServiceActions(IDirectedGraphDrawingService graphService)
     {
         graphService.OnStart = (message) =>
         {

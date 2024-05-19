@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Moq;
-using ThreeXPlusOne.App;
 using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Services;
 using Xunit;
 
 namespace ThreeXPlusOne.UnitTests;
@@ -9,12 +9,12 @@ namespace ThreeXPlusOne.UnitTests;
 public class AlgorithmTests
 {
     private readonly Mock<IConsoleService> _consoleServiceMock;
-    private readonly Algorithm _algorithm;
+    private readonly AlgorithmService _algorithmService;
 
     public AlgorithmTests()
     {
         _consoleServiceMock = new Mock<IConsoleService>();
-        _algorithm = new Algorithm(_consoleServiceMock.Object);
+        _algorithmService = new AlgorithmService(_consoleServiceMock.Object);
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ public class AlgorithmTests
         List<int> expectedEndingSeries = [16, 8, 4, 2, 1];
 
         // Act
-        List<List<int>> results = _algorithm.Run(startingNumbers);
+        List<List<int>> results = _algorithmService.Run(startingNumbers);
 
         // Assert
         foreach (List<int> series in results)
@@ -51,7 +51,7 @@ public class AlgorithmTests
         List<int> expectedEndingSeriesNumberCounts = [3, 2, 1];
 
         // Act
-        List<List<int>> results = _algorithm.Run(startingNumbers);
+        List<List<int>> results = _algorithmService.Run(startingNumbers);
 
         // Assert
         foreach (List<int> series in results)
@@ -74,7 +74,7 @@ public class AlgorithmTests
         List<int> startingNumbers = [-3, -29, -824];
 
         // Act
-        List<List<int>> results = _algorithm.Run(startingNumbers);
+        List<List<int>> results = _algorithmService.Run(startingNumbers);
 
         // Assert
         foreach (List<int> series in results)
@@ -93,6 +93,6 @@ public class AlgorithmTests
         List<int> startingNumbers = [];
 
         // Act + Assert
-        _algorithm.Invoking(algorithm => algorithm.Run(startingNumbers)).Should().Throw<Exception>();
+        _algorithmService.Invoking(algorithm => algorithm.Run(startingNumbers)).Should().Throw<Exception>();
     }
 }

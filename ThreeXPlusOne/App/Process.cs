@@ -8,10 +8,10 @@ using ThreeXPlusOne.App.Interfaces.Services;
 namespace ThreeXPlusOne.App;
 
 public class Process(IOptions<AppSettings> appSettings,
-                     IAlgorithm algorithm,
+                     IAlgorithmService algorithmService,
                      IEnumerable<IDirectedGraph> directedGraphs,
-                     IHistogram histogram,
-                     IMetadata metadata,
+                     IHistogramService histogramService,
+                     IMetadataService metadataService,
                      IFileService fileService,
                      IConsoleService consoleService) : IProcess
 {
@@ -31,10 +31,10 @@ public class Process(IOptions<AppSettings> appSettings,
         consoleService.WriteSettings();
 
         List<int> inputValues = GetInputValues(stopwatch);
-        List<List<int>> seriesLists = algorithm.Run(inputValues);
+        List<List<int>> seriesLists = algorithmService.Run(inputValues);
 
-        metadata.GenerateMedatadataFile(seriesLists);
-        histogram.GenerateHistogram(seriesLists);
+        metadataService.GenerateMedatadataFile(seriesLists);
+        histogramService.GenerateHistogram(seriesLists);
 
         GenerateDirectedGraph(seriesLists);
 
