@@ -5,7 +5,7 @@ namespace ThreeXPlusOne.App.Services;
 public class AlgorithmService(IConsoleService consoleService) : IAlgorithmService
 {
     /// <summary>
-    /// Execute the the 3x+1 algorithm for all numbers either supplied by the user or generated randomly
+    /// Execute the 3x+1 algorithm for all numbers either supplied by the user or generated randomly
     /// </summary>
     /// <param name="inputValues"></param>
     /// <returns></returns>
