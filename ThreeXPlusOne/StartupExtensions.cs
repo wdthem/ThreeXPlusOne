@@ -9,7 +9,6 @@ using ThreeXPlusOne.App.Services;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Services.SkiaSharp;
-using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
 using ThreeXPlusOne.App.DirectedGraph.Shapes;
@@ -67,7 +66,7 @@ public static class StartupExtensions
 
         services.AddScoped<CommandLineRunner>();
 
-        services.AddScoped<IProcess, Process>();
+        services.AddScoped<Process>();
         services.AddScoped<IAlgorithmService, AlgorithmService>();
         services.AddScoped<IHistogramService, HistogramService>();
         services.AddScoped<IMetadataService, MetadataService>();
