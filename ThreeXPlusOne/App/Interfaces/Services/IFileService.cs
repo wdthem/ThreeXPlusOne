@@ -1,6 +1,6 @@
 ﻿namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IFileService
+public interface IFileService : IScopedService
 {
     /// <summary>
     /// Save the app settings object values back to the app settings file

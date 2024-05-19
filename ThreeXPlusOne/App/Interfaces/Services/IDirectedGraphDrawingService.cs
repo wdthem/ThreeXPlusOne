@@ -5,7 +5,7 @@ using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IDirectedGraphDrawingService : IDisposable
+public interface IDirectedGraphDrawingService : IScopedService, IDisposable
 {
     /// <summary>
     /// Action to perform when the service starts a task

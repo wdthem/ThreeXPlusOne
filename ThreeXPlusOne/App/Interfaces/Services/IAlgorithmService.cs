@@ -1,6 +1,6 @@
 ﻿namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IAlgorithmService
+public interface IAlgorithmService : IScopedService
 {
     /// <summary>
     /// Run the 3x+1 algorithm on each of the provided numbers

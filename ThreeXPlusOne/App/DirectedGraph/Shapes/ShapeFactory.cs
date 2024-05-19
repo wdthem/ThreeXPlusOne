@@ -1,9 +1,10 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
-public class ShapeFactory(IEnumerable<IShape> shapes)
+public class ShapeFactory(IEnumerable<IShape> shapes) : ISingletonService
 {
     private List<KeyValuePair<ShapeType, ShapeSelectionWeight>>? _shapeSelectionWeights;
     private int _totalWeight = 0;
