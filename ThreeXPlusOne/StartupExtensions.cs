@@ -124,18 +124,18 @@ public static class StartupExtensions
             {
                 foreach (Type interfaceType in interfaceTypes)
                 {
-                    services.AddScoped(interfaceType, implementationType);
+                    services.AddSingleton(interfaceType, implementationType);
                 }
             }
             else
             {
-                services.AddScoped(implementationType);
+                services.AddSingleton(implementationType);
             }
         }
     }
 
     /// <summary>
-    /// Add all implementers of IDirectedGraph to the DI container
+    /// Add all implementers of IDirectedGraph to the DI container as scoped services
     /// </summary>
     /// <param name="services"></param>
     private static void AddDirectedGraphs(this IServiceCollection services)
@@ -148,12 +148,12 @@ public static class StartupExtensions
 
         foreach (Type type in shapeTypes)
         {
-            services.AddSingleton(typeof(IDirectedGraph), type);
+            services.AddScoped(typeof(IDirectedGraph), type);
         }
     }
 
     /// <summary>
-    /// Add all implementers of IShape to the DI container
+    /// Add all implementers of IShape to the DI container as singletons
     /// </summary>
     /// <param name="services"></param>
     private static void AddDirectedGraphShapes(this IServiceCollection services)
