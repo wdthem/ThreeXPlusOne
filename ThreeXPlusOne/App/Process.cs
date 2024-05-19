@@ -12,7 +12,7 @@ public class Process(IOptions<AppSettings> appSettings,
                      IHistogramService histogramService,
                      IMetadataService metadataService,
                      IFileService fileService,
-                     IConsoleService consoleService)
+                     IConsoleService consoleService) : IScopedService
 {
     private readonly AppSettings _appSettings = appSettings.Value;
     private bool _generatedRandomNumbers = false;

@@ -1,6 +1,6 @@
 ﻿namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IHistogramService
+public interface IHistogramService : IScopedService
 {
     /// <summary>
     /// Generate a histogram based on the given run of the process

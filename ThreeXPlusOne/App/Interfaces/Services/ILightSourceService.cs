@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Enums;
 
 namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface ILightSourceService
+public interface ILightSourceService : IScopedService
 {
     /// <summary>
     /// The enum describing the origin position of the light source

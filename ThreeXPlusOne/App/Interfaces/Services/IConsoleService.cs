@@ -1,6 +1,6 @@
 namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IConsoleService
+public interface IConsoleService : ISingletonService
 {
     /// <summary>
     /// Issue a Console.Write() command

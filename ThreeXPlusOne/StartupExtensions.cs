@@ -3,22 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using ThreeXPlusOne.CommandLine;
-using ThreeXPlusOne.App;
-using ThreeXPlusOne.App.DirectedGraph;
-using ThreeXPlusOne.App.Services;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
-using ThreeXPlusOne.App.Services.SkiaSharp;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
-using ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 namespace ThreeXPlusOne;
 
 public static class StartupExtensions
 {
     /// <summary>
-    /// Set up the host required for dependency injection
+    /// Set up the host required for dependency injection and configure settings and the DI container
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="commandExecutionSettings"></param>
@@ -55,42 +50,113 @@ public static class StartupExtensions
     }
 
     /// <summary>
-    /// Configure all required services for dependency injection
+    /// Configure all required classes/services for dependency injection
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
     private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<AppSettings>(configuration);
-
+        //command line
         services.AddScoped<CommandLineRunner>();
 
-        services.AddScoped<Process>();
-        services.AddScoped<IAlgorithmService, AlgorithmService>();
-        services.AddScoped<IHistogramService, HistogramService>();
-        services.AddScoped<IMetadataService, MetadataService>();
-        services.AddScoped<IFileService, FileService>();
-        services.AddScoped<IHistogramDrawingService, SkiaSharpHistogramDrawingService>();
-        services.AddScoped<ILightSourceService, LightSourceService>();
-
-        services.AddScoped<IDirectedGraph, TwoDimensionalDirectedGraph>();
-        services.AddScoped<IDirectedGraph, ThreeDimensionalDirectedGraph>();
-        services.AddScoped<IDirectedGraphDrawingService, SkiaSharpDirectedGraphDrawingService>();
-
-        services.AddShapes();
-
-        services.AddSingleton<ShapeFactory>();
-        services.AddSingleton<IConsoleService, ConsoleService>();
+        //app
+        services.Configure<AppSettings>(configuration);
+        services.AddScopedServices();
+        services.AddSingletonServices();
+        services.AddDirectedGraphs();
+        services.AddDirectedGraphShapes();
 
         return services;
+    }
+
+    /// <summary>
+    /// Add all implementers of IScopedService to the DI container
+    /// </summary>
+    /// <param name="services"></param>
+    private static void AddScopedServices(this IServiceCollection services)
+    {
+        Assembly assembly = typeof(IScopedService).Assembly;
+
+        List<Type> appServices = assembly.GetTypes()
+                                         .Where(type => typeof(IScopedService).IsAssignableFrom(type) && !type.IsAbstract)
+                                         .ToList();
+
+        foreach (Type implementationType in appServices)
+        {
+            var interfaceTypes = implementationType.GetInterfaces()
+                                                   .Where(i => i != typeof(IScopedService) && i != typeof(IDisposable))
+                                                   .ToList();
+
+            if (interfaceTypes.Count != 0)
+            {
+                foreach (Type interfaceType in interfaceTypes)
+                {
+                    services.AddScoped(interfaceType, implementationType);
+                }
+            }
+            else
+            {
+                services.AddScoped(implementationType);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Add all implementers of ISingletonService to the DI container
+    /// </summary>
+    /// <param name="services"></param>
+    private static void AddSingletonServices(this IServiceCollection services)
+    {
+        Assembly assembly = typeof(ISingletonService).Assembly;
+
+        List<Type> appServices = assembly.GetTypes()
+                                         .Where(type => typeof(ISingletonService).IsAssignableFrom(type) && !type.IsAbstract)
+                                         .ToList();
+
+        foreach (Type implementationType in appServices)
+        {
+            var interfaceTypes = implementationType.GetInterfaces()
+                                                   .Where(i => i != typeof(ISingletonService) && i != typeof(IDisposable))
+                                                   .ToList();
+
+            if (interfaceTypes.Count != 0)
+            {
+                foreach (Type interfaceType in interfaceTypes)
+                {
+                    services.AddScoped(interfaceType, implementationType);
+                }
+            }
+            else
+            {
+                services.AddScoped(implementationType);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Add all implementers of IDirectedGraph to the DI container
+    /// </summary>
+    /// <param name="services"></param>
+    private static void AddDirectedGraphs(this IServiceCollection services)
+    {
+        Assembly assembly = typeof(IDirectedGraph).Assembly;
+
+        List<Type> shapeTypes = assembly.GetTypes()
+                                        .Where(type => typeof(IDirectedGraph).IsAssignableFrom(type) && !type.IsAbstract)
+                                        .ToList();
+
+        foreach (Type type in shapeTypes)
+        {
+            services.AddSingleton(typeof(IDirectedGraph), type);
+        }
     }
 
     /// <summary>
     /// Add all implementers of IShape to the DI container
     /// </summary>
     /// <param name="services"></param>
-    private static void AddShapes(this IServiceCollection services)
+    private static void AddDirectedGraphShapes(this IServiceCollection services)
     {
         Assembly assembly = typeof(IShape).Assembly;
 

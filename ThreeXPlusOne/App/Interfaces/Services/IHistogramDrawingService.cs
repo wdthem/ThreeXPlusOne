@@ -2,7 +2,7 @@ using ThreeXPlusOne.App.Enums;
 
 namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IHistogramDrawingService : IDisposable
+public interface IHistogramDrawingService : IScopedService, IDisposable
 {
     /// <summary>
     /// The graph provider implementing the interface
