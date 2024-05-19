@@ -4,7 +4,7 @@ using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
-public class SkiaSharpHistogramService() : IHistogramService
+public class SkiaSharpHistogramDrawingService() : IHistogramDrawingService
 {
     private SKBitmap? _bitmap;
     private SKCanvas? _canvas;

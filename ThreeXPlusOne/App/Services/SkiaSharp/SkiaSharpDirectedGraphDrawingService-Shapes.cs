@@ -4,7 +4,7 @@ using ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
-public partial class SkiaSharpDirectedGraphService
+public partial class SkiaSharpDirectedGraphDrawingService
 {
     private void DrawShapeFromVertices(SKCanvas canvas,
                                        DirectedGraphNode node,

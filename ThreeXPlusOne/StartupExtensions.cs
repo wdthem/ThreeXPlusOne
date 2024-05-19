@@ -68,16 +68,16 @@ public static class StartupExtensions
         services.AddScoped<CommandLineRunner>();
 
         services.AddScoped<IProcess, Process>();
-        services.AddScoped<IAlgorithm, Algorithm>();
-        services.AddScoped<IHistogram, Histogram>();
-        services.AddScoped<IMetadata, Metadata>();
+        services.AddScoped<IAlgorithmService, AlgorithmService>();
+        services.AddScoped<IHistogramService, HistogramService>();
+        services.AddScoped<IMetadataService, MetadataService>();
         services.AddScoped<IFileService, FileService>();
-        services.AddScoped<IHistogramService, SkiaSharpHistogramService>();
+        services.AddScoped<IHistogramDrawingService, SkiaSharpHistogramDrawingService>();
         services.AddScoped<ILightSourceService, LightSourceService>();
 
         services.AddScoped<IDirectedGraph, TwoDimensionalDirectedGraph>();
         services.AddScoped<IDirectedGraph, ThreeDimensionalDirectedGraph>();
-        services.AddScoped<IDirectedGraphService, SkiaSharpDirectedGraphService>();
+        services.AddScoped<IDirectedGraphDrawingService, SkiaSharpDirectedGraphDrawingService>();
 
         services.AddShapes();
 

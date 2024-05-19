@@ -8,7 +8,7 @@ using ThreeXPlusOne.App.Interfaces.Services;
 namespace ThreeXPlusOne.UnitTests.Mocks;
 
 public class MockDirectedGraph(IOptions<AppSettings> appSettings,
-                               IEnumerable<IDirectedGraphService> graphServices,
+                               IEnumerable<IDirectedGraphDrawingService> graphServices,
                                ILightSourceService lightSourceService,
                                IConsoleService consoleService,
                                ShapeFactory shapeFactory)

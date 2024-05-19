@@ -8,7 +8,7 @@ using ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
-public partial class SkiaSharpDirectedGraphService(IFileService fileService) : IDirectedGraphService
+public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileService) : IDirectedGraphDrawingService
 {
     private List<DirectedGraphNode>? _nodes;
     private SKSurface? _surface;

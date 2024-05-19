@@ -8,7 +8,7 @@ using ThreeXPlusOne.App.Models;
 namespace ThreeXPlusOne.App.DirectedGraph;
 
 public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
-                                         IEnumerable<IDirectedGraphService> graphServices,
+                                         IEnumerable<IDirectedGraphDrawingService> graphServices,
                                          ILightSourceService lightSourceService,
                                          IConsoleService consoleService,
                                          ShapeFactory shapeFactory)

@@ -1,9 +1,8 @@
-﻿using ThreeXPlusOne.App.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Services;
+﻿using ThreeXPlusOne.App.Interfaces.Services;
 
-namespace ThreeXPlusOne.App;
+namespace ThreeXPlusOne.App.Services;
 
-public class Algorithm(IConsoleService consoleService) : IAlgorithm
+public class AlgorithmService(IConsoleService consoleService) : IAlgorithmService
 {
     /// <summary>
     /// Execute the the 3x+1 algorithm for all numbers either supplied by the user or generated randomly

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using Moq;
 using ThreeXPlusOne.App;
 using ThreeXPlusOne.App.Config;
-using ThreeXPlusOne.App.Interfaces;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using Xunit;
@@ -17,22 +16,22 @@ public class ProcessTests
         new AppSettings { }
     );
 
-    private readonly Mock<IAlgorithm> _algorithmMock;
+    private readonly Mock<IAlgorithmService> _algorithmMock;
     private readonly Mock<IDirectedGraph> _directedGraph;
     private readonly IEnumerable<IDirectedGraph> _directedGraphs;
-    private readonly Mock<IHistogram> _histogramMock;
-    private readonly Mock<IMetadata> _metadataMock;
+    private readonly Mock<IHistogramService> _histogramMock;
+    private readonly Mock<IMetadataService> _metadataMock;
     private readonly Mock<IFileService> _fileServiceMock;
     private readonly Mock<IConsoleService> _consoleServiceMock;
 
     public ProcessTests()
     {
-        _algorithmMock = new Mock<IAlgorithm>();
+        _algorithmMock = new Mock<IAlgorithmService>();
         _directedGraph = new Mock<IDirectedGraph>();
         _directedGraph.Setup(graph => graph.Dimensions).Returns(2);
         _directedGraphs = [_directedGraph.Object];
-        _histogramMock = new Mock<IHistogram>();
-        _metadataMock = new Mock<IMetadata>();
+        _histogramMock = new Mock<IHistogramService>();
+        _metadataMock = new Mock<IMetadataService>();
         _fileServiceMock = new Mock<IFileService>();
         _consoleServiceMock = new Mock<IConsoleService>();
     }
