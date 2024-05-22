@@ -8,21 +8,6 @@ public class CommandLineRunner(Process process,
                                IConsoleService consoleService)
 {
     /// <summary>
-    /// Run the app
-    /// </summary>
-    private void RunApp(List<string> commandParsingMessages)
-    {
-        try
-        {
-            process.Run(commandParsingMessages);
-        }
-        catch (Exception e)
-        {
-            consoleService.WriteError(e.Message);
-        }
-    }
-
-    /// <summary>
     /// Handle any supplied command line options
     /// </summary>
     /// <param name="commandExecutionSettings"></param>
@@ -91,15 +76,16 @@ public class CommandLineRunner(Process process,
         try
         {
             HandleOptions(commandExecutionSettings);
+
+            if (commandExecutionSettings.ContinueExecution)
+            {
+                //run the app
+                process.Run(commandExecutionSettings.CommandParsingMessages);
+            }
         }
         catch (Exception e)
         {
             consoleService.WriteError(e.Message);
-        }
-
-        if (commandExecutionSettings.ContinueExecution)
-        {
-            RunApp(commandExecutionSettings.CommandParsingMessages);
         }
     }
 }
