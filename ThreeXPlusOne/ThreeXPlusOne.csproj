@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.12.15</Version>
+    <Version>1.12.16</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Add extra documentation re: hex codes</TagMessage>
+    <TagMessage>Minor CommandLineRunner refactor</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
