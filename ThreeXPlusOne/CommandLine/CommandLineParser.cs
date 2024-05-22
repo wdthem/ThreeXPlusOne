@@ -145,7 +145,7 @@ public static class CommandLineParser
                       {
                           string tokenText = error is UnknownOptionError optionError ? $" (-{optionError.Token})" : "";
 
-                          errorText = $"Unknown command option{tokenText}.";
+                          errorText = $"Unknown command option{tokenText}";
 
                           commandExecutionSettings.OptionsMetadata = GetOptionsAttributeMetadata();
                           commandExecutionSettings.ContinueExecution = false;
