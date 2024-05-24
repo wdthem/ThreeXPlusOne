@@ -6,6 +6,10 @@ namespace ThreeXPlusOne.App.Services;
 public class MetadataService(IFileService fileService,
                              IConsoleService consoleService) : IMetadataService
 {
+    /// <summary>
+    /// Generate the metadata based on the lists of series numbers
+    /// </summary>
+    /// <param name="seriesData"></param>
     public void GenerateMedatadataFile(List<List<int>> seriesData)
     {
         consoleService.WriteHeading("Metadata");

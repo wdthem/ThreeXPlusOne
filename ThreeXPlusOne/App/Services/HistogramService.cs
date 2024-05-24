@@ -6,6 +6,10 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
                               IFileService fileService,
                               IConsoleService consoleService) : IHistogramService
 {
+    /// <summary>
+    /// Generate the histogram based on the lists of series data
+    /// </summary>
+    /// <param name="seriesData"></param>
     public void GenerateHistogram(List<List<int>> seriesData)
     {
         consoleService.WriteHeading("Histogram");
