@@ -49,6 +49,10 @@ public class FileService(IOptions<AppSettings> appSettings,
         return DateTime.Now.ToString("yyyyMMdd-HHmmss");
     }
 
+    /// <summary>
+    /// Write the app settings JSON to a file 
+    /// </summary>
+    /// <param name="userConfirmedSave"></param>
     public void WriteSettingsToFile(bool userConfirmedSave)
     {
         if (!userConfirmedSave)
@@ -61,11 +65,21 @@ public class FileService(IOptions<AppSettings> appSettings,
         File.WriteAllText(_appSettings.SettingsFileFullPath, jsonString);
     }
 
+    /// <summary>
+    /// Check whether the given file path exists on disk
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <returns></returns>
     public bool FileExists(string filePath)
     {
         return File.Exists(filePath);
     }
 
+    /// <summary>
+    /// Write the generated metadata to the supplied file path
+    /// </summary>
+    /// <param name="content"></param>
+    /// <param name="filePath"></param>
     public void WriteMetadataToFile(string content, string filePath)
     {
         try
@@ -80,6 +94,10 @@ public class FileService(IOptions<AppSettings> appSettings,
         }
     }
 
+    /// <summary>
+    /// Generate the full file path of the directed graph image
+    /// </summary>
+    /// <returns></returns>
     public string GenerateDirectedGraphFilePath()
     {
         string fileName = $"{_prefix}-{_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
@@ -87,6 +105,10 @@ public class FileService(IOptions<AppSettings> appSettings,
         return GenerateFullFilePath(_appSettings.UniqueExecutionId, _appSettings.OutputPath, fileName);
     }
 
+    /// <summary>
+    /// Generate the full file path of the histogram
+    /// </summary>
+    /// <returns></returns>
     public string GenerateHistogramFilePath()
     {
         string fileName = $"{_prefix}-Histogram.png";
@@ -94,6 +116,10 @@ public class FileService(IOptions<AppSettings> appSettings,
         return GenerateFullFilePath(_appSettings.UniqueExecutionId, _appSettings.OutputPath, fileName);
     }
 
+    /// <summary>
+    /// Generate the full file path of the metadata
+    /// </summary>
+    /// <returns></returns>
     public string GenerateMetadataFilePath()
     {
         string fileName = $"{_prefix}-Metadata.txt";
