@@ -13,7 +13,7 @@ The basics:
 * If it is odd, multiply it by 3 and add 1
 * Repeat until an infinite loop is reached of 4, 2, 1
 
-This means that (in theory) all selected positive integers result in the inifinite loop. When running the algorithm on many positive integers and plotting the generated numbers as a Directed Graph, all number series lead to a root of 4, 2, 1. Where numbers are shared in the series, branching occurs.
+This means that (in theory) all selected positive integers result in the infinite loop. When running the algorithm on many positive integers and plotting the generated numbers as a Directed Graph, all number series lead to a root of 4, 2, 1. Where numbers are shared in the series, branching occurs.
 
 ## What does this app do?
 
