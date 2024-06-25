@@ -158,19 +158,4 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
             PositionNode(childNode);
         }
     }
-
-    /// <summary>
-    /// Calculate the signed X-axis distance from a parent to a child node
-    /// </summary>
-    /// <remarks>
-    /// Negative if child is the to left of the parent, positive if to the right
-    /// </remarks>
-    /// <param name="childPosition"></param>
-    /// <param name="parentPosition"></param>
-    /// <returns></returns>
-    private static double XAxisSignedDistanceFromParent((double X, double Y) childPosition,
-                                                        (double X, double Y) parentPosition)
-    {
-        return childPosition.X - parentPosition.X;
-    }
 }
