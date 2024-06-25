@@ -116,33 +116,6 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                     ? 0
                                     : node.Parent.Position.X;
 
-            if (allNodesAtDepth > 1)
-            {
-                if (node.Parent!.Children.Count == 1)
-                {
-                    xOffset = node.Parent.Position.X;
-                }
-                else
-                {
-                    int addedWidth;
-
-                    if (allNodesAtDepth % 2 == 0)
-                    {
-                        addedWidth = positionedNodesAtDepth == 0
-                                                            ? 0
-                                                            : positionedNodesAtDepth + 1;
-                    }
-                    else
-                    {
-                        addedWidth = positionedNodesAtDepth == 0
-                                                            ? 0
-                                                            : positionedNodesAtDepth;
-                    }
-
-                    xOffset = xOffset - (allNodesAtDepth / 2 * _appSettings.NodeAestheticSettings.NodeSpacerX) + (_appSettings.NodeAestheticSettings.NodeSpacerX * addedWidth);
-                }
-            }
-
             double yOffset = node.Parent!.Position.Y - _appSettings.NodeAestheticSettings.NodeSpacerY;
 
             node.Position = (xOffset, yOffset);
@@ -157,32 +130,18 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                 node.Position = (x, y);
             }
 
-            double signedXAxisDistanceFromParent = XAxisSignedDistanceFromParent(node.Position, node.Parent.Position);
-            double absoluteXAxisDistanceFromParent = Math.Abs(signedXAxisDistanceFromParent);
-
-            //limit the x-axis distance between node and parent, because the distance calculated above based on allNodesAtDepth can push
-            //parents and children too far away from each other on the x-axis
-            if (absoluteXAxisDistanceFromParent > _appSettings.NodeAestheticSettings.NodeSpacerX * 3)
-            {
-                //if the child node is to the left of the parent
-                if (signedXAxisDistanceFromParent < 0)
-                {
-                    node.Position = (node.Position.X + ((absoluteXAxisDistanceFromParent / 3) - _appSettings.NodeAestheticSettings.NodeSpacerX), node.Position.Y);
-                }
-                else
-                {
-                    node.Position = (node.Position.X - ((absoluteXAxisDistanceFromParent / 3) + _appSettings.NodeAestheticSettings.NodeSpacerX), node.Position.Y);
-                }
-            }
-
             double minDistance = nodeRadius * 2;
 
             while (_nodePositions.NodeOverlapsNeighbours(node, minDistance))
             {
-                node.Position = (node.Position.X + (node.IsFirstChild
-                                                                ? -nodeRadius * 2 - 40
-                                                                : nodeRadius * 2 + 40),
-                                 node.Position.Y);
+                // Check if moving to the right causes overlap
+                node.Position = (node.Position.X + _appSettings.NodeAestheticSettings.NodeSpacerX, node.Position.Y);
+
+                if (_nodePositions.NodeOverlapsNeighbours(node, minDistance))
+                {
+                    // If moving to the right causes overlap, move to the left
+                    node.Position = (node.Position.X - 2 * _appSettings.NodeAestheticSettings.NodeSpacerX, node.Position.Y);
+                }
             }
 
             _nodePositions.AddNodeToGrid(node, minDistance);

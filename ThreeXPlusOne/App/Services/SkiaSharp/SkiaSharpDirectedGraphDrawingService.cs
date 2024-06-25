@@ -289,15 +289,34 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     private static void DrawNodeConnection(SKCanvas canvas,
                                            DirectedGraphNode node)
     {
-        using SKPaint paint = new()
-        {
-            Color = SKColors.White.WithAlpha(100),
-            StrokeWidth = 2,
-            IsAntialias = true
-        };
-
         foreach (DirectedGraphNode childNode in node.Children)
         {
+            SKShader? shader = null;
+
+            if (node.Shape.BorderColor != childNode.Shape.BorderColor)
+            {
+                shader = SKShader.CreateLinearGradient(ConvertCoordinatesToSKPoint(node.Position),
+                                                       ConvertCoordinatesToSKPoint(childNode.Position),
+                                                       [ConvertColorToSKColor(node.Shape.BorderColor), ConvertColorToSKColor(node.Shape.BorderColor).WithAlpha(128), ConvertColorToSKColor(childNode.Shape.BorderColor), ConvertColorToSKColor(childNode.Shape.BorderColor).WithAlpha(128)],
+                                                       [0.0f, 0.45f, 0.55f, 1.0f],
+                                                        SKShaderTileMode.Clamp);
+            }
+
+            using SKPaint paint = new()
+            {
+                StrokeWidth = 3,
+                IsAntialias = true
+            };
+
+            if (shader != null)
+            {
+                paint.Shader = shader;
+            }
+            else
+            {
+                paint.Color = ConvertColorToSKColor(node.Shape.BorderColor);
+            }
+
             canvas.DrawLine(ConvertCoordinatesToSKPoint(node.Position),
                             ConvertCoordinatesToSKPoint(childNode.Position),
                             paint);
