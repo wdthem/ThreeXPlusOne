@@ -111,7 +111,6 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         {
             if (node.IsFirstChild)
             {
-
                 node.Z = node.Parent.Z - 1;
             }
             else
