@@ -83,17 +83,51 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                 currentDepth--;
             }
 
-            int maxNodeDepth = _nodes.Values.Max(node => node.Depth);
-
-            foreach (DirectedGraphNode node in _nodes.Values)
-            {
-                node.Z = maxNodeDepth - node.Depth;
-            }
-
             lcv++;
         }
 
+        if (_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions == 3)
+        {
+            SetNodeZValue(_nodes[1]);
+        }
+
         _consoleService.WriteDone();
+    }
+
+    /// <summary>
+    /// Traverse the node tree recursively and set the Z value for all nodes, based on whether the node has 1 or 2 children
+    /// </summary>
+    /// <remarks>
+    /// Used for the pseudo-3D graph
+    /// </remarks>
+    /// <param name="node"></param>
+    private static void SetNodeZValue(DirectedGraphNode node)
+    {
+        if (node.Parent == null)
+        {
+            node.Z = 0;
+        }
+        else if (node.Parent.Children.Count == 2)
+        {
+            if (node.IsFirstChild)
+            {
+
+                node.Z = node.Parent.Z - 1;
+            }
+            else
+            {
+                node.Z = node.Parent.Z + 1;
+            }
+        }
+        else
+        {
+            node.Z = node.Parent.Z;
+        }
+
+        foreach (DirectedGraphNode childNode in node.Children)
+        {
+            SetNodeZValue(childNode);
+        }
     }
 
     /// <summary>
@@ -164,23 +198,13 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         double maxX = _nodes.Values.Max(node => node.Position.X);
         double maxY = _nodes.Values.Max(node => node.Position.Y);
 
-        _canvasWidth = (int)(maxX + _appSettings.NodeAestheticSettings.NodeSpacerX + _appSettings.NodeAestheticSettings.NodeRadius);
-        _canvasHeight = (int)(maxY + _appSettings.NodeAestheticSettings.NodeSpacerY + _appSettings.NodeAestheticSettings.NodeRadius);
+        double maxNodeRadius = _nodes.Values.Max(node => node.Shape.Radius);
+
+        _canvasWidth = (int)(maxX + _appSettings.NodeAestheticSettings.NodeSpacerX + maxNodeRadius);
+        _canvasHeight = (int)(maxY + _appSettings.NodeAestheticSettings.NodeSpacerY + maxNodeRadius);
 
         _consoleService.Write($"Setting canvas dimensions to {_canvasWidth}w x {_canvasHeight}h... ");
         _consoleService.WriteDone();
-    }
-
-    /// <summary>
-    /// Calculate the Euclidean distance between two node positions
-    /// </summary>
-    /// <param name="position1"></param>
-    /// <param name="position2"></param>
-    /// <returns></returns>
-    protected static double Distance((double X, double Y) position1,
-                                     (double X, double Y) position2)
-    {
-        return Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
     }
 
     /// <summary>
@@ -224,5 +248,17 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
             _consoleService.StopSpinningBar();
             _consoleService.WriteDone();
         };
+    }
+
+    /// <summary>
+    /// Calculate the Euclidean distance between two node positions
+    /// </summary>
+    /// <param name="position1"></param>
+    /// <param name="position2"></param>
+    /// <returns></returns>
+    protected static double Distance((double X, double Y) position1,
+                                   (double X, double Y) position2)
+    {
+        return Math.Sqrt(Math.Pow(position2.X - position1.X, 2) + Math.Pow(position2.Y - position1.Y, 2));
     }
 }
