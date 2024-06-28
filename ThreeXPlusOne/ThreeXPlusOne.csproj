@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.13.0</Version>
+    <Version>1.14.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Improve visual layout of nodes in 2D graph</TagMessage>
+    <TagMessage>Improve visual layout of nodes in 3D graph</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>

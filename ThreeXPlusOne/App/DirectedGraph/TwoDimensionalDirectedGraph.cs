@@ -15,6 +15,8 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
                                                 : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
                                                   IDirectedGraph
 {
+    private readonly Dictionary<(int, int), List<(double X, double Y)>> _nodeGrid = [];
+
     private int _nodesPositioned = 0;
 
     public int Dimensions => 2;
@@ -40,24 +42,14 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     /// </summary>
     public void PositionNodes()
     {
-        // Set up the base nodes' positions
-        (double X, double Y) base1 = (0, 0);                                                             // Node '1' at the bottom
-        (double X, double Y) base2 = (0, base1.Y - _appSettings.NodeAestheticSettings.NodeSpacerY);      // Node '2' just above '1'
-        (double X, double Y) base4 = (0, base2.Y - _appSettings.NodeAestheticSettings.NodeSpacerY);      // Node '4' above '2'
+        // Set up the base node's position
+        (double X, double Y) baseNodePosition = (0, 0);
 
-        _nodes[1].Position = base1;
+        _nodes[1].Position = baseNodePosition;
         _nodes[1].IsPositioned = true;
         _nodes[1].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
 
-        _nodes[2].Position = base2;
-        _nodes[2].IsPositioned = true;
-        _nodes[2].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
-
-        _nodes[4].Position = base4;
-        _nodes[4].IsPositioned = true;
-        _nodes[4].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
-
-        _nodesPositioned = 3;
+        _nodesPositioned = 1;
 
         //recursive method to position a node and its children
         PositionNode(_nodes[1]);
@@ -106,17 +98,13 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         {
             double nodeRadius = _appSettings.NodeAestheticSettings.NodeRadius;
 
-            int allNodesAtDepth =
-                _nodes.Values.Count(n => n.Depth == node.Depth);
-
-            int positionedNodesAtDepth =
-                _nodes.Values.Count(n => n.Depth == node.Depth && n.IsPositioned);
-
             double xOffset = node.Parent == null
-                                    ? 0
-                                    : node.Parent.Position.X;
+                                            ? 0
+                                            : node.Parent.Position.X;
 
-            double yOffset = node.Parent!.Position.Y - _appSettings.NodeAestheticSettings.NodeSpacerY;
+            double yOffset = node.Parent == null
+                                            ? 0
+                                            : node.Parent.Position.Y - _appSettings.NodeAestheticSettings.NodeSpacerY;
 
             node.Position = (xOffset, yOffset);
 
@@ -132,19 +120,20 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
             double minDistance = nodeRadius * 2;
 
-            while (_nodePositions.NodeOverlapsNeighbours(node, minDistance))
+            while (NodeOverlapsNeighbours(node, minDistance))
             {
-                // Check if moving to the right causes overlap
+                // first move the node to the right
                 node.Position = (node.Position.X + _appSettings.NodeAestheticSettings.NodeSpacerX, node.Position.Y);
 
-                if (_nodePositions.NodeOverlapsNeighbours(node, minDistance))
+                // now check if moving to the right caused node overlap
+                if (NodeOverlapsNeighbours(node, minDistance))
                 {
-                    // If moving to the right causes overlap, move to the left
+                    // move to the left instead
                     node.Position = (node.Position.X - 2 * _appSettings.NodeAestheticSettings.NodeSpacerX, node.Position.Y);
                 }
             }
 
-            _nodePositions.AddNodeToGrid(node, minDistance);
+            AddNodeToGrid(node, minDistance);
 
             node.Shape.Radius = nodeRadius;
             node.IsPositioned = true;
@@ -157,5 +146,68 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         {
             PositionNode(childNode);
         }
+    }
+
+    /// <summary>
+    /// Determine if the node that was just positioned is too close to neighbouring nodes (and thus overlapping)
+    /// </summary>
+    /// <param name="newNode"></param>
+    /// <param name="minDistance"></param>
+    /// <returns></returns>
+    private bool NodeOverlapsNeighbours(DirectedGraphNode newNode,
+                                       double minDistance)
+    {
+        (int, int) cell = GetGridCellForNode(newNode, minDistance);
+
+        // Check this cell and adjacent cells
+        foreach ((int, int) offset in new[] { (0, 0), (1, 0), (0, 1), (-1, 0), (0, -1) })
+        {
+            (int, int) checkCell = (cell.Item1 + offset.Item1,
+                                    cell.Item2 + offset.Item2);
+
+            if (_nodeGrid.TryGetValue(checkCell, out var nodesInCell))
+            {
+                foreach ((double X, double Y) node in nodesInCell)
+                {
+                    if (Distance(newNode.Position, node) < minDistance)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Retrieve the cell in the grid object in which the node is positioned
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="cellSize"></param>
+    /// <returns></returns>
+    private static (int, int) GetGridCellForNode(DirectedGraphNode node,
+                                                 double cellSize)
+    {
+        return ((int)(node.Position.X / cellSize), (int)(node.Position.Y / cellSize));
+    }
+
+    /// <summary>
+    /// Add the node to the grid dictionary to keep track of node positions via a grid system
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="minDistance"></param>
+    private void AddNodeToGrid(DirectedGraphNode node,
+                               double minDistance)
+    {
+        (int, int) cell = GetGridCellForNode(node, minDistance);
+
+        if (!_nodeGrid.TryGetValue(cell, out List<(double X, double Y)>? value))
+        {
+            value = ([]);
+            _nodeGrid[cell] = value;
+        }
+
+        value.Add(node.Position);
     }
 }
