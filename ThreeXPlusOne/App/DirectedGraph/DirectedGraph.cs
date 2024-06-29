@@ -86,47 +86,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
             lcv++;
         }
 
-        if (_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions == 3)
-        {
-            SetNodeZValue(_nodes[1]);
-        }
-
         _consoleService.WriteDone();
-    }
-
-    /// <summary>
-    /// Traverse the node tree recursively and set the Z value for all nodes, based on whether the node has 1 or 2 children
-    /// </summary>
-    /// <remarks>
-    /// Used for the pseudo-3D graph
-    /// </remarks>
-    /// <param name="node"></param>
-    private static void SetNodeZValue(DirectedGraphNode node)
-    {
-        if (node.Parent == null)
-        {
-            node.Z = 0;
-        }
-        else if (node.Parent.Children.Count == 2)
-        {
-            if (node.IsFirstChild)
-            {
-                node.Z = node.Parent.Z - 1;
-            }
-            else
-            {
-                node.Z = node.Parent.Z + 1;
-            }
-        }
-        else
-        {
-            node.Z = node.Parent.Z;
-        }
-
-        foreach (DirectedGraphNode childNode in node.Children)
-        {
-            SetNodeZValue(childNode);
-        }
     }
 
     /// <summary>

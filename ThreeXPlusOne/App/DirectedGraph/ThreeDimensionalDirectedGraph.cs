@@ -42,6 +42,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     /// </summary>
     public void PositionNodes()
     {
+        //the Z coordinate is only applicable to the pseudo-3D graph, so set it up here as a first step
+        SetNodeZValue(_nodes[1]);
+
         // Set up the base node's position
         (double X, double Y) baseNodePosition = (0, 0);
 
@@ -89,6 +92,41 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         }
 
         _consoleService.WriteDone();
+    }
+
+    /// <summary>
+    /// Traverse the node tree recursively and set the Z value for all nodes, based on whether the node has 1 or 2 children
+    /// </summary>
+    /// <remarks>
+    /// Used for the pseudo-3D graph
+    /// </remarks>
+    /// <param name="node"></param>
+    private static void SetNodeZValue(DirectedGraphNode node)
+    {
+        if (node.Parent == null)
+        {
+            node.Z = 0;
+        }
+        else if (node.Parent.Children.Count == 2)
+        {
+            if (node.IsFirstChild)
+            {
+                node.Z = node.Parent.Z - 1;
+            }
+            else
+            {
+                node.Z = node.Parent.Z + 1;
+            }
+        }
+        else
+        {
+            node.Z = node.Parent.Z;
+        }
+
+        foreach (DirectedGraphNode childNode in node.Children)
+        {
+            SetNodeZValue(childNode);
+        }
     }
 
     /// <summary>
@@ -181,7 +219,6 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
     /// <summary>
     /// For the pseudo-3D graph, apply depth to the given node based on the Z coordinate.
-    /// The Z-coordinate is set to the reverse of the depth value of the node in the DirectedGraph.AddSeries() method
     /// </summary>
     /// <param name="node"></param>
     /// <param name="viewerDistance">The distance to the viewer</param>
@@ -226,6 +263,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         (int, int, int) cell = GetGridCellForNode(newNode, minDistance);
 
+        double allowOverlapProbability = 0.1;
+
         // Check this cell and adjacent cells
         foreach ((int, int, int) offset in new[]
             {
@@ -250,6 +289,11 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
                     if (Distance((newNode.Position.X, newNode.Position.Y, normalizedZ1), (X, Y, normalizedZ2)) < minDistance)
                     {
+                        if (Random.Shared.NextDouble() < allowOverlapProbability)
+                        {
+                            return false; // Allow overlap
+                        }
+
                         return true;
                     }
                 }
