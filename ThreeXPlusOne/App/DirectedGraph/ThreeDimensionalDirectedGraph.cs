@@ -42,8 +42,9 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     /// </summary>
     public void PositionNodes()
     {
-        //the Z coordinate is only applicable to the pseudo-3D graph, so set it up here as a first step
-        SetNodeZValue(_nodes[1]);
+        //the Z coordinate is only applicable to the pseudo-3D graph
+        //recursively set the Z for all nodes starting from the root
+        SetNodeZCoordinate(_nodes[1]);
 
         // Set up the base node's position
         (double X, double Y) baseNodePosition = (0, 0);
@@ -54,7 +55,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         _nodesPositioned = 1;
 
-        //recursive method to position a node and its children
+        //recursively positions all nodes, starting from the root
         PositionNode(_nodes[1]);
 
         _consoleService.WriteDone();
@@ -95,13 +96,13 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Traverse the node tree recursively and set the Z value for all nodes, based on whether the node has 1 or 2 children
+    /// Traverses the node tree recursively and sets the Z coordinate for all nodes, based on whether the node has 1 or 2 children
     /// </summary>
     /// <remarks>
     /// Used for the pseudo-3D graph
     /// </remarks>
     /// <param name="node"></param>
-    private static void SetNodeZValue(DirectedGraphNode node)
+    private static void SetNodeZCoordinate(DirectedGraphNode node)
     {
         if (node.Parent == null)
         {
@@ -125,37 +126,32 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         foreach (DirectedGraphNode childNode in node.Children)
         {
-            SetNodeZValue(childNode);
+            SetNodeZCoordinate(childNode);
         }
     }
 
     /// <summary>
-    /// Recursive method to position node and all its children down the tree
+    /// Recursive method to position a node and all its children down the tree
     /// </summary>
     /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
     {
         if (!node.IsPositioned)
         {
-            double baseRadius = node.Parent != null && node.Parent.Shape.Radius > 0
+            double nodeRadius = node.Parent != null && node.Parent.Shape.Radius > 0
                                         ? node.Parent.Shape.Radius
                                         : _appSettings.NodeAestheticSettings.NodeRadius;
 
-            double maxZ = _nodes.Values.Max(node => node.Z);
-            double minZ = _nodes.Values.Min(node => node.Z);
+            double maxZCoordinate = _nodes.Values.Max(node => node.Z);
+            double minZCoordinate = _nodes.Values.Min(node => node.Z);
 
-            double normalizedZ = NormalizeZ(node.Z, minZ, maxZ);
-
-            double nodeRadius = baseRadius;
+            double normalizedZCoordinate = NormalizeZCoordinate(node.Z, minZCoordinate, maxZCoordinate);
 
             if (node.Z != node.Parent?.Z)
             {
-                double scale = Math.Exp(normalizedZ / _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance) * 1.1;
-                nodeRadius = baseRadius / scale;
+                double scale = Math.Exp(normalizedZCoordinate / _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance) * 1.1;
+                nodeRadius /= scale;
             }
-
-            double xNodeSpacer = _appSettings.NodeAestheticSettings.NodeSpacerX;
-            double yNodeSpacer = _appSettings.NodeAestheticSettings.NodeSpacerY;
 
             double xOffset = node.Parent == null
                                     ? 0
@@ -163,7 +159,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
             double yOffset = node.Parent == null
                                     ? 0
-                                    : node.Parent.Position.Y - yNodeSpacer;
+                                    : node.Parent.Position.Y - _appSettings.NodeAestheticSettings.NodeSpacerY;
 
             node.Position = (xOffset, yOffset);
 
@@ -181,10 +177,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
             {
                 node.Position = ApplyNodePerspectiveTransformation(node,
                                                                    _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance,
-                                                                   xNodeSpacer,
-                                                                   yNodeSpacer,
-                                                                   minZ,
-                                                                   maxZ);
+                                                                   _appSettings.NodeAestheticSettings.NodeSpacerX,
+                                                                   _appSettings.NodeAestheticSettings.NodeSpacerY,
+                                                                   minZCoordinate,
+                                                                   maxZCoordinate);
             }
 
             double minDistance = _appSettings.NodeAestheticSettings.NodeRadius;
@@ -224,13 +220,13 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     /// <param name="viewerDistance">The distance to the viewer</param>
     /// <returns></returns>
     private static (double X, double Y) ApplyNodePerspectiveTransformation(DirectedGraphNode node,
-                                                                       double viewerDistance,
-                                                                       double horizontalSpacing,
-                                                                       double verticalSpacing,
-                                                                       double minZ,
-                                                                       double maxZ)
+                                                                           double viewerDistance,
+                                                                           double horizontalSpacing,
+                                                                           double verticalSpacing,
+                                                                           double minZ,
+                                                                           double maxZ)
     {
-        double normalizedZ = NormalizeZ(node.Z, minZ, maxZ);
+        double normalizedZ = NormalizeZCoordinate(node.Z, minZ, maxZ);
 
         double scale = 1 / (1 + normalizedZ / viewerDistance);
         double xPrime = node.Position.X * scale;
@@ -284,8 +280,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
             {
                 foreach ((double X, double Y, double Z) in nodesInCell)
                 {
-                    double normalizedZ1 = NormalizeZ(newNode.Z, minNodeDepth, maxNodeDepth);
-                    double normalizedZ2 = NormalizeZ(Z, minNodeDepth, maxNodeDepth);
+                    double normalizedZ1 = NormalizeZCoordinate(newNode.Z, minNodeDepth, maxNodeDepth);
+                    double normalizedZ2 = NormalizeZCoordinate(Z, minNodeDepth, maxNodeDepth);
 
                     if (Distance((newNode.Position.X, newNode.Position.Y, normalizedZ1), (X, Y, normalizedZ2)) < minDistance)
                     {
@@ -358,7 +354,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     /// <param name="minZ"></param>
     /// <param name="maxZ"></param>
     /// <returns></returns>
-    private static double NormalizeZ(double z, double minZ, double maxZ)
+    private static double NormalizeZCoordinate(double z, double minZ, double maxZ)
     {
         if (maxZ == minZ)
         {

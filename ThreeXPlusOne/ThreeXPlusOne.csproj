@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.14.2</Version>
+    <Version>1.14.3</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Allow some overlap of nodes in the 3D graph</TagMessage>
+    <TagMessage>3D graph code cleanup</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
