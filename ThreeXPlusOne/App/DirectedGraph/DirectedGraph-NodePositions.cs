@@ -25,13 +25,13 @@ public abstract partial class DirectedGraph
             double minX = nodes.Values.Min(node => node.Position.X);
             double minY = nodes.Values.Min(node => node.Position.Y);
 
-            double translationX = minX < 0 ? -minX + xNodeSpacer + nodeRadius : 0;
-            double translationY = minY < 0 ? -minY + yNodeSpacer + nodeRadius : 0;
+            // Calculate the translation needed to move all nodes to positive coordinates with padding
+            double translationX = -minX + xNodeSpacer + nodeRadius;
+            double translationY = -minY + yNodeSpacer + nodeRadius;
 
             foreach (DirectedGraphNode node in nodes.Values)
             {
-                node.Position = (node.Position.X + translationX,
-                                 node.Position.Y + translationY);
+                node.Position = (node.Position.X + translationX, node.Position.Y + translationY);
             }
         }
 
