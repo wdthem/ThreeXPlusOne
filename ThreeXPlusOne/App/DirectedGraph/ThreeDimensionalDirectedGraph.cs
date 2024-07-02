@@ -60,10 +60,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         _consoleService.WriteDone();
 
-        NodePositions.MoveNodesToPositiveCoordinates(_nodes,
-                                                     _appSettings.NodeAestheticSettings.NodeSpacerX,
-                                                     _appSettings.NodeAestheticSettings.NodeSpacerY,
-                                                     _appSettings.NodeAestheticSettings.NodeRadius);
+        NodePositions.TranslateNodesToPositiveCoordinates(_nodes,
+                                                          _appSettings.NodeAestheticSettings.NodeSpacerX,
+                                                          _appSettings.NodeAestheticSettings.NodeSpacerY,
+                                                          _appSettings.NodeAestheticSettings.NodeRadius);
     }
 
     /// <summary>
@@ -177,8 +177,8 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
             {
                 node.Position = ApplyNodePerspectiveTransformation(node,
                                                                    _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance,
-                                                                   _appSettings.NodeAestheticSettings.NodeSpacerX,
-                                                                   _appSettings.NodeAestheticSettings.NodeSpacerY,
+                                                                   nodeRadius * 2,
+                                                                   nodeRadius * 2,
                                                                    minZCoordinate,
                                                                    maxZCoordinate);
             }
@@ -214,7 +214,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// For the pseudo-3D graph, apply depth to the given node based on the Z coordinate.
+    /// Apply depth to the given node based on the Z coordinate.
     /// </summary>
     /// <param name="node"></param>
     /// <param name="viewerDistance">The distance to the viewer</param>
@@ -232,15 +232,23 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
         double xPrime = node.Position.X * scale;
         double yPrime = node.Position.Y * scale;
 
+        double rotationRadius = Math.Sqrt(horizontalSpacing * horizontalSpacing + verticalSpacing * verticalSpacing);
+        double randomRotationAngle = Random.Shared.NextDouble() * Math.PI / 4; // Random angle between 0 and 45 degrees (in radians)
+        double baseAngleOfRotation = Math.Atan2(verticalSpacing, horizontalSpacing);
+
         if (node.IsFirstChild)
         {
-            xPrime -= horizontalSpacing * scale;
-            yPrime += verticalSpacing * scale; // Slightly below
+            // rotate counterclockwise and down with a random factor
+            double angle = baseAngleOfRotation + randomRotationAngle;
+            xPrime += rotationRadius * Math.Cos(angle) * scale;
+            yPrime += rotationRadius * Math.Sin(angle) * scale;
         }
         else
         {
-            xPrime += horizontalSpacing * scale;
-            yPrime -= verticalSpacing * scale; // Slightly above
+            // rotate counterclockwise and up with a random factor
+            double angle = baseAngleOfRotation - randomRotationAngle;
+            xPrime -= rotationRadius * Math.Cos(angle) * scale;
+            yPrime -= rotationRadius * Math.Sin(angle) * scale;
         }
 
         return (xPrime, yPrime);
@@ -259,7 +267,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         (int, int, int) cell = GetGridCellForNode(newNode, minDistance);
 
-        double allowOverlapProbability = 0.1;
+        double allowOverlapProbability = 0.25;
 
         // Check this cell and adjacent cells
         foreach ((int, int, int) offset in new[]
