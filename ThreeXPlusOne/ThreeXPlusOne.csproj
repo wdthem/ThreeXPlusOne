@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.14.5</Version>
+    <Version>1.14.6</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Better 3D child node positioning</TagMessage>
+    <TagMessage>Alphabetical ordering of names of shapes in help output</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
