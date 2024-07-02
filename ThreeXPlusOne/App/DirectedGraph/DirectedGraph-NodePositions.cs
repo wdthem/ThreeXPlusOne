@@ -17,10 +17,10 @@ public abstract partial class DirectedGraph
         /// <param name="xNodeSpacer"></param>
         /// <param name="yNodeSpacer"></param>
         /// <param name="nodeRadius"></param>
-        public static void MoveNodesToPositiveCoordinates(Dictionary<int, DirectedGraphNode> nodes,
-                                                          double xNodeSpacer,
-                                                          double yNodeSpacer,
-                                                          double nodeRadius)
+        public static void TranslateNodesToPositiveCoordinates(Dictionary<int, DirectedGraphNode> nodes,
+                                                               double xNodeSpacer,
+                                                               double yNodeSpacer,
+                                                               double nodeRadius)
         {
             double minX = nodes.Values.Min(node => node.Position.X);
             double minY = nodes.Values.Min(node => node.Position.Y);

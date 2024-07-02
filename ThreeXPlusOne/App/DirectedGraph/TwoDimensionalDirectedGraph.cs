@@ -56,10 +56,10 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
         _consoleService.WriteDone();
 
-        NodePositions.MoveNodesToPositiveCoordinates(_nodes,
-                                                     _appSettings.NodeAestheticSettings.NodeSpacerX,
-                                                     _appSettings.NodeAestheticSettings.NodeSpacerY,
-                                                     _appSettings.NodeAestheticSettings.NodeRadius);
+        NodePositions.TranslateNodesToPositiveCoordinates(_nodes,
+                                                          _appSettings.NodeAestheticSettings.NodeSpacerX,
+                                                          _appSettings.NodeAestheticSettings.NodeSpacerY,
+                                                          _appSettings.NodeAestheticSettings.NodeRadius);
     }
 
     /// <summary>
