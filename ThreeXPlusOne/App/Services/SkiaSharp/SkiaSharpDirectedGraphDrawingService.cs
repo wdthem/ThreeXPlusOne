@@ -268,6 +268,10 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                 DrawSemiCircle(canvas, node, shapeConfiguration, paint, borderPaint);
                 break;
 
+            case ShapeType.Donut:
+                DrawDonut(canvas, node, shapeConfiguration, paint, borderPaint);
+                break;
+
             default:
                 throw new Exception($"No drawing method for ShapeType {node.Shape.ShapeType}");
         }
