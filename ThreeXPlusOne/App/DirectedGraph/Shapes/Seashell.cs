@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
-public class Seashell() : Shape, IShape
+public class Seashell() : Shape, IShape, IVertexShape
 {
     private readonly int _spiralTurns = 3;
     private readonly double _angleStep = Math.PI / 20;
@@ -15,6 +15,11 @@ public class Seashell() : Shape, IShape
     public bool HasGap => false;
 
     /// <summary>
+    /// The vertices of the shape
+    /// </summary>
+    public List<(double X, double Y)> Vertices { get; set; } = [];
+
+    /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
     /// </summary>
     /// <param name="nodePosition"></param>
@@ -24,10 +29,8 @@ public class Seashell() : Shape, IShape
     {
         double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
 
-        _shapeConfiguration.Vertices = [];
-
         //the start of the spiral
-        _shapeConfiguration.Vertices.Add(nodePosition);
+        Vertices.Add(nodePosition);
 
         // the spiral part of the seashell
         for (double angle = 0; angle < _spiralTurns * 2 * Math.PI; angle += _angleStep)
@@ -36,7 +39,7 @@ public class Seashell() : Shape, IShape
             double x = nodePosition.X + radius * Math.Cos(angle);
             double y = nodePosition.Y + radius * Math.Sin(angle);
 
-            _shapeConfiguration.Vertices.Add(RotateVertex((x, y), nodePosition, rotationAngle));
+            Vertices.Add(RotateVertex((x, y), nodePosition, rotationAngle));
         }
 
         // the outer edge of the seashell
@@ -46,7 +49,7 @@ public class Seashell() : Shape, IShape
             double x = nodePosition.X + radius * Math.Cos(angle);
             double y = nodePosition.Y + radius * Math.Sin(angle);
 
-            _shapeConfiguration.Vertices.Add(RotateVertex((x, y), nodePosition, rotationAngle));
+            Vertices.Add(RotateVertex((x, y), nodePosition, rotationAngle));
         }
     }
 

@@ -1,6 +1,6 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
-using ThreeXPlusOne.App.Models.ShapeConfiguration;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
@@ -13,6 +13,26 @@ public class Donut() : Shape, IShape
     public bool HasGap => false;
 
     /// <summary>
+    /// The x-radius of the donut
+    /// </summary>
+    public double RadiusX { get; set; }
+
+    /// <summary>
+    /// The y-radius of the donut
+    /// </summary>
+    public double RadiusY { get; set; }
+
+    /// <summary>
+    /// The bounding box used to render the outside of the donut shape
+    /// </summary>
+    public ShapeBounds OuterShapeBounds { get; set; } = new();
+
+    /// <summary>
+    /// The bounding box used to render the inside of the donut shape
+    /// </summary>
+    public ShapeBounds InnerShapeBounds { get; set; } = new();
+
+    /// <summary>
     /// Stretch the ellipse radii for skewed shapes
     /// </summary>
     /// <param name="nodePosition"></param>
@@ -20,34 +40,32 @@ public class Donut() : Shape, IShape
     private void StretchRadii((double X, double Y) nodePosition,
                               double nodeRadius)
     {
-        if (_shapeConfiguration.DonutConfiguration != null)
+
+        double skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) *
+                            ((0.1 + Random.Shared.NextDouble()) * 0.6) *
+                            0.6;  //reduce the overall impact to ellipses (donuts are made of ellipses)
+
+        double horizontalOffset = nodeRadius * skewFactor;
+        double verticalOffset = nodeRadius * (skewFactor * Random.Shared.NextDouble());
+
+        RadiusX = nodeRadius + horizontalOffset;
+        RadiusY = nodeRadius + verticalOffset;
+
+        OuterShapeBounds = new ShapeBounds
         {
-            double skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) *
-                                ((0.1 + Random.Shared.NextDouble()) * 0.6) *
-                                0.6;  //reduce the overall impact to ellipses
+            Left = nodePosition.X - RadiusX,
+            Top = nodePosition.Y - RadiusY,
+            Right = nodePosition.X + RadiusX,
+            Bottom = nodePosition.Y + RadiusY
+        };
 
-            double horizontalOffset = nodeRadius * skewFactor;
-            double verticalOffset = nodeRadius * (skewFactor * Random.Shared.NextDouble());
-
-            _shapeConfiguration.DonutConfiguration.RadiusX = nodeRadius + horizontalOffset;
-            _shapeConfiguration.DonutConfiguration.RadiusY = nodeRadius + verticalOffset;
-
-            _shapeConfiguration.DonutConfiguration.OuterShapeBounds = new ShapeBounds
-            {
-                Left = nodePosition.X - _shapeConfiguration.DonutConfiguration.RadiusX,
-                Top = nodePosition.Y - _shapeConfiguration.DonutConfiguration.RadiusY,
-                Right = nodePosition.X + _shapeConfiguration.DonutConfiguration.RadiusX,
-                Bottom = nodePosition.Y + _shapeConfiguration.DonutConfiguration.RadiusY
-            };
-
-            _shapeConfiguration.DonutConfiguration.InnerShapeBounds = new ShapeBounds
-            {
-                Left = nodePosition.X - (_shapeConfiguration.DonutConfiguration.RadiusX / 2),
-                Top = nodePosition.Y - (_shapeConfiguration.DonutConfiguration.RadiusY / 2),
-                Right = nodePosition.X + (_shapeConfiguration.DonutConfiguration.RadiusX / 2),
-                Bottom = nodePosition.Y + (_shapeConfiguration.DonutConfiguration.RadiusY / 2)
-            };
-        }
+        InnerShapeBounds = new ShapeBounds
+        {
+            Left = nodePosition.X - (RadiusX / 2),
+            Top = nodePosition.Y - (RadiusY / 2),
+            Right = nodePosition.X + (RadiusX / 2),
+            Bottom = nodePosition.Y + (RadiusY / 2)
+        };
     }
 
     /// <summary>
@@ -58,24 +76,23 @@ public class Donut() : Shape, IShape
     public void SetShapeConfiguration((double X, double Y) nodePosition,
                                       double nodeRadius)
     {
-        _shapeConfiguration.DonutConfiguration = new()
+        RadiusX = nodeRadius;
+        RadiusY = nodeRadius;
+
+        OuterShapeBounds = new ShapeBounds
         {
-            RadiusX = nodeRadius,
-            RadiusY = nodeRadius,
-            OuterShapeBounds = new ShapeBounds
-            {
-                Left = nodePosition.X - nodeRadius,
-                Top = nodePosition.Y - nodeRadius,
-                Right = nodePosition.X + nodeRadius,
-                Bottom = nodePosition.Y + nodeRadius
-            },
-            InnerShapeBounds = new ShapeBounds
-            {
-                Left = nodePosition.X - (nodeRadius / 2),
-                Top = nodePosition.Y - (nodeRadius / 2),
-                Right = nodePosition.X + (nodeRadius / 2),
-                Bottom = nodePosition.Y + (nodeRadius / 2)
-            }
+            Left = nodePosition.X - nodeRadius,
+            Top = nodePosition.Y - nodeRadius,
+            Right = nodePosition.X + nodeRadius,
+            Bottom = nodePosition.Y + nodeRadius
+        };
+
+        InnerShapeBounds = new ShapeBounds
+        {
+            Left = nodePosition.X - (nodeRadius / 2),
+            Top = nodePosition.Y - (nodeRadius / 2),
+            Right = nodePosition.X + (nodeRadius / 2),
+            Bottom = nodePosition.Y + (nodeRadius / 2)
         };
     }
 

@@ -4,7 +4,7 @@ using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
-public class Polygon() : Shape, IShape
+public class Polygon() : Shape, IShape, IVertexShape
 {
     public ShapeType ShapeType => ShapeType.Polygon;
 
@@ -13,6 +13,11 @@ public class Polygon() : Shape, IShape
     public int SelectionWeight => 10;
 
     public bool HasGap => false;
+
+    /// <summary>
+    /// The vertices of the shape
+    /// </summary>
+    public List<(double X, double Y)> Vertices { get; set; } = [];
 
     /// <summary>
     /// Get a randomly-selected number of sides from 3 to 8 (min: triangle, max: octagon)
@@ -48,8 +53,6 @@ public class Polygon() : Shape, IShape
                                          int numberOfSides,
                                          double rotationAngle)
     {
-        _shapeConfiguration.Vertices = [];
-
         for (int i = 0; i < numberOfSides; i++)
         {
             double angle = (2 * Math.PI / numberOfSides * i) + rotationAngle;
@@ -57,7 +60,7 @@ public class Polygon() : Shape, IShape
             (double X, double Y) vertex = (nodePosition.X + nodeRadius * Math.Cos(angle),
                                            nodePosition.Y + nodeRadius * Math.Sin(angle));
 
-            _shapeConfiguration.Vertices.Add(vertex);
+            Vertices.Add(vertex);
         }
     }
 
@@ -71,15 +74,13 @@ public class Polygon() : Shape, IShape
                                     double nodeRadius,
                                     double rotationAngle)
     {
-        _shapeConfiguration.Vertices = [];
-
         double width = nodeRadius * 2;
         double height = nodeRadius;
 
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - width / 2, nodePosition.Y - height / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + width / 2, nodePosition.Y - height / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + width / 2, nodePosition.Y + height / 2), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - width / 2, nodePosition.Y + height / 2), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X - width / 2, nodePosition.Y - height / 2), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X + width / 2, nodePosition.Y - height / 2), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X + width / 2, nodePosition.Y + height / 2), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X - width / 2, nodePosition.Y + height / 2), nodePosition, rotationAngle));
     }
 
     /// <summary>
@@ -92,15 +93,13 @@ public class Polygon() : Shape, IShape
                                   double nodeRadius,
                                   double rotationAngle)
     {
-        _shapeConfiguration.Vertices = [];
-
         double horizontalDistance = nodeRadius * 1.5 * Math.Cos(Math.PI / 6); // 30 degrees
         double verticalDistance = nodeRadius * 1.5 * Math.Sin(Math.PI / 6); // 30 degrees
 
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y - verticalDistance), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + horizontalDistance, nodePosition.Y), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y + verticalDistance), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - horizontalDistance, nodePosition.Y), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y - verticalDistance), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X + horizontalDistance, nodePosition.Y), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y + verticalDistance), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X - horizontalDistance, nodePosition.Y), nodePosition, rotationAngle));
     }
 
     /// <summary>
@@ -113,17 +112,15 @@ public class Polygon() : Shape, IShape
                                         double nodeRadius,
                                         double rotationAngle)
     {
-        _shapeConfiguration.Vertices = [];
-
         double baseLength = nodeRadius * 2;
         double sideLength = nodeRadius * 1.75;
         double angleRadians = Math.PI * 30 / 180;
         double height = sideLength * Math.Sin(angleRadians);
 
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + baseLength, nodePosition.Y), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + baseLength - sideLength * Math.Cos(angleRadians), nodePosition.Y + height), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - sideLength * Math.Cos(angleRadians), nodePosition.Y + height), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X + baseLength, nodePosition.Y), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X + baseLength - sideLength * Math.Cos(angleRadians), nodePosition.Y + height), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X - sideLength * Math.Cos(angleRadians), nodePosition.Y + height), nodePosition, rotationAngle));
     }
 
     /// <summary>
@@ -136,18 +133,16 @@ public class Polygon() : Shape, IShape
                                     double nodeRadius,
                                     double rotationAngle)
     {
-        _shapeConfiguration.Vertices = [];
-
         double topWidth = nodeRadius * 2 * 0.667;
         double height = nodeRadius * 1.4;
 
         double halfTopWidth = topWidth / 2;
         double halfBottomWidth = topWidth;
 
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - halfTopWidth, nodePosition.Y), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + halfTopWidth, nodePosition.Y), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + halfBottomWidth, nodePosition.Y + height), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X - halfBottomWidth, nodePosition.Y + height), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X - halfTopWidth, nodePosition.Y), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X + halfTopWidth, nodePosition.Y), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X + halfBottomWidth, nodePosition.Y + height), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X - halfBottomWidth, nodePosition.Y + height), nodePosition, rotationAngle));
     }
 
     /// <summary>
@@ -160,15 +155,13 @@ public class Polygon() : Shape, IShape
                                double nodeRadius,
                                double rotationAngle)
     {
-        _shapeConfiguration.Vertices = [];
-
         double angleLeft = Math.PI / 4;         // 45° in radians
         double angleRight = 3 * Math.PI / 4;    // 135° in radians
 
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y - nodeRadius), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + nodeRadius * Math.Cos(angleRight), nodePosition.Y + nodeRadius * Math.Sin(angleRight)), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y + nodeRadius), nodePosition, rotationAngle));
-        _shapeConfiguration.Vertices.Add(RotateVertex((nodePosition.X + nodeRadius * Math.Cos(angleLeft), nodePosition.Y + nodeRadius * Math.Sin(angleLeft)), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y - nodeRadius), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X + nodeRadius * Math.Cos(angleRight), nodePosition.Y + nodeRadius * Math.Sin(angleRight)), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X, nodePosition.Y + nodeRadius), nodePosition, rotationAngle));
+        Vertices.Add(RotateVertex((nodePosition.X + nodeRadius * Math.Cos(angleLeft), nodePosition.Y + nodeRadius * Math.Sin(angleLeft)), nodePosition, rotationAngle));
     }
 
     /// <summary>

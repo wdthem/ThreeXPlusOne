@@ -4,7 +4,6 @@ using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
-using ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
@@ -241,35 +240,33 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
             FakeBoldText = true,
         };
 
-        ShapeConfiguration shapeConfiguration = node.Shape.GetShapeConfiguration();
-
         switch (node.Shape.ShapeType)
         {
             case ShapeType.Arc:
-                DrawArc(canvas, node, shapeConfiguration, paint, borderPaint);
+                DrawArc(canvas, node, paint, borderPaint);
                 break;
 
             case ShapeType.Ellipse:
-                DrawEllipse(canvas, node, shapeConfiguration, paint, borderPaint);
+                DrawEllipse(canvas, node, paint, borderPaint);
                 break;
 
             case ShapeType.Pill:
-                DrawPill(canvas, node, shapeConfiguration, paint, borderPaint);
+                DrawPill(canvas, node, paint, borderPaint);
                 break;
 
             case ShapeType.Plus:
             case ShapeType.Polygon:
             case ShapeType.Seashell:
             case ShapeType.Star:
-                DrawShapeFromVertices(canvas, node, shapeConfiguration, paint, borderPaint);
+                DrawShapeFromVertices(canvas, node, paint, borderPaint);
                 break;
 
             case ShapeType.SemiCircle:
-                DrawSemiCircle(canvas, node, shapeConfiguration, paint, borderPaint);
+                DrawSemiCircle(canvas, node, paint, borderPaint);
                 break;
 
             case ShapeType.Donut:
-                DrawDonut(canvas, node, shapeConfiguration, paint, borderPaint);
+                DrawDonut(canvas, node, paint, borderPaint);
                 break;
 
             default:
