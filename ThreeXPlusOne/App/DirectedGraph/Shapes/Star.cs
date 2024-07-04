@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
-public class Star() : Shape, IShape
+public class Star() : Shape, IShape, IVertexShape
 {
     private readonly int _numberOfPoints = 5;
 
@@ -12,6 +12,11 @@ public class Star() : Shape, IShape
     public int SelectionWeight => 1;
 
     public bool HasGap => false;
+
+    /// <summary>
+    /// The vertices of the shape
+    /// </summary>
+    public List<(double X, double Y)> Vertices { get; set; } = [];
 
     /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
@@ -25,8 +30,6 @@ public class Star() : Shape, IShape
         double innerRadius = nodeRadius * 0.4;
         double angleIncrement = 2 * Math.PI / (_numberOfPoints * 2);
 
-        _shapeConfiguration.Vertices = [];
-
         for (int i = 0; i < _numberOfPoints * 2; i++)
         {
             double angle = i * angleIncrement;
@@ -37,7 +40,7 @@ public class Star() : Shape, IShape
             double x = nodePosition.X + (radius * Math.Cos(angle));
             double y = nodePosition.Y + (radius * Math.Sin(angle));
 
-            _shapeConfiguration.Vertices.Add(RotateVertex((x, y), nodePosition, rotationAngle));
+            Vertices.Add(RotateVertex((x, y), nodePosition, rotationAngle));
         }
     }
 

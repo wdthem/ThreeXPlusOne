@@ -1,6 +1,6 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
-using ThreeXPlusOne.App.Models.ShapeConfiguration;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
@@ -16,6 +16,21 @@ public class Ellipse() : Shape, IShape
     public bool HasGap => false;
 
     /// <summary>
+    /// The x-radius of the ellipse
+    /// </summary>
+    public double RadiusX { get; set; }
+
+    /// <summary>
+    /// The y-radius of the ellipse
+    /// </summary>
+    public double RadiusY { get; set; }
+
+    /// <summary>
+    /// The bounding box used to render the ellipse shape
+    /// </summary>
+    public ShapeBounds ShapeBounds { get; set; } = new();
+
+    /// <summary>
     /// Stretch the ellipse radii for skewed shapes
     /// </summary>
     /// <param name="nodePosition"></param>
@@ -23,26 +38,23 @@ public class Ellipse() : Shape, IShape
     private void StretchRadii((double X, double Y) nodePosition,
                               double nodeRadius)
     {
-        if (_shapeConfiguration.EllipseConfiguration != null)
+        double skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) *
+                            ((0.1 + Random.Shared.NextDouble()) * 0.6) *
+                            0.6;  //reduce the overall impact to ellipses
+
+        double horizontalOffset = nodeRadius * skewFactor;
+        double verticalOffset = nodeRadius * (skewFactor * Random.Shared.NextDouble());
+
+        RadiusX = nodeRadius + horizontalOffset;
+        RadiusY = nodeRadius + verticalOffset;
+
+        ShapeBounds = new ShapeBounds
         {
-            double skewFactor = (Random.Shared.NextDouble() > 0.5 ? 1 : -1) *
-                                ((0.1 + Random.Shared.NextDouble()) * 0.6) *
-                                0.6;  //reduce the overall impact to ellipses
-
-            double horizontalOffset = nodeRadius * skewFactor;
-            double verticalOffset = nodeRadius * (skewFactor * Random.Shared.NextDouble());
-
-            _shapeConfiguration.EllipseConfiguration.RadiusX = nodeRadius + horizontalOffset;
-            _shapeConfiguration.EllipseConfiguration.RadiusY = nodeRadius + verticalOffset;
-
-            _shapeConfiguration.EllipseConfiguration.ShapeBounds = new ShapeBounds
-            {
-                Left = nodePosition.X - _shapeConfiguration.EllipseConfiguration.RadiusX,
-                Top = nodePosition.Y - _shapeConfiguration.EllipseConfiguration.RadiusY,
-                Right = nodePosition.X + _shapeConfiguration.EllipseConfiguration.RadiusX,
-                Bottom = nodePosition.Y + _shapeConfiguration.EllipseConfiguration.RadiusY
-            };
-        }
+            Left = nodePosition.X - RadiusX,
+            Top = nodePosition.Y - RadiusY,
+            Right = nodePosition.X + RadiusX,
+            Bottom = nodePosition.Y + RadiusY
+        };
     }
 
     /// <summary>
@@ -53,17 +65,15 @@ public class Ellipse() : Shape, IShape
     public void SetShapeConfiguration((double X, double Y) nodePosition,
                                       double nodeRadius)
     {
-        _shapeConfiguration.EllipseConfiguration = new()
+        RadiusX = nodeRadius;
+        RadiusY = nodeRadius;
+
+        ShapeBounds = new ShapeBounds
         {
-            RadiusX = nodeRadius,
-            RadiusY = nodeRadius,
-            ShapeBounds = new ShapeBounds
-            {
-                Left = nodePosition.X - nodeRadius,
-                Top = nodePosition.Y - nodeRadius,
-                Right = nodePosition.X + nodeRadius,
-                Bottom = nodePosition.Y + nodeRadius
-            }
+            Left = nodePosition.X - nodeRadius,
+            Top = nodePosition.Y - nodeRadius,
+            Right = nodePosition.X + nodeRadius,
+            Bottom = nodePosition.Y + nodeRadius
         };
     }
 

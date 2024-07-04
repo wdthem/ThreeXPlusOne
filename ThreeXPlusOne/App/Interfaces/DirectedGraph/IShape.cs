@@ -1,6 +1,5 @@
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 namespace ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
@@ -29,27 +28,37 @@ public interface IShape
     /// <summary>
     /// The color to use to start the gradient if the node is influenced by the light source
     /// </summary>
-    public Color GradientStartColor { get; set; }
+    Color GradientStartColor { get; set; }
 
     /// <summary>
     /// The color to use to end the gradient if the node is influenced by the light source
     /// </summary>
-    public Color GradientEndColor { get; }
+    Color GradientEndColor { get; }
 
     /// <summary>
     /// The color to use to start the gradient if the node is influenced by the light source
     /// </summary>
-    public Color BorderGradientStartColor { get; set; }
+    Color BorderGradientStartColor { get; set; }
 
     /// <summary>
     /// The color to use to end the gradient if the node is influenced by the light source
     /// </summary>
-    public Color BorderGradientEndColor { get; }
+    Color BorderGradientEndColor { get; }
 
     /// <summary>
     /// Whether or not this shape is influenced by the light source
     /// </summary>
-    public bool HasLightSourceImpact { get; set; }
+    bool HasLightSourceImpact { get; set; }
+
+    /// <summary>
+    /// The start point of the gradient for the shape's front face
+    /// </summary>
+    (double X, double Y) FrontFaceGradientStartPoint { get; set; }
+
+    /// <summary>
+    /// The end point of the gradient for the shape's front face
+    /// </summary>
+    (double X, double Y) FrontFaceGradientEndPoint { get; set; }
 
     /// <summary>
     /// The radius of the shape
@@ -65,17 +74,31 @@ public interface IShape
     int SelectionWeight { get; }
 
     /// <summary>
+    /// The start point of the gradient for the shape's side
+    /// </summary>
+    (double X, double Y) SideFaceGradientStartPoint { get; set; }
+
+    /// <summary>
+    /// The end point of the gradient for the shape's side
+    /// </summary>
+    (double X, double Y) SideFaceGradientEndPoint { get; set; }
+
+    /// <summary>
+    /// Skew values applied to the shape in psuedo-3D graphs
+    /// </summary>
+    (double X, double Y)? Skew { get; set; }
+
+    /// <summary>
+    /// The number of sides to render when drawing the shape in pseudo-3D
+    /// </summary>
+    int ThreeDimensionalSideCount { get; }
+
+    /// <summary>
     /// Set the configuration of the given shape, optionally skewing it
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
     void SetShapeConfiguration((double X, double Y) nodePosition, double nodeRadius);
-
-    /// <summary>
-    /// Get the object storing the shape's configuration data
-    /// </summary>
-    /// <returns></returns>
-    ShapeConfiguration GetShapeConfiguration();
 
     /// <summary>
     /// Set the start and end of the gradient of the front and sides of the shape
@@ -95,4 +118,11 @@ public interface IShape
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
     void SetShapeSkew((double X, double Y) nodePosition, double nodeRadius);
+
+    /// <summary>
+    /// The depth of the shape when rendered in pseudo-3D, based on the node radius
+    /// </summary>
+    /// <param name="nodeRadius"></param>
+    /// <returns></returns>
+    double ThreeDimensionalDepth(double nodeRadius);
 }

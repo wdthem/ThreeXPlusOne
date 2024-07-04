@@ -1,5 +1,4 @@
 using System.Drawing;
-using ThreeXPlusOne.App.Models.ShapeConfiguration;
 
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
@@ -13,10 +12,39 @@ public abstract class Shape()
 
     private Color _borderGradientEndColor = Color.Empty;
 
+    private readonly double _threeDimensionalDepthMultiplier = 0.1;
+
+    private readonly int _threeDimensionalSideCount = 360;
+
     /// <summary>
-    /// The object holding the configuration details required for rendering a given shape
+    /// Skew values applied to the shape in psuedo-3D graphs
     /// </summary>
-    protected readonly ShapeConfiguration _shapeConfiguration = new();
+    public (double X, double Y)? Skew { get; set; }
+
+    /// <summary>
+    /// The number of sides to render when drawing the shape in pseudo-3D
+    /// </summary>
+    public int ThreeDimensionalSideCount => _threeDimensionalSideCount;
+
+    /// <summary>
+    /// The start point of the gradient for the shape's side
+    /// </summary>
+    public (double X, double Y) SideFaceGradientStartPoint { get; set; }
+
+    /// <summary>
+    /// The end point of the gradient for the shape's side
+    /// </summary>
+    public (double X, double Y) SideFaceGradientEndPoint { get; set; }
+
+    /// <summary>
+    /// The start point of the gradient for the shape's front face
+    /// </summary>
+    public (double X, double Y) FrontFaceGradientStartPoint { get; set; }
+
+    /// <summary>
+    /// The end point of the gradient for the shape's front face
+    /// </summary>
+    public (double X, double Y) FrontFaceGradientEndPoint { get; set; }
 
     /// <summary>
     /// Generate a skewed position for the given shape
@@ -28,7 +56,7 @@ public abstract class Shape()
         double skewX = skewFactor;
         double skewY = skewX * Random.Shared.NextDouble();
 
-        _shapeConfiguration.Skew = (skewX, skewY);
+        Skew = (skewX, skewY);
     }
 
     /// <summary>
@@ -49,6 +77,16 @@ public abstract class Shape()
         double y = sinAngle * (point.X - center.X) + cosAngle * (point.Y - center.Y) + center.Y;
 
         return (x, y);
+    }
+
+    /// <summary>
+    /// The depth of the shape when rendered in pseudo-3D, based on the node radius
+    /// </summary>
+    /// <param name="nodeRadius"></param>
+    /// <returns></returns>
+    public double ThreeDimensionalDepth(double nodeRadius)
+    {
+        return nodeRadius * _threeDimensionalDepthMultiplier;
     }
 
     /// <summary>
@@ -162,15 +200,6 @@ public abstract class Shape()
     public double Radius { get; set; }
 
     /// <summary>
-    /// Get the shape's configuration data
-    /// </summary>
-    /// <returns></returns>
-    public ShapeConfiguration GetShapeConfiguration()
-    {
-        return _shapeConfiguration;
-    }
-
-    /// <summary>
     /// Set the start and end of the gradient of the front and sides of the shape
     /// </summary>
     /// <param name="frontFaceStartPoint"></param>
@@ -182,9 +211,9 @@ public abstract class Shape()
                                       (double X, double Y) sideFaceStartPoint,
                                       (double X, double Y) sideFaceEndPoint)
     {
-        _shapeConfiguration.FrontFaceGradientStartPoint = frontFaceStartPoint;
-        _shapeConfiguration.FrontFaceGradientEndPoint = frontFaceEndPoint;
-        _shapeConfiguration.SideFaceGradientStartPoint = sideFaceStartPoint;
-        _shapeConfiguration.SideFaceGradientEndPoint = sideFaceEndPoint;
+        FrontFaceGradientStartPoint = frontFaceStartPoint;
+        FrontFaceGradientEndPoint = frontFaceEndPoint;
+        SideFaceGradientStartPoint = sideFaceStartPoint;
+        SideFaceGradientEndPoint = sideFaceEndPoint;
     }
 }
