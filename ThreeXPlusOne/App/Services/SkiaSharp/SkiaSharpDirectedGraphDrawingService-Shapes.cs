@@ -101,36 +101,31 @@ public partial class SkiaSharpDirectedGraphDrawingService
     {
         if (shapeConfiguration.DonutConfiguration == null)
         {
-            throw new Exception($"{nameof(DrawEllipse)}: Donut configuration settings were null");
+            throw new Exception($"{nameof(DrawDonut)}: Donut configuration settings were null");
         }
 
         using SKPath donutPath = new();
 
-        SKRect outerBoundsRect = new((float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Left,
-                                     (float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Top,
-                                     (float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Right,
-                                     (float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Bottom);
+        SKRect outerBounds = new((float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Left,
+                                 (float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Top,
+                                 (float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Right,
+                                 (float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Bottom);
 
-        SKRect innerBoundsRect = new((float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Left,
-                                     (float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Top,
-                                     (float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Right,
-                                     (float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Bottom);
+        SKRect innerBounds = new((float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Left,
+                                 (float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Top,
+                                 (float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Right,
+                                 (float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Bottom);
 
-        //forced to set skew matrix here in order to apply it to the clipped donut hole
-        SKMatrix? skewMatrix = null;
+        donutPath.AddOval(outerBounds);
 
-        if (shapeConfiguration.Skew != null)
-        {
-            skewMatrix = GetSkewSKMatrix(node.Position, shapeConfiguration.Skew.Value);
-        }
+        using SKPath innerPath = new();
+        innerPath.MoveTo(innerBounds.Left, innerBounds.Top);
+        innerPath.AddOval(innerBounds);
 
-        ClipDonutHole(canvas, innerBoundsRect, skewMatrix);
+        using SKPath reversedInnerPath = new();
+        reversedInnerPath.AddPathReverse(innerPath);
 
-        donutPath.AddOval(outerBoundsRect);
-
-        donutPath.AddOval(innerBoundsRect,
-                          SKPathDirection.Clockwise);
-
+        donutPath.AddPath(reversedInnerPath);
 
         if (shapeConfiguration.Skew == null)
         {
@@ -140,20 +135,16 @@ public partial class SkiaSharpDirectedGraphDrawingService
                         borderPaint,
                         node,
                         shapeConfiguration);
-
-            canvas.Restore();
-
-            return;
         }
-
-        DrawSkewed3DShape(donutPath,
-                          canvas,
-                          paint,
-                          borderPaint,
-                          node,
-                          shapeConfiguration);
-
-        canvas.Restore();
+        else
+        {
+            DrawSkewed3DShape(donutPath,
+                              canvas,
+                              paint,
+                              borderPaint,
+                              node,
+                              shapeConfiguration);
+        }
     }
 
     private void DrawSemiCircle(SKCanvas canvas,
@@ -649,28 +640,5 @@ public partial class SkiaSharpDirectedGraphDrawingService
     private static float Length(SKPoint point)
     {
         return (float)Math.Sqrt(point.X * point.X + point.Y * point.Y);
-    }
-
-    /// <summary>
-    /// Helper method to ensure the inner hole of a donut shape is not filled in
-    /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="innerBounds"></param>
-    private static void ClipDonutHole(SKCanvas canvas,
-                                      SKRect innerBounds,
-                                      SKMatrix? skewMatrix)
-    {
-        canvas.Save();
-
-        using SKPath clipPath = new();
-
-        clipPath.AddOval(innerBounds);
-
-        if (skewMatrix != null)
-        {
-            clipPath.Transform(skewMatrix.Value);
-        }
-
-        canvas.ClipPath(clipPath, SKClipOperation.Difference);
     }
 }
