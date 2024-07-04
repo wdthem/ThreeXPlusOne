@@ -93,6 +93,60 @@ public partial class SkiaSharpDirectedGraphDrawingService
                           shapeConfiguration);
     }
 
+    private void DrawDonut(SKCanvas canvas,
+                           DirectedGraphNode node,
+                           ShapeConfiguration shapeConfiguration,
+                           SKPaint paint,
+                           SKPaint borderPaint)
+    {
+        if (shapeConfiguration.DonutConfiguration == null)
+        {
+            throw new Exception($"{nameof(DrawDonut)}: Donut configuration settings were null");
+        }
+
+        using SKPath donutPath = new();
+
+        SKRect outerBounds = new((float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Left,
+                                 (float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Top,
+                                 (float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Right,
+                                 (float)shapeConfiguration.DonutConfiguration.OuterShapeBounds.Bottom);
+
+        SKRect innerBounds = new((float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Left,
+                                 (float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Top,
+                                 (float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Right,
+                                 (float)shapeConfiguration.DonutConfiguration.InnerShapeBounds.Bottom);
+
+        donutPath.AddOval(outerBounds);
+
+        using SKPath innerPath = new();
+        innerPath.MoveTo(innerBounds.Left, innerBounds.Top);
+        innerPath.AddOval(innerBounds);
+
+        using SKPath reversedInnerPath = new();
+        reversedInnerPath.AddPathReverse(innerPath);
+
+        donutPath.AddPath(reversedInnerPath);
+
+        if (shapeConfiguration.Skew == null)
+        {
+            Draw2DShape(donutPath,
+                        canvas,
+                        paint,
+                        borderPaint,
+                        node,
+                        shapeConfiguration);
+        }
+        else
+        {
+            DrawSkewed3DShape(donutPath,
+                              canvas,
+                              paint,
+                              borderPaint,
+                              node,
+                              shapeConfiguration);
+        }
+    }
+
     private void DrawSemiCircle(SKCanvas canvas,
                                 DirectedGraphNode node,
                                 ShapeConfiguration shapeConfiguration,

@@ -34,6 +34,11 @@ public record ShapeConfiguration()
     public SemiCircleConfiguration? SemiCircleConfiguration { get; set; }
 
     /// <summary>
+    /// The config data for drawing a donut shape
+    /// </summary>
+    public DonutConfiguration? DonutConfiguration { get; set; }
+
+    /// <summary>
     /// Skew values applied to the shape in psuedo-3D graphs
     /// </summary>
     public (double X, double Y)? Skew { get; set; }
