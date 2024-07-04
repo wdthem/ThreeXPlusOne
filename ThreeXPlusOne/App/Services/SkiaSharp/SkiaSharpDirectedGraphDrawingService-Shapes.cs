@@ -144,23 +144,23 @@ public partial class SkiaSharpDirectedGraphDrawingService
                                 SKPaint paint,
                                 SKPaint borderPaint)
     {
-        if (node.Shape is not SemiCircle semicircle)
+        if (node.Shape is not SemiCircle semiCircle)
         {
             throw new Exception($"{nameof(DrawSemiCircle)}: Expected shape type not received)");
         }
 
         using SKPath semiCirclePath = new();
 
-        semiCirclePath.AddArc(new SKRect((float)semicircle.ShapeBounds.Left,
-                                         (float)semicircle.ShapeBounds.Top,
-                                         (float)semicircle.ShapeBounds.Right,
-                                         (float)semicircle.ShapeBounds.Bottom),
-                              (float)semicircle.Orientation,
-                              (float)semicircle.SweepAngle);
+        semiCirclePath.AddArc(new SKRect((float)semiCircle.ShapeBounds.Left,
+                                         (float)semiCircle.ShapeBounds.Top,
+                                         (float)semiCircle.ShapeBounds.Right,
+                                         (float)semiCircle.ShapeBounds.Bottom),
+                              (float)semiCircle.Orientation,
+                              (float)semiCircle.SweepAngle);
 
         semiCirclePath.Close();
 
-        if (semicircle.Skew == null)
+        if (semiCircle.Skew == null)
         {
             Draw2DShape(semiCirclePath,
                         canvas,
