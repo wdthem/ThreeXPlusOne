@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.16.1</Version>
+    <Version>1.16.2</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Code cleanup, add missing method docs</TagMessage>
+    <TagMessage>Code cleanup</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>

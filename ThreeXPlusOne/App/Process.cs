@@ -112,7 +112,7 @@ public class Process(IOptions<AppSettings> appSettings,
 
             if (inputValues.Count == 0)
             {
-                throw new Exception($"{nameof(_appSettings.AlgorithmSettings.NumbersToUse)} had values, but {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)} removed them all. Please provide more numbers in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)}");
+                throw new ApplicationException($"{nameof(_appSettings.AlgorithmSettings.NumbersToUse)} had values, but {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)} removed them all. Please provide more numbers in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)}");
             }
 
             _generatedRandomNumbers = false;
@@ -130,7 +130,7 @@ public class Process(IOptions<AppSettings> appSettings,
             {
                 if (inputValues.Count == 0)
                 {
-                    throw new Exception($"No numbers generated on which to run the algorithm. Check {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}");
+                    throw new ApplicationException($"No numbers generated on which to run the algorithm. Check {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}");
                 }
 
                 consoleService.WriteLine($"\nGave up generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers. Generated {inputValues.Count}\n");

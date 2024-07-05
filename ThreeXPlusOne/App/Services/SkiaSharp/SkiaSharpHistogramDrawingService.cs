@@ -39,7 +39,7 @@ public class SkiaSharpHistogramDrawingService() : IHistogramDrawingService
     {
         if (_canvas == null)
         {
-            throw new Exception("Could not draw the histogram. Canvas object was null");
+            throw new ApplicationException("Could not draw the histogram. Canvas object was null");
         }
 
         int numberOfBars = counts.Count;
@@ -164,7 +164,7 @@ public class SkiaSharpHistogramDrawingService() : IHistogramDrawingService
     {
         if (_bitmap == null)
         {
-            throw new Exception("Could not save the histogram image. Bitmap object was null");
+            throw new ApplicationException("Could not save the histogram image. Bitmap object was null");
         }
 
         using SKImage image = SKImage.FromBitmap(_bitmap);

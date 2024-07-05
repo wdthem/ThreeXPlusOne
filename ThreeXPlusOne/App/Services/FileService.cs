@@ -29,7 +29,7 @@ public class FileService(IOptions<AppSettings> appSettings,
 
             if (directory == null || !Directory.Exists(directory))
             {
-                throw new Exception($"Invalid {nameof(_appSettings.OutputPath)}. Check '{_appSettings.SettingsFileName}'");
+                throw new ApplicationException($"Invalid {nameof(_appSettings.OutputPath)}. Check '{_appSettings.SettingsFileName}'");
             }
         }
 

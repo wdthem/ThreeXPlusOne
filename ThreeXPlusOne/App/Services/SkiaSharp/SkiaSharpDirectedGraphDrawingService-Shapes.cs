@@ -22,7 +22,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     {
         if (node.Shape is not IVertexShape vertexShape || vertexShape.Vertices == null)
         {
-            throw new Exception($"{nameof(DrawShapeFromVertices)}: Vertices were null");
+            throw new ApplicationException($"{nameof(DrawShapeFromVertices)}: Vertices were null");
         }
 
         using SKPath shapePath = new();
@@ -65,7 +65,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     {
         if (node.Shape is not Ellipse ellipse)
         {
-            throw new Exception($"{nameof(DrawEllipse)}: Expected shape type not received)");
+            throw new ApplicationException($"{nameof(DrawEllipse)}: Expected shape type not received)");
         }
 
         using SKPath ellipsePath = new();
@@ -97,7 +97,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     {
         if (node.Shape is not Donut donut)
         {
-            throw new Exception($"{nameof(DrawDonut)}: Expected shape type not received)");
+            throw new ApplicationException($"{nameof(DrawDonut)}: Expected shape type not received)");
         }
 
         using SKPath donutPath = new();
@@ -145,7 +145,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     {
         if (node.Shape is not SemiCircle semiCircle)
         {
-            throw new Exception($"{nameof(DrawSemiCircle)}: Expected shape type not received)");
+            throw new ApplicationException($"{nameof(DrawSemiCircle)}: Expected shape type not received)");
         }
 
         using SKPath semiCirclePath = new();
@@ -181,7 +181,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     {
         if (node.Shape is not Arc arc)
         {
-            throw new Exception($"{nameof(DrawArc)}: Expected shape type not received)");
+            throw new ApplicationException($"{nameof(DrawArc)}: Expected shape type not received)");
         }
 
         using SKPath arcPath = new();
@@ -224,7 +224,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     {
         if (node.Shape is not Pill pill)
         {
-            throw new Exception($"{nameof(DrawPill)}: Expected shape type not received)");
+            throw new ApplicationException($"{nameof(DrawPill)}: Expected shape type not received)");
         }
 
         using SKPath pillPath = new();
@@ -353,7 +353,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     {
         if (node.Shape.Skew == null)
         {
-            throw new Exception($"{nameof(Draw3DShape)}: Skew settings were null");
+            throw new ApplicationException($"{nameof(Draw3DShape)}: Skew settings were null");
         }
 
         double depth = node.Shape.ThreeDimensionalDepth(node.Shape.Radius);
@@ -382,7 +382,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
         {
             if (_lightSourceCoordinates == null)
             {
-                throw new Exception("Node has light source impact but light source coordinates were null");
+                throw new ApplicationException("Node has light source impact but light source coordinates were null");
             }
 
             SKPoint frontFaceGradientStartPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(node.Shape.FrontFaceGradientStartPoint));
