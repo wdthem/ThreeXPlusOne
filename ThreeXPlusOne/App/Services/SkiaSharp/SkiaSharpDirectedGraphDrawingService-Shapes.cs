@@ -70,10 +70,10 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
         using SKPath ellipsePath = new();
 
-        ellipsePath.AddOval(new SKRect((float)ellipse.ShapeBounds.Left,
-                                       (float)ellipse.ShapeBounds.Top,
-                                       (float)ellipse.ShapeBounds.Right,
-                                       (float)ellipse.ShapeBounds.Bottom));
+        ellipsePath.AddOval(new SKRect((float)ellipse.Bounds.Left,
+                                       (float)ellipse.Bounds.Top,
+                                       (float)ellipse.Bounds.Right,
+                                       (float)ellipse.Bounds.Bottom));
 
         DrawShape(canvas,
                   node,
@@ -104,15 +104,15 @@ public partial class SkiaSharpDirectedGraphDrawingService
         using SKPath innerPath = new();
         using SKPath reversedInnerPath = new();
 
-        SKRect outerBounds = new((float)donut.OuterShapeBounds.Left,
-                                 (float)donut.OuterShapeBounds.Top,
-                                 (float)donut.OuterShapeBounds.Right,
-                                 (float)donut.OuterShapeBounds.Bottom);
+        SKRect outerBounds = new((float)donut.OuterEllipseBounds.Left,
+                                 (float)donut.OuterEllipseBounds.Top,
+                                 (float)donut.OuterEllipseBounds.Right,
+                                 (float)donut.OuterEllipseBounds.Bottom);
 
-        SKRect innerBounds = new((float)donut.InnerShapeBounds.Left,
-                                 (float)donut.InnerShapeBounds.Top,
-                                 (float)donut.InnerShapeBounds.Right,
-                                 (float)donut.InnerShapeBounds.Bottom);
+        SKRect innerBounds = new((float)donut.InnerEllipseBounds.Left,
+                                 (float)donut.InnerEllipseBounds.Top,
+                                 (float)donut.InnerEllipseBounds.Right,
+                                 (float)donut.InnerEllipseBounds.Bottom);
 
         donutPath.AddOval(outerBounds);
 
@@ -150,10 +150,10 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
         using SKPath semiCirclePath = new();
 
-        semiCirclePath.AddArc(new SKRect((float)semiCircle.ShapeBounds.Left,
-                                         (float)semiCircle.ShapeBounds.Top,
-                                         (float)semiCircle.ShapeBounds.Right,
-                                         (float)semiCircle.ShapeBounds.Bottom),
+        semiCirclePath.AddArc(new SKRect((float)semiCircle.Bounds.Left,
+                                         (float)semiCircle.Bounds.Top,
+                                         (float)semiCircle.Bounds.Right,
+                                         (float)semiCircle.Bounds.Bottom),
                               (float)semiCircle.Orientation,
                               (float)semiCircle.SweepAngle);
 
@@ -229,10 +229,10 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
         using SKPath pillPath = new();
 
-        SKRect pillBounds = new((float)pill.ShapeBounds.Left,
-                                (float)pill.ShapeBounds.Top,
-                                (float)pill.ShapeBounds.Right,
-                                (float)pill.ShapeBounds.Bottom);
+        SKRect pillBounds = new((float)pill.Bounds.Left,
+                                (float)pill.Bounds.Top,
+                                (float)pill.Bounds.Right,
+                                (float)pill.Bounds.Bottom);
 
         pillPath.AddRoundRect(pillBounds,
                               (float)pill.CurveRadiusX,

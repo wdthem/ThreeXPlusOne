@@ -38,7 +38,7 @@ public class Pill() : Shape, IShape
     /// <summary>
     /// The bounding box used to render the pill shape
     /// </summary>
-    public ShapeBounds ShapeBounds { get; set; } = new();
+    public ShapeBounds Bounds { get; set; } = new();
 
     /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
@@ -54,7 +54,7 @@ public class Pill() : Shape, IShape
         Height = pillHeight;
         RotationAngle = Random.Shared.Next(360);
 
-        ShapeBounds = new ShapeBounds
+        Bounds = new ShapeBounds
         {
             Left = nodePosition.X - pillWidth / 2,
             Top = nodePosition.Y - pillHeight / 2,

@@ -25,12 +25,12 @@ public class Donut() : Shape, IShape
     /// <summary>
     /// The bounding box used to render the outside of the donut shape
     /// </summary>
-    public ShapeBounds OuterShapeBounds { get; set; } = new();
+    public ShapeBounds OuterEllipseBounds { get; set; } = new();
 
     /// <summary>
     /// The bounding box used to render the inside of the donut shape
     /// </summary>
-    public ShapeBounds InnerShapeBounds { get; set; } = new();
+    public ShapeBounds InnerEllipseBounds { get; set; } = new();
 
     /// <summary>
     /// Stretch the ellipse radii for skewed shapes
@@ -51,7 +51,7 @@ public class Donut() : Shape, IShape
         RadiusX = nodeRadius + horizontalOffset;
         RadiusY = nodeRadius + verticalOffset;
 
-        OuterShapeBounds = new ShapeBounds
+        OuterEllipseBounds = new ShapeBounds
         {
             Left = nodePosition.X - RadiusX,
             Top = nodePosition.Y - RadiusY,
@@ -59,7 +59,7 @@ public class Donut() : Shape, IShape
             Bottom = nodePosition.Y + RadiusY
         };
 
-        InnerShapeBounds = new ShapeBounds
+        InnerEllipseBounds = new ShapeBounds
         {
             Left = nodePosition.X - (RadiusX / 2),
             Top = nodePosition.Y - (RadiusY / 2),
@@ -79,7 +79,7 @@ public class Donut() : Shape, IShape
         RadiusX = nodeRadius;
         RadiusY = nodeRadius;
 
-        OuterShapeBounds = new ShapeBounds
+        OuterEllipseBounds = new ShapeBounds
         {
             Left = nodePosition.X - nodeRadius,
             Top = nodePosition.Y - nodeRadius,
@@ -87,7 +87,7 @@ public class Donut() : Shape, IShape
             Bottom = nodePosition.Y + nodeRadius
         };
 
-        InnerShapeBounds = new ShapeBounds
+        InnerEllipseBounds = new ShapeBounds
         {
             Left = nodePosition.X - (nodeRadius / 2),
             Top = nodePosition.Y - (nodeRadius / 2),
