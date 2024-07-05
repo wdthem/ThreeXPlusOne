@@ -28,7 +28,7 @@ public class Ellipse() : Shape, IShape
     /// <summary>
     /// The bounding box used to render the ellipse shape
     /// </summary>
-    public ShapeBounds ShapeBounds { get; set; } = new();
+    public ShapeBounds Bounds { get; set; } = new();
 
     /// <summary>
     /// Stretch the ellipse radii for skewed shapes
@@ -48,7 +48,7 @@ public class Ellipse() : Shape, IShape
         RadiusX = nodeRadius + horizontalOffset;
         RadiusY = nodeRadius + verticalOffset;
 
-        ShapeBounds = new ShapeBounds
+        Bounds = new ShapeBounds
         {
             Left = nodePosition.X - RadiusX,
             Top = nodePosition.Y - RadiusY,
@@ -68,7 +68,7 @@ public class Ellipse() : Shape, IShape
         RadiusX = nodeRadius;
         RadiusY = nodeRadius;
 
-        ShapeBounds = new ShapeBounds
+        Bounds = new ShapeBounds
         {
             Left = nodePosition.X - nodeRadius,
             Top = nodePosition.Y - nodeRadius,

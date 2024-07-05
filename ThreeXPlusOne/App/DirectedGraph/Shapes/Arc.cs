@@ -6,6 +6,8 @@ namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 public class Arc() : Shape, IShape
 {
+    private readonly int _sweepAngle = 180;
+
     public ShapeType ShapeType => ShapeType.Arc;
 
     public int SelectionWeight => 1;
@@ -55,12 +57,11 @@ public class Arc() : Shape, IShape
         float innerRadius = (float)nodeRadius - (float)thickness / 2;
         float outerRadius = (float)nodeRadius + (float)thickness / 2;
         int startAngle = Random.Shared.Next(360);
-        int sweepAngle = 180;
 
         TopArcStartAngle = startAngle;
-        BottomArcStartAngle = startAngle + sweepAngle;
-        TopArcSweepAngle = sweepAngle;
-        BottomArcSweepAngle = -sweepAngle;
+        BottomArcStartAngle = startAngle + _sweepAngle;
+        TopArcSweepAngle = _sweepAngle;
+        BottomArcSweepAngle = -_sweepAngle;
 
         TopArcBounds = new ShapeBounds
         {

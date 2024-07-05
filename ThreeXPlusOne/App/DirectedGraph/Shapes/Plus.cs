@@ -11,9 +11,6 @@ public class Plus() : Shape, IShape, IVertexShape
 
     public bool HasGap => false;
 
-    /// <summary>
-    /// The vertices of the shape
-    /// </summary>
     public List<(double X, double Y)> Vertices { get; set; } = [];
 
     /// <summary>

@@ -29,15 +29,16 @@ public static class ShapeHelper
     /// Prepare the data required for weighting the selection of a number of sides for a polygon
     /// </summary>
     /// <returns></returns>
-    public static List<KeyValuePair<ShapeType, ShapeSelectionWeight>> ConfigureShapeSelectionWeights(int[] weights)
+    public static List<KeyValuePair<ShapeType, ShapeSelectionWeight>> ConfigureShapeSelectionWeights(Dictionary<int, int> polygonSideWeights)
     {
         List<KeyValuePair<ShapeType, ShapeSelectionWeight>> shapeWeightsList =
-            weights.Select(weight => new KeyValuePair<ShapeType, ShapeSelectionWeight>
-                                        (
-                                            ShapeType.Polygon,
-                                            new ShapeSelectionWeight() { Weight = weight }
-                                        ))
-                          .ToList();
+            polygonSideWeights.OrderBy(kvp => kvp.Key)
+                              .Select(kvp => new KeyValuePair<ShapeType, ShapeSelectionWeight>
+                                            (
+                                                ShapeType.Polygon,
+                                                new ShapeSelectionWeight() { Weight = kvp.Value }
+                                            ))
+                              .ToList();
 
         SetCumulativeShapeWeights(shapeWeightsList);
 

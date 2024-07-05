@@ -6,7 +6,7 @@ namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 public class SemiCircle() : Shape, IShape
 {
-    private readonly double _sweepAngle = 180;
+    private readonly int _sweepAngle = 180;
 
     public ShapeType ShapeType => ShapeType.SemiCircle;
 
@@ -25,12 +25,12 @@ public class SemiCircle() : Shape, IShape
     /// <remarks>
     /// Constant value of 180 for a semicircle
     /// </remarks>
-    public double SweepAngle => _sweepAngle;
+    public int SweepAngle => _sweepAngle;
 
     /// <summary>
     /// The bounding box used to render the semicircle shape
     /// </summary>
-    public ShapeBounds ShapeBounds { get; set; } = new();
+    public ShapeBounds Bounds { get; set; } = new();
 
     /// <summary>
     /// Set the configuration details for the shape used to represent the graph node
@@ -42,7 +42,7 @@ public class SemiCircle() : Shape, IShape
     {
         Orientation = Random.Shared.Next(360);
 
-        ShapeBounds = new ShapeBounds
+        Bounds = new ShapeBounds
         {
             Left = nodePosition.X - nodeRadius,
             Top = nodePosition.Y - nodeRadius,
