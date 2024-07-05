@@ -7,6 +7,14 @@ namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
 public partial class SkiaSharpDirectedGraphDrawingService
 {
+    /// <summary>
+    /// Draw a shape based on the defined set of vertices
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
+    /// <exception cref="Exception"></exception>
     private void DrawShapeFromVertices(SKCanvas canvas,
                                        DirectedGraphNode node,
                                        SKPaint paint,
@@ -35,24 +43,21 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
         shapePath.Close();
 
-        if (node.Shape.Skew == null)
-        {
-            Draw2DShape(shapePath,
-                        canvas,
-                        paint,
-                        borderPaint,
-                        node);
-
-            return;
-        }
-
-        DrawSkewed3DShape(shapePath,
-                          canvas,
-                          paint,
-                          borderPaint,
-                          node);
+        DrawShape(canvas,
+                  node,
+                  paint,
+                  borderPaint,
+                  shapePath);
     }
 
+    /// <summary>
+    /// Draw an ellipse shape with the defined settings
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
+    /// <exception cref="Exception"></exception>
     private void DrawEllipse(SKCanvas canvas,
                              DirectedGraphNode node,
                              SKPaint paint,
@@ -70,24 +75,21 @@ public partial class SkiaSharpDirectedGraphDrawingService
                                        (float)ellipse.ShapeBounds.Right,
                                        (float)ellipse.ShapeBounds.Bottom));
 
-        if (ellipse.Skew == null)
-        {
-            Draw2DShape(ellipsePath,
-                        canvas,
-                        paint,
-                        borderPaint,
-                        node);
-
-            return;
-        }
-
-        DrawSkewed3DShape(ellipsePath,
-                          canvas,
-                          paint,
-                          borderPaint,
-                          node);
+        DrawShape(canvas,
+                  node,
+                  paint,
+                  borderPaint,
+                  ellipsePath);
     }
 
+    /// <summary>
+    /// Draw a donut shape with the defined settings
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
+    /// <exception cref="Exception"></exception>
     private void DrawDonut(SKCanvas canvas,
                            DirectedGraphNode node,
                            SKPaint paint,
@@ -99,6 +101,8 @@ public partial class SkiaSharpDirectedGraphDrawingService
         }
 
         using SKPath donutPath = new();
+        using SKPath innerPath = new();
+        using SKPath reversedInnerPath = new();
 
         SKRect outerBounds = new((float)donut.OuterShapeBounds.Left,
                                  (float)donut.OuterShapeBounds.Top,
@@ -112,33 +116,28 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
         donutPath.AddOval(outerBounds);
 
-        using SKPath innerPath = new();
         innerPath.MoveTo(innerBounds.Left, innerBounds.Top);
         innerPath.AddOval(innerBounds);
 
-        using SKPath reversedInnerPath = new();
         reversedInnerPath.AddPathReverse(innerPath);
 
         donutPath.AddPath(reversedInnerPath);
 
-        if (donut.Skew == null)
-        {
-            Draw2DShape(donutPath,
-                        canvas,
-                        paint,
-                        borderPaint,
-                        node);
-        }
-        else
-        {
-            DrawSkewed3DShape(donutPath,
-                              canvas,
-                              paint,
-                              borderPaint,
-                              node);
-        }
+        DrawShape(canvas,
+                  node,
+                  paint,
+                  borderPaint,
+                  donutPath);
     }
 
+    /// <summary>
+    /// Draw a semicircle shape with the defined settings
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
+    /// <exception cref="Exception"></exception>
     private void DrawSemiCircle(SKCanvas canvas,
                                 DirectedGraphNode node,
                                 SKPaint paint,
@@ -160,24 +159,21 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
         semiCirclePath.Close();
 
-        if (semiCircle.Skew == null)
-        {
-            Draw2DShape(semiCirclePath,
-                        canvas,
-                        paint,
-                        borderPaint,
-                        node);
-
-            return;
-        }
-
-        DrawSkewed3DShape(semiCirclePath,
-                          canvas,
-                          paint,
-                          borderPaint,
-                          node);
+        DrawShape(canvas,
+                  node,
+                  paint,
+                  borderPaint,
+                  semiCirclePath);
     }
 
+    /// <summary>
+    /// Draw an arc shape with the defined settings
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
+    /// <exception cref="Exception"></exception>
     private void DrawArc(SKCanvas canvas,
                          DirectedGraphNode node,
                          SKPaint paint,
@@ -206,26 +202,21 @@ public partial class SkiaSharpDirectedGraphDrawingService
                        (float)arc.BottomArcStartAngle,
                        (float)arc.BottomArcSweepAngle);
 
-        if (arc.Skew == null)
-        {
-            Draw2DShape(arcPath,
-                        canvas,
-                        paint,
-                        borderPaint,
-                        node);
-
-            DrawArcBottomBorders(arcPath, canvas, borderPaint);
-
-            return;
-        }
-
-        DrawSkewed3DShape(arcPath,
-                          canvas,
-                          paint,
-                          borderPaint,
-                          node);
+        DrawShape(canvas,
+                  node,
+                  paint,
+                  borderPaint,
+                  arcPath);
     }
 
+    /// <summary>
+    /// Draw a pill shape with the defined settings
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
+    /// <exception cref="Exception"></exception>
     private void DrawPill(SKCanvas canvas,
                           DirectedGraphNode node,
                           SKPaint paint,
@@ -248,44 +239,64 @@ public partial class SkiaSharpDirectedGraphDrawingService
                               (float)pill.CurveRadiusY,
                               SKPathDirection.Clockwise);
 
-        SKMatrix rotationMatrix = SKMatrix.CreateRotationDegrees((float)pill.RotationAngle,
-                                                                 (float)node.Position.X,
-                                                                 (float)node.Position.Y);
+        DrawShape(canvas,
+                  node,
+                  paint,
+                  borderPaint,
+                  pillPath);
+    }
 
-        pillPath.Transform(rotationMatrix);
-
-        if (pill.Skew == null)
+    /// <summary>
+    /// Draw the shape based on the number of dimensions in which it is being rendered
+    /// </summary>
+    /// <param name="canvas"></param>
+    /// <param name="node"></param>
+    /// <param name="paint"></param>
+    /// <param name="borderPaint"></param>
+    /// <param name="shapePath"></param>
+    private void DrawShape(SKCanvas canvas,
+                           DirectedGraphNode node,
+                           SKPaint paint,
+                           SKPaint borderPaint,
+                           SKPath shapePath)
+    {
+        switch (node.Shape.Dimensions)
         {
-            Draw2DShape(pillPath,
-                        canvas,
-                        paint,
-                        borderPaint,
-                        node);
+            case 2:
+                Draw2DShape(canvas,
+                            node,
+                            paint,
+                            borderPaint,
+                            shapePath);
+                break;
 
-            return;
+            case 3:
+                Draw3DShape(canvas,
+                            node,
+                            paint,
+                            borderPaint,
+                            shapePath);
+                break;
+
+            default:
+                throw new ApplicationException("Invalid shape dimensions");
         }
-
-        DrawSkewed3DShape(pillPath,
-                          canvas,
-                          paint,
-                          borderPaint,
-                          node);
     }
 
     /// <summary>
     /// Draw a 2D shape with one face
     /// Use a gradient for the colour of the face if the shape is impacted by the light source
     /// </summary>
-    /// <param name="path"></param>
     /// <param name="canvas"></param>
+    /// <param name="node"></param>
     /// <param name="paint"></param>
     /// <param name="borderPaint"></param>
-    /// <param name="node"></param>
-    private static void Draw2DShape(SKPath path,
-                                    SKCanvas canvas,
+    /// <param name="shapePath"></param>
+    private static void Draw2DShape(SKCanvas canvas,
+                                    DirectedGraphNode node,
                                     SKPaint paint,
                                     SKPaint borderPaint,
-                                    DirectedGraphNode node)
+                                    SKPath shapePath)
     {
         if (node.Shape.HasLightSourceImpact)
         {
@@ -314,30 +325,35 @@ public partial class SkiaSharpDirectedGraphDrawingService
             borderPaint.Shader = borderShader;
         }
 
-        canvas.DrawPath(path, paint);
-        canvas.DrawPath(path, borderPaint);
+        canvas.DrawPath(shapePath, paint);
+        canvas.DrawPath(shapePath, borderPaint);
+
+        if (node.Shape.ShapeType == Enums.ShapeType.Arc)
+        {
+            DrawArcBottomBorders(shapePath, canvas, borderPaint);
+        }
     }
 
     /// <summary>
     /// Draw two offset faces with the same skew and add sides
     /// Use gradients for the colours if the shape is impacted by the light source
     /// </summary>
-    /// <param name="path"></param>
     /// <param name="canvas"></param>
+    /// <param name="node"></param>
     /// <param name="paint"></param>
     /// <param name="borderPaint"></param>
-    /// <param name="node"></param>
+    /// <param name="path"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    private void DrawSkewed3DShape(SKPath path,
-                                   SKCanvas canvas,
-                                   SKPaint paint,
-                                   SKPaint borderPaint,
-                                   DirectedGraphNode node)
+    private void Draw3DShape(SKCanvas canvas,
+                             DirectedGraphNode node,
+                             SKPaint paint,
+                             SKPaint borderPaint,
+                             SKPath path)
     {
         if (node.Shape.Skew == null)
         {
-            throw new Exception($"{nameof(DrawSkewed3DShape)}: Skew settings were null");
+            throw new Exception($"{nameof(Draw3DShape)}: Skew settings were null");
         }
 
         double depth = node.Shape.ThreeDimensionalDepth(node.Shape.Radius);
@@ -357,7 +373,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
             Style = SKPaintStyle.Fill
         };
 
-        int sidePoints = node.Shape.ThreeDimensionalSideCount;  // Number of points to use for the sides
+        int sidePoints = node.Shape.ThreeDimensionalSideCount;  // Number of points to use for the sides. More means less aliasing.
 
         SKPoint[] frontPoints = GetPointsOnPath(path, sidePoints);
         SKPoint[] backPoints = GetPointsOnPath(backPath, sidePoints);

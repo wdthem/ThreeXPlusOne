@@ -26,6 +26,11 @@ public interface IShape
     bool HasGap { get; }
 
     /// <summary>
+    /// The dimensions of the shape (2 or 3)
+    /// </summary>
+    int Dimensions { get; }
+
+    /// <summary>
     /// The color to use to start the gradient if the node is influenced by the light source
     /// </summary>
     Color GradientStartColor { get; set; }
