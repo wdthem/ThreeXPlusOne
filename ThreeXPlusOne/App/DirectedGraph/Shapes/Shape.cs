@@ -27,6 +27,14 @@ public abstract class Shape()
     public int ThreeDimensionalSideCount => _threeDimensionalSideCount;
 
     /// <summary>
+    /// The dimensions this shape is to be rendered in
+    /// </summary>
+    /// <remarks>
+    /// Only 3D shapes can have skew
+    /// </remarks>
+    public int Dimensions => Skew == null ? 2 : 3;
+
+    /// <summary>
     /// The start point of the gradient for the shape's side
     /// </summary>
     public (double X, double Y) SideFaceGradientStartPoint { get; set; }

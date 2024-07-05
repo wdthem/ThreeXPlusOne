@@ -55,7 +55,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     {
         if (_canvas == null)
         {
-            throw new Exception("Could not generate background stars. Surface or Canvas object was null");
+            throw new Exception("Could not generate background stars. Canvas object was null");
         }
 
         OnStart?.Invoke($"Drawing {starCount} background stars... ");

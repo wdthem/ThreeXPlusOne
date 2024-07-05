@@ -22,6 +22,12 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     [GeneratedRegex("([a-z])([A-Z])")]
     private static partial Regex SplitToWordsRegex();
 
+    /// <summary>
+    /// Truncate settings values that are long to avoid carriage returns
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="maxLength"></param>
+    /// <returns></returns>
     private string TruncateLongSettings(string input, int maxLength = 100)
     {
         if (string.IsNullOrEmpty(input))
@@ -57,6 +63,13 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         return truncated.ToString();
     }
 
+    /// <summary>
+    /// Generate the text for suggested values for the app settings
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="instance"></param>
+    /// <param name="sectionName"></param>
+    /// <returns></returns>
     private List<(ConsoleColor, string)> GenerateSuggestedValueText(Type? type = null,
                                                                     object? instance = null,
                                                                     string? sectionName = null)
@@ -123,6 +136,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         return lines;
     }
 
+    /// <summary>
+    /// Allow the user to scroll through the settings output, as it is longer than a standard console window's height
+    /// </summary>
+    /// <param name="outputType"></param>
+    /// <param name="lines"></param>
     private void ScrollOutput(string outputType, List<(ConsoleColor Color, string Text)> lines)
     {
         int currentLine = 0;
@@ -174,6 +192,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
     }
 
+    /// <summary>
+    /// Custom write method for console output (threadsafe)
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="delay"></param>
     public void Write(string message, bool delay = false)
     {
         lock (_consoleLock)
@@ -194,6 +217,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
     }
 
+    /// <summary>
+    /// Custom WriteLine method for console output (threadsafe)
+    /// </summary>
+    /// <param name="message"></param>
     public void WriteLine(string message)
     {
         lock (_consoleLock)
@@ -202,6 +229,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
     }
 
+    /// <summary>
+    /// Set the foreground colour (threadsafe)
+    /// </summary>
+    /// <param name="color"></param>
     public void SetForegroundColor(ConsoleColor color)
     {
         lock (_consoleLock)
@@ -210,6 +241,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
     }
 
+    /// <summary>
+    /// Set cursor visibility (threadsafe)
+    /// </summary>
+    /// <param name="visible"></param>
     public void SetCursorVisibility(bool visible)
     {
         lock (_consoleLock)
@@ -218,6 +253,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
     }
 
+    /// <summary>
+    /// Set the cursor position (threadsafe)
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="top"></param>
     public void SetCursorPosition(int left, int top)
     {
         lock (_consoleLock)
@@ -226,6 +266,14 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
     }
 
+    /// <summary>
+    /// Write the app settings to the screen
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="instance"></param>
+    /// <param name="sectionName"></param>
+    /// <param name="includeHeader"></param>
+    /// <param name="isJson"></param>
     public void WriteSettings(Type? type = null,
                               object? instance = null,
                               string? sectionName = null,
@@ -342,6 +390,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
     }
 
+    /// <summary>
+    /// Write messages that came from parsing command line parameters
+    /// </summary>
+    /// <param name="commandParsingMessages"></param>
     public void WriteCommandParsingMessages(List<string> commandParsingMessages)
     {
         if (commandParsingMessages.Count == 0)
@@ -371,6 +423,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
     }
 
+    /// <summary>
+    /// Write an error message
+    /// </summary>
+    /// <param name="message"></param>
     public void WriteError(string message)
     {
         SetForegroundColor(ConsoleColor.Red);
@@ -379,6 +435,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteLine($"{message}\n");
     }
 
+    /// <summary>
+    /// Write a message indicating the given step completed
+    /// </summary>
     public void WriteDone()
     {
         SetForegroundColor(ConsoleColor.Green);
@@ -386,6 +445,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         SetForegroundColor(ConsoleColor.White);
     }
 
+    /// <summary>
+    /// Read the y or n key press by the user to know whether or not to proceed
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
     public bool ReadYKeyToProceed(string message)
     {
         Write($"{message} (y/n): ");
@@ -396,11 +460,18 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         return keyInfo.Key == ConsoleKey.Y;
     }
 
+    /// <summary>
+    /// Write a visual separator in console output
+    /// </summary>
     public void WriteSeparator()
     {
         Write("\n------------------------------------------------------------------------------------\n", true);
     }
 
+    /// <summary>
+    /// Write a section heading in console output
+    /// </summary>
+    /// <param name="headerText"></param>
     public void WriteHeading(string headerText)
     {
         SetForegroundColor(ConsoleColor.White);
@@ -414,6 +485,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         SetForegroundColor(ConsoleColor.White);
     }
 
+    /// <summary>
+    /// Write the app's help text to the console
+    /// </summary>
+    /// <param name="commandLineOptions"></param>
     public void WriteHelpText(List<(string longName, string shortName, string description, string hint)> commandLineOptions)
     {
         WriteAsciiArtLogo();
@@ -435,6 +510,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n\n");
     }
 
+    /// <summary>
+    /// Write the app's usage info to the console
+    /// </summary>
+    /// <param name="commandLineOptions"></param>
     public void WriteCommandUsage(List<(string longName, string shortName, string description, string hint)> commandLineOptions)
     {
         string? assemblyName = _assembly.GetName().Name;
@@ -478,6 +557,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteLine("");
     }
 
+    /// <summary>
+    /// Write info about the app's config settings to the console
+    /// </summary>
     public void WriteConfigText()
     {
         WriteAsciiArtLogo();
@@ -512,6 +594,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteLine("Be aware that increasing some app settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
     }
 
+    /// <summary>
+    /// Write the app's version information to the console
+    /// </summary>
     public void WriteVersionText()
     {
         AssemblyInformationalVersionAttribute? versionAttribute =
@@ -535,6 +620,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         }
     }
 
+    /// <summary>
+    /// Write the app's ASCII art logo to the console
+    /// </summary>
     public void WriteAsciiArtLogo()
     {
         SetForegroundColor(ConsoleColor.Blue);
@@ -707,6 +795,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         SetForegroundColor(ConsoleColor.White);
     }
 
+    /// <summary>
+    /// Write a spinning bar to the console in a threadsafe way to indicate an ongoing process
+    /// </summary>
     public void ShowSpinningBar()
     {
         long previousMilliseconds = 0;
@@ -742,6 +833,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         });
     }
 
+    /// <summary>
+    /// Stop the spinning bar in a threadsafe way
+    /// </summary>
     public void StopSpinningBar()
     {
         _cancellationTokenSource?.Cancel();
@@ -749,6 +843,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         SetCursorVisibility(true);
     }
 
+    /// <summary>
+    /// Write summary info when the process completes
+    /// </summary>
+    /// <param name="timespan"></param>
     public void WriteProcessEnd(TimeSpan timespan)
     {
         string elapsedTime = string.Format("{0:00}:{1:00}.{2:000}",
