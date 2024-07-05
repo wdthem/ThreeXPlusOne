@@ -55,7 +55,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     {
         if (_canvas == null)
         {
-            throw new Exception("Could not generate background stars. Canvas object was null");
+            throw new ApplicationException("Could not generate background stars. Canvas object was null");
         }
 
         OnStart?.Invoke($"Drawing {starCount} background stars... ");
@@ -92,7 +92,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     {
         if (_canvas == null)
         {
-            throw new Exception("Could not add light source. Canvas object was null.");
+            throw new ApplicationException("Could not add light source. Canvas object was null.");
         }
 
         OnStart?.Invoke("Generating light source... ");
@@ -131,7 +131,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     {
         if (_canvas == null || _nodes == null)
         {
-            throw new Exception("Could not draw the graph. Canvas object or Nodes object was null");
+            throw new ApplicationException("Could not draw the graph. Canvas object or Nodes object was null");
         }
 
         string extraMessage = "";
@@ -170,7 +170,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     {
         if (_surface == null)
         {
-            throw new Exception("Could not render graph. Surface object was null");
+            throw new ApplicationException("Could not render graph. Surface object was null");
         }
 
         OnStart?.Invoke("Rendering graph... ");
@@ -188,7 +188,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     {
         if (_image == null)
         {
-            throw new Exception("Could not save graph. Image object was null");
+            throw new ApplicationException("Could not save graph. Image object was null");
         }
 
         string path = fileService.GenerateDirectedGraphFilePath();
@@ -270,7 +270,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                 break;
 
             default:
-                throw new Exception($"No drawing method for ShapeType {node.Shape.ShapeType}");
+                throw new ApplicationException($"No drawing method for ShapeType {node.Shape.ShapeType}");
         }
 
         if (drawNumbersOnNodes)

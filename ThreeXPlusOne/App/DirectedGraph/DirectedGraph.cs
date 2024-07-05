@@ -101,7 +101,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         if (!graphService.SupportedDimensions.Contains(_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions))
         {
-            throw new Exception($"Graph provider {_appSettings.GraphProvider} does not support graphs in {_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions} dimensions.");
+            throw new ApplicationException($"Graph provider {_appSettings.GraphProvider} does not support graphs in {_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions} dimensions.");
         }
 
         ConfigureGraphServiceActions(graphService);

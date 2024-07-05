@@ -15,7 +15,7 @@ public class AlgorithmService(IConsoleService consoleService) : IAlgorithmServic
 
         if (inputValues.Count == 0)
         {
-            throw new Exception("No input provided to the algorithm");
+            throw new ApplicationException("No input provided to the algorithm");
         }
 
         consoleService.Write($"Running 3x + 1 algorithm on {inputValues.Count} numbers... ");
