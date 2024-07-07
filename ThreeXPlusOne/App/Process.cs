@@ -3,6 +3,7 @@ using System.Diagnostics;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App;
 
@@ -30,7 +31,8 @@ public class Process(IOptions<AppSettings> appSettings,
         consoleService.WriteSettings();
 
         List<int> inputValues = GetInputValues(stopwatch);
-        List<List<int>> seriesLists = algorithmService.Run(inputValues);
+        List<CollatzResult> collatzResults = algorithmService.Run(inputValues);
+        List<List<int>> seriesLists = collatzResults.Select(cr => cr.Values).ToList();
 
         metadataService.GenerateMedatadataFile(seriesLists);
         histogramService.GenerateHistogram(seriesLists);

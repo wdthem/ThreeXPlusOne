@@ -1,4 +1,5 @@
 ﻿using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.Services;
 
@@ -9,7 +10,7 @@ public class AlgorithmService(IConsoleService consoleService) : IAlgorithmServic
     /// </summary>
     /// <param name="inputValues"></param>
     /// <returns></returns>
-    public List<List<int>> Run(List<int> inputValues)
+    public List<CollatzResult> Run(List<int> inputValues)
     {
         consoleService.WriteHeading("Algorithm execution");
 
@@ -20,7 +21,7 @@ public class AlgorithmService(IConsoleService consoleService) : IAlgorithmServic
 
         consoleService.Write($"Running 3x + 1 algorithm on {inputValues.Count} numbers... ");
 
-        List<List<int>> returnValues = [];
+        List<CollatzResult> collatzResults = [];
 
         foreach (int value in inputValues)
         {
@@ -29,12 +30,13 @@ public class AlgorithmService(IConsoleService consoleService) : IAlgorithmServic
                 continue;
             }
 
-            List<int> outputValues = [];
-
+            CollatzResult collatzResult = new();
             int calculatedValue = value;
 
             //add the first number in the series
-            outputValues.Add(calculatedValue);
+            collatzResult.Values = [calculatedValue];
+
+            int steps = 0;
 
             //avoid the infinite loop of 4, 2, 1 by stopping when the algorithm hits 1
             while (calculatedValue > 1)
@@ -49,14 +51,23 @@ public class AlgorithmService(IConsoleService consoleService) : IAlgorithmServic
                     calculatedValue = (calculatedValue * 3) + 1;
                 }
 
-                outputValues.Add(calculatedValue);
+                collatzResult.Values.Add(calculatedValue);
+
+                steps++;
+
+                if (calculatedValue < value && collatzResult.StoppingTime == null)
+                {
+                    collatzResult.StoppingTime = steps;
+                }
             }
 
-            returnValues.Add(outputValues);
+            collatzResult.TotalStoppingTime = steps;
+
+            collatzResults.Add(collatzResult);
         }
 
         consoleService.WriteDone();
 
-        return returnValues;
+        return collatzResults;
     }
 }
