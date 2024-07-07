@@ -22,7 +22,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     public int Dimensions => 2;
 
     /// <summary>
-    /// Assign sizes to the canvas width and height after having positioned the nodes
+    /// Assign sizes to the canvas width and height after having positioned the nodes.
     /// </summary>
     public void SetCanvasDimensions()
     {
@@ -30,7 +30,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Generate a 2D visual representation of the directed graph
+    /// Generate a 2D visual representation of the directed graph.
     /// </summary>
     public void Draw()
     {
@@ -38,7 +38,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Position the nodes on the graph in 2D space
+    /// Position the nodes on the graph in 2D space.
     /// </summary>
     public void PositionNodes()
     {
@@ -63,7 +63,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Set the shapes and colours of the positioned nodes
+    /// Set the shapes and colours of the positioned nodes.
     /// </summary>
     public void SetNodeAesthetics()
     {
@@ -89,7 +89,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Recursive method to position node and all its children down the tree
+    /// Recursive method to position node and all its children down the tree.
     /// </summary>
     /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
@@ -149,7 +149,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Determine if the node that was just positioned is too close to neighbouring nodes (and thus overlapping)
+    /// Determine if the node that was just positioned is too close to neighbouring nodes (and thus overlapping).
     /// </summary>
     /// <param name="newNode"></param>
     /// <param name="minDistance"></param>
@@ -181,7 +181,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Retrieve the cell in the grid object in which the node is positioned
+    /// Retrieve the cell in the grid object in which the node is positioned.
     /// </summary>
     /// <param name="node"></param>
     /// <param name="cellSize"></param>
@@ -193,7 +193,7 @@ public class TwoDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Add the node to the grid dictionary to keep track of node positions via a grid system
+    /// Add the node to the grid dictionary to keep track of node positions via a grid system.
     /// </summary>
     /// <param name="node"></param>
     /// <param name="minDistance"></param>

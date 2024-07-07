@@ -7,7 +7,7 @@ public class MetadataService(IFileService fileService,
                              IConsoleService consoleService) : IMetadataService
 {
     /// <summary>
-    /// Generate the metadata based on the lists of series numbers
+    /// Generate the metadata based on the lists of series numbers.
     /// </summary>
     /// <param name="seriesData"></param>
     public void GenerateMedatadataFile(List<List<int>> seriesData)
@@ -36,7 +36,7 @@ public class MetadataService(IFileService fileService,
     }
 
     /// <summary>
-    /// Generate a list of the top 10 longest series resulting from running the algorithm on the generated or supplied numbers
+    /// Generate a list of the top 10 longest series resulting from running the algorithm on the generated or supplied numbers.
     /// </summary>
     /// <param name="series"></param>
     /// <returns></returns>
@@ -49,7 +49,7 @@ public class MetadataService(IFileService fileService,
     }
 
     /// <summary>
-    /// Generate the human-readable number series metadata to store in the file
+    /// Generate the human-readable number series metadata to store in the file.
     /// </summary>
     /// <param name="seriesData"></param>
     /// <returns></returns>
@@ -70,7 +70,7 @@ public class MetadataService(IFileService fileService,
     }
 
     /// <summary>
-    /// Generate the human-readable top 10 longest series metadata to store in the file
+    /// Generate the human-readable top 10 longest series metadata to store in the file.
     /// </summary>
     /// <param name="seriesData"></param>
     /// <returns></returns>
@@ -87,7 +87,7 @@ public class MetadataService(IFileService fileService,
     }
 
     /// <summary>
-    /// Generate the human-readable full lists of all number series produced by running the algorithm on the generated or supplied numbers
+    /// Generate the human-readable full lists of all number series produced by running the algorithm on the generated or supplied numbers.
     /// </summary>
     /// <param name="seriesData"></param>
     /// <returns></returns>

@@ -83,7 +83,7 @@ public class ProcessTests
     }
 
     /// <summary>
-    /// User-provided input values result in no data to process
+    /// User-provided input values result in no data to process.
     /// </summary>
     [Fact]
     public void Run_Failure00()

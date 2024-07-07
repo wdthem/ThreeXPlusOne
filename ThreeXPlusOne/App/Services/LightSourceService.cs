@@ -12,7 +12,7 @@ public class LightSourceService() : ILightSourceService
     private Dictionary<LightSourcePosition, (double X, double Y)>? _positionMappings;
 
     /// <summary>
-    /// The position of the light source
+    /// The position of the light source.
     /// </summary>
     public LightSourcePosition LightSourcePosition
     {
@@ -23,7 +23,7 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// The radius of the light source
+    /// The radius of the light source.
     /// </summary>
     public double Radius
     {
@@ -34,7 +34,7 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// The color of the lightsource
+    /// The color of the lightsource.
     /// </summary>
     public Color LightSourceColor
     {
@@ -45,7 +45,7 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// Initialize the light source service with details about the graph being generated
+    /// Initialize the light source service with details about the graph being generated.
     /// </summary>
     /// <param name="canvasWidth"></param>
     /// <param name="canvasHeight"></param>
@@ -64,7 +64,7 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// Get canvas coordinates for the light source based on where the user specified that it should exist
+    /// Get canvas coordinates for the light source based on where the user specified that it should exist.
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
@@ -82,7 +82,7 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// Get the max distance of the effect of the light source
+    /// Get the max distance of the effect of the light source.
     /// </summary>
     /// <returns></returns>
     public double GetLightSourceMaxDistanceOfEffect()
@@ -91,7 +91,7 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// Set the light source colour based on app settings
+    /// Set the light source colour based on app settings.
     /// </summary>
     /// <param name="hexCode"></param>
     private static Color SetLightSourceColor(string hexCode)
@@ -115,7 +115,7 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// Parse the value from appSettings into a LightSourcePosition enum value
+    /// Parse the value from appSettings into a LightSourcePosition enum value.
     /// </summary>
     /// <param name="appSettingsValue"></param>
     /// <returns></returns>
@@ -130,7 +130,7 @@ public class LightSourceService() : ILightSourceService
     }
 
     /// <summary>
-    /// Populate the dictionary mapping text descriptions of coordinates to x,y coordinates using the canvas dimensions
+    /// Populate the dictionary mapping text descriptions of coordinates to x,y coordinates using the canvas dimensions.
     /// </summary>
     private void InitializePositionMappings()
     {

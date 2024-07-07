@@ -5,13 +5,13 @@ namespace ThreeXPlusOne.App.DirectedGraph;
 public abstract partial class DirectedGraph
 {
     /// <summary>
-    /// Nested class to encapsulate all shared methods that manipulate node position
+    /// Nested class to encapsulate all shared methods that manipulate node position.
     /// </summary>
     protected class NodePositions()
     {
         /// <summary>
         /// The graph starts out at 0,0 with 0 width and 0 height. This means that nodes go into negative space as they are initially positioned, 
-        /// so all coordinates need to be shifted to make sure all are in positive space
+        /// so all coordinates need to be shifted to make sure all are in positive space.
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="xNodeSpacer"></param>
@@ -36,7 +36,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Rotate a node's x,y coordinate position based on whether the node's integer value is even or odd
+        /// Rotate a node's x,y coordinate position based on whether the node's integer value is even or odd.
         /// If even, rotate clockwise. If odd, rotate anti-clockwise. But if the coordinates are in negative space, reverse this.
         /// </summary>
         /// <param name="nodeValue"></param>

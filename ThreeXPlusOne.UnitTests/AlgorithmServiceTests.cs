@@ -18,7 +18,7 @@ public class AlgorithmServiceTests
     }
 
     /// <summary>
-    /// For non-root numbers (not 4, 2, 1)
+    /// For non-root numbers (not 4, 2, 1).
     /// </summary>
     [Fact]
     public void AlgorithmReturnsSeriesWithExpectedEnd_00()
@@ -41,7 +41,7 @@ public class AlgorithmServiceTests
     }
 
     /// <summary>
-    /// For root numbers (4, 2, 1)
+    /// For root numbers (4, 2, 1).
     /// </summary>
     [Fact]
     public void AlgorithmReturnsSeriesWithExpectedEnd_01()
@@ -65,7 +65,7 @@ public class AlgorithmServiceTests
     }
 
     /// <summary>
-    /// For negative numbers
+    /// For negative numbers.
     /// </summary>
     [Fact]
     public void AlgorithmReturnsEmptyList()
@@ -84,7 +84,7 @@ public class AlgorithmServiceTests
     }
 
     /// <summary>
-    /// For empty input list
+    /// For empty input list.
     /// </summary>
     [Fact]
     public void AlgorithmThrowsExceptionForEmptyInput()

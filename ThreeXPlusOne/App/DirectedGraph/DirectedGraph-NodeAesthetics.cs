@@ -10,7 +10,7 @@ namespace ThreeXPlusOne.App.DirectedGraph;
 public abstract partial class DirectedGraph
 {
     /// <summary>
-    /// Nested class to encapsulate all shared methods that manipulate node colour, shape and orientation
+    /// Nested class to encapsulate all shared methods that manipulate node colour, shape and orientation.
     /// </summary>
     protected partial class NodeAesthetics(ShapeFactory shapeFactory)
     {
@@ -24,7 +24,7 @@ public abstract partial class DirectedGraph
         private bool _parsedNodeShapes = false;
 
         /// <summary>
-        /// Assign an IShape object to the node
+        /// Assign an IShape object to the node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="nodeRadius"></param>
@@ -58,7 +58,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Generate a colour for the node
+        /// Generate a colour for the node.
         /// </summary>
         /// <returns></returns>
         /// <param name="node"></param>
@@ -169,7 +169,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Get valid ShapeTypes from the user-provided data
+        /// Get valid ShapeTypes from the user-provided data.
         /// </summary>
         /// <param name="rawShapeTypes"></param>
         /// <returns></returns>
@@ -190,7 +190,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Generate a random colour for the node, optionally biased toward selecting user-defined colours
+        /// Generate a random colour for the node, optionally biased toward selecting user-defined colours.
         /// </summary>
         /// <returns></returns>
         private Color GenerateRandomNodeColor()
@@ -213,7 +213,7 @@ public abstract partial class DirectedGraph
 
         /// <summary>
         /// Get the random colour assigned to the given number series,
-        /// generating the colour if required
+        /// generating the colour if required.
         /// </summary>
         /// <param name="seriesNumber"></param>
         /// <returns></returns>
@@ -234,7 +234,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Blend the node's colour with the light source, adjusted for distance from the light source
+        /// Blend the node's colour with the light source, adjusted for distance from the light source.
         /// </summary>
         /// <param name="baseColor"></param>
         /// <param name="blendColor"></param>
@@ -252,7 +252,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Get valid hex codes passed in as app settings
+        /// Get valid hex codes passed in as app settings.
         /// </summary>
         /// <param name="hexCodes"></param>
         /// <returns></returns>
@@ -290,8 +290,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// For user-supplied colours, get colors slightly lighter and darker than the supplied colour to add
-        /// dynamism
+        /// For user-supplied colours, get colors slightly lighter and darker than the supplied colour to add dynamism.
         /// </summary>
         /// <param name="baseColor"></param>
         /// <returns></returns>
@@ -311,7 +310,7 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Adjust the brightness of the given color to get a slightly different shade
+        /// Adjust the brightness of the given color to get a slightly different shade.
         /// </summary>
         /// <param name="color"></param>
         /// <param name="factor"></param>

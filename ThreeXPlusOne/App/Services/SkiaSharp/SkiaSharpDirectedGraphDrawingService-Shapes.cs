@@ -8,7 +8,7 @@ namespace ThreeXPlusOne.App.Services.SkiaSharp;
 public partial class SkiaSharpDirectedGraphDrawingService
 {
     /// <summary>
-    /// Draw a shape based on the defined set of vertices
+    /// Draw a shape based on the defined set of vertices.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -51,7 +51,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw an ellipse shape with the defined settings
+    /// Draw an ellipse shape with the defined settings.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -83,7 +83,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw a donut shape with the defined settings
+    /// Draw a donut shape with the defined settings.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -131,7 +131,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw a semicircle shape with the defined settings
+    /// Draw a semicircle shape with the defined settings.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -167,7 +167,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw an arc shape with the defined settings
+    /// Draw an arc shape with the defined settings.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -210,7 +210,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw a pill shape with the defined settings
+    /// Draw a pill shape with the defined settings.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -247,7 +247,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw the shape based on the number of dimensions in which it is being rendered
+    /// Draw the shape based on the number of dimensions in which it is being rendered.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -284,8 +284,8 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw a 2D shape with one face
-    /// Use a gradient for the colour of the face if the shape is impacted by the light source
+    /// Draw a 2D shape with one face.
+    /// Use a gradient for the colour of the face if the shape is impacted by the light source.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -335,8 +335,8 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw two offset faces with the same skew and add sides
-    /// Use gradients for the colours if the shape is impacted by the light source
+    /// Draw two off-set faces with the same skew and add sides.
+    /// Use gradients for the colours if the shape is impacted by the light source.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -479,7 +479,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Get an array of the coordinates of all points around the shape's path
+    /// Get an array of the coordinates of all points around the shape's path.
     /// </summary>
     /// <param name="path"></param>
     /// <param name="pointCount"></param>
@@ -505,7 +505,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Generate a skew matrix to skew the drawn shape by pre-determined amounts
+    /// Generate a skew matrix to skew the drawn shape by pre-determined amounts.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="skew"></param>
@@ -527,7 +527,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw the border of the two ends of the arc without drawing across the gap of the arc
+    /// Draw the border of the two ends of the arc without drawing across the gap of the arc.
     /// </summary>
     /// <param name="arcPath"></param>
     /// <param name="canvas"></param>
@@ -591,7 +591,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Normalize a point (vector)
+    /// Normalize a point (vector).
     /// </summary>
     /// <param name="point"></param>
     /// <returns></returns>
@@ -604,7 +604,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Calculate the dot product of two points (vectors)
+    /// Calculate the dot product of two points (vectors).
     /// </summary>
     /// <param name="point1"></param>
     /// <param name="point2"></param>
@@ -616,7 +616,7 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Calculate the length of a point (vector)
+    /// Calculate the length of a point (vector).
     /// </summary>
     /// <param name="point"></param>
     /// <returns></returns>

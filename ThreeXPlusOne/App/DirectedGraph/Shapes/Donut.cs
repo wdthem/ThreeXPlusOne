@@ -13,27 +13,27 @@ public class Donut() : Shape, IShape
     public bool HasGap => false;
 
     /// <summary>
-    /// The x-radius of the donut
+    /// The x-radius of the donut.
     /// </summary>
     public double RadiusX { get; set; }
 
     /// <summary>
-    /// The y-radius of the donut
+    /// The y-radius of the donut.
     /// </summary>
     public double RadiusY { get; set; }
 
     /// <summary>
-    /// The bounding box used to render the outside of the donut shape
+    /// The bounding box used to render the outside of the donut shape.
     /// </summary>
     public ShapeBounds OuterEllipseBounds { get; set; } = new();
 
     /// <summary>
-    /// The bounding box used to render the inside of the donut shape
+    /// The bounding box used to render the inside of the donut shape.
     /// </summary>
     public ShapeBounds InnerEllipseBounds { get; set; } = new();
 
     /// <summary>
-    /// Stretch the ellipse radii for skewed shapes
+    /// Stretch the ellipse radii for skewed shapes.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -69,7 +69,7 @@ public class Donut() : Shape, IShape
     }
 
     /// <summary>
-    /// Set the configuration details for the shape used to represent the graph node
+    /// Set the configuration details for the shape used to represent the graph node.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -97,7 +97,7 @@ public class Donut() : Shape, IShape
     }
 
     /// <summary>
-    /// Apply skew settings to the shape
+    /// Apply skew settings to the shape.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>

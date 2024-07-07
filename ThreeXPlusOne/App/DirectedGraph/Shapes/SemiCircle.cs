@@ -28,12 +28,12 @@ public class SemiCircle() : Shape, IShape
     public int SweepAngle => _sweepAngle;
 
     /// <summary>
-    /// The bounding box used to render the semicircle shape
+    /// The bounding box used to render the semicircle shape.
     /// </summary>
     public ShapeBounds Bounds { get; set; } = new();
 
     /// <summary>
-    /// Set the configuration details for the shape used to represent the graph node
+    /// Set the configuration details for the shape used to represent the graph node.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -52,7 +52,7 @@ public class SemiCircle() : Shape, IShape
     }
 
     /// <summary>
-    /// Apply skew settings to the shape
+    /// Apply skew settings to the shape.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>

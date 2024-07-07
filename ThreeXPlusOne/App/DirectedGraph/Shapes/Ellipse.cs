@@ -5,7 +5,7 @@ using ThreeXPlusOne.App.Models;
 namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 
 /// <summary>
-/// For Elliptical shapes, which includes Circles because they are a special-case ellipse
+/// For Elliptical shapes, which includes Circles because they are special-case ellipses.
 /// </summary>
 public class Ellipse() : Shape, IShape
 {
@@ -16,22 +16,22 @@ public class Ellipse() : Shape, IShape
     public bool HasGap => false;
 
     /// <summary>
-    /// The x-radius of the ellipse
+    /// The x-radius of the ellipse.
     /// </summary>
     public double RadiusX { get; set; }
 
     /// <summary>
-    /// The y-radius of the ellipse
+    /// The y-radius of the ellipse.
     /// </summary>
     public double RadiusY { get; set; }
 
     /// <summary>
-    /// The bounding box used to render the ellipse shape
+    /// The bounding box used to render the ellipse shape.
     /// </summary>
     public ShapeBounds Bounds { get; set; } = new();
 
     /// <summary>
-    /// Stretch the ellipse radii for skewed shapes
+    /// Stretch the ellipse radii for skewed shapes.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -58,7 +58,7 @@ public class Ellipse() : Shape, IShape
     }
 
     /// <summary>
-    /// Set the configuration details for the shape used to represent the graph node
+    /// Set the configuration details for the shape used to represent the graph node.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -78,7 +78,7 @@ public class Ellipse() : Shape, IShape
     }
 
     /// <summary>
-    /// Apply skew settings to the shape
+    /// Apply skew settings to the shape.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
