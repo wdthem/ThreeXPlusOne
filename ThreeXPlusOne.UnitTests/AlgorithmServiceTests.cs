@@ -1,5 +1,7 @@
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Moq;
+using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.App.Services;
@@ -9,27 +11,47 @@ namespace ThreeXPlusOne.UnitTests;
 
 public class AlgorithmServiceTests
 {
+    private IOptions<AppSettings> _appSettings = new OptionsWrapper<AppSettings>
+    (
+        new AppSettings { }
+    );
+
     private readonly Mock<IConsoleService> _consoleServiceMock;
-    private readonly AlgorithmService _algorithmService;
 
     public AlgorithmServiceTests()
     {
         _consoleServiceMock = new Mock<IConsoleService>();
-        _algorithmService = new AlgorithmService(_consoleServiceMock.Object);
+    }
+
+    private void ResetSettings()
+    {
+        _appSettings = new OptionsWrapper<AppSettings>
+        (
+            new AppSettings { }
+        );
+
+        _appSettings.Value.DirectedGraphAestheticSettings.GraphDimensions = 2;
+        _appSettings.Value.AlgorithmSettings.RandomNumberTotal = 10;
+        _appSettings.Value.AlgorithmSettings.RandomNumberMax = 100;
     }
 
     /// <summary>
     /// For non-root numbers (not 4, 2, 1).
     /// </summary>
     [Fact]
-    public void AlgorithmReturnsSeriesWithExpectedEnd_00()
+    public void StandardAlgorithmReturnsSeriesWithExpectedEnd_00()
     {
         // Arrange
+        ResetSettings();
+
         List<int> startingNumbers = [5, 7, 12, 33, 179];
         List<int> expectedEndingSeries = [16, 8, 4, 2, 1];
 
+        var algorithmService = new AlgorithmService(_appSettings,
+                                                    _consoleServiceMock.Object);
+
         // Act
-        List<CollatzResult> results = _algorithmService.Run(startingNumbers);
+        List<CollatzResult> results = algorithmService.Run(startingNumbers);
 
         // Assert
         foreach (CollatzResult result in results)
@@ -45,14 +67,19 @@ public class AlgorithmServiceTests
     /// For root numbers (4, 2, 1).
     /// </summary>
     [Fact]
-    public void AlgorithmReturnsSeriesWithExpectedEnd_01()
+    public void StandardAlgorithmReturnsSeriesWithExpectedEnd_01()
     {
         // Arrange
+        ResetSettings();
+
         List<int> startingNumbers = [4, 2, 1];
         List<int> expectedEndingSeriesNumberCounts = [3, 2, 1];
 
+        var algorithmService = new AlgorithmService(_appSettings,
+                                                    _consoleServiceMock.Object);
+
         // Act
-        List<CollatzResult> results = _algorithmService.Run(startingNumbers);
+        List<CollatzResult> results = algorithmService.Run(startingNumbers);
 
         // Assert
         foreach (CollatzResult result in results)
@@ -69,15 +96,83 @@ public class AlgorithmServiceTests
     /// For non-root numbers (not 4, 2, 1).
     /// </summary>
     [Fact]
-    public void AlgorithmReturnsExpectedStoppingTimes_00()
+    public void StandardAlgorithmReturnsExpectedStoppingTimes_00()
     {
         // Arrange
+        ResetSettings();
+
         List<int> startingNumbers = [5, 7, 12, 33, 179];
         List<int> expectedStoppingTimes = [3, 11, 1, 3, 6];
         List<int> expectedTotalStoppingTimes = [5, 16, 9, 26, 31];
 
+        var algorithmService = new AlgorithmService(_appSettings,
+                                                    _consoleServiceMock.Object);
+
         // Act
-        List<CollatzResult> results = _algorithmService.Run(startingNumbers);
+        List<CollatzResult> results = algorithmService.Run(startingNumbers);
+
+        // Assert
+        int lcv = 0;
+
+        foreach (CollatzResult result in results)
+        {
+            result.StoppingTime.Should().Be(expectedStoppingTimes[lcv]);
+            result.TotalStoppingTime.Should().Be(expectedTotalStoppingTimes[lcv]);
+
+            lcv++;
+        }
+    }
+
+    /// <summary>
+    /// For non-root numbers (not 4, 2, 1).
+    /// </summary>
+    [Fact]
+    public void ShortcutAlgorithmReturnsSeriesWithExpectedEnd()
+    {
+        // Arrange
+        ResetSettings();
+
+        List<int> startingNumbers = [5, 7, 12, 33, 179];
+        List<int> expectedEndingSeries = [5, 16, 1];
+
+        _appSettings.Value.AlgorithmSettings.UseShortcutAlgorithm = true;
+
+        var algorithmService = new AlgorithmService(_appSettings,
+                                                    _consoleServiceMock.Object);
+
+        // Act
+        List<CollatzResult> results = algorithmService.Run(startingNumbers);
+
+        // Assert
+        foreach (CollatzResult result in results)
+        {
+            bool seriesEndMatch = Enumerable.SequenceEqual(result.Values.Skip(result.Values.Count - expectedEndingSeries.Count), expectedEndingSeries);
+
+            result.Values.Count.Should().BeGreaterThanOrEqualTo(expectedEndingSeries.Count);
+            seriesEndMatch.Should().BeTrue();
+        }
+    }
+
+    /// <summary>
+    /// For non-root numbers (not 4, 2, 1).
+    /// </summary>
+    [Fact]
+    public void ShortcutAlgorithmReturnsExpectedStoppingTimes_00()
+    {
+        // Arrange
+        ResetSettings();
+
+        List<int> startingNumbers = [5, 7, 12, 33, 179];
+        List<int> expectedStoppingTimes = [2, 8, 1, 2, 4];
+        List<int> expectedTotalStoppingTimes = [2, 10, 5, 16, 18];
+
+        _appSettings.Value.AlgorithmSettings.UseShortcutAlgorithm = true;
+
+        var algorithmService = new AlgorithmService(_appSettings,
+                                                    _consoleServiceMock.Object);
+
+        // Act
+        List<CollatzResult> results = algorithmService.Run(startingNumbers);
 
         // Assert
         int lcv = 0;
@@ -98,10 +193,15 @@ public class AlgorithmServiceTests
     public void AlgorithmReturnsEmptyList()
     {
         // Arrange
+        ResetSettings();
+
         List<int> startingNumbers = [-3, -29, -824];
 
+        var algorithmService = new AlgorithmService(_appSettings,
+                                                    _consoleServiceMock.Object);
+
         // Act
-        List<CollatzResult> results = _algorithmService.Run(startingNumbers);
+        List<CollatzResult> results = algorithmService.Run(startingNumbers);
 
         // Assert
         foreach (CollatzResult result in results)
@@ -117,9 +217,14 @@ public class AlgorithmServiceTests
     public void AlgorithmThrowsExceptionForEmptyInput()
     {
         // Arrange
+        ResetSettings();
+
         List<int> startingNumbers = [];
 
+        var algorithmService = new AlgorithmService(_appSettings,
+                                                    _consoleServiceMock.Object);
+
         // Act + Assert
-        _algorithmService.Invoking(algorithm => algorithm.Run(startingNumbers)).Should().Throw<Exception>();
+        algorithmService.Invoking(algorithm => algorithm.Run(startingNumbers)).Should().Throw<Exception>();
     }
 }
