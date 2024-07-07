@@ -14,7 +14,7 @@ public class SkiaSharpHistogramDrawingService() : IHistogramDrawingService
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
 
     /// <summary>
-    /// Initialize the histogram
+    /// Initialize the histogram.
     /// </summary>
     /// <param name="width"></param>
     /// <param name="height"></param>
@@ -30,7 +30,7 @@ public class SkiaSharpHistogramDrawingService() : IHistogramDrawingService
     }
 
     /// <summary>
-    /// Draw the histogram image
+    /// Draw the histogram image.
     /// </summary>
     /// <param name="counts"></param>
     /// <param name="title"></param>
@@ -156,7 +156,7 @@ public class SkiaSharpHistogramDrawingService() : IHistogramDrawingService
     }
 
     /// <summary>
-    /// Save the generated histogram image
+    /// Save the generated histogram image.
     /// </summary>
     /// <param name="bitmap"></param>
     /// <param name="filePath"></param>
@@ -178,7 +178,7 @@ public class SkiaSharpHistogramDrawingService() : IHistogramDrawingService
     #region IDisposable
 
     /// <summary>
-    /// IDisposable Dispose method
+    /// IDisposable Dispose method.
     /// </summary>
     public void Dispose()
     {

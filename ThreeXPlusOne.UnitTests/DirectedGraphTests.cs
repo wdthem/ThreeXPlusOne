@@ -85,7 +85,7 @@ public class DirectedGraphTests
     }
 
     /// <summary>
-    /// Ensure all expected methods on the IGraphService interface are called (crucially, IGraphService.Dispose())
+    /// Ensure all expected methods on the IGraphService interface are called (crucially, IGraphService.Dispose()).
     /// </summary>
     [Fact]
     public void DrawDirectedGraph_Success00()

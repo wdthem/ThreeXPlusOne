@@ -35,17 +35,17 @@ public class Arc() : Shape, IShape
     public double BottomArcSweepAngle { get; set; }
 
     /// <summary>
-    /// The bounding box used to render the top arc shape
+    /// The bounding box used to render the top arc shape.
     /// </summary>
     public ShapeBounds TopArcBounds { get; set; } = new();
 
     /// <summary>
-    /// The bounding box used to render the top arc shape
+    /// The bounding box used to render the top arc shape.
     /// </summary>
     public ShapeBounds BottomArcBounds { get; set; } = new();
 
     /// <summary>
-    /// Set the configuration details for the shape used to represent the graph node
+    /// Set the configuration details for the shape used to represent the graph node.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -81,7 +81,7 @@ public class Arc() : Shape, IShape
     }
 
     /// <summary>
-    /// Apply skew settings to the shape
+    /// Apply skew settings to the shape.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>

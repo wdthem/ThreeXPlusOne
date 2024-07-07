@@ -14,7 +14,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     private readonly JsonSerializerOptions _serializerOptions = new() { WriteIndented = true };
 
     /// <summary>
-    /// Generate a full file path in which to store output files
+    /// Generate a full file path in which to store output files.
     /// </summary>
     /// <param name="uniqueId"></param>
     /// <param name="path"></param>
@@ -41,7 +41,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Get a filename-friendly timestamp to append to filenames
+    /// Get a filename-friendly timestamp to append to filenames.
     /// </summary>
     /// <returns></returns>
     private static string GetFilenameTimestamp()
@@ -50,7 +50,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Write the app settings JSON to a file 
+    /// Write the app settings JSON to a file.
     /// </summary>
     /// <param name="userConfirmedSave"></param>
     public void WriteSettingsToFile(bool userConfirmedSave)
@@ -66,7 +66,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Check whether the given file path exists on disk
+    /// Check whether the given file path exists on disk.
     /// </summary>
     /// <param name="filePath"></param>
     /// <returns></returns>
@@ -76,7 +76,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Write the generated metadata to the supplied file path
+    /// Write the generated metadata to the supplied file path.
     /// </summary>
     /// <param name="content"></param>
     /// <param name="filePath"></param>
@@ -95,7 +95,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Generate the full file path of the directed graph image
+    /// Generate the full file path of the directed graph image.
     /// </summary>
     /// <returns></returns>
     public string GenerateDirectedGraphFilePath()
@@ -106,7 +106,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Generate the full file path of the histogram
+    /// Generate the full file path of the histogram.
     /// </summary>
     /// <returns></returns>
     public string GenerateHistogramFilePath()
@@ -117,7 +117,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Generate the full file path of the metadata
+    /// Generate the full file path of the metadata.
     /// </summary>
     /// <returns></returns>
     public string GenerateMetadataFilePath()

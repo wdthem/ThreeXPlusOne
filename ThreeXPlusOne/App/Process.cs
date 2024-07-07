@@ -18,7 +18,7 @@ public class Process(IOptions<AppSettings> appSettings,
     private bool _generatedRandomNumbers = false;
 
     /// <summary>
-    /// Run the algorithm and data generation based on the user-provided app settings
+    /// Run the algorithm and data generation based on the user-provided app settings.
     /// </summary>
     /// <param name="commandParsingMessages"></param>
     public void Run(List<string> commandParsingMessages)
@@ -45,7 +45,7 @@ public class Process(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Generate the directed graph based on app settings
+    /// Generate the directed graph based on app settings.
     /// </summary>
     /// <param name="seriesLists"></param>
     private void GenerateDirectedGraph(List<List<int>> seriesLists)
@@ -77,7 +77,7 @@ public class Process(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Allow the user to save the generated number list to app settings for future use
+    /// Allow the user to save the generated number list to app settings for future use.
     /// </summary>
     private void SaveSettings()
     {
@@ -91,10 +91,10 @@ public class Process(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Get or generate the list of numbers to use to run through the algorithm
+    /// Get or generate the list of numbers to use to run through the algorithm.
     /// Either:
     ///     The list specified by the user in app settings (this takes priority); or
-    ///     Random numbers - the total number specified in app settings
+    ///     Random numbers - the total number specified in app settings.
     /// </summary>
     /// <param name="stopwatch"></param>
     /// <returns></returns>

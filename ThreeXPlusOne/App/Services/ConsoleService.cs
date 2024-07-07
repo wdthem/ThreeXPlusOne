@@ -23,7 +23,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     private static partial Regex SplitToWordsRegex();
 
     /// <summary>
-    /// Truncate settings values that are long to avoid carriage returns
+    /// Truncate settings values that are long to avoid carriage returns.
     /// </summary>
     /// <param name="input"></param>
     /// <param name="maxLength"></param>
@@ -64,7 +64,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Generate the text for suggested values for the app settings
+    /// Generate the text for suggested values for the app settings.
     /// </summary>
     /// <param name="type"></param>
     /// <param name="instance"></param>
@@ -137,7 +137,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Allow the user to scroll through the settings output, as it is longer than a standard console window's height
+    /// Allow the user to scroll through the settings output, as it is longer than a standard console window's height.
     /// </summary>
     /// <param name="outputType"></param>
     /// <param name="lines"></param>
@@ -193,7 +193,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Custom write method for console output (threadsafe)
+    /// Custom write method for console output (threadsafe).
     /// </summary>
     /// <param name="message"></param>
     /// <param name="delay"></param>
@@ -218,7 +218,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Custom WriteLine method for console output (threadsafe)
+    /// Custom WriteLine method for console output (threadsafe).
     /// </summary>
     /// <param name="message"></param>
     public void WriteLine(string message)
@@ -230,7 +230,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Set the foreground colour (threadsafe)
+    /// Set the foreground colour (threadsafe).
     /// </summary>
     /// <param name="color"></param>
     public void SetForegroundColor(ConsoleColor color)
@@ -242,7 +242,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Set cursor visibility (threadsafe)
+    /// Set cursor visibility (threadsafe).
     /// </summary>
     /// <param name="visible"></param>
     public void SetCursorVisibility(bool visible)
@@ -254,7 +254,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Set the cursor position (threadsafe)
+    /// Set the cursor position (threadsafe).
     /// </summary>
     /// <param name="left"></param>
     /// <param name="top"></param>
@@ -267,7 +267,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write the app settings to the screen
+    /// Write the app settings to the screen.
     /// </summary>
     /// <param name="type"></param>
     /// <param name="instance"></param>
@@ -391,7 +391,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write messages that came from parsing command line parameters
+    /// Write messages that came from parsing command line parameters.
     /// </summary>
     /// <param name="commandParsingMessages"></param>
     public void WriteCommandParsingMessages(List<string> commandParsingMessages)
@@ -424,7 +424,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write an error message
+    /// Write an error message.
     /// </summary>
     /// <param name="message"></param>
     public void WriteError(string message)
@@ -436,7 +436,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write a message indicating the given step completed
+    /// Write a message indicating the given step completed.
     /// </summary>
     public void WriteDone()
     {
@@ -446,7 +446,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Read the y or n key press by the user to know whether or not to proceed
+    /// Read the y or n key press by the user to know whether or not to proceed.
     /// </summary>
     /// <param name="message"></param>
     /// <returns></returns>
@@ -461,7 +461,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write a visual separator in console output
+    /// Write a visual separator in console output.
     /// </summary>
     public void WriteSeparator()
     {
@@ -469,7 +469,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write a section heading in console output
+    /// Write a section heading in console output.
     /// </summary>
     /// <param name="headerText"></param>
     public void WriteHeading(string headerText)
@@ -486,7 +486,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write the app's help text to the console
+    /// Write the app's help text to the console.
     /// </summary>
     /// <param name="commandLineOptions"></param>
     public void WriteHelpText(List<(string longName, string shortName, string description, string hint)> commandLineOptions)
@@ -511,7 +511,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write the app's usage info to the console
+    /// Write the app's usage info to the console.
     /// </summary>
     /// <param name="commandLineOptions"></param>
     public void WriteCommandUsage(List<(string longName, string shortName, string description, string hint)> commandLineOptions)
@@ -558,7 +558,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write info about the app's config settings to the console
+    /// Write info about the app's config settings to the console.
     /// </summary>
     public void WriteConfigText()
     {
@@ -595,7 +595,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write the app's version information to the console
+    /// Write the app's version information to the console.
     /// </summary>
     public void WriteVersionText()
     {
@@ -621,7 +621,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write the app's ASCII art logo to the console
+    /// Write the app's ASCII art logo to the console.
     /// </summary>
     public void WriteAsciiArtLogo()
     {
@@ -796,7 +796,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write a spinning bar to the console in a threadsafe way to indicate an ongoing process
+    /// Write a spinning bar to the console in a threadsafe way to indicate an ongoing process.
     /// </summary>
     public void ShowSpinningBar()
     {
@@ -834,7 +834,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Stop the spinning bar in a threadsafe way
+    /// Stop the spinning bar in a threadsafe way.
     /// </summary>
     public void StopSpinningBar()
     {
@@ -844,7 +844,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Write summary info when the process completes
+    /// Write summary info when the process completes.
     /// </summary>
     /// <param name="timespan"></param>
     public void WriteProcessEnd(TimeSpan timespan)

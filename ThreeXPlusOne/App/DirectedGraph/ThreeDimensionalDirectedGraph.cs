@@ -22,7 +22,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     public int Dimensions => 3;
 
     /// <summary>
-    /// Assign sizes to the canvas width and height after having positioned the nodes
+    /// Assign sizes to the canvas width and height after having positioned the nodes.
     /// </summary>
     public void SetCanvasDimensions()
     {
@@ -30,7 +30,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Generate a 3D visual representation of the directed graph
+    /// Generate a 3D visual representation of the directed graph.
     /// </summary>
     public void Draw()
     {
@@ -38,7 +38,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Position the nodes on the graph in pseudo-3D space
+    /// Position the nodes on the graph in pseudo-3D space.
     /// </summary>
     public void PositionNodes()
     {
@@ -96,10 +96,10 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Traverses the node tree recursively and sets the Z coordinate for all nodes, based on whether the node has 1 or 2 children
+    /// Traverses the node tree recursively and sets the Z coordinate for all nodes, based on whether the node has 1 or 2 children.
     /// </summary>
     /// <remarks>
-    /// Used for the pseudo-3D graph
+    /// Used for the pseudo-3D graph.
     /// </remarks>
     /// <param name="node"></param>
     private static void SetNodeZCoordinate(DirectedGraphNode node)
@@ -131,7 +131,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Recursive method to position a node and all its children down the tree
+    /// Recursive method to position a node and all its children down the tree.
     /// </summary>
     /// <param name="node"></param>
     private void PositionNode(DirectedGraphNode node)
@@ -255,7 +255,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Determine if the node that was just positioned is too close to neighbouring nodes (and thus overlapping)
+    /// Determine if the node that was just positioned is too close to neighbouring nodes (and thus overlapping).
     /// </summary>
     /// <param name="newNode"></param>
     /// <param name="minDistance"></param>
@@ -308,7 +308,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Retrieve the cell in the grid object in which the node is positioned
+    /// Retrieve the cell in the grid object in which the node is positioned.
     /// </summary>
     /// <param name="node"></param>
     /// <param name="cellSize"></param>
@@ -323,7 +323,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Add the node to the grid dictionary to keep track of node positions via a grid system
+    /// Add the node to the grid dictionary to keep track of node positions via a grid system.
     /// </summary>
     /// <param name="node"></param>
     /// <param name="minDistance"></param>
@@ -341,7 +341,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Calculate the Euclidean distance between two node positions, including the third (Z) dimension
+    /// Calculate the Euclidean distance between two node positions, including the third (Z) dimension.
     /// </summary>
     /// <param name="position1"></param>
     /// <param name="position2"></param>
@@ -356,7 +356,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// Normalize the Z dimension to avoid drastic differences throughout the graph
+    /// Normalize the Z dimension to avoid drastic differences throughout the graph.
     /// </summary>
     /// <param name="z"></param>
     /// <param name="minZ"></param>

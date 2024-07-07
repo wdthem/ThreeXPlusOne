@@ -6,10 +6,10 @@ using ThreeXPlusOne.App.Enums;
 namespace ThreeXPlusOne.App.Config;
 
 /// <summary>
-/// Settings supplied by the user to control aspects of the given execution of the process
+/// Settings supplied by the user to control aspects of the given execution of the process.
 /// </summary>
 /// <remarks>
-/// If no app settings file is supplied by the user, the defaults set here will be used
+/// If no app settings file is supplied by the user, the defaults set here will be used.
 /// </remarks>
 public class AppSettings
 {
@@ -18,28 +18,28 @@ public class AppSettings
     private readonly GraphProvider _graphProvider = GraphProvider.SkiaSharp;
 
     /// <summary>
-    /// All settings related to running the 3x+1 algorithm
+    /// All settings related to running the 3x+1 algorithm.
     /// </summary>
     public AlgorithmSettings AlgorithmSettings { get; set; } = new();
 
     /// <summary>
-    /// All settings related to the appearance of the directed graph nodes
+    /// All settings related to the appearance of the directed graph nodes.
     /// </summary>
     public NodeAestheticSettings NodeAestheticSettings { get; set; } = new();
 
     /// <summary>
-    /// All settings related to the appears of the directed graph itself
+    /// All settings related to the appears of the directed graph itself.
     /// </summary>
     public DirectedGraphAestheticSettings DirectedGraphAestheticSettings { get; set; } = new();
 
     /// <summary>
-    /// The directory in which the process will create a unique execution folder with generated output
+    /// The directory in which the process will create a unique execution folder with generated output.
     /// </summary>
     [AppSetting(description: "The folder in which the generated output files should be placed. If not supplied, output is saved to the runtime directory.", suggestedValue: "")]
     public string OutputPath { get; set; } = "";
 
     /// <summary>
-    /// The graph provider to use to render the graph image
+    /// The graph provider to use to render the graph image.
     /// </summary>
     [JsonIgnore]
     public GraphProvider GraphProvider
@@ -51,19 +51,19 @@ public class AppSettings
     }
 
     /// <summary>
-    /// The name of the file in which these app settings are stored
+    /// The name of the file in which these app settings are stored.
     /// </summary>
     [JsonIgnore]
     public string SettingsFileName { get; set; } = "";
 
     /// <summary>
-    /// The full path to the app settings file (could be provided by the user)
+    /// The full path to the app settings file (could be provided by the user).
     /// </summary>
     [JsonIgnore]
     public string SettingsFileFullPath { get; set; } = "";
 
     /// <summary>
-    /// An MD5 hash used to name a directory to store the output for the run of the given number series
+    /// An MD5 hash used to name a directory to store the output for the run of the given number series.
     /// </summary>
     [JsonIgnore]
     public string UniqueExecutionId
@@ -81,7 +81,7 @@ public class AppSettings
 
     /// <summary>
     /// Create an MD5 hash of the list of numbers that the process is running on such that
-    /// the output directory can be uniquely named and re-used if the process is re-run with the same numbers
+    /// the output directory can be uniquely named and re-used if the process is re-run with the same numbers.
     /// </summary>
     /// <returns></returns>
     private string ComputeHashFromSeriesData()
@@ -108,31 +108,31 @@ public class AlgorithmSettings
     private static readonly char[] _listSeparator = [','];
 
     /// <summary>
-    /// If supplied, these numbers will be excluded from either random number selection or from the UseTheseNumbers property
+    /// If supplied, these numbers will be excluded from either random number selection or from the UseTheseNumbers property.
     /// </summary>
     [AppSetting(description: "A comma-separated list of numbers not to use.", suggestedValue: "")]
     public string NumbersToExclude { get; set; } = "";
 
     /// <summary>
-    /// If supplied, the algorithm will be run only on these numbers
+    /// If supplied, the algorithm will be run only on these numbers.
     /// </summary>
     [AppSetting(description: $"A comma-separated list of numbers to run the program with. Overrides {nameof(RandomNumberTotal)} and {nameof(RandomNumberMax)}.", suggestedValue: "")]
     public string NumbersToUse { get; set; } = "";
 
     /// <summary>
-    /// The max value that the randomly selected numbers can be
+    /// The max value that the randomly selected numbers can be.
     /// </summary>
     [AppSetting(description: "The highest possible starting number of any given series.", suggestedValue: "1000")]
     public int RandomNumberMax { get; set; } = 1000;
 
     /// <summary>
-    /// The amount of numbers to randomly generate to run through the algorithm
+    /// The amount of numbers to randomly generate to run through the algorithm.
     /// </summary>
     [AppSetting(description: "The total number of series that will be generated by the algorithm.", suggestedValue: "200")]
     public int RandomNumberTotal { get; set; } = 200;
 
     /// <summary>
-    /// The generated random numbers parsed as a list of integers
+    /// The generated random numbers parsed as a list of integers.
     /// </summary>
     [JsonIgnore]
     public List<int> ListOfRandomNumbers
@@ -166,7 +166,7 @@ public class AlgorithmSettings
     }
 
     /// <summary>
-    /// The number to exclude parsed as a list of integers
+    /// The number to exclude parsed as a list of integers.
     /// </summary>
     [JsonIgnore]
     public List<int> ListOfNumbersToExclude
@@ -198,64 +198,65 @@ public class AlgorithmSettings
 public class NodeAestheticSettings
 {
     /// <summary>
-    /// Whether or not to draw the number at the center of the node that the node represents
+    /// Whether or not to draw the number at the center of the node that the node represents.
     /// </summary>
     [AppSetting(description: $"Whether or not to use the same randomly-selected colour for numbers generated as part of the same series. Overrides {nameof(NodeColors)} and {nameof(NodeColorsBias)}", suggestedValue: "false")]
     public bool ColorCodeNumberSeries { get; set; } = true;
 
     /// <summary>
-    /// Whether or not to draw the connections between nodes on the graph
+    /// Whether or not to draw the connections between nodes on the graph.
     /// </summary>
     [AppSetting(description: "Whether or not to draw connections between the nodes in the graph. If set to true, image file size may increase substantially.", suggestedValue: "true")]
     public bool DrawNodeConnections { get; set; } = true;
 
     /// <summary>
-    /// Whether or not to draw the number at the center of the node that the node represents
+    /// Whether or not to draw the number at the center of the node that the node represents.
     /// </summary>
     [AppSetting(description: "Whether or not to draw the numbers at the center of the node that the node represents.", suggestedValue: "true")]
     public bool DrawNumbersOnNodes { get; set; } = true;
 
     /// <summary>
-    /// Hex values to be used for node colours (include the '#' with each code)
+    /// Hex values to be used for node colours (include the '#' with each code).
     /// </summary>
     [AppSetting(description: $"Comma-separated list of hex codes to use as colours for the nodes (include the '#' with each code). Leave blank to use randomly-selected colours. Overrides {nameof(NodeColorsBias)}.", suggestedValue: "")]
     public string NodeColors { get; set; } = "";
 
     /// <summary>
-    /// Hex values to be used to bias random colour selection toward (include the '#' with each code). This makes it so a certain percentage of nodes are guaranteed to be in and around these colours
+    /// Hex values to be used to bias random colour selection toward (include the '#' with each code). 
+    /// This makes it so a certain percentage of nodes are guaranteed to be in and around these colours.
     /// </summary>
     [AppSetting(description: $"Comma-separated list of hex codes to bias random colour selection toward (include the '#' with each code). Leave blank for 100% randomly-selected colours. Ignored if {nameof(NodeColors)} is set.", suggestedValue: "")]
     public string NodeColorsBias { get; set; } = "";
 
     /// <summary>
-    /// The radius of the node
+    /// The radius of the node.
     /// </summary>
     [AppSetting(description: "The radius of the nodes in pixels.", suggestedValue: "50 for 2D, 275 for 3D")]
     public double NodeRadius { get; set; } = 50;
 
     /// <summary>
-    /// The angle by which a node will be rotated by on the graph
+    /// The angle by which a node will be rotated by on the graph.
     /// </summary>
     /// <remarks>
-    /// If the node value is even, it is rotated clockwise. If odd, anti-clockwise
+    /// If the node value is even, it is rotated clockwise. If odd, anti-clockwise.
     /// </remarks>
     [AppSetting(description: "The magnitude of the rotation angle. 0 is no rotation. When using rotation, start small, such as 0.8", suggestedValue: "0")]
     public double NodeRotationAngle { get; set; } = 0;
 
     /// <summary>
-    /// Shapes to use to draw nodes
+    /// Shapes to use to draw nodes.
     /// </summary>
     [AppSetting(description: "Comma-separated list of shapes to use for drawing nodes. Values are: {ShapesPlaceholder}. Leave blank to use randomly-selected shapes.", suggestedValue: "")]
     public string NodeShapes { get; set; } = "";
 
     /// <summary>
-    /// The amount of x-axis space in pixels by which to separate nodes
+    /// The amount of x-axis space in pixels by which to separate nodes.
     /// </summary>
     [AppSetting(description: "The default space between nodes on the x-axis.", suggestedValue: "125 for 2D, 250 for 3D")]
     public int NodeSpacerX { get; set; } = 125;
 
     /// <summary>
-    /// The amount of y-axis space in pixels by which to separate nodes
+    /// The amount of y-axis space in pixels by which to separate nodes.
     /// </summary>
     [AppSetting(description: "The default space between nodes on the y-axis.", suggestedValue: "125 for 2D, 225 for 3D")]
     public int NodeSpacerY { get; set; } = 125;
@@ -270,13 +271,13 @@ public class DirectedGraphAestheticSettings
     public string CanvasColor { get; set; } = "";
 
     /// <summary>
-    /// Whether or not to draw stars on the graph's background
+    /// Whether or not to draw stars on the graph's background.
     /// </summary>
     [AppSetting(description: "Whether or not to generate random points of white light in the background of the graph.", suggestedValue: "false")]
     public bool GenerateBackgroundStars { get; set; }
 
     /// <summary>
-    /// The number of dimensions to render in the graph
+    /// The number of dimensions to render in the graph.
     /// </summary>
     /// <remarks>2 or 3</remarks>
     [AppSetting(description: "The number of dimensions to render in the graph. Values are: 2, 3", suggestedValue: "2")]
@@ -295,13 +296,13 @@ public class DirectedGraphAestheticSettings
     public string LightSourcePosition { get; set; } = "None";
 
     /// <summary>
-    /// For pseudo-3D graphs, the distance from the viewer (to create perspective)
+    /// For pseudo-3D graphs, the distance from the viewer (to create perspective).
     /// </summary>
     [AppSetting(description: "For the psuedo-3D graph, the distance from the viewer. Used when applying the perspective transformation.", suggestedValue: "200")]
     public double Pseudo3DViewerDistance { get; set; } = 200;
 
     /// <summary>
-    /// The sanitized graph dimensions property
+    /// The sanitized graph dimensions property.
     /// </summary>
     [JsonIgnore]
     public int SanitizedGraphDimensions

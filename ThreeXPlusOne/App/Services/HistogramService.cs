@@ -7,7 +7,7 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
                               IConsoleService consoleService) : IHistogramService
 {
     /// <summary>
-    /// Generate the histogram based on the lists of series data
+    /// Generate the histogram based on the lists of series data.
     /// </summary>
     /// <param name="seriesData"></param>
     public void GenerateHistogram(List<List<int>> seriesData)
@@ -38,7 +38,7 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
     }
 
     /// <summary>
-    /// Create separate lists for numbers starting from 1 to 9
+    /// Create separate lists for numbers starting from 1 to 9.
     /// </summary>
     /// <param name="seriesData"></param>
     /// <returns></returns>

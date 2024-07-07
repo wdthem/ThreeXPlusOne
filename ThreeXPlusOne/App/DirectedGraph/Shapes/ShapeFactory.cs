@@ -10,7 +10,7 @@ public class ShapeFactory(IEnumerable<IShape> shapes) : ISingletonService
     private int _totalWeight = 0;
 
     /// <summary>
-    /// Return either the passed-in ShapeType or a randomly-selected shape, biased toward defined weightings
+    /// Return either the passed-in ShapeType or a randomly-selected shape, biased toward defined weightings.
     /// </summary>
     /// <param name="shapeType"></param>
     /// <returns></returns>
@@ -49,7 +49,7 @@ public class ShapeFactory(IEnumerable<IShape> shapes) : ISingletonService
     }
 
     /// <summary>
-    /// Create either the ShapeType specified or a randomly-selected ShapeType
+    /// Create either the ShapeType specified or a randomly-selected ShapeType.
     /// </summary>
     /// <param name="shapeType"></param>
     /// <returns></returns>

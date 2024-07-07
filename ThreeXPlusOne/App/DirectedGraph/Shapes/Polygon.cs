@@ -7,10 +7,10 @@ namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
 public class Polygon() : Shape, IShape, IVertexShape
 {
     /// <summary>
-    /// Selection weighting for each possible number of polygon sides
+    /// Selection weighting for each possible number of polygon sides.
     /// </summary>
     /// <remarks>
-    /// There are multiple possible 4-sided polygons, thus more weight is applied
+    /// There are multiple possible 4-sided polygons, thus more weight is applied.
     /// </remarks>
     private readonly Dictionary<int, int> _polygonSideWeights = new()
     {
@@ -26,7 +26,7 @@ public class Polygon() : Shape, IShape, IVertexShape
 
     /// <summary>
     /// This class can generate multiple types of polygons, therefore the selection weight
-    /// must match the total number of shapes possible
+    /// must match the total number of shapes possible.
     /// </summary>
     public int SelectionWeight => _polygonSideWeights.Values.Sum();
 
@@ -35,7 +35,7 @@ public class Polygon() : Shape, IShape, IVertexShape
     public List<(double X, double Y)> Vertices { get; set; } = [];
 
     /// <summary>
-    /// Get a randomly-selected (and weighted) number of sides from 3 to 8 (min: triangle, max: octagon)
+    /// Get a randomly-selected (and weighted) number of sides from 3 to 8 (min: triangle, max: octagon).
     /// </summary>
     /// <returns></returns>
     private int GenerateNumberOfSides()
@@ -43,19 +43,17 @@ public class Polygon() : Shape, IShape, IVertexShape
         List<KeyValuePair<ShapeType, ShapeSelectionWeight>> shapeWeightsList = ShapeHelper.ConfigureShapeSelectionWeights(_polygonSideWeights);
 
         int totalWeight = shapeWeightsList.Sum(pair => pair.Value.Weight);
-        int randomNumber = Random.Shared.Next(1, totalWeight + 1); //only adding 1 here because the max value of Random.Shared.Next is exclusive 
+        int randomWeight = Random.Shared.Next(1, totalWeight + 1); //only adding 1 here because the max value of Random.Shared.Next is exclusive 
 
-        //find the first index number in the shapeWeightsList where the random number 
-        //is less than or equal to the cumulative weight stored in that array element (this yields: 0, 1, 2, 3 etc.)
+        //find the first index number in the shapeWeightsList where the random weight value 
+        //is less than or equal to the cumulative weight value stored in that array element (this yields: 0, 1, 2, 3 etc.)
         //then add 3 to that value to correctly set the number of sides of the corresponding polygon
-        int numberOfSides = Enumerable.Range(0, shapeWeightsList.Count)
-                                      .FirstOrDefault(i => randomNumber <= shapeWeightsList[i].Value.CumulativeWeight) + 3;
-
-        return numberOfSides;
+        return Enumerable.Range(0, shapeWeightsList.Count)
+                         .FirstOrDefault(i => randomWeight <= shapeWeightsList[i].Value.CumulativeWeight) + 3;
     }
 
     /// <summary>
-    /// Configure a regular polygon, from sides 3-8, including squares but not including other 4-sided polygons
+    /// Configure a regular polygon, from sides 3-8, including squares but not including other 4-sided polygons.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -78,7 +76,7 @@ public class Polygon() : Shape, IShape, IVertexShape
     }
 
     /// <summary>
-    /// Configure a rectangle
+    /// Configure a rectangle.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -97,7 +95,7 @@ public class Polygon() : Shape, IShape, IVertexShape
     }
 
     /// <summary>
-    /// Configure a rhombus
+    /// Configure a rhombus.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -116,7 +114,7 @@ public class Polygon() : Shape, IShape, IVertexShape
     }
 
     /// <summary>
-    /// Configure a parallelogram
+    /// Configure a parallelogram.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -137,7 +135,7 @@ public class Polygon() : Shape, IShape, IVertexShape
     }
 
     /// <summary>
-    /// Configure a trapezoid
+    /// Configure a trapezoid.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -159,7 +157,7 @@ public class Polygon() : Shape, IShape, IVertexShape
     }
 
     /// <summary>
-    /// Configure a kite
+    /// Configure a kite.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -178,7 +176,7 @@ public class Polygon() : Shape, IShape, IVertexShape
     }
 
     /// <summary>
-    /// Set the configuration details for the shape used to represent the graph node
+    /// Set the configuration details for the shape used to represent the graph node.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -229,7 +227,7 @@ public class Polygon() : Shape, IShape, IVertexShape
     }
 
     /// <summary>
-    /// Apply skew settings to the shape
+    /// Apply skew settings to the shape.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>

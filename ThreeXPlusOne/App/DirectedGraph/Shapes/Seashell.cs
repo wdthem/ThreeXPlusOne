@@ -17,7 +17,7 @@ public class Seashell() : Shape, IShape, IVertexShape
     public List<(double X, double Y)> Vertices { get; set; } = [];
 
     /// <summary>
-    /// Set the configuration details for the shape used to represent the graph node
+    /// Set the configuration details for the shape used to represent the graph node.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -51,7 +51,7 @@ public class Seashell() : Shape, IShape, IVertexShape
     }
 
     /// <summary>
-    /// Apply skew settings to the shape
+    /// Apply skew settings to the shape.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>

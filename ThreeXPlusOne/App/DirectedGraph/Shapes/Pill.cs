@@ -13,35 +13,35 @@ public class Pill() : Shape, IShape
     public bool HasGap => false;
 
     /// <summary>
-    /// The height of the pill shape
+    /// The height of the pill shape.
     /// </summary>
     /// <remarks>
-    /// Width is determined by the node radius
+    /// Width is determined by the node radius.
     /// </remarks>
     public double Height { get; set; }
 
     /// <summary>
-    /// The angle by which the shape is rotated on the graph
+    /// The angle by which the shape is rotated on the graph.
     /// </summary>
     public double RotationAngle { get; set; }
 
     /// <summary>
-    /// The x-radius of the curve of the pill shape
+    /// The x-radius of the curve of the pill shape.
     /// </summary>
     public double CurveRadiusX { get; set; }
 
     /// <summary>
-    /// The y-radius of the curve of the pill shape
+    /// The y-radius of the curve of the pill shape.
     /// </summary>
     public double CurveRadiusY { get; set; }
 
     /// <summary>
-    /// The bounding box used to render the pill shape
+    /// The bounding box used to render the pill shape.
     /// </summary>
     public ShapeBounds Bounds { get; set; } = new();
 
     /// <summary>
-    /// Set the configuration details for the shape used to represent the graph node
+    /// Set the configuration details for the shape used to represent the graph node.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>
@@ -67,7 +67,7 @@ public class Pill() : Shape, IShape
     }
 
     /// <summary>
-    /// Apply skew settings to the shape
+    /// Apply skew settings to the shape.
     /// </summary>
     /// <param name="nodePosition"></param>
     /// <param name="nodeRadius"></param>

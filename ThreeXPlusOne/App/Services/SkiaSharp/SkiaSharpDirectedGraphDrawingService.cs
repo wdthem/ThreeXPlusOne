@@ -24,7 +24,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     public ReadOnlyCollection<int> SupportedDimensions => new([2, 3]);
 
     /// <summary>
-    /// Initialize an SKSurface and SKCanvas based on the provided dimensions
+    /// Initialize an SKSurface and SKCanvas based on the provided dimensions.
     /// </summary>
     /// <param name="nodes"></param>
     /// <param name="width"></param>
@@ -47,7 +47,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Optionally generate white points in the background to mimic stars
+    /// Optionally generate white points in the background to mimic stars.
     /// </summary>
     /// <param name="starCount"></param>
     /// <exception cref="Exception"></exception>
@@ -80,7 +80,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Add a light source from the top left
+    /// Add a light source from the top left.
     /// </summary>
     /// <param name="lightSourceCoordinates"></param>
     /// <param name="radius"></param>
@@ -121,7 +121,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Draw the graph based on the provided app settings
+    /// Draw the graph based on the provided app settings.
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="drawNodeConnections"></param>
@@ -163,7 +163,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Render the graph
+    /// Render the graph.
     /// </summary>
     /// <exception cref="Exception"></exception>
     public void Render()
@@ -181,7 +181,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Save the generated graph as a PNG
+    /// Save the generated graph as a PNG.
     /// </summary>
     /// <exception cref="Exception"></exception>
     public void SaveImage()
@@ -205,7 +205,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Draw an individual node
+    /// Draw an individual node.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -283,7 +283,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Draw a line connecting two nodes, terminating with a circle head
+    /// Draw a line connecting two nodes, terminating with a circle head.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
@@ -329,7 +329,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Draw a white point on the canvas with a blur effect
+    /// Draw a white point on the canvas with a blur effect.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="point"></param>
@@ -356,7 +356,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Convert the given x,y coordinates to an SKPoint object
+    /// Convert the given x,y coordinates to an SKPoint object.
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
@@ -366,7 +366,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Get an SKColor object from a Color object
+    /// Get an SKColor object from a Color object.
     /// </summary>
     /// <param name="node"></param>
     /// <returns></returns>
@@ -392,7 +392,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     #region IDisposable
 
     /// <summary>
-    /// IDisposable Dispose method
+    /// IDisposable Dispose method.
     /// </summary>
     public void Dispose()
     {
