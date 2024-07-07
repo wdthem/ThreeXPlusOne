@@ -5,6 +5,7 @@ using ThreeXPlusOne.App;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Models;
 using Xunit;
 
 namespace ThreeXPlusOne.UnitTests;
@@ -54,7 +55,7 @@ public class ProcessTests
         // Arrange
         ResetSettings();
 
-        _algorithmServiceMock.Setup(algorithm => algorithm.Run(It.IsAny<List<int>>())).Returns([[32, 16, 8, 4, 2, 1]]);
+        _algorithmServiceMock.Setup(algorithm => algorithm.Run(It.IsAny<List<int>>())).Returns([new CollatzResult() { Values = [32, 16, 8, 4, 2, 1] }]);
         _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate 2D visualization?")).Returns(true);
 
         var process = new Process(_appSettings,
