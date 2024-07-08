@@ -8,12 +8,12 @@ namespace ThreeXPlusOne.App.Services;
 public class AlgorithmService(IOptions<AppSettings> appSettings,
                               IConsoleService consoleService) : IAlgorithmService
 {
-    protected readonly AppSettings _appSettings = appSettings.Value;
+    private readonly AppSettings _appSettings = appSettings.Value;
 
     /// <summary>
     /// Execute the 3x+1 algorithm for all numbers either supplied by the user or generated randomly.
     /// </summary>
-    /// <param name="inputValues"></param>
+    /// <param name="inputValues">The list of numbers on which to run the algorithm</param>
     /// <returns></returns>
     public List<CollatzResult> Run(List<int> inputValues)
     {
@@ -38,17 +38,10 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
             CollatzResult collatzResult = new()
             {
                 StartingValue = value,
-                Values = [value] //add the first number in the series
+                Values = _appSettings.AlgorithmSettings.UseShortcutAlgorithm
+                                        ? RunShortcutAlgorithm(value)
+                                        : RunStandardAlgorithm(value)
             };
-
-            if (_appSettings.AlgorithmSettings.UseShortcutAlgorithm)
-            {
-                ShortcutCollatzAlgorithm(value, collatzResult.Values);
-            }
-            else
-            {
-                StandardCollatzAlgorithm(value, collatzResult.Values);
-            }
 
             collatzResults.Add(collatzResult);
         }
@@ -61,11 +54,12 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
     /// <summary>
     /// The standard Collatz Conjecture algorithm.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="calculatedValues"></param>
-    private static void StandardCollatzAlgorithm(int value,
-                                                 List<int> calculatedValues)
+    /// <param name="value">The starting value on which to run the algorithm</param>
+    private static List<int> RunStandardAlgorithm(int value)
     {
+        //start the list with the initial value
+        List<int> seriesList = [value];
+
         //avoid the infinite loop of 4, 2, 1 by stopping when the algorithm hits 1
         while (value > 1)
         {
@@ -78,8 +72,10 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
                 value = (value * 3) + 1;
             }
 
-            calculatedValues.Add(value);
+            seriesList.Add(value);
         }
+
+        return seriesList;
     }
 
     /// <summary>
@@ -87,22 +83,24 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
     /// increase the speed of division calculations.
     /// </summary>
     /// <remarks>
-    /// The result is fewer calculated values as sequences of even numbers will be skipped.
+    /// The result is fewer calculated values as sequences of consecutive even numbers will be skipped.
     /// </remarks>
-    /// <param name="value"></param>
-    /// <param name="calculatedValues"></param>
-    private static void ShortcutCollatzAlgorithm(int value,
-                                                 List<int> calculatedValues)
+    /// <param name="value">The starting value on which to run the algorithm</param>
+    private static List<int> RunShortcutAlgorithm(int value)
     {
+        //start the list with the initial value
+        List<int> seriesList = [value];
+
         //avoid the infinite loop of 4, 2, 1 by stopping when the algorithm hits 1
         while (value > 1)
         {
-            if ((value & 1) == 0) // Check if the number is even using bitwise AND
+            // Check if the number is even using bitwise AND
+            if ((value & 1) == 0)
             {
                 // Divide by 2 until the result is odd
                 while ((value & 1) == 0 && value > 1)
                 {
-                    value >>= 1; // Divide by 2 using bitwise shift
+                    value >>= 1; // Divide by 2 using bitwise right-shift
                 }
             }
             else
@@ -110,7 +108,9 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
                 value = (value * 3) + 1;
             }
 
-            calculatedValues.Add(value);
+            seriesList.Add(value);
         }
+
+        return seriesList;
     }
 }
