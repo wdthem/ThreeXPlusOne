@@ -3,7 +3,7 @@ namespace ThreeXPlusOne.App.Models;
 /// <summary>
 /// Local model class for helping to weight the selection of shapes.
 /// </summary>
-public class ShapeSelectionWeight
+public record ShapeSelectionWeight
 {
     /// <summary>
     /// The weight of the shape, as defined in the individual shape class.
