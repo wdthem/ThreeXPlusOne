@@ -239,6 +239,12 @@ public partial class SkiaSharpDirectedGraphDrawingService
                               (float)pill.CurveRadiusY,
                               SKPathDirection.Clockwise);
 
+        SKMatrix rotationMatrix = SKMatrix.CreateRotationDegrees((float)pill.RotationAngle,
+                                                                 (float)node.Position.X,
+                                                                 (float)node.Position.Y);
+
+        pillPath.Transform(rotationMatrix);
+
         DrawShape(canvas,
                   node,
                   paint,
