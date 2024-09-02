@@ -10,17 +10,11 @@ public partial class SkiaSharpDirectedGraphDrawingService
     /// <summary>
     /// Draw a shape based on the defined set of vertices.
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    /// <param name="paint"></param>
-    /// <param name="borderPaint"></param>
+    /// <param name="skiaSharpShapeRenderContext"></param>
     /// <exception cref="Exception"></exception>
-    private void DrawShapeFromVertices(SKCanvas canvas,
-                                       DirectedGraphNode node,
-                                       SKPaint paint,
-                                       SKPaint borderPaint)
+    private void DrawShapeFromVertices(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
     {
-        if (node.Shape is not IVertexShape vertexShape || vertexShape.Vertices == null)
+        if (skiaSharpShapeRenderContext.Node.Shape is not IVertexShape vertexShape || vertexShape.Vertices == null)
         {
             throw new ApplicationException($"{nameof(DrawShapeFromVertices)}: Vertices were null");
         }
@@ -43,27 +37,17 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
         shapePath.Close();
 
-        DrawShape(canvas,
-                  node,
-                  paint,
-                  borderPaint,
-                  shapePath);
+        DrawShape(skiaSharpShapeRenderContext, shapePath);
     }
 
     /// <summary>
     /// Draw an ellipse shape with the defined settings.
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    /// <param name="paint"></param>
-    /// <param name="borderPaint"></param>
+    /// <param name="skiaSharpShapeRenderContext"></param>
     /// <exception cref="Exception"></exception>
-    private void DrawEllipse(SKCanvas canvas,
-                             DirectedGraphNode node,
-                             SKPaint paint,
-                             SKPaint borderPaint)
+    private void DrawEllipse(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
     {
-        if (node.Shape is not Ellipse ellipse)
+        if (skiaSharpShapeRenderContext.Node.Shape is not Ellipse ellipse)
         {
             throw new ApplicationException($"{nameof(DrawEllipse)}: Expected shape type not received)");
         }
@@ -75,27 +59,17 @@ public partial class SkiaSharpDirectedGraphDrawingService
                                        (float)ellipse.Bounds.Right,
                                        (float)ellipse.Bounds.Bottom));
 
-        DrawShape(canvas,
-                  node,
-                  paint,
-                  borderPaint,
-                  ellipsePath);
+        DrawShape(skiaSharpShapeRenderContext, ellipsePath);
     }
 
     /// <summary>
     /// Draw a donut shape with the defined settings.
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    /// <param name="paint"></param>
-    /// <param name="borderPaint"></param>
+    /// <param name="skiaSharpShapeRenderContext"></param>
     /// <exception cref="Exception"></exception>
-    private void DrawDonut(SKCanvas canvas,
-                           DirectedGraphNode node,
-                           SKPaint paint,
-                           SKPaint borderPaint)
+    private void DrawDonut(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
     {
-        if (node.Shape is not Donut donut)
+        if (skiaSharpShapeRenderContext.Node.Shape is not Donut donut)
         {
             throw new ApplicationException($"{nameof(DrawDonut)}: Expected shape type not received)");
         }
@@ -123,27 +97,17 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
         donutPath.AddPath(reversedInnerPath);
 
-        DrawShape(canvas,
-                  node,
-                  paint,
-                  borderPaint,
-                  donutPath);
+        DrawShape(skiaSharpShapeRenderContext, donutPath);
     }
 
     /// <summary>
     /// Draw a semicircle shape with the defined settings.
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    /// <param name="paint"></param>
-    /// <param name="borderPaint"></param>
+    /// <param name="skiaSharpShapeRenderContext"></param>
     /// <exception cref="Exception"></exception>
-    private void DrawSemiCircle(SKCanvas canvas,
-                                DirectedGraphNode node,
-                                SKPaint paint,
-                                SKPaint borderPaint)
+    private void DrawSemiCircle(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
     {
-        if (node.Shape is not SemiCircle semiCircle)
+        if (skiaSharpShapeRenderContext.Node.Shape is not SemiCircle semiCircle)
         {
             throw new ApplicationException($"{nameof(DrawSemiCircle)}: Expected shape type not received)");
         }
@@ -159,27 +123,17 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
         semiCirclePath.Close();
 
-        DrawShape(canvas,
-                  node,
-                  paint,
-                  borderPaint,
-                  semiCirclePath);
+        DrawShape(skiaSharpShapeRenderContext, semiCirclePath);
     }
 
     /// <summary>
     /// Draw an arc shape with the defined settings.
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    /// <param name="paint"></param>
-    /// <param name="borderPaint"></param>
+    /// <param name="skiaSharpShapeRenderContext"></param>
     /// <exception cref="Exception"></exception>
-    private void DrawArc(SKCanvas canvas,
-                         DirectedGraphNode node,
-                         SKPaint paint,
-                         SKPaint borderPaint)
+    private void DrawArc(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
     {
-        if (node.Shape is not Arc arc)
+        if (skiaSharpShapeRenderContext.Node.Shape is not Arc arc)
         {
             throw new ApplicationException($"{nameof(DrawArc)}: Expected shape type not received)");
         }
@@ -202,27 +156,17 @@ public partial class SkiaSharpDirectedGraphDrawingService
                        (float)arc.BottomArcStartAngle,
                        (float)arc.BottomArcSweepAngle);
 
-        DrawShape(canvas,
-                  node,
-                  paint,
-                  borderPaint,
-                  arcPath);
+        DrawShape(skiaSharpShapeRenderContext, arcPath);
     }
 
     /// <summary>
     /// Draw a pill shape with the defined settings.
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    /// <param name="paint"></param>
-    /// <param name="borderPaint"></param>
+    /// <param name="skiaSharpShapeRenderContext"></param>
     /// <exception cref="Exception"></exception>
-    private void DrawPill(SKCanvas canvas,
-                          DirectedGraphNode node,
-                          SKPaint paint,
-                          SKPaint borderPaint)
+    private void DrawPill(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
     {
-        if (node.Shape is not Pill pill)
+        if (skiaSharpShapeRenderContext.Node.Shape is not Pill pill)
         {
             throw new ApplicationException($"{nameof(DrawPill)}: Expected shape type not received)");
         }
@@ -240,48 +184,30 @@ public partial class SkiaSharpDirectedGraphDrawingService
                               SKPathDirection.Clockwise);
 
         SKMatrix rotationMatrix = SKMatrix.CreateRotationDegrees((float)pill.RotationAngle,
-                                                                 (float)node.Position.X,
-                                                                 (float)node.Position.Y);
+                                                                 (float)skiaSharpShapeRenderContext.Node.Position.X,
+                                                                 (float)skiaSharpShapeRenderContext.Node.Position.Y);
 
         pillPath.Transform(rotationMatrix);
 
-        DrawShape(canvas,
-                  node,
-                  paint,
-                  borderPaint,
-                  pillPath);
+        DrawShape(skiaSharpShapeRenderContext, pillPath);
     }
 
     /// <summary>
     /// Draw the shape based on the number of dimensions in which it is being rendered.
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    /// <param name="paint"></param>
-    /// <param name="borderPaint"></param>
+    /// <param name="skiaSharpShapeRenderContext"></param>
     /// <param name="shapePath"></param>
-    private void DrawShape(SKCanvas canvas,
-                           DirectedGraphNode node,
-                           SKPaint paint,
-                           SKPaint borderPaint,
+    private void DrawShape(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext,
                            SKPath shapePath)
     {
-        switch (node.Shape.Dimensions)
+        switch (skiaSharpShapeRenderContext.Node.Shape.Dimensions)
         {
             case 2:
-                Draw2DShape(canvas,
-                            node,
-                            paint,
-                            borderPaint,
-                            shapePath);
+                Draw2DShape(skiaSharpShapeRenderContext, shapePath);
                 break;
 
             case 3:
-                Draw3DShape(canvas,
-                            node,
-                            paint,
-                            borderPaint,
-                            shapePath);
+                Draw3DShape(skiaSharpShapeRenderContext, shapePath);
                 break;
 
             default:
@@ -293,27 +219,21 @@ public partial class SkiaSharpDirectedGraphDrawingService
     /// Draw a 2D shape with one face.
     /// Use a gradient for the colour of the face if the shape is impacted by the light source.
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    /// <param name="paint"></param>
-    /// <param name="borderPaint"></param>
+    /// <param name="skiaSharpShapeRenderContext"></param>
     /// <param name="shapePath"></param>
-    private static void Draw2DShape(SKCanvas canvas,
-                                    DirectedGraphNode node,
-                                    SKPaint paint,
-                                    SKPaint borderPaint,
+    private static void Draw2DShape(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext,
                                     SKPath shapePath)
     {
-        if (node.Shape.HasLightSourceImpact)
+        if (skiaSharpShapeRenderContext.Node.Shape.HasLightSourceImpact)
         {
-            SKPoint frontFaceGradientStartPoint = ConvertCoordinatesToSKPoint(node.Shape.FrontFaceGradientStartPoint);
-            SKPoint frontFaceGradientEndPoint = ConvertCoordinatesToSKPoint(node.Shape.FrontFaceGradientEndPoint);
+            SKPoint frontFaceGradientStartPoint = ConvertCoordinatesToSKPoint(skiaSharpShapeRenderContext.Node.Shape.FrontFaceGradientStartPoint);
+            SKPoint frontFaceGradientEndPoint = ConvertCoordinatesToSKPoint(skiaSharpShapeRenderContext.Node.Shape.FrontFaceGradientEndPoint);
 
-            SKColor[] gradientColors = [ConvertColorToSKColor(node.Shape.GradientStartColor),
-                                        ConvertColorToSKColor(node.Shape.GradientEndColor)];
+            SKColor[] gradientColors = [ConvertColorToSKColor(skiaSharpShapeRenderContext.Node.Shape.GradientStartColor),
+                                        ConvertColorToSKColor(skiaSharpShapeRenderContext.Node.Shape.GradientEndColor)];
 
-            SKColor[] borderGradientColors = [ConvertColorToSKColor(node.Shape.BorderGradientStartColor),
-                                              ConvertColorToSKColor(node.Shape.BorderGradientEndColor)];
+            SKColor[] borderGradientColors = [ConvertColorToSKColor(skiaSharpShapeRenderContext.Node.Shape.BorderGradientStartColor),
+                                              ConvertColorToSKColor(skiaSharpShapeRenderContext.Node.Shape.BorderGradientEndColor)];
 
             SKShader frontFaceShader = SKShader.CreateLinearGradient(frontFaceGradientStartPoint,
                                                                      frontFaceGradientEndPoint,
@@ -327,16 +247,16 @@ public partial class SkiaSharpDirectedGraphDrawingService
                                                                   null,
                                                                   SKShaderTileMode.Clamp);
 
-            paint.Shader = frontFaceShader;
-            borderPaint.Shader = borderShader;
+            skiaSharpShapeRenderContext.Paint.Shader = frontFaceShader;
+            skiaSharpShapeRenderContext.BorderPaint.Shader = borderShader;
         }
 
-        canvas.DrawPath(shapePath, paint);
-        canvas.DrawPath(shapePath, borderPaint);
+        skiaSharpShapeRenderContext.Canvas.DrawPath(shapePath, skiaSharpShapeRenderContext.Paint);
+        skiaSharpShapeRenderContext.Canvas.DrawPath(shapePath, skiaSharpShapeRenderContext.BorderPaint);
 
-        if (node.Shape.ShapeType == Enums.ShapeType.Arc)
+        if (skiaSharpShapeRenderContext.Node.Shape.ShapeType == Enums.ShapeType.Arc)
         {
-            DrawArcBottomBorders(shapePath, canvas, borderPaint);
+            DrawArcBottomBorders(shapePath, skiaSharpShapeRenderContext.Canvas, skiaSharpShapeRenderContext.BorderPaint);
         }
     }
 
@@ -344,27 +264,21 @@ public partial class SkiaSharpDirectedGraphDrawingService
     /// Draw two off-set faces with the same skew and add sides.
     /// Use gradients for the colours if the shape is impacted by the light source.
     /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="node"></param>
-    /// <param name="paint"></param>
-    /// <param name="borderPaint"></param>
+    /// <param name="skiaSharpShapeRenderContext"></param>
     /// <param name="path"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    private void Draw3DShape(SKCanvas canvas,
-                             DirectedGraphNode node,
-                             SKPaint paint,
-                             SKPaint borderPaint,
+    private void Draw3DShape(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext,
                              SKPath path)
     {
-        if (node.Shape.Skew == null)
+        if (skiaSharpShapeRenderContext.Node.Shape.Skew == null)
         {
             throw new ApplicationException($"{nameof(Draw3DShape)}: Skew settings were null");
         }
 
-        double depth = node.Shape.ThreeDimensionalDepth(node.Shape.Radius);
+        double depth = skiaSharpShapeRenderContext.Node.Shape.ThreeDimensionalDepth(skiaSharpShapeRenderContext.Node.Shape.Radius);
 
-        SKMatrix skewMatrix = GetSkewSKMatrix(node.Position, node.Shape.Skew.Value);
+        SKMatrix skewMatrix = GetSkewSKMatrix(skiaSharpShapeRenderContext.Node.Position, skiaSharpShapeRenderContext.Node.Shape.Skew.Value);
 
         path.Transform(skewMatrix);
 
@@ -379,34 +293,34 @@ public partial class SkiaSharpDirectedGraphDrawingService
             Style = SKPaintStyle.Fill
         };
 
-        int sidePoints = node.Shape.ThreeDimensionalSideCount;  // Number of points to use for the sides. More means less aliasing.
+        int sidePoints = skiaSharpShapeRenderContext.Node.Shape.ThreeDimensionalSideCount;  // Number of points to use for the sides. More means less aliasing.
 
         SKPoint[] frontPoints = GetPointsOnPath(path, sidePoints);
         SKPoint[] backPoints = GetPointsOnPath(backPath, sidePoints);
 
-        if (node.Shape.HasLightSourceImpact)
+        if (skiaSharpShapeRenderContext.Node.Shape.HasLightSourceImpact)
         {
             if (_lightSourceCoordinates == null)
             {
                 throw new ApplicationException("Node has light source impact but light source coordinates were null");
             }
 
-            SKPoint frontFaceGradientStartPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(node.Shape.FrontFaceGradientStartPoint));
-            SKPoint frontFaceGradientEndPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(node.Shape.FrontFaceGradientEndPoint));
+            SKPoint frontFaceGradientStartPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(skiaSharpShapeRenderContext.Node.Shape.FrontFaceGradientStartPoint));
+            SKPoint frontFaceGradientEndPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(skiaSharpShapeRenderContext.Node.Shape.FrontFaceGradientEndPoint));
 
-            SKPoint sideGradientStartPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(node.Shape.SideFaceGradientStartPoint));
-            SKPoint sideGradientEndPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(node.Shape.SideFaceGradientEndPoint));
+            SKPoint sideGradientStartPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(skiaSharpShapeRenderContext.Node.Shape.SideFaceGradientStartPoint));
+            SKPoint sideGradientEndPoint = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(skiaSharpShapeRenderContext.Node.Shape.SideFaceGradientEndPoint));
 
-            SKColor[] gradientColors = [ConvertColorToSKColor(node.Shape.GradientStartColor),
-                                        ConvertColorToSKColor(node.Shape.GradientEndColor)];
+            SKColor[] gradientColors = [ConvertColorToSKColor(skiaSharpShapeRenderContext.Node.Shape.GradientStartColor),
+                                        ConvertColorToSKColor(skiaSharpShapeRenderContext.Node.Shape.GradientEndColor)];
 
-            SKColor[] borderGradientColors = [ConvertColorToSKColor(node.Shape.BorderGradientStartColor),
-                                              ConvertColorToSKColor(node.Shape.BorderGradientEndColor)];
+            SKColor[] borderGradientColors = [ConvertColorToSKColor(skiaSharpShapeRenderContext.Node.Shape.BorderGradientStartColor),
+                                              ConvertColorToSKColor(skiaSharpShapeRenderContext.Node.Shape.BorderGradientEndColor)];
 
             SKPoint skPointLightSourceCoordinates = ConvertCoordinatesToSKPoint(_lightSourceCoordinates.Value);
 
             // Calculate the direction of the light source relative to the skewed shape
-            SKPoint skewedCenter = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(node.Position));
+            SKPoint skewedCenter = skewMatrix.MapPoint(ConvertCoordinatesToSKPoint(skiaSharpShapeRenderContext.Node.Position));
             SKPoint lightDirection = skPointLightSourceCoordinates - skewedCenter;
 
             // Project the gradient start and end points onto the light direction vector
@@ -436,22 +350,22 @@ public partial class SkiaSharpDirectedGraphDrawingService
                                                                   null,
                                                                   SKShaderTileMode.Clamp);
 
-            paint.Shader = frontFaceShader;
+            skiaSharpShapeRenderContext.Paint.Shader = frontFaceShader;
             sidePaint.Shader = sideShader;
-            borderPaint.Shader = borderShader;
+            skiaSharpShapeRenderContext.BorderPaint.Shader = borderShader;
         }
         else
         {
-            sidePaint.Color = paint.Color;
+            sidePaint.Color = skiaSharpShapeRenderContext.Paint.Color;
         }
 
         //draw back face
-        canvas.DrawPath(backPath, paint);
+        skiaSharpShapeRenderContext.Canvas.DrawPath(backPath, skiaSharpShapeRenderContext.Paint);
         //note: don't draw back face border as it creates a feeling of bluriness when viewed at a distance
 
         for (int i = 0; i < sidePoints; i++)
         {
-            if (node.Shape.HasGap &&
+            if (skiaSharpShapeRenderContext.Node.Shape.HasGap &&
                 i == sidePoints - 1)
             {
                 // Skip the last side for shapes with a gap
@@ -467,20 +381,20 @@ public partial class SkiaSharpDirectedGraphDrawingService
 
             sidePath.Close();
 
-            canvas.DrawPath(sidePath, sidePaint);
+            skiaSharpShapeRenderContext.Canvas.DrawPath(sidePath, sidePaint);
         }
 
         //draw front face
-        canvas.DrawPath(path, paint);
-        canvas.DrawPath(path, borderPaint);
+        skiaSharpShapeRenderContext.Canvas.DrawPath(path, skiaSharpShapeRenderContext.Paint);
+        skiaSharpShapeRenderContext.Canvas.DrawPath(path, skiaSharpShapeRenderContext.BorderPaint);
 
-        if (node.Shape.ShapeType == Enums.ShapeType.Arc)
+        if (skiaSharpShapeRenderContext.Node.Shape.ShapeType == Enums.ShapeType.Arc)
         {
             //front face
-            DrawArcBottomBorders(path, canvas, borderPaint);
+            DrawArcBottomBorders(path, skiaSharpShapeRenderContext.Canvas, skiaSharpShapeRenderContext.BorderPaint);
 
             //rear face
-            DrawArcBottomBorders(backPath, canvas, borderPaint);
+            DrawArcBottomBorders(backPath, skiaSharpShapeRenderContext.Canvas, skiaSharpShapeRenderContext.BorderPaint);
         }
     }
 

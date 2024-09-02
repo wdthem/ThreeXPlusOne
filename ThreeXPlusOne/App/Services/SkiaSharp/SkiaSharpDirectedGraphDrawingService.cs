@@ -230,43 +230,41 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
             StrokeJoin = SKStrokeJoin.Bevel
         };
 
-        using SKPaint textPaint = new()
+        SkiaSharpShapeRenderContext skiaSharpShapeRenderContext = new()
         {
-            Color = SKColors.White,
-            IsAntialias = true,
-            Style = SKPaintStyle.Fill,
-            TextAlign = SKTextAlign.Center,
-            TextSize = 20,
-            FakeBoldText = true,
+            Canvas = canvas,
+            Node = node,
+            Paint = paint,
+            BorderPaint = borderPaint
         };
 
         switch (node.Shape.ShapeType)
         {
             case ShapeType.Arc:
-                DrawArc(canvas, node, paint, borderPaint);
+                DrawArc(skiaSharpShapeRenderContext);
                 break;
 
             case ShapeType.Ellipse:
-                DrawEllipse(canvas, node, paint, borderPaint);
+                DrawEllipse(skiaSharpShapeRenderContext);
                 break;
 
             case ShapeType.Pill:
-                DrawPill(canvas, node, paint, borderPaint);
+                DrawPill(skiaSharpShapeRenderContext);
                 break;
 
             case ShapeType.Plus:
             case ShapeType.Polygon:
             case ShapeType.Seashell:
             case ShapeType.Star:
-                DrawShapeFromVertices(canvas, node, paint, borderPaint);
+                DrawShapeFromVertices(skiaSharpShapeRenderContext);
                 break;
 
             case ShapeType.SemiCircle:
-                DrawSemiCircle(canvas, node, paint, borderPaint);
+                DrawSemiCircle(skiaSharpShapeRenderContext);
                 break;
 
             case ShapeType.Donut:
-                DrawDonut(canvas, node, paint, borderPaint);
+                DrawDonut(skiaSharpShapeRenderContext);
                 break;
 
             default:
@@ -275,6 +273,16 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
 
         if (drawNumbersOnNodes)
         {
+            using SKPaint textPaint = new()
+            {
+                Color = SKColors.White,
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                TextAlign = SKTextAlign.Center,
+                TextSize = 20,
+                FakeBoldText = true,
+            };
+
             canvas.DrawText(node.NumberValue.ToString(),
                             (float)node.Position.X,
                             (float)node.NumberTextYPosition,
