@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.18.3</Version>
+    <Version>1.18.4</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Add SkiaSharpShapeRenderContext model class</TagMessage>
+    <TagMessage>Fix file name of new SkiaSharpShapeRenderContext model class</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
