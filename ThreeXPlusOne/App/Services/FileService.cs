@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
+using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App.Services;
@@ -97,10 +98,11 @@ public class FileService(IOptions<AppSettings> appSettings,
     /// <summary>
     /// Generate the full file path of the directed graph image.
     /// </summary>
+    /// <param name="imageType"></param>
     /// <returns></returns>
-    public string GenerateDirectedGraphFilePath()
+    public string GenerateDirectedGraphFilePath(ImageType imageType)
     {
-        string fileName = $"{_prefix}-{_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.png";
+        string fileName = $"{_prefix}-{_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.{imageType.ToString().ToLower()}";
 
         return GenerateFullFilePath(_appSettings.UniqueExecutionId, _appSettings.OutputPath, fileName);
     }

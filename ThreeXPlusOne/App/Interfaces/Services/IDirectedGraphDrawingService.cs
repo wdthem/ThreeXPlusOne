@@ -61,14 +61,9 @@ public interface IDirectedGraphDrawingService : IScopedService, IDisposable
     void Draw(bool drawNumbersOnNodes, bool drawNodeConnections);
 
     /// <summary>
-    /// Render the graph.
-    /// </summary>
+    /// Save the generated graph as the file type specified in the app settings.
+    /// </summary>`
+    /// <param name="imageTypeAppSetting"></param>
     /// <exception cref="Exception"></exception>
-    void Render();
-
-    /// <summary>
-    /// Save the generated graph as a png.
-    /// </summary>
-    /// <exception cref="Exception"></exception>
-    void SaveImage();
+    void SaveImage(string imageTypeAppSetting);
 }

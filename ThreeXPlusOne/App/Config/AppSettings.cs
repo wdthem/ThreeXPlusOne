@@ -34,6 +34,12 @@ public class AppSettings
     public DirectedGraphAestheticSettings DirectedGraphAestheticSettings { get; set; } = new();
 
     /// <summary>
+    /// The file type to save the generated graph as.
+    /// </summary>
+    [AppSetting(description: "The file type to save the generated graph as. Values are: {ImageTypesPlaceholder}", suggestedValue: "Jpeg")]
+    public string OutputFileType { get; set; } = "Jpeg";
+
+    /// <summary>
     /// The directory in which the process will create a unique execution folder with generated output.
     /// </summary>
     [AppSetting(description: "The folder in which the generated output files should be placed. If not supplied, output is saved to the runtime directory.", suggestedValue: "")]
