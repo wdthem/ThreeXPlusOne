@@ -1,4 +1,6 @@
-﻿namespace ThreeXPlusOne.App.Interfaces.Services;
+﻿using ThreeXPlusOne.App.Enums;
+
+namespace ThreeXPlusOne.App.Interfaces.Services;
 
 public interface IFileService : IScopedService
 {
@@ -25,8 +27,9 @@ public interface IFileService : IScopedService
     /// <summary>
     /// Create a directory and return the full path to the graph file.
     /// </summary>
+    /// <param name="imageType"></param>
     /// <returns></returns>
-    string GenerateDirectedGraphFilePath();
+    string GenerateDirectedGraphFilePath(ImageType imageType);
 
     /// <summary>
     /// Create a directory (if required) and return the full path to the histogram file.

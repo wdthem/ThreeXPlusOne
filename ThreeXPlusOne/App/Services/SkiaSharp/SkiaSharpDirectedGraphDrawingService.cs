@@ -10,9 +10,8 @@ namespace ThreeXPlusOne.App.Services.SkiaSharp;
 public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileService) : IDirectedGraphDrawingService
 {
     private List<DirectedGraphNode>? _nodes;
-    private SKSurface? _surface;
+    private SKBitmap? _bitmap;
     private SKCanvas? _canvas;
-    private SKImage? _image;
 
     private (double X, double Y)? _lightSourceCoordinates;
 
@@ -38,8 +37,8 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
         OnStart?.Invoke($"Initializing {GraphProvider} graph... ");
 
         _nodes = nodes;
-        _surface = SKSurface.Create(new SKImageInfo(width, height));
-        _canvas = _surface.Canvas;
+        _bitmap = new SKBitmap(width, height);
+        _canvas = new SKCanvas(_bitmap);
 
         _canvas.Clear(ConvertColorToSKColor(backgroundColor));
 
@@ -163,45 +162,57 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Render the graph.
+    /// Save the generated graph as the file type specified in the app settings.
     /// </summary>
+    /// <param name="imageTypeAppSetting"></param>
     /// <exception cref="Exception"></exception>
-    public void Render()
+    public void SaveImage(string imageTypeAppSetting)
     {
-        if (_surface == null)
+        if (_bitmap == null)
         {
-            throw new ApplicationException("Could not render graph. Surface object was null");
+            throw new ApplicationException("Could not save graph. Bitmap object was null");
         }
 
-        OnStart?.Invoke("Rendering graph... ");
+        ImageType imageType = ParseImageType(imageTypeAppSetting);
 
-        _image = _surface.Snapshot();
-
-        OnComplete?.Invoke();
-    }
-
-    /// <summary>
-    /// Save the generated graph as a PNG.
-    /// </summary>
-    /// <exception cref="Exception"></exception>
-    public void SaveImage()
-    {
-        if (_image == null)
+        if (imageType == ImageType.None)
         {
-            throw new ApplicationException("Could not save graph. Image object was null");
+            throw new ApplicationException($"Invalid image type {imageTypeAppSetting}");
         }
 
-        string path = fileService.GenerateDirectedGraphFilePath();
+        string path = fileService.GenerateDirectedGraphFilePath(imageType);
 
         OnStart?.Invoke($"Saving image to {path}... ");
 
-        using (SKData data = _image.Encode(SKEncodedImageFormat.Png, 100))
+        using (SKImage image = SKImage.FromBitmap(_bitmap))
+        using (SKData data = imageType switch
+        {
+            ImageType.Png => image.Encode(SKEncodedImageFormat.Png, 100),
+            ImageType.Jpeg => image.Encode(SKEncodedImageFormat.Jpeg, 100),
+            ImageType.Webp => image.Encode(SKEncodedImageFormat.Webp, 100),
+            _ => throw new ArgumentException($"Unsupported image type: {imageType}")
+        })
         using (FileStream stream = File.OpenWrite(path))
         {
             data.SaveTo(stream);
         }
 
         OnComplete?.Invoke();
+    }
+
+    /// <summary>
+    /// Parse the value from appSettings into an ImageType enum value.
+    /// </summary>
+    /// <param name="appSettingsValue"></param>
+    /// <returns></returns>
+    private static ImageType ParseImageType(string appSettingsValue)
+    {
+        if (!Enum.TryParse(appSettingsValue, out ImageType imageType))
+        {
+            return ImageType.None;
+        }
+
+        return imageType;
     }
 
     /// <summary>
@@ -404,14 +415,11 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     /// </summary>
     public void Dispose()
     {
-        _image?.Dispose();
-        _image = null;
-
         _canvas?.Dispose();
         _canvas = null;
 
-        _surface?.Dispose();
-        _surface = null;
+        _bitmap?.Dispose();
+        _bitmap = null;
 
         _nodes = null;
 

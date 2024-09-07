@@ -91,6 +91,8 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             lines.Add((ConsoleColor.Blue, sectionNameWords));
         }
 
+        bool generalSettingsWritten = false;
+
         foreach (PropertyInfo property in appSettingsProperties)
         {
             Type propertyType = property.PropertyType;
@@ -103,9 +105,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             }
             else
             {
-                if (type == typeof(AppSettings))
+                if (type == typeof(AppSettings) && !generalSettingsWritten)
                 {
                     lines.Add((ConsoleColor.Blue, "General Settings:\n"));
+
+                    generalSettingsWritten = true;
                 }
 
                 lines.Add((ConsoleColor.Blue, $"  {property.Name}"));
@@ -115,6 +119,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                 if (settingAttribute != null)
                 {
                     lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))
+                                                                                    .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType))))
                                                                                     .Replace("{ShapesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ShapeType)).OrderBy(name => name)))}"));
 
                     string suggestedValueText = "  Suggested value: ";
@@ -313,6 +318,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                                                        .ToList();
 
         int lcv = 1;
+
         foreach (PropertyInfo property in appSettingsProperties)
         {
             Type propertyType = property.PropertyType;
