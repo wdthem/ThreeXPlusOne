@@ -131,7 +131,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         //saving the image is processing-intensive and can cause threading issues, so start it via Task.Factory
         //in order to specify that it is expected to be long-running
-        Task.Factory.StartNew(() => graphService.SaveImage(_appSettings.OutputFileType),
+        Task.Factory.StartNew(() => graphService.SaveImage(_appSettings.OutputFileType,
+                                                           _appSettings.OutputFileQuality),
                               CancellationToken.None,
                               TaskCreationOptions.LongRunning,
                               TaskScheduler.Default).Wait();

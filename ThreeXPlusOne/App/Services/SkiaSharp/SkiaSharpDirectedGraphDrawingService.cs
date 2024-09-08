@@ -165,8 +165,10 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     /// Save the generated graph as the file type specified in the app settings.
     /// </summary>
     /// <param name="imageTypeAppSetting"></param>
+    /// <param name="imageQualityAppSetting"></param>
     /// <exception cref="Exception"></exception>
-    public void SaveImage(string imageTypeAppSetting)
+    public void SaveImage(string imageTypeAppSetting,
+                          int imageQualityAppSetting)
     {
         if (_bitmap == null)
         {
@@ -175,9 +177,9 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
 
         ImageType imageType = ParseImageType(imageTypeAppSetting);
 
-        if (imageType == ImageType.None)
+        if (imageQualityAppSetting < 1 || imageQualityAppSetting > 100)
         {
-            throw new ApplicationException($"Invalid image type {imageTypeAppSetting}");
+            throw new ApplicationException($"Invalid image quality {imageQualityAppSetting}. Quality must be between 1 and 100.");
         }
 
         string path = fileService.GenerateDirectedGraphFilePath(imageType);
@@ -187,9 +189,9 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
         using (SKImage image = SKImage.FromBitmap(_bitmap))
         using (SKData data = imageType switch
         {
-            ImageType.Png => image.Encode(SKEncodedImageFormat.Png, 100),
-            ImageType.Jpeg => image.Encode(SKEncodedImageFormat.Jpeg, 100),
-            ImageType.Webp => image.Encode(SKEncodedImageFormat.Webp, 100),
+            ImageType.Png => image.Encode(SKEncodedImageFormat.Png, imageQualityAppSetting),
+            ImageType.Jpeg => image.Encode(SKEncodedImageFormat.Jpeg, imageQualityAppSetting),
+            ImageType.Webp => image.Encode(SKEncodedImageFormat.Webp, imageQualityAppSetting),
             _ => throw new ArgumentException($"Unsupported image type: {imageType}")
         })
         using (FileStream stream = File.OpenWrite(path))
@@ -209,7 +211,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     {
         if (!Enum.TryParse(appSettingsValue, out ImageType imageType))
         {
-            return ImageType.None;
+            throw new ApplicationException($"Invalid image type {appSettingsValue}");
         }
 
         return imageType;
