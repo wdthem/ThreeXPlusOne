@@ -64,6 +64,8 @@ public interface IDirectedGraphDrawingService : IScopedService, IDisposable
     /// Save the generated graph as the file type specified in the app settings.
     /// </summary>`
     /// <param name="imageTypeAppSetting"></param>
+    /// <param name="imageQualityAppSetting"></param>
     /// <exception cref="Exception"></exception>
-    void SaveImage(string imageTypeAppSetting);
+    void SaveImage(string imageTypeAppSetting,
+                   int imageQualityAppSetting);
 }

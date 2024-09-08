@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
 using ThreeXPlusOne.App.Enums;
@@ -36,13 +35,19 @@ public class AppSettings
     /// <summary>
     /// The file type to save the generated graph as.
     /// </summary>
-    [AppSetting(description: "The file type to save the generated graph as. Values are: {ImageTypesPlaceholder}", suggestedValue: "Jpeg")]
+    [AppSetting(description: "The file type of the generated image. Values are: {ImageTypesPlaceholder}", suggestedValue: "Jpeg")]
     public string OutputFileType { get; set; } = "Jpeg";
+
+    /// <summary>
+    /// The quality of the generated image, on a scale of 1 to 100. 100 is the best quality, 1 is the lowest.
+    /// </summary>
+    [AppSetting(description: "The quality of the generated image, on a scale of 1 to 100. 100 is the best quality, and 1 is the lowest.", suggestedValue: "100")]
+    public int OutputFileQuality { get; set; } = 100;
 
     /// <summary>
     /// The directory in which the process will create a unique execution folder with generated output.
     /// </summary>
-    [AppSetting(description: "The folder in which the generated output files should be placed. If not supplied, output is saved to the runtime directory.", suggestedValue: "")]
+    [AppSetting(description: "The folder in which the generated output images should be placed. If not supplied, output is saved to the runtime directory.", suggestedValue: "")]
     public string OutputPath { get; set; } = "";
 
     /// <summary>

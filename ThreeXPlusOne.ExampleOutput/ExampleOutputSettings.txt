@@ -31,6 +31,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "Pseudo3DViewerDistance": 200
   },
   "OutputFileType": "Png",
+  "OutputFileQuality": 100,
   "OutputPath": ""
 }
 
@@ -64,6 +65,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "Pseudo3DViewerDistance": 200
   },
   "OutputFileType": "Png",
+  "OutputFileQuality": 100,
   "OutputPath": ""
 }
 
@@ -97,5 +99,6 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "Pseudo3DViewerDistance": 200
   },
   "OutputFileType": "Png",
+  "OutputFileQuality": 100,
   "OutputPath": ""
 }

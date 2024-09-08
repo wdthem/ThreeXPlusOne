@@ -108,7 +108,7 @@ public class DirectedGraphTests
         _graphServiceMock.Verify(service => service.GenerateBackgroundStars(It.IsAny<int>()), Times.AtMost(1));
         _graphServiceMock.Verify(service => service.GenerateLightSource(It.IsAny<(double, double)>(), It.IsAny<double>(), It.IsAny<Color>()), Times.AtMost(1));
         _graphServiceMock.Verify(service => service.Draw(It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
-        _graphServiceMock.Verify(service => service.SaveImage(It.IsAny<string>()), Times.AtMost(1));
+        _graphServiceMock.Verify(service => service.SaveImage(It.IsAny<string>(), It.IsAny<int>()), Times.AtMost(1));
         _graphServiceMock.Verify(service => service.Dispose(), Times.Once);
     }
 }
