@@ -69,7 +69,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
   "OutputPath": ""
 }
 
-3D With Rotation
+3D No Rotation
 {
   "AlgorithmSettings": {
     "NumbersToExclude": "",
@@ -85,7 +85,7 @@ Use the following app settings to achieve the results shown in the Example Outpu
     "NodeColors": "",
     "NodeColorsBias": "",
     "NodeRadius": 200,
-    "NodeRotationAngle": 0.8,
+    "NodeRotationAngle": 0,
     "NodeShapes": "",
     "NodeSpacerX": 350,
     "NodeSpacerY": 220
