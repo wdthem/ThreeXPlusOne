@@ -318,6 +318,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                                                        .ToList();
 
         int lcv = 1;
+        bool generalSettingsWritten = false;
 
         foreach (PropertyInfo property in appSettingsProperties)
         {
@@ -331,10 +332,12 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             }
             else
             {
-                if (type == typeof(AppSettings) && !isJson)
+                if (type == typeof(AppSettings) && !isJson && !generalSettingsWritten)
                 {
                     SetForegroundColor(ConsoleColor.Blue);
                     WriteLine("    General Settings:");
+
+                    generalSettingsWritten = true;
                 }
 
                 object? value = property.GetValue(instance, null);

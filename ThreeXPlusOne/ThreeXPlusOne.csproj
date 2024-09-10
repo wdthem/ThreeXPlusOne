@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.19.1</Version>
+    <Version>1.19.2</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Image quality config setting</TagMessage>
+    <TagMessage>Fix bug in settings output</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
