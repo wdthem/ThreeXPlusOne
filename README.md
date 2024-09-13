@@ -19,7 +19,7 @@ This means that (in theory) all selected positive integers result in the infinit
 
 The app creates:
 
-* Either a 2D or pseudo-3D Directed Graph based on running the conjecture with a list of random numbers or numbers provided by the user
+* One of several stylised Directed Graphs based on running the conjecture with a list of random numbers or numbers provided by the user
 * A histogram showing the distribution of numbers in the generated series that start with 1 - 9, which illustrates that the calculated numbers follow [Benford's law](https://en.wikipedia.org/wiki/Benford%27s_law).
 * A metadata file containing information about the given run of the process
 
