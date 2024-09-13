@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.0.0</Version>
+    <Version>2.1.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>New spiral graph type, plus refactor to support adding other graph types</TagMessage>
+    <TagMessage>Node connections use Bezier curves rather than straight lines</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>

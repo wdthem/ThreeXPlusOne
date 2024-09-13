@@ -32,6 +32,11 @@ public abstract partial class DirectedGraph
             foreach (DirectedGraphNode node in nodes.Values)
             {
                 node.Position = (node.Position.X + translationX, node.Position.Y + translationY);
+
+                if (node.SpiralCenter != null)
+                {
+                    node.SpiralCenter = (node.SpiralCenter.Value.X + translationX, node.SpiralCenter.Value.Y + translationY);
+                }
             }
         }
 

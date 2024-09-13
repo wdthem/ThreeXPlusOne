@@ -68,4 +68,9 @@ public record DirectedGraphNode(int numberValue)
     /// An object to store information about the node's rendered shape (default to Ellipse).
     /// </summary>
     public IShape Shape { get; set; } = new Ellipse();
+
+    /// <summary>
+    /// If supplied the center of the spiral to which the node belongs. Used on spiral graphs.
+    /// </summary>
+    public (double X, double Y)? SpiralCenter { get; set; } = null;
 }

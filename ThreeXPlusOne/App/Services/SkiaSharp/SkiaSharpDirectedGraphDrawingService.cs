@@ -301,12 +301,11 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Draw a line connecting two nodes, terminating with a circle head.
+    /// Draw a Bezier curve connecting two nodes, terminating with a circle head.
     /// </summary>
     /// <param name="canvas"></param>
     /// <param name="node"></param>
-    private static void DrawNodeConnection(SKCanvas canvas,
-                                           DirectedGraphNode node)
+    private static void DrawNodeConnection(SKCanvas canvas, DirectedGraphNode node)
     {
         foreach (DirectedGraphNode childNode in node.Children)
         {
@@ -316,15 +315,21 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
             {
                 shader = SKShader.CreateLinearGradient(ConvertCoordinatesToSKPoint(node.Position),
                                                        ConvertCoordinatesToSKPoint(childNode.Position),
-                                                       [ConvertColorToSKColor(node.Shape.BorderColor), ConvertColorToSKColor(node.Shape.BorderColor).WithAlpha(128), ConvertColorToSKColor(childNode.Shape.BorderColor), ConvertColorToSKColor(childNode.Shape.BorderColor).WithAlpha(128)],
+                                                       [
+                                                         ConvertColorToSKColor(node.Shape.BorderColor),
+                                                         ConvertColorToSKColor(node.Shape.BorderColor).WithAlpha(128),
+                                                         ConvertColorToSKColor(childNode.Shape.BorderColor),
+                                                         ConvertColorToSKColor(childNode.Shape.BorderColor).WithAlpha(128)
+                                                       ],
                                                        [0.0f, 0.45f, 0.55f, 1.0f],
-                                                        SKShaderTileMode.Clamp);
+                                                       SKShaderTileMode.Clamp);
             }
 
             using SKPaint paint = new()
             {
                 StrokeWidth = 3,
-                IsAntialias = true
+                IsAntialias = true,
+                Style = SKPaintStyle.Stroke
             };
 
             if (shader != null)
@@ -336,13 +341,74 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                 paint.Color = ConvertColorToSKColor(node.Shape.BorderColor);
             }
 
-            canvas.DrawLine(ConvertCoordinatesToSKPoint(node.Position),
-                            ConvertCoordinatesToSKPoint(childNode.Position),
-                            paint);
+            SKPoint startPoint = ConvertCoordinatesToSKPoint(node.Position);
+            SKPoint endPoint = ConvertCoordinatesToSKPoint(childNode.Position);
 
-            canvas.DrawCircle(ConvertCoordinatesToSKPoint(childNode.Position),
-                              (float)childNode.Shape.Radius * 0.10f,
-                              paint);
+            // Calculate the distance between the nodes
+            float distance = (float)Math.Sqrt(Math.Pow(endPoint.X - startPoint.X, 2) + Math.Pow(endPoint.Y - startPoint.Y, 2));
+
+            // Set a threshold for minimal distance before adjusting curvature
+            float minDistanceForCurve = (float)(node.Shape.Radius + childNode.Shape.Radius) * 1.5f;
+
+            SKPoint controlPoint;
+
+            // If nodes are extremely close, use a straight line
+            if (distance < minDistanceForCurve / 2)
+            {
+                canvas.DrawLine(startPoint, endPoint, paint);
+            }
+            else
+            {
+                // Check if a spiral center is available for consistent curvature
+                if (node.SpiralCenter != null)
+                {
+                    // Calculate consistent outward curvature relative to spiral center
+                    SKPoint spiralCenterPoint = new((float)node.SpiralCenter.Value.X, (float)node.SpiralCenter.Value.Y);
+                    SKPoint midPoint = new((startPoint.X + endPoint.X) / 2, (startPoint.Y + endPoint.Y) / 2);
+
+                    SKPoint directionVector = new(midPoint.X - spiralCenterPoint.X, midPoint.Y - spiralCenterPoint.Y);
+
+                    // Normalize the direction vector
+                    float magnitude = (float)Math.Sqrt(directionVector.X * directionVector.X + directionVector.Y * directionVector.Y);
+                    SKPoint normalizedDirection = new(directionVector.X / magnitude, directionVector.Y / magnitude);
+
+                    // Apply exponential scaling to the control point offset based on distance from spiral center
+                    float maxControlPointOffset = 150; // Increase max offset to allow more curvature for outer nodes
+                    float controlPointOffset = distance < minDistanceForCurve
+                                                ? distance / 3  // Smaller curve for close nodes
+                                                : Math.Min((float)Math.Pow(distance / 10, 1.2), maxControlPointOffset); // Exponential scaling
+
+                    controlPoint = new SKPoint(midPoint.X + normalizedDirection.X * controlPointOffset, midPoint.Y + normalizedDirection.Y * controlPointOffset);
+                }
+                else
+                {
+                    // Default curve behavior for non-spiral graphs
+                    SKPoint midPoint = new((startPoint.X + endPoint.X) / 2, (startPoint.Y + endPoint.Y) / 2);
+
+                    if (distance < minDistanceForCurve)
+                    {
+                        float reducedOffset = distance / 3;
+                        controlPoint = new SKPoint(midPoint.X, midPoint.Y - reducedOffset);
+                    }
+                    else
+                    {
+                        // Apply exponential scaling for distant nodes (without spiral center)
+                        float maxControlPointOffset = 100; // Allow more curvature for outer nodes
+                        float controlPointOffset = Math.Min((float)Math.Pow(distance / 10, 1.2), maxControlPointOffset);
+                        controlPoint = new SKPoint(midPoint.X, midPoint.Y - controlPointOffset);
+                    }
+                }
+
+                using SKPath nodeConnectorPath = new();
+                nodeConnectorPath.MoveTo(startPoint);
+                nodeConnectorPath.QuadTo(controlPoint, endPoint);
+
+                // Draw the Bezier curve path
+                canvas.DrawPath(nodeConnectorPath, paint);
+            }
+
+            // Optionally draw a small circle at the child node position for visual connection
+            canvas.DrawCircle(endPoint, (float)childNode.Shape.Radius * 0.10f, paint);
         }
     }
 

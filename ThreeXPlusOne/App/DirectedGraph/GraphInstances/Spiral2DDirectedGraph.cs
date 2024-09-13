@@ -51,6 +51,7 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
         _nodes[1].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
 
         _nodesPositioned = 1;
+        _nodes[1].SpiralCenter = (0, 0);
 
         // Recursive method to position a node and its children
         PositionNode(_nodes[1], 10, 0, _nodes[1].Position.X, _nodes[1].Position.Y);
@@ -109,8 +110,18 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
         double parentX = centerX + radius * (float)Math.Cos(angle * Math.PI / 180);
         double parentY = centerY + radius * (float)Math.Sin(angle * Math.PI / 180);
 
-        // Assign the calculated position to the node
         node.Position = (parentX, parentY);
+
+        if (_appSettings.NodeAestheticSettings.NodeRotationAngle != 0)
+        {
+            (double x, double y) = NodePositions.RotateNode(node.NumberValue,
+                                                            _appSettings.NodeAestheticSettings.NodeRotationAngle,
+                                                            parentX,
+                                                            parentY);
+
+            node.Position = (x, y);
+        }
+
         node.IsPositioned = true;
         _nodesPositioned++;
 
@@ -125,6 +136,8 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
         DirectedGraphNode? firstChild = node.Children.FirstOrDefault(n => n.IsFirstChild);
         if (firstChild != null)
         {
+            firstChild.SpiralCenter = node.SpiralCenter;
+
             float newAngle = (float)(angle + _appSettings.DirectedGraphAestheticSettings.SpiralAngle);  //controls the angle of the spiral
             PositionNode(firstChild, adjustedRadius, newAngle, parentX, parentY);
         }
@@ -138,6 +151,8 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
 
             float newRadius = 10;
             float newAngle = 0;
+
+            secondChild.SpiralCenter = (offsetX, offsetY);
 
             PositionNode(secondChild, newRadius, newAngle, offsetX, offsetY);
         }
