@@ -1,7 +1,8 @@
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.DirectedGraph;
-using ThreeXPlusOne.App.DirectedGraph.Shapes;
+using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
+using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 
@@ -15,7 +16,7 @@ public class MockDirectedGraph(IOptions<AppSettings> appSettings,
                                     : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
                                       IDirectedGraph
 {
-    public int Dimensions => 2;
+    public GraphType GraphType => GraphType.Standard2D;
 
     public void SetCanvasDimensions()
     {

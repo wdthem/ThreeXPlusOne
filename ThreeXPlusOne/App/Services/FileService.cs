@@ -102,7 +102,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     /// <returns></returns>
     public string GenerateDirectedGraphFilePath(ImageType imageType)
     {
-        string fileName = $"{_prefix}-{_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions}D-DirectedGraph-{GetFilenameTimestamp()}.{imageType.ToString().ToLower()}";
+        string fileName = $"{_prefix}-{_appSettings.DirectedGraphAestheticSettings.GraphType}-DirectedGraph-{GetFilenameTimestamp()}.{imageType.ToString().ToLower()}";
 
         return GenerateFullFilePath(_appSettings.UniqueExecutionId, _appSettings.OutputPath, fileName);
     }

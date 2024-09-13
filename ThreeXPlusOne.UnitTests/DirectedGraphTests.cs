@@ -1,16 +1,15 @@
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.DirectedGraph;
-using ThreeXPlusOne.App.DirectedGraph.Shapes;
+using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.UnitTests.Mocks;
 using Xunit;
+using ThreeXPlusOne.App.DirectedGraph.GraphInstances;
 
 namespace ThreeXPlusOne.UnitTests;
 
@@ -41,11 +40,11 @@ public class DirectedGraphTests
         // Arrange
         List<List<int>> seriesLists = [[64, 32, 16, 8, 4, 2, 1], [5, 16, 8, 4, 2, 1]];
 
-        TwoDimensionalDirectedGraph twoDimensionalGraph = new(_appSettings,
-                                                              _graphServicesList,
-                                                              _lightSourceServiceMock.Object,
-                                                              _consoleServiceMock.Object,
-                                                              _shapeFactory);
+        Standard2DDirectedGraph twoDimensionalGraph = new(_appSettings,
+                                                          _graphServicesList,
+                                                          _lightSourceServiceMock.Object,
+                                                          _consoleServiceMock.Object,
+                                                          _shapeFactory);
 
         // Act + Assert
         twoDimensionalGraph.Invoking(graph => graph.AddSeries(seriesLists)).Should().NotThrow();
@@ -92,7 +91,6 @@ public class DirectedGraphTests
     {
         // Arrange
         _graphServiceMock.Setup(service => service.GraphProvider).Returns(GraphProvider.SkiaSharp);
-        _graphServiceMock.Setup(service => service.SupportedDimensions).Returns(new ReadOnlyCollection<int>([2]));
 
         MockDirectedGraph mockDirectedGraph = new(_appSettings,
                                                   _graphServicesList,

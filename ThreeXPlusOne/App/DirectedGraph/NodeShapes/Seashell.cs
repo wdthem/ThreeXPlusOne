@@ -1,7 +1,7 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
-namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
+namespace ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 
 public class Seashell() : Shape, IShape, IVertexShape
 {

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using ThreeXPlusOne.App;
 using ThreeXPlusOne.App.Config;
+using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
@@ -29,7 +30,7 @@ public class ProcessTests
     {
         _algorithmServiceMock = new Mock<IAlgorithmService>();
         _directedGraph = new Mock<IDirectedGraph>();
-        _directedGraph.Setup(graph => graph.Dimensions).Returns(2);
+        _directedGraph.Setup(graph => graph.GraphType).Returns(GraphType.Standard2D);
         _directedGraphs = [_directedGraph.Object];
         _histogramServiceMock = new Mock<IHistogramService>();
         _metadataServiceMock = new Mock<IMetadataService>();
@@ -44,7 +45,7 @@ public class ProcessTests
             new AppSettings { }
         );
 
-        _appSettings.Value.DirectedGraphAestheticSettings.GraphDimensions = 2;
+        _appSettings.Value.DirectedGraphAestheticSettings.GraphType = "Standard2D";
         _appSettings.Value.AlgorithmSettings.RandomNumberTotal = 10;
         _appSettings.Value.AlgorithmSettings.RandomNumberMax = 100;
     }
@@ -56,7 +57,7 @@ public class ProcessTests
         ResetSettings();
 
         _algorithmServiceMock.Setup(algorithm => algorithm.Run(It.IsAny<List<int>>())).Returns([new CollatzResult() { Values = [32, 16, 8, 4, 2, 1] }]);
-        _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate 2D visualization?")).Returns(true);
+        _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate Standard2D visualization?")).Returns(true);
 
         var process = new Process(_appSettings,
                                   _algorithmServiceMock.Object,

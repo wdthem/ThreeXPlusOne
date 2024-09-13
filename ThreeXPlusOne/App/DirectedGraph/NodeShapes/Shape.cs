@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
+namespace ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 
 /// <summary>
 /// The base class for all Shape instances.

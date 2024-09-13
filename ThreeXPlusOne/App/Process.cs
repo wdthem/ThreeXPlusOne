@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using ThreeXPlusOne.App.Config;
+using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
@@ -52,11 +53,16 @@ public class Process(IOptions<AppSettings> appSettings,
     /// <param name="seriesLists"></param>
     private void GenerateDirectedGraph(List<List<int>> seriesLists)
     {
+        if (!Enum.TryParse(_appSettings.DirectedGraphAestheticSettings.GraphType, out GraphType graphType))
+        {
+            throw new ApplicationException("Invalid graph type specified.");
+        }
+
         IDirectedGraph graph = directedGraphs.ToList()
-                                             .Where(graph => graph.Dimensions == _appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions)
+                                             .Where(graph => graph.GraphType == graphType)
                                              .First();
 
-        consoleService.WriteHeading($"Directed graph ({graph.Dimensions}D)");
+        consoleService.WriteHeading($"Directed graph ({graphType})");
 
         graph.AddSeries(seriesLists);
         graph.PositionNodes();
@@ -64,7 +70,7 @@ public class Process(IOptions<AppSettings> appSettings,
         graph.SetNodeAesthetics();
 
         //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
-        bool confirmedGenerateGraph = consoleService.ReadYKeyToProceed($"Generate {graph.Dimensions}D visualization?");
+        bool confirmedGenerateGraph = consoleService.ReadYKeyToProceed($"Generate {graphType} visualization?");
 
         if (!confirmedGenerateGraph)
         {
