@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Models;
@@ -21,11 +20,6 @@ public interface IDirectedGraphDrawingService : IScopedService, IDisposable
     /// The graph provider implementing the interface.
     /// </summary>
     GraphProvider GraphProvider { get; }
-
-    /// <summary>
-    /// The dimensions the given graph service implementation supports in the context of rendering the graph.
-    /// </summary>
-    ReadOnlyCollection<int> SupportedDimensions { get; }
 
     /// <summary>
     /// Initialize the graph based on the provided dimensions.

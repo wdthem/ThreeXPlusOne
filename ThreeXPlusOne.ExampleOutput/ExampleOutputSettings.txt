@@ -25,10 +25,11 @@ Use the following app settings to achieve the results shown in the Example Outpu
   "DirectedGraphAestheticSettings": {
     "CanvasColor": "",
     "GenerateBackgroundStars": false,
-    "GraphDimensions": 2,
+    "GraphType": "Standard2D",
     "LightSourceColor": "",
     "LightSourcePosition": "None",
-    "Pseudo3DViewerDistance": 200
+    "Pseudo3DViewerDistance": 200,
+    "SpiralAngle": 20
   },
   "OutputFileType": "Png",
   "OutputFileQuality": 100,
@@ -59,10 +60,11 @@ Use the following app settings to achieve the results shown in the Example Outpu
   "DirectedGraphAestheticSettings": {
     "CanvasColor": "",
     "GenerateBackgroundStars": false,
-    "GraphDimensions": 2,
+    "GraphType": "Standard2D",
     "LightSourceColor": "",
     "LightSourcePosition": "None",
-    "Pseudo3DViewerDistance": 200
+    "Pseudo3DViewerDistance": 200,
+    "SpiralAngle": 20
   },
   "OutputFileType": "Png",
   "OutputFileQuality": 100,
@@ -93,10 +95,11 @@ Use the following app settings to achieve the results shown in the Example Outpu
   "DirectedGraphAestheticSettings": {
     "CanvasColor": "",
     "GenerateBackgroundStars": false,
-    "GraphDimensions": 3,
+    "GraphType": "StandardPseudo3D",
     "LightSourceColor": "",
     "LightSourcePosition": "None",
-    "Pseudo3DViewerDistance": 200
+    "Pseudo3DViewerDistance": 200,
+    "SpiralAngle": 20
   },
   "OutputFileType": "Png",
   "OutputFileQuality": 100,

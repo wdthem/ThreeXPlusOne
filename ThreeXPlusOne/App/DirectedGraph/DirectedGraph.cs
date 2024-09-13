@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Drawing;
 using ThreeXPlusOne.App.Config;
-using ThreeXPlusOne.App.DirectedGraph.Shapes;
+using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
@@ -90,11 +90,6 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         IDirectedGraphDrawingService graphService = graphServices.ToList()
                                                                  .Where(graphService => graphService.GraphProvider == _appSettings.GraphProvider)
                                                                  .First();
-
-        if (!graphService.SupportedDimensions.Contains(_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions))
-        {
-            throw new ApplicationException($"Graph provider {_appSettings.GraphProvider} does not support graphs in {_appSettings.DirectedGraphAestheticSettings.SanitizedGraphDimensions} dimensions.");
-        }
 
         ConfigureGraphServiceActions(graphService);
 

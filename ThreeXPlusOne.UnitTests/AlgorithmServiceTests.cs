@@ -30,7 +30,7 @@ public class AlgorithmServiceTests
             new AppSettings { }
         );
 
-        _appSettings.Value.DirectedGraphAestheticSettings.GraphDimensions = 2;
+        _appSettings.Value.DirectedGraphAestheticSettings.GraphType = "Standard2D";
         _appSettings.Value.AlgorithmSettings.RandomNumberTotal = 10;
         _appSettings.Value.AlgorithmSettings.RandomNumberMax = 100;
     }

@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 
-namespace ThreeXPlusOne.App.DirectedGraph.Shapes;
+namespace ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 public class ShapeFactory(IEnumerable<IShape> shapes) : ISingletonService
 {
     private List<KeyValuePair<ShapeType, ShapeSelectionWeight>>? _shapeSelectionWeights;

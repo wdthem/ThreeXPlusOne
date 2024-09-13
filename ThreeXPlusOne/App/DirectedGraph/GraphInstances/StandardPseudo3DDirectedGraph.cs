@@ -1,13 +1,14 @@
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
-using ThreeXPlusOne.App.DirectedGraph.Shapes;
+using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
+using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 
-namespace ThreeXPlusOne.App.DirectedGraph;
+namespace ThreeXPlusOne.App.DirectedGraph.GraphInstances;
 
-public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
+public class StandardPseudo3DDirectedGraph(IOptions<AppSettings> appSettings,
                                            IEnumerable<IDirectedGraphDrawingService> directedGraphDrawingServices,
                                            ILightSourceService lightSourceService,
                                            IConsoleService consoleService,
@@ -19,7 +20,7 @@ public class ThreeDimensionalDirectedGraph(IOptions<AppSettings> appSettings,
 
     private int _nodesPositioned = 0;
 
-    public int Dimensions => 3;
+    public GraphType GraphType => GraphType.StandardPseudo3D;
 
     /// <summary>
     /// Assign sizes to the canvas width and height after having positioned the nodes.

@@ -1,4 +1,4 @@
-﻿using ThreeXPlusOne.App.DirectedGraph.Shapes;
+﻿using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.Models;

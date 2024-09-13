@@ -298,11 +298,10 @@ public class DirectedGraphAestheticSettings
     public bool GenerateBackgroundStars { get; set; }
 
     /// <summary>
-    /// The number of dimensions to render in the graph.
+    /// The type of the graph that will be rendered.
     /// </summary>
-    /// <remarks>2 or 3</remarks>
-    [AppSetting(description: "The number of dimensions to render in the graph. Values are: 2, 3", suggestedValue: "2")]
-    public int GraphDimensions { get; set; } = 2;
+    [AppSetting(description: "The type of the graph that will be rendered. Values are: {GraphTypePlaceholder}", suggestedValue: "Standard2D")]
+    public string GraphType { get; set; } = "Standard2D";
 
     /// <summary>
     /// The colour of the light source (include the '#' with the code). Leave blank for default "LightYellow".
@@ -323,19 +322,8 @@ public class DirectedGraphAestheticSettings
     public double Pseudo3DViewerDistance { get; set; } = 200;
 
     /// <summary>
-    /// The sanitized graph dimensions property.
+    /// For spiral graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.
     /// </summary>
-    [JsonIgnore]
-    public int SanitizedGraphDimensions
-    {
-        get
-        {
-            if (GraphDimensions < 2 || GraphDimensions > 3)
-            {
-                return 2;
-            }
-
-            return GraphDimensions;
-        }
-    }
+    [AppSetting(description: "For spiral graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.", suggestedValue: "20")]
+    public double SpiralAngle { get; set; } = 20;
 }

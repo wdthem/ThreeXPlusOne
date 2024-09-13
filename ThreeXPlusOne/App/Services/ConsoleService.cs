@@ -120,6 +120,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                 {
                     lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))
                                                                                     .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType))))
+                                                                                    .Replace("{GraphTypePlaceholder}", string.Join(", ", Enum.GetNames(typeof(GraphType))))
                                                                                     .Replace("{ShapesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ShapeType)).OrderBy(name => name)))}"));
 
                     string suggestedValueText = "  Suggested value: ";
