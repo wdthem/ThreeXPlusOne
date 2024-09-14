@@ -8,17 +8,17 @@ using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.GraphInstances;
 
-public class RadialLayers2DDirectedGraph(IOptions<AppSettings> appSettings,
-                                         IEnumerable<IDirectedGraphDrawingService> graphServices,
-                                         ILightSourceService lightSourceService,
-                                         IConsoleService consoleService,
-                                         ShapeFactory shapeFactory)
-                                            : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
-                                              IDirectedGraph
+public class Galaxy2DDirectedGraph(IOptions<AppSettings> appSettings,
+                                   IEnumerable<IDirectedGraphDrawingService> graphServices,
+                                   ILightSourceService lightSourceService,
+                                   IConsoleService consoleService,
+                                   ShapeFactory shapeFactory)
+                                      : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
+                                        IDirectedGraph
 {
     private int _nodesPositioned = 0;
 
-    public GraphType GraphType => GraphType.RadialLayers2D;
+    public GraphType GraphType => GraphType.Galaxy2D;
 
     /// <summary>
     /// Assign sizes to the canvas width and height after having positioned the nodes.
@@ -45,6 +45,17 @@ public class RadialLayers2DDirectedGraph(IOptions<AppSettings> appSettings,
         Dictionary<int, List<DirectedGraphNode>> nodesByDepth = GroupNodesByDepth(_nodes);
         int layerSpacing = _appSettings.DirectedGraphAestheticSettings.RadialLayerSpacing;
 
+        // Set up a spiral factor to create the curve for the first children
+        float spiralFactor = 5.0f;  // Controls how tight the curve/spiral is
+
+        // Set the rotation angles (tilt the galaxy in 3D)
+        double tiltXAngle = 60.0;  // Tilt along the X-axis
+        double tiltYAngle = 30.0;  // Tilt along the Y-axis (create a more angled view)
+        double tiltXAngleRadians = tiltXAngle * Math.PI / 180.0;
+        double tiltYAngleRadians = tiltYAngle * Math.PI / 180.0;
+
+        (double x, double y) spiralCenter = (0, 0);
+
         // Iterate over each depth level (layer)
         foreach (int depth in nodesByDepth.Keys)
         {
@@ -59,14 +70,39 @@ public class RadialLayers2DDirectedGraph(IOptions<AppSettings> appSettings,
             {
                 DirectedGraphNode node = nodesAtDepth[i];
 
-                // Calculate the angle for this node in radians
-                double angleInRadians = (i * angleIncrement + Random.Shared.NextDouble() * 5.0) * Math.PI / 180.0;  // Add small jitter
+                // Handle first children in a spiraling fashion
+                if (node.Parent != null && node.IsFirstChild)
+                {
+                    // Apply a curve or spiral effect for first children
+                    double angleInRadians = ((i * angleIncrement) + (depth * spiralFactor)) * Math.PI / 180.0;
 
-                // Position the node on the circumference of the current layer
-                double nodeX = 0 + currentRadius * Math.Cos(angleInRadians);
-                double nodeY = 0 + currentRadius * Math.Sin(angleInRadians);
+                    // Calculate the 3D position with an added Z axis (depth)
+                    double nodeX = currentRadius * Math.Cos(angleInRadians);
+                    double nodeY = currentRadius * Math.Sin(angleInRadians);
+                    double nodeZ = depth * 3;  // Reduce Z-axis scaling for a flatter effect
 
-                node.Position = (nodeX, nodeY);
+                    // Apply the 3D tilt by rotating around both the X and Y axes
+                    (double projectedX, double projectedY) = Apply3DTilt(nodeX, nodeY, nodeZ, tiltXAngleRadians, tiltYAngleRadians);
+
+                    // Set the node's 2D position after projection
+                    node.Position = (projectedX, projectedY);
+                }
+                else
+                {
+                    // Apply random jitter for other nodes
+                    double angleInRadians = (i * angleIncrement + Random.Shared.NextDouble() * 5.0) * Math.PI / 180.0;
+
+                    // Calculate the 3D position with Z axis for depth
+                    double nodeX = currentRadius * Math.Cos(angleInRadians);
+                    double nodeY = currentRadius * Math.Sin(angleInRadians);
+                    double nodeZ = depth * 3;  // Reduce Z-axis scaling for a flatter effect
+
+                    // Apply the 3D tilt by rotating around both the X and Y axes
+                    (double projectedX, double projectedY) = Apply3DTilt(nodeX, nodeY, nodeZ, tiltXAngleRadians, tiltYAngleRadians);
+
+                    // Set the node's 2D position after projection
+                    node.Position = (projectedX, projectedY);
+                }
 
                 // Set the node's radius (optional)
                 node.Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
@@ -75,16 +111,38 @@ public class RadialLayers2DDirectedGraph(IOptions<AppSettings> appSettings,
 
                 _nodesPositioned++;
 
+                if (i == 0)
+                {
+                    spiralCenter = node.Position;
+                }
+
+                node.SpiralCenter = spiralCenter;
+
                 _consoleService.Write($"\r{_nodesPositioned} nodes positioned... ");
             }
         }
 
         _consoleService.WriteDone();
 
+        // Translate all nodes to positive coordinates
         NodePositions.TranslateNodesToPositiveCoordinates(_nodes,
                                                           _appSettings.NodeAestheticSettings.NodeSpacerX,
                                                           _appSettings.NodeAestheticSettings.NodeSpacerY,
                                                           _appSettings.NodeAestheticSettings.NodeRadius);
+    }
+
+    // Helper function to apply 3D rotation around both X and Y axes and project 3D to 2D
+    private static (double X, double Y) Apply3DTilt(double x, double y, double z, double tiltXAngle, double tiltYAngle)
+    {
+        // Rotate around the X-axis by the tilt angle (to get the "tilted" perspective)
+        double rotatedY = y * Math.Cos(tiltXAngle) - z * Math.Sin(tiltXAngle);
+        double rotatedZ = y * Math.Sin(tiltXAngle) + z * Math.Cos(tiltXAngle);
+
+        // Now rotate around the Y-axis
+        double rotatedX = x * Math.Cos(tiltYAngle) + rotatedZ * Math.Sin(tiltYAngle);
+
+        // Project 3D (rotatedX, rotatedY) to 2D space
+        return (rotatedX, rotatedY);
     }
 
     /// <summary>
