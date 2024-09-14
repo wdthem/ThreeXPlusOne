@@ -54,7 +54,11 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
         _nodes[1].SpiralCenter = (0, 0);
 
         // Recursive method to position a node and its children
-        PositionNode(_nodes[1], 10, 0, _nodes[1].Position.X, _nodes[1].Position.Y);
+        PositionNode(_nodes[1],
+                     10,
+                     0,
+                     _nodes[1].Position.X,
+                     _nodes[1].Position.Y);
 
         _consoleService.WriteDone();
 
