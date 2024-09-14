@@ -322,8 +322,14 @@ public class DirectedGraphAestheticSettings
     public double Pseudo3DViewerDistance { get; set; } = 200;
 
     /// <summary>
+    /// For Radial and Galaxy graphs, the spacing between radial layers.
+    /// </summary>
+    [AppSetting(description: "For Radial and Galaxy graphs, the spacing between radial layers", suggestedValue: "25")]
+    public int RadialLayerSpacing { get; set; } = 25;
+
+    /// <summary>
     /// For spiral graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.
     /// </summary>
-    [AppSetting(description: "For spiral graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.", suggestedValue: "20")]
+    [AppSetting(description: "For Spiral graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.", suggestedValue: "20")]
     public double SpiralAngle { get; set; } = 20;
 }
