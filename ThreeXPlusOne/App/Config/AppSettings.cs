@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using ThreeXPlusOne.App.Enums;
 
 namespace ThreeXPlusOne.App.Config;
@@ -98,7 +99,7 @@ public class AppSettings
     /// <returns></returns>
     private string ComputeHashFromSeriesData()
     {
-        List<int> copyOfSeriesNumbers = AlgorithmSettings.ListOfRandomNumbers;
+        List<int> copyOfSeriesNumbers = AlgorithmSettings.ListOfSuppliedNumbers;
         copyOfSeriesNumbers.RemoveAll(AlgorithmSettings.ListOfNumbersToExclude.Contains);
 
         byte[] bytes = MD5.HashData(Encoding.UTF8.GetBytes(string.Join("", copyOfSeriesNumbers.OrderBy(x => x))));
@@ -114,8 +115,11 @@ public class AppSettings
     }
 }
 
-public class AlgorithmSettings
+public partial class AlgorithmSettings
 {
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex WhiteSpaceRegex();
+
     [JsonIgnore]
     private static readonly char[] _listSeparator = [','];
 
@@ -153,65 +157,54 @@ public class AlgorithmSettings
     public bool UseShortcutAlgorithm { get; set; } = false;
 
     /// <summary>
-    /// The generated random numbers parsed as a list of integers.
+    /// The supplied number list in NumbersToUse as a list of integers.
     /// </summary>
     [JsonIgnore]
-    public List<int> ListOfRandomNumbers
+    public List<int> ListOfSuppliedNumbers
     {
         get
         {
-            var parsedNumbers = new List<int>();
+            List<int> parsedNumbers = [];
 
             if (string.IsNullOrWhiteSpace(NumbersToUse))
             {
                 return parsedNumbers;
             }
 
-            string[] stringArray = NumbersToUse.Split(_listSeparator, StringSplitOptions.RemoveEmptyEntries);
+            string result = WhiteSpaceRegex().Replace(NumbersToUse, "");
 
-            foreach (string numberAsString in stringArray)
-            {
-                if (int.TryParse(numberAsString, out int parsedNumber))
-                {
-                    if (parsedNumber <= 0)
-                    {
-                        continue;
-                    }
-
-                    parsedNumbers.Add(parsedNumber);
-                }
-            }
-
-            return parsedNumbers;
+            return result.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                         .Select(n => int.TryParse(n.Trim(), out int result) ? result : (int?)null)
+                         .Where(n => n.HasValue && n > 0)
+                         .Select(n => n!.Value)
+                         .Distinct()
+                         .ToList();
         }
     }
 
     /// <summary>
-    /// The number to exclude parsed as a list of integers.
+    /// The numbers to exclude parsed as a list of integers.
     /// </summary>
     [JsonIgnore]
     public List<int> ListOfNumbersToExclude
     {
         get
         {
-            var parsedNumbers = new List<int>();
+            List<int> parsedNumbers = [];
 
             if (string.IsNullOrWhiteSpace(NumbersToExclude))
             {
                 return parsedNumbers;
             }
 
-            string[] stringArray = NumbersToExclude.Split(_listSeparator, StringSplitOptions.RemoveEmptyEntries);
+            string result = WhiteSpaceRegex().Replace(NumbersToExclude, "");
 
-            foreach (var numberAsString in stringArray)
-            {
-                if (int.TryParse(numberAsString, out int parsedNumber))
-                {
-                    parsedNumbers.Add(parsedNumber);
-                }
-            }
-
-            return parsedNumbers;
+            return result.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                         .Select(n => int.TryParse(n.Trim(), out int result) ? result : (int?)null)
+                         .Where(n => n.HasValue && n > 0)
+                         .Select(n => n!.Value)
+                         .Distinct()
+                         .ToList();
         }
     }
 }
