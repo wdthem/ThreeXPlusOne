@@ -1,4 +1,4 @@
-name: Branch Name Check - Pull Request
+name: Branch Name Check
 
 on: [pull_request]
 
