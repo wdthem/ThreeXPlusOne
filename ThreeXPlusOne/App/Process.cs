@@ -113,9 +113,9 @@ public class Process(IOptions<AppSettings> appSettings,
 
         List<int> inputValues = [];
 
-        if (_appSettings.AlgorithmSettings.ListOfSuppliedNumbers.Count > 0)
+        if (_appSettings.AlgorithmSettings.ListOfNumbersToUse.Count > 0)
         {
-            inputValues = _appSettings.AlgorithmSettings.ListOfSuppliedNumbers;
+            inputValues = _appSettings.AlgorithmSettings.ListOfNumbersToUse;
             inputValues.RemoveAll(_appSettings.AlgorithmSettings.ListOfNumbersToExclude.Contains);
 
             if (inputValues.Count == 0)

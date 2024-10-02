@@ -99,7 +99,7 @@ public class AppSettings
     /// <returns></returns>
     private string ComputeHashFromSeriesData()
     {
-        List<int> copyOfSeriesNumbers = AlgorithmSettings.ListOfSuppliedNumbers;
+        List<int> copyOfSeriesNumbers = AlgorithmSettings.ListOfNumbersToUse;
         copyOfSeriesNumbers.RemoveAll(AlgorithmSettings.ListOfNumbersToExclude.Contains);
 
         byte[] bytes = MD5.HashData(Encoding.UTF8.GetBytes(string.Join("", copyOfSeriesNumbers.OrderBy(x => x))));
@@ -160,7 +160,7 @@ public partial class AlgorithmSettings
     /// The supplied number list in NumbersToUse as a list of integers.
     /// </summary>
     [JsonIgnore]
-    public List<int> ListOfSuppliedNumbers
+    public List<int> ListOfNumbersToUse
     {
         get
         {
