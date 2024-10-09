@@ -31,9 +31,9 @@ public class RadialLayers2DDirectedGraph(IOptions<AppSettings> appSettings,
     /// <summary>
     /// Generate a 2D visual representation of the directed graph.
     /// </summary>
-    public void Draw()
+    public async Task Draw()
     {
-        DrawDirectedGraph();
+        await DrawDirectedGraph();
     }
 
     /// <summary>
@@ -68,11 +68,9 @@ public class RadialLayers2DDirectedGraph(IOptions<AppSettings> appSettings,
 
                 node.Position = (nodeX, nodeY);
 
-                // Set the node's radius (optional)
                 node.Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
 
                 node.IsPositioned = true;
-
                 _nodesPositioned++;
 
                 _consoleService.Write($"\r{_nodesPositioned} nodes positioned... ");
@@ -114,7 +112,7 @@ public class RadialLayers2DDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// 
+    /// Group the nodes by their depth.
     /// </summary>
     /// <param name="nodes"></param>
     /// <returns></returns>

@@ -31,9 +31,9 @@ public class Galaxy2DDirectedGraph(IOptions<AppSettings> appSettings,
     /// <summary>
     /// Generate a 2D visual representation of the directed graph.
     /// </summary>
-    public void Draw()
+    public async Task Draw()
     {
-        DrawDirectedGraph();
+        await DrawDirectedGraph();
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public class Galaxy2DDirectedGraph(IOptions<AppSettings> appSettings,
     }
 
     /// <summary>
-    /// 
+    /// Group the nodes by their depth.
     /// </summary>
     /// <param name="nodes"></param>
     /// <returns></returns>

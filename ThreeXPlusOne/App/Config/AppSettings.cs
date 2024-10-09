@@ -120,9 +120,6 @@ public partial class AlgorithmSettings
     [GeneratedRegex(@"\s+")]
     private static partial Regex WhiteSpaceRegex();
 
-    [JsonIgnore]
-    private static readonly char[] _listSeparator = [','];
-
     /// <summary>
     /// If supplied, these numbers will be excluded from either random number selection or from the UseTheseNumbers property.
     /// </summary>

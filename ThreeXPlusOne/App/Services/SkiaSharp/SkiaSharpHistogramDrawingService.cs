@@ -160,7 +160,7 @@ public class SkiaSharpHistogramDrawingService() : IHistogramDrawingService
     /// </summary>
     /// <param name="bitmap"></param>
     /// <param name="filePath"></param>
-    public void SaveImage(string filePath)
+    public async Task SaveImage(string filePath)
     {
         if (_bitmap == null)
         {
@@ -170,9 +170,9 @@ public class SkiaSharpHistogramDrawingService() : IHistogramDrawingService
         using SKImage image = SKImage.FromBitmap(_bitmap);
         using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
 
-        using var stream = File.OpenWrite(filePath);
+        using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
 
-        data.SaveTo(stream);
+        await stream.WriteAsync(data.ToArray().AsMemory(0, (int)data.Size));
     }
 
     #region IDisposable

@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.3.1</Version>
+    <Version>2.4.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Improve naming and parsing of NumbersToUse</TagMessage>
+    <TagMessage>Use async/await for methods where possible</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>

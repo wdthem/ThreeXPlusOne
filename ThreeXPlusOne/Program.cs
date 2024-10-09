@@ -14,4 +14,4 @@ using IServiceScope scope = host.Services.CreateScope();
 
 CommandLineRunner commandLineRunner = scope.ServiceProvider.GetRequiredService<CommandLineRunner>();
 
-commandLineRunner.RunCommand(commandExecutionSettings);
+await commandLineRunner.RunCommand(commandExecutionSettings);

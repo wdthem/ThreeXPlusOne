@@ -10,7 +10,7 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
     /// Generate the histogram based on the lists of series data.
     /// </summary>
     /// <param name="seriesData"></param>
-    public void GenerateHistogram(List<List<int>> seriesData)
+    public async Task GenerateHistogram(List<List<int>> seriesData)
     {
         consoleService.WriteHeading("Histogram");
         consoleService.Write("Generating histogram... ");
@@ -31,7 +31,7 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
 
         histogramDrawingService.Initialize(width, height);
         histogramDrawingService.Draw(digitCounts, "Numbers in series starting from 1-9");
-        histogramDrawingService.SaveImage(filePath);
+        await histogramDrawingService.SaveImage(filePath);
         histogramDrawingService.Dispose();
 
         consoleService.WriteDone();

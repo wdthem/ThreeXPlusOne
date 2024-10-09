@@ -71,7 +71,7 @@ public class CommandLineRunner(Process process,
     /// Run the command based on the settings parsed by the CommandLineParser
     /// </summary>
     /// <param name="commandExecutionSettings"></param>
-    public void RunCommand(CommandExecutionSettings commandExecutionSettings)
+    public async Task RunCommand(CommandExecutionSettings commandExecutionSettings)
     {
         try
         {
@@ -80,7 +80,7 @@ public class CommandLineRunner(Process process,
             if (commandExecutionSettings.ContinueExecution)
             {
                 //run the app
-                process.Run(commandExecutionSettings.CommandParsingMessages);
+                await process.Run(commandExecutionSettings.CommandParsingMessages);
             }
         }
         catch (Exception e)

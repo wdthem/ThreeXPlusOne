@@ -33,9 +33,9 @@ public class StandardPseudo3DDirectedGraph(IOptions<AppSettings> appSettings,
     /// <summary>
     /// Generate a 3D visual representation of the directed graph.
     /// </summary>
-    public void Draw()
+    public async Task Draw()
     {
-        DrawDirectedGraph();
+        await DrawDirectedGraph();
     }
 
     /// <summary>

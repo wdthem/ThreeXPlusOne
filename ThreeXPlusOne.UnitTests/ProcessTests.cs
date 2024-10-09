@@ -51,7 +51,7 @@ public class ProcessTests
     }
 
     [Fact]
-    public void Run_Success00()
+    public async Task Run_Success00()
     {
         // Arrange
         ResetSettings();
@@ -68,7 +68,7 @@ public class ProcessTests
                                   _consoleServiceMock.Object);
 
         // Act
-        process.Run([]);
+        await process.Run([]);
 
         // Assert
         _algorithmServiceMock.Verify(algorithm => algorithm.Run(It.IsAny<List<int>>()), Times.Once);
@@ -88,7 +88,7 @@ public class ProcessTests
     /// User-provided input values result in no data to process.
     /// </summary>
     [Fact]
-    public void Run_Failure00()
+    public async Task Run_Failure00()
     {
         // Arrange
         ResetSettings();
@@ -105,6 +105,6 @@ public class ProcessTests
                                   _consoleServiceMock.Object);
 
         // Act + Assert
-        process.Invoking(process => process.Run([])).Should().Throw<Exception>();
+        await process.Invoking(process => process.Run([])).Should().ThrowAsync<Exception>();
     }
 }

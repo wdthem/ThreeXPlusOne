@@ -87,7 +87,7 @@ public class DirectedGraphTests
     /// Ensure all expected methods on the IGraphService interface are called (crucially, IGraphService.Dispose()).
     /// </summary>
     [Fact]
-    public void DrawDirectedGraph_Success00()
+    public async Task DrawDirectedGraph_Success00()
     {
         // Arrange
         _graphServiceMock.Setup(service => service.GraphProvider).Returns(GraphProvider.SkiaSharp);
@@ -99,7 +99,7 @@ public class DirectedGraphTests
                                                   _shapeFactory);
 
         // Act
-        mockDirectedGraph.DrawDirectedGraph_Base();
+        await mockDirectedGraph.DrawDirectedGraph_Base();
 
         // Assert
         _graphServiceMock.Verify(service => service.Initialize(It.IsAny<List<DirectedGraphNode>>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Color>()), Times.Once);
