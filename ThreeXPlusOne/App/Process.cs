@@ -23,7 +23,7 @@ public class Process(IOptions<AppSettings> appSettings,
     /// Run the algorithm and data generation based on the user-provided app settings.
     /// </summary>
     /// <param name="commandParsingMessages"></param>
-    public void Run(List<string> commandParsingMessages)
+    public async Task Run(List<string> commandParsingMessages)
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -35,12 +35,11 @@ public class Process(IOptions<AppSettings> appSettings,
         List<CollatzResult> collatzResults = algorithmService.Run(inputValues);
         List<List<int>> seriesLists = collatzResults.Select(cr => cr.Values).ToList();
 
-        metadataService.GenerateMedatadataFile(seriesLists);
-        histogramService.GenerateHistogram(seriesLists);
+        await metadataService.GenerateMedatadataFile(seriesLists);
+        await histogramService.GenerateHistogram(seriesLists);
 
-        GenerateDirectedGraph(seriesLists);
-
-        SaveSettings();
+        await GenerateDirectedGraph(seriesLists);
+        await SaveSettings();
 
         stopwatch.Stop();
 
@@ -51,7 +50,7 @@ public class Process(IOptions<AppSettings> appSettings,
     /// Generate the directed graph based on app settings.
     /// </summary>
     /// <param name="seriesLists"></param>
-    private void GenerateDirectedGraph(List<List<int>> seriesLists)
+    private async Task GenerateDirectedGraph(List<List<int>> seriesLists)
     {
         if (!Enum.TryParse(_appSettings.DirectedGraphAestheticSettings.GraphType, out GraphType graphType))
         {
@@ -81,20 +80,20 @@ public class Process(IOptions<AppSettings> appSettings,
 
         consoleService.WriteLine("");
 
-        graph.Draw();
+        await graph.Draw();
     }
 
     /// <summary>
     /// Allow the user to save the generated number list to app settings for future use.
     /// </summary>
-    private void SaveSettings()
+    private async Task SaveSettings()
     {
         consoleService.WriteHeading("Save app settings");
 
         bool confirmedSaveSettings = _generatedRandomNumbers &&
                                      consoleService.ReadYKeyToProceed($"Save generated number series to '{_appSettings.SettingsFileFullPath}' for reuse?");
 
-        fileService.WriteSettingsToFile(confirmedSaveSettings);
+        await fileService.WriteSettingsToFile(confirmedSaveSettings);
         consoleService.WriteSettingsSavedMessage(confirmedSaveSettings);
     }
 

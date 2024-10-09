@@ -8,5 +8,5 @@ public interface IHistogramService : IScopedService
     /// follow Benford's law.
     /// </summary>
     /// <param name="seriesData"></param>
-    void GenerateHistogram(List<List<int>> seriesData);
+    Task GenerateHistogram(List<List<int>> seriesData);
 }

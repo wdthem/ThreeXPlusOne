@@ -33,5 +33,5 @@ public interface IDirectedGraph
     /// <summary>
     /// Generate a visual representation of the directed graph based on the app settings.
     /// </summary>
-    void Draw();
+    Task Draw();
 }

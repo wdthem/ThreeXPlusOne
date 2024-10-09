@@ -27,5 +27,5 @@ public interface IHistogramDrawingService : IScopedService, IDisposable
     /// Save the generated histogram image.
     /// </summary>
     /// <param name="filePath"></param>
-    void SaveImage(string filePath);
+    Task SaveImage(string filePath);
 }

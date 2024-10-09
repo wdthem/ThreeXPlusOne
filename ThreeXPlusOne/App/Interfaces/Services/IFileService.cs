@@ -8,7 +8,7 @@ public interface IFileService : IScopedService
     /// Save the app settings object values back to the app settings file.
     /// </summary>
     /// <param name="userConfirmedSave"></param>
-    void WriteSettingsToFile(bool userConfirmedSave);
+    Task WriteSettingsToFile(bool userConfirmedSave);
 
     /// <summary>
     /// Check to see if a given file path already exists on the drive.
@@ -22,7 +22,7 @@ public interface IFileService : IScopedService
     /// </summary>
     /// <param name="content"></param>
     /// <param name="filePath"></param>
-    void WriteMetadataToFile(string content, string filePath);
+    Task WriteMetadataToFile(string content, string filePath);
 
     /// <summary>
     /// Create a directory and return the full path to the graph file.

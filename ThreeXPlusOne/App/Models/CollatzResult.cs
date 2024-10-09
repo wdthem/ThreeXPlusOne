@@ -9,7 +9,7 @@ namespace ThreeXPlusOne.App.Models;
 public record CollatzResult
 {
     /// <summary>
-    /// The starting value (first number in the series) 
+    /// The starting value (first number in the series).
     /// </summary>
     public int StartingValue { get; set; }
 

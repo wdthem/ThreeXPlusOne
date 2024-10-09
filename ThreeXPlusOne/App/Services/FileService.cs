@@ -54,7 +54,7 @@ public class FileService(IOptions<AppSettings> appSettings,
     /// Write the app settings JSON to a file.
     /// </summary>
     /// <param name="userConfirmedSave"></param>
-    public void WriteSettingsToFile(bool userConfirmedSave)
+    public async Task WriteSettingsToFile(bool userConfirmedSave)
     {
         if (!userConfirmedSave)
         {
@@ -63,7 +63,7 @@ public class FileService(IOptions<AppSettings> appSettings,
 
         string jsonString = JsonSerializer.Serialize(_appSettings, _serializerOptions);
 
-        File.WriteAllText(_appSettings.SettingsFileFullPath, jsonString);
+        await File.WriteAllTextAsync(_appSettings.SettingsFileFullPath, jsonString);
     }
 
     /// <summary>
@@ -81,13 +81,13 @@ public class FileService(IOptions<AppSettings> appSettings,
     /// </summary>
     /// <param name="content"></param>
     /// <param name="filePath"></param>
-    public void WriteMetadataToFile(string content, string filePath)
+    public async Task WriteMetadataToFile(string content, string filePath)
     {
         try
         {
             using StreamWriter writer = new(filePath, false);
 
-            writer.WriteLine(content);
+            await writer.WriteLineAsync(content);
         }
         catch (Exception ex)
         {

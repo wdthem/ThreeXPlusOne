@@ -85,7 +85,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     /// Draw the directed graph.
     /// </summary>
     /// <exception cref="Exception"></exception>
-    protected void DrawDirectedGraph()
+    protected async Task DrawDirectedGraph()
     {
         IDirectedGraphDrawingService graphService = graphServices.ToList()
                                                                  .Where(graphService => graphService.GraphProvider == _appSettings.GraphProvider)
@@ -93,15 +93,15 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         ConfigureGraphServiceActions(graphService);
 
-        Task.Run(() => graphService.Initialize([.. _nodes.Values],
-                                               _canvasWidth,
-                                               _canvasHeight,
-                                               GetCanvasColor())).Wait();
+        await Task.Run(() => graphService.Initialize([.. _nodes.Values],
+                                                     _canvasWidth,
+                                                     _canvasHeight,
+                                                     GetCanvasColor()));
 
 
         if (_appSettings.DirectedGraphAestheticSettings.GenerateBackgroundStars)
         {
-            Task.Run(() => graphService.GenerateBackgroundStars(100)).Wait();
+            await Task.Run(() => graphService.GenerateBackgroundStars(100));
         }
 
         lightSourceService.Initialize(_canvasWidth,
@@ -111,9 +111,9 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         if (lightSourceService.LightSourcePosition != LightSourcePosition.None)
         {
-            Task.Run(() => graphService.GenerateLightSource(lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
-                                                            lightSourceService.Radius,
-                                                            lightSourceService.LightSourceColor)).Wait();
+            await Task.Run(() => graphService.GenerateLightSource(lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
+                                                                  lightSourceService.Radius,
+                                                                  lightSourceService.LightSourceColor));
 
             NodeAesthetics.ApplyLightSourceToNodes(_nodes,
                                                    lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
@@ -121,18 +121,18 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                                    lightSourceService.LightSourceColor);
         }
 
-        Task.Run(() => graphService.Draw(drawNumbersOnNodes: _appSettings.NodeAestheticSettings.DrawNumbersOnNodes,
-                                         drawNodeConnections: _appSettings.NodeAestheticSettings.DrawNodeConnections)).Wait();
+        await Task.Run(() => graphService.Draw(drawNumbersOnNodes: _appSettings.NodeAestheticSettings.DrawNumbersOnNodes,
+                                               drawNodeConnections: _appSettings.NodeAestheticSettings.DrawNodeConnections));
 
         //saving the image is processing-intensive and can cause threading issues, so start it via Task.Factory
         //in order to specify that it is expected to be long-running
-        Task.Factory.StartNew(() => graphService.SaveImage(_appSettings.OutputFileType,
-                                                           _appSettings.OutputFileQuality),
-                              CancellationToken.None,
-                              TaskCreationOptions.LongRunning,
-                              TaskScheduler.Default).Wait();
+        await Task.Factory.StartNew(() => graphService.SaveImage(_appSettings.OutputFileType,
+                                                                 _appSettings.OutputFileQuality),
+                                    CancellationToken.None,
+                                    TaskCreationOptions.LongRunning,
+                                    TaskScheduler.Default);
 
-        Task.Run(graphService.Dispose).Wait();
+        await Task.Run(graphService.Dispose);
     }
 
     /// <summary>

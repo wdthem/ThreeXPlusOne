@@ -22,8 +22,9 @@ public class MockDirectedGraph(IOptions<AppSettings> appSettings,
     {
     }
 
-    public void Draw()
+    public async Task Draw()
     {
+        await Task.CompletedTask;
     }
 
     public void PositionNodes()
@@ -41,8 +42,8 @@ public class MockDirectedGraph(IOptions<AppSettings> appSettings,
     }
 #pragma warning restore CA1822 // Mark members as static
 
-    public void DrawDirectedGraph_Base()
+    public async Task DrawDirectedGraph_Base()
     {
-        DrawDirectedGraph();
+        await DrawDirectedGraph();
     }
 }

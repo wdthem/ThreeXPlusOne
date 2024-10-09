@@ -10,7 +10,7 @@ public class MetadataService(IFileService fileService,
     /// Generate the metadata based on the lists of series numbers.
     /// </summary>
     /// <param name="seriesData"></param>
-    public void GenerateMedatadataFile(List<List<int>> seriesData)
+    public async Task GenerateMedatadataFile(List<List<int>> seriesData)
     {
         consoleService.WriteHeading("Metadata");
         consoleService.Write("Generating metadata... ");
@@ -30,7 +30,7 @@ public class MetadataService(IFileService fileService,
         content.Append(GenerateTop10LongestSeriesMetadata(seriesData));
         content.Append(GenerateFullSeriesData(seriesData));
 
-        fileService.WriteMetadataToFile(content.ToString(), filePath);
+        await fileService.WriteMetadataToFile(content.ToString(), filePath);
 
         consoleService.WriteDone();
     }
@@ -42,10 +42,11 @@ public class MetadataService(IFileService fileService,
     /// <returns></returns>
     private static List<(int FirstNumber, int Count)> GenerateTop10LongestSeries(List<List<int>> series)
     {
-        return series.Where(list => list.Count != 0).Select(list => (list.First(), list.Count))
-                                                    .OrderByDescending(item => item.Count)
-                                                    .Take(10)
-                                                    .ToList();
+        return series.Where(list => list.Count != 0)
+                     .Select(list => (list.First(), list.Count))
+                     .OrderByDescending(item => item.Count)
+                     .Take(10)
+                     .ToList();
     }
 
     /// <summary>
