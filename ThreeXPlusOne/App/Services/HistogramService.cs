@@ -12,7 +12,6 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
     /// <param name="seriesData"></param>
     public async Task GenerateHistogram(List<List<int>> seriesData)
     {
-        consoleService.WriteHeading("Histogram");
         consoleService.Write("Generating histogram... ");
 
         string filePath = fileService.GenerateHistogramFilePath();

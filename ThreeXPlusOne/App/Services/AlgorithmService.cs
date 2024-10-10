@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
@@ -13,11 +14,13 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
     /// <summary>
     /// Execute the 3x+1 algorithm for all numbers either supplied by the user or generated randomly.
     /// </summary>
-    /// <param name="inputValues">The list of numbers on which to run the algorithm</param>
+    /// <param name="stopwatch">The stopwatch tracking program execution time</param>
     /// <returns></returns>
-    public List<CollatzResult> Run(List<int> inputValues)
+    public List<CollatzResult> Run(Stopwatch stopwatch)
     {
         consoleService.WriteHeading("Algorithm execution");
+
+        List<int> inputValues = GetInputValues(stopwatch);
 
         if (inputValues.Count == 0)
         {
@@ -112,5 +115,75 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
         }
 
         return seriesList;
+    }
+
+    /// <summary>
+    /// Get or generate the list of numbers to use to run through the algorithm.
+    /// Either:
+    ///     The list specified by the user in app settings (this takes priority); or
+    ///     Random numbers - the total number specified in app settings.
+    /// </summary>
+    /// <param name="stopwatch"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    private List<int> GetInputValues(Stopwatch stopwatch)
+    {
+        consoleService.WriteHeading("Series data");
+
+        List<int> inputValues = [];
+
+        if (_appSettings.AlgorithmSettings.ListOfNumbersToUse.Count > 0)
+        {
+            inputValues = _appSettings.AlgorithmSettings.ListOfNumbersToUse;
+            inputValues.RemoveAll(_appSettings.AlgorithmSettings.ListOfNumbersToExclude.Contains);
+
+            if (inputValues.Count == 0)
+            {
+                throw new ApplicationException($"{nameof(_appSettings.AlgorithmSettings.NumbersToUse)} had values, but {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)} removed them all. Please provide more numbers in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)}");
+            }
+
+            _appSettings.AlgorithmSettings.FromRandomNumbers = false;
+
+            consoleService.WriteLine($"Using series numbers defined in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)} apart from any excluded in {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}\n");
+
+            return inputValues;
+        }
+
+        consoleService.Write($"Generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers from 1 to {_appSettings.AlgorithmSettings.RandomNumberMax}... ");
+
+        while (inputValues.Count < _appSettings.AlgorithmSettings.RandomNumberTotal)
+        {
+            if (stopwatch.Elapsed.TotalSeconds >= 10)
+            {
+                if (inputValues.Count == 0)
+                {
+                    throw new ApplicationException($"No numbers generated on which to run the algorithm. Check {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}");
+                }
+
+                consoleService.WriteLine($"\nGave up generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers. Generated {inputValues.Count}\n");
+
+                break;
+            }
+
+            int randomValue = Random.Shared.Next(_appSettings.AlgorithmSettings.RandomNumberMax) + 1;
+
+            if (_appSettings.AlgorithmSettings.ListOfNumbersToExclude.Contains(randomValue))
+            {
+                continue;
+            }
+
+            if (!inputValues.Contains(randomValue))
+            {
+                inputValues.Add(randomValue);
+            }
+        }
+
+        //populate the property as the number list is used to generate a hash value for the directory name
+        _appSettings.AlgorithmSettings.NumbersToUse = string.Join(", ", inputValues);
+        _appSettings.AlgorithmSettings.FromRandomNumbers = true;
+
+        consoleService.WriteDone();
+
+        return inputValues;
     }
 }

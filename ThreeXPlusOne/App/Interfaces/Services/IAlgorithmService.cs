@@ -1,4 +1,5 @@
-﻿using ThreeXPlusOne.App.Models;
+﻿using System.Diagnostics;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.Interfaces.Services;
 
@@ -13,5 +14,5 @@ public interface IAlgorithmService : IScopedService
     /// </summary>
     /// <param name="inputValues"></param>
     /// <returns></returns>
-    List<CollatzResult> Run(List<int> inputValues);
+    List<CollatzResult> Run(Stopwatch stopwatch);
 }

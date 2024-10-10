@@ -3,8 +3,8 @@
 public interface IMetadataService : IScopedService
 {
     /// <summary>
-    /// Generate a file with various metadata about the specific run of process with the generated or supplied numbers.
+    /// Generate the metadata and histogram based on the lists of series numbers.
     /// </summary>
     /// <param name="seriesData"></param>
-    Task GenerateMedatadataFile(List<List<int>> seriesData);
+    Task GenerateMetadata(List<List<int>> seriesData);
 }

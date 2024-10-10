@@ -4,15 +4,28 @@ using ThreeXPlusOne.App.Interfaces.Services;
 namespace ThreeXPlusOne.App.Services;
 
 public class MetadataService(IFileService fileService,
+                             IHistogramService histogramService,
                              IConsoleService consoleService) : IMetadataService
 {
+    /// <summary>
+    /// Generate the metadata and histogram based on the lists of series numbers.
+    /// </summary>
+    /// <param name="seriesData"></param>
+    /// <returns></returns>
+    public async Task GenerateMetadata(List<List<int>> seriesData)
+    {
+        consoleService.WriteHeading("Metadata");
+
+        await GenerateSeriesMetadataFile(seriesData);
+        await histogramService.GenerateHistogram(seriesData);
+    }
+
     /// <summary>
     /// Generate the metadata based on the lists of series numbers.
     /// </summary>
     /// <param name="seriesData"></param>
-    public async Task GenerateMedatadataFile(List<List<int>> seriesData)
+    private async Task GenerateSeriesMetadataFile(List<List<int>> seriesData)
     {
-        consoleService.WriteHeading("Metadata");
         consoleService.Write("Generating metadata... ");
 
         string filePath = fileService.GenerateMetadataFilePath();
