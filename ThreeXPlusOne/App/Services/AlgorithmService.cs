@@ -145,8 +145,6 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        consoleService.WriteHeading("Series data");
-
         List<int> inputValues = [];
 
         if (_appSettings.AlgorithmSettings.ListOfNumbersToUse.Count > 0)

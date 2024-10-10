@@ -475,7 +475,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// </summary>
     public void WriteSeparator()
     {
-        Write("\n------------------------------------------------------------------------------------\n");
+        Write("\n------------------------------------------------------------------------------------\n", true);
     }
 
     /// <summary>

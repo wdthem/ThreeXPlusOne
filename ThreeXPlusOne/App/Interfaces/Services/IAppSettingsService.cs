@@ -1,6 +1,6 @@
 namespace ThreeXPlusOne.App.Interfaces.Services;
 
-public interface IAppSettingsService
+public interface IAppSettingsService : IScopedService
 {
     Task SaveGeneratedNumbers();
 }
