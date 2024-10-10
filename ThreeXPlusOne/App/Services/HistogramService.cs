@@ -1,4 +1,5 @@
 ﻿using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.Services;
 
@@ -9,8 +10,8 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
     /// <summary>
     /// Generate the histogram based on the lists of series data.
     /// </summary>
-    /// <param name="seriesData"></param>
-    public async Task GenerateHistogram(List<List<int>> seriesData)
+    /// <param name="collatzResults"></param>
+    public async Task GenerateHistogram(List<CollatzResult> collatzResults)
     {
         consoleService.Write("Generating histogram... ");
 
@@ -23,7 +24,7 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
             return;
         }
 
-        List<int> digitCounts = GenerateHistogramData(seriesData);
+        List<int> digitCounts = GenerateHistogramData(collatzResults);
 
         int width = 500;
         int height = 400;
@@ -41,13 +42,13 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
     /// </summary>
     /// <param name="seriesData"></param>
     /// <returns></returns>
-    private static List<int> GenerateHistogramData(List<List<int>> seriesData)
+    private static List<int> GenerateHistogramData(List<CollatzResult> collatzResults)
     {
         List<int> digitCounts = Enumerable.Repeat(0, 9).ToList();
 
-        foreach (List<int> list in seriesData)
+        foreach (CollatzResult collatzResult in collatzResults)
         {
-            foreach (int number in list)
+            foreach (int number in collatzResult.Values)
             {
                 string numberStr = number.ToString();
 

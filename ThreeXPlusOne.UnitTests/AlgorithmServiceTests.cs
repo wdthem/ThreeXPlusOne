@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -18,10 +17,11 @@ public class AlgorithmServiceTests
     );
 
     private readonly Mock<IConsoleService> _consoleServiceMock;
-
+    private readonly Mock<IMetadataService> _metadataServiceMock;
     public AlgorithmServiceTests()
     {
         _consoleServiceMock = new Mock<IConsoleService>();
+        _metadataServiceMock = new Mock<IMetadataService>();
     }
 
     private void ResetSettings()
@@ -40,7 +40,7 @@ public class AlgorithmServiceTests
     /// For non-root numbers (not 4, 2, 1).
     /// </summary>
     [Fact]
-    public void StandardAlgorithmReturnsSeriesWithExpectedEnd_00()
+    public async Task StandardAlgorithmReturnsSeriesWithExpectedEnd_00()
     {
         // Arrange
         ResetSettings();
@@ -51,10 +51,11 @@ public class AlgorithmServiceTests
         _appSettings.Value.AlgorithmSettings.NumbersToUse = string.Join(", ", startingNumbers);
 
         var algorithmService = new AlgorithmService(_appSettings,
+                                                    _metadataServiceMock.Object,
                                                     _consoleServiceMock.Object);
 
         // Act
-        List<CollatzResult> results = algorithmService.Run(Stopwatch.StartNew());
+        List<CollatzResult> results = await algorithmService.Run();
 
         // Assert
         foreach (CollatzResult result in results)
@@ -70,7 +71,7 @@ public class AlgorithmServiceTests
     /// For root numbers (4, 2, 1).
     /// </summary>
     [Fact]
-    public void StandardAlgorithmReturnsSeriesWithExpectedEnd_01()
+    public async Task StandardAlgorithmReturnsSeriesWithExpectedEnd_01()
     {
         // Arrange
         ResetSettings();
@@ -81,10 +82,11 @@ public class AlgorithmServiceTests
         _appSettings.Value.AlgorithmSettings.NumbersToUse = string.Join(", ", startingNumbers);
 
         var algorithmService = new AlgorithmService(_appSettings,
+                                                    _metadataServiceMock.Object,
                                                     _consoleServiceMock.Object);
 
         // Act
-        List<CollatzResult> results = algorithmService.Run(Stopwatch.StartNew());
+        List<CollatzResult> results = await algorithmService.Run();
 
         // Assert
         foreach (CollatzResult result in results)
@@ -101,7 +103,7 @@ public class AlgorithmServiceTests
     /// For non-root numbers (not 4, 2, 1).
     /// </summary>
     [Fact]
-    public void StandardAlgorithmReturnsExpectedStoppingTimes_00()
+    public async Task StandardAlgorithmReturnsExpectedStoppingTimes_00()
     {
         // Arrange
         ResetSettings();
@@ -113,10 +115,11 @@ public class AlgorithmServiceTests
         _appSettings.Value.AlgorithmSettings.NumbersToUse = string.Join(", ", startingNumbers);
 
         var algorithmService = new AlgorithmService(_appSettings,
+                                                    _metadataServiceMock.Object,
                                                     _consoleServiceMock.Object);
 
         // Act
-        List<CollatzResult> results = algorithmService.Run(Stopwatch.StartNew());
+        List<CollatzResult> results = await algorithmService.Run();
 
         // Assert
         int lcv = 0;
@@ -134,7 +137,7 @@ public class AlgorithmServiceTests
     /// For non-root numbers (not 4, 2, 1).
     /// </summary>
     [Fact]
-    public void ShortcutAlgorithmReturnsSeriesWithExpectedEnd()
+    public async Task ShortcutAlgorithmReturnsSeriesWithExpectedEnd()
     {
         // Arrange
         ResetSettings();
@@ -146,10 +149,11 @@ public class AlgorithmServiceTests
         _appSettings.Value.AlgorithmSettings.NumbersToUse = string.Join(", ", startingNumbers);
 
         var algorithmService = new AlgorithmService(_appSettings,
+                                                    _metadataServiceMock.Object,
                                                     _consoleServiceMock.Object);
 
         // Act
-        List<CollatzResult> results = algorithmService.Run(Stopwatch.StartNew());
+        List<CollatzResult> results = await algorithmService.Run();
 
         // Assert
         foreach (CollatzResult result in results)
@@ -165,7 +169,7 @@ public class AlgorithmServiceTests
     /// For non-root numbers (not 4, 2, 1).
     /// </summary>
     [Fact]
-    public void ShortcutAlgorithmReturnsExpectedStoppingTimes_00()
+    public async Task ShortcutAlgorithmReturnsExpectedStoppingTimes_00()
     {
         // Arrange
         ResetSettings();
@@ -178,10 +182,11 @@ public class AlgorithmServiceTests
         _appSettings.Value.AlgorithmSettings.NumbersToUse = string.Join(", ", startingNumbers);
 
         var algorithmService = new AlgorithmService(_appSettings,
+                                                    _metadataServiceMock.Object,
                                                     _consoleServiceMock.Object);
 
         // Act
-        List<CollatzResult> results = algorithmService.Run(Stopwatch.StartNew());
+        List<CollatzResult> results = await algorithmService.Run();
 
         // Assert
         int lcv = 0;
@@ -193,5 +198,56 @@ public class AlgorithmServiceTests
 
             lcv++;
         }
+    }
+
+    /// <summary>
+    /// Test where passing in only negative numbers means the appsettings.algorithemsettings.FromRandomNumbers is true.
+    /// Negative numbers are not valid inputs for the algorithm, so this should be true.
+    /// </summary>
+    [Fact]
+    public async Task PassingOnlyNegativeNumbersCausesFromRandomNumbersToBeTrue_00()
+    {
+        // Arrange
+        ResetSettings();
+
+        List<int> startingNumbers = [-5, -7, -12, -33, -179];
+
+        _appSettings.Value.AlgorithmSettings.FromRandomNumbers = true;
+        _appSettings.Value.AlgorithmSettings.NumbersToUse = string.Join(", ", startingNumbers);
+
+        var algorithmService = new AlgorithmService(_appSettings,
+                                                    _metadataServiceMock.Object,
+                                                    _consoleServiceMock.Object);
+
+        // Act
+        await algorithmService.Run();
+
+        // Assert
+        _appSettings.Value.AlgorithmSettings.FromRandomNumbers.Should().BeTrue();
+    }
+
+    /// <summary>
+    /// Test where negative numbers are removed from the series list because they are not valid inputs for the algorithm.
+    /// </summary>
+    [Fact]
+    public async Task NegativeNumbersAreRemovedFromSeriesList_00()
+    {
+        // Arrange
+        ResetSettings();
+
+        List<int> startingNumbers = [5, 7, -12];
+
+        _appSettings.Value.AlgorithmSettings.FromRandomNumbers = true;
+        _appSettings.Value.AlgorithmSettings.NumbersToUse = string.Join(", ", startingNumbers);
+
+        var algorithmService = new AlgorithmService(_appSettings,
+                                                    _metadataServiceMock.Object,
+                                                    _consoleServiceMock.Object);
+
+        // Act
+        List<CollatzResult> results = await algorithmService.Run();
+
+        // Assert
+        results.Count.Should().Be(2);
     }
 }

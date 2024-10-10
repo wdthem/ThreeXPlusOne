@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using ThreeXPlusOne.App.Models;
+﻿using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.Interfaces.Services;
 
@@ -12,7 +11,6 @@ public interface IAlgorithmService : IScopedService
     ///         Given a positive integer: if it is even, divide by 2; If it is odd, multiply by 3 and add 1.
     ///         Repeat until the calculated value is 1.
     /// </summary>
-    /// <param name="inputValues"></param>
     /// <returns></returns>
-    List<CollatzResult> Run(Stopwatch stopwatch);
+    Task<List<CollatzResult>> Run();
 }

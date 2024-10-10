@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Microsoft.Extensions.Options;
 using Moq;
 using ThreeXPlusOne.App.Config;
@@ -14,17 +13,15 @@ public class ProcessTests
         new AppSettings { }
     );
 
-    private readonly Mock<IAlgorithmService> _algorithmServiceMock;
     private readonly Mock<IDirectedGraphService> _directedGraphServiceMock;
-    private readonly Mock<IFileService> _fileServiceMock;
     private readonly Mock<IConsoleService> _consoleServiceMock;
+    private readonly Mock<IAppSettingsService> _appSettingsServiceMock;
 
     public ProcessTests()
     {
-        _algorithmServiceMock = new Mock<IAlgorithmService>();
         _directedGraphServiceMock = new Mock<IDirectedGraphService>();
-        _fileServiceMock = new Mock<IFileService>();
         _consoleServiceMock = new Mock<IConsoleService>();
+        _appSettingsServiceMock = new Mock<IAppSettingsService>();
     }
 
     private void ResetSettings()
@@ -47,17 +44,15 @@ public class ProcessTests
 
         _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate Standard2D visualization?")).Returns(true);
 
-        var process = new App.Process(_appSettings,
-                                      _directedGraphServiceMock.Object,
-                                      _fileServiceMock.Object,
+        var process = new App.Process(_directedGraphServiceMock.Object,
+                                      _appSettingsServiceMock.Object,
                                       _consoleServiceMock.Object);
 
         // Act
         await process.Run([]);
 
         // Assert
-        _directedGraphServiceMock.Verify(graph => graph.GenerateDirectedGraph(It.IsAny<Stopwatch>()), Times.Once);
-        _fileServiceMock.Verify(helper => helper.WriteSettingsToFile(It.IsAny<bool>()), Times.Once);
-        _consoleServiceMock.Verify(helper => helper.WriteSettingsSavedMessage(It.IsAny<bool>()), Times.Once);
+        _directedGraphServiceMock.Verify(graph => graph.GenerateDirectedGraph(), Times.Once);
+        _appSettingsServiceMock.Verify(helper => helper.SaveGeneratedNumbers(), Times.Once);
     }
 }

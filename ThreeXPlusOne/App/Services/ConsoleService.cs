@@ -475,7 +475,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// </summary>
     public void WriteSeparator()
     {
-        Write("\n------------------------------------------------------------------------------------\n", true);
+        Write("\n------------------------------------------------------------------------------------\n");
     }
 
     /// <summary>
@@ -635,6 +635,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// </summary>
     public void WriteAsciiArtLogo()
     {
+        Console.Clear();
         SetForegroundColor(ConsoleColor.Blue);
 
         //line 1

@@ -38,7 +38,8 @@ public class DirectedGraphTests
     public void AddSeries_Success00()
     {
         // Arrange
-        List<List<int>> seriesLists = [[64, 32, 16, 8, 4, 2, 1], [5, 16, 8, 4, 2, 1]];
+        List<CollatzResult> collatzResults = [new CollatzResult(){Values = [64, 32, 16, 8, 4, 2, 1]},
+                                              new CollatzResult(){Values = [5, 16, 8, 4, 2, 1]}];
 
         Standard2DDirectedGraph twoDimensionalGraph = new(_appSettings,
                                                           _graphServicesList,
@@ -47,7 +48,7 @@ public class DirectedGraphTests
                                                           _shapeFactory);
 
         // Act + Assert
-        twoDimensionalGraph.Invoking(graph => graph.AddSeries(seriesLists)).Should().NotThrow();
+        twoDimensionalGraph.Invoking(graph => graph.AddSeries(collatzResults)).Should().NotThrow();
     }
 
     [Theory]

@@ -7,20 +7,36 @@ using ThreeXPlusOne.App.Models;
 namespace ThreeXPlusOne.App.Services;
 
 public class AlgorithmService(IOptions<AppSettings> appSettings,
+                              IMetadataService metadataService,
                               IConsoleService consoleService) : IAlgorithmService
 {
     private readonly AppSettings _appSettings = appSettings.Value;
 
     /// <summary>
+    /// Run the algorithm and generate the related metadata and histogram.
+    /// </summary>
+    /// <remarks>
+    /// The metadata is related to the algorithm's output, thus it is generated here.
+    /// </remarks>
+    /// <returns></returns>
+    public async Task<List<CollatzResult>> Run()
+    {
+        List<CollatzResult> collatzResults = RunAlgorithm();
+
+        await metadataService.GenerateMetadata(collatzResults);
+
+        return collatzResults;
+    }
+
+    /// <summary>
     /// Execute the 3x+1 algorithm for all numbers either supplied by the user or generated randomly.
     /// </summary>
-    /// <param name="stopwatch">The stopwatch tracking program execution time</param>
     /// <returns></returns>
-    public List<CollatzResult> Run(Stopwatch stopwatch)
+    private List<CollatzResult> RunAlgorithm()
     {
         consoleService.WriteHeading("Algorithm execution");
 
-        List<int> inputValues = GetInputValues(stopwatch);
+        List<int> inputValues = GetInputValues();
 
         if (inputValues.Count == 0)
         {
@@ -123,11 +139,12 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
     ///     The list specified by the user in app settings (this takes priority); or
     ///     Random numbers - the total number specified in app settings.
     /// </summary>
-    /// <param name="stopwatch"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    private List<int> GetInputValues(Stopwatch stopwatch)
+    private List<int> GetInputValues()
     {
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
         consoleService.WriteHeading("Series data");
 
         List<int> inputValues = [];
