@@ -201,8 +201,8 @@ public class AlgorithmServiceTests
     }
 
     /// <summary>
-    /// Test where passing in only negative numbers means the appsettings.algorithemsettings.FromRandomNumbers is true.
-    /// Negative numbers are not valid inputs for the algorithm, so this should be true.
+    /// Test where passing in only negative numbers means the appsettings.AlgorithmSettings.FromRandomNumbers is true because
+    /// it ignores the negative numbers, then has no numbers to use, and so generates random numbers.
     /// </summary>
     [Fact]
     public async Task PassingOnlyNegativeNumbersCausesFromRandomNumbersToBeTrue_00()
