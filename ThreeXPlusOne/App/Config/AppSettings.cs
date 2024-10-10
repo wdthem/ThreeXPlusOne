@@ -204,6 +204,12 @@ public partial class AlgorithmSettings
                          .ToList();
         }
     }
+
+    /// <summary>
+    /// Whether or not the algorithm was run with random numbers.
+    /// </summary>
+    [JsonIgnore]
+    public bool FromRandomNumbers { get; set; } = false;
 }
 
 public class NodeAestheticSettings

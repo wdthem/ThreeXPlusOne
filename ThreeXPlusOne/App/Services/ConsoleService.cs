@@ -635,6 +635,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// </summary>
     public void WriteAsciiArtLogo()
     {
+        Console.Clear();
         SetForegroundColor(ConsoleColor.Blue);
 
         //line 1

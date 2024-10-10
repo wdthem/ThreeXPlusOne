@@ -1,19 +1,33 @@
 ﻿using System.Text;
 using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.Services;
 
 public class MetadataService(IFileService fileService,
+                             IHistogramService histogramService,
                              IConsoleService consoleService) : IMetadataService
 {
     /// <summary>
-    /// Generate the metadata based on the lists of series numbers.
+    /// Generate the metadata and histogram based on the lists of series numbers.
     /// </summary>
-    /// <param name="seriesData"></param>
-    public async Task GenerateMedatadataFile(List<List<int>> seriesData)
+    /// <param name="collatzResults"></param>
+    /// <returns></returns>
+    public async Task GenerateMetadata(List<CollatzResult> collatzResults)
     {
         consoleService.WriteHeading("Metadata");
-        consoleService.Write("Generating metadata... ");
+
+        await GenerateSeriesMetadataFile(collatzResults);
+        await histogramService.GenerateHistogram(collatzResults);
+    }
+
+    /// <summary>
+    /// Generate the metadata based on the lists of series numbers.
+    /// </summary>
+    /// <param name="collatzResults"></param>
+    private async Task GenerateSeriesMetadataFile(List<CollatzResult> collatzResults)
+    {
+        consoleService.Write("Generating number series metadata... ");
 
         string filePath = fileService.GenerateMetadataFilePath();
 
@@ -26,9 +40,9 @@ public class MetadataService(IFileService fileService,
 
         StringBuilder content = new();
 
-        content.Append(GenerateNumberSeriesMetadata(seriesData));
-        content.Append(GenerateTop10LongestSeriesMetadata(seriesData));
-        content.Append(GenerateFullSeriesData(seriesData));
+        content.Append(GenerateNumberSeriesMetadata(collatzResults));
+        content.Append(GenerateTop10LongestSeriesMetadata(collatzResults));
+        content.Append(GenerateFullSeriesData(collatzResults));
 
         await fileService.WriteMetadataToFile(content.ToString(), filePath);
 
@@ -40,13 +54,13 @@ public class MetadataService(IFileService fileService,
     /// </summary>
     /// <param name="series"></param>
     /// <returns></returns>
-    private static List<(int FirstNumber, int Count)> GenerateTop10LongestSeries(List<List<int>> series)
+    private static List<(int FirstNumber, int Count)> GenerateTop10LongestSeries(List<CollatzResult> collatzResults)
     {
-        return series.Where(list => list.Count != 0)
-                     .Select(list => (list.First(), list.Count))
-                     .OrderByDescending(item => item.Count)
-                     .Take(10)
-                     .ToList();
+        return collatzResults.Where(result => result.Values.Count != 0)
+                             .Select(result => (result.Values[0], result.Values.Count))
+                             .OrderByDescending(item => item.Count)
+                             .Take(10)
+                             .ToList();
     }
 
     /// <summary>
@@ -54,15 +68,15 @@ public class MetadataService(IFileService fileService,
     /// </summary>
     /// <param name="seriesData"></param>
     /// <returns></returns>
-    private static string GenerateNumberSeriesMetadata(List<List<int>> seriesData)
+    private static string GenerateNumberSeriesMetadata(List<CollatzResult> collatzResults)
     {
         StringBuilder content = new("\nSeries run for the following numbers: \n");
 
         int lcv = 1;
 
-        foreach (List<int> values in seriesData)
+        foreach (CollatzResult collatzResult in collatzResults)
         {
-            content.Append($"{values[0]}, ");
+            content.Append($"{collatzResult.Values[0]}, ");
 
             lcv++;
         }
@@ -75,11 +89,11 @@ public class MetadataService(IFileService fileService,
     /// </summary>
     /// <param name="seriesData"></param>
     /// <returns></returns>
-    private static string GenerateTop10LongestSeriesMetadata(List<List<int>> seriesData)
+    private static string GenerateTop10LongestSeriesMetadata(List<CollatzResult> collatzResults)
     {
         StringBuilder content = new("\n\nTop 10 longest series:\n");
 
-        foreach ((int FirstNumber, int Count) in GenerateTop10LongestSeries(seriesData))
+        foreach ((int FirstNumber, int Count) in GenerateTop10LongestSeries(collatzResults))
         {
             content.Append($"{FirstNumber}: {Count} in series\n");
         }
@@ -92,13 +106,13 @@ public class MetadataService(IFileService fileService,
     /// </summary>
     /// <param name="seriesData"></param>
     /// <returns></returns>
-    private static string GenerateFullSeriesData(List<List<int>> seriesData)
+    private static string GenerateFullSeriesData(List<CollatzResult> collatzResults)
     {
         StringBuilder content = new("\nFull series data:\n");
 
-        foreach (List<int> series in seriesData)
+        foreach (CollatzResult collatzResult in collatzResults)
         {
-            content.Append(string.Join(", ", series));
+            content.Append(string.Join(", ", collatzResult.Values));
             content.Append("\n\n");
         }
 
