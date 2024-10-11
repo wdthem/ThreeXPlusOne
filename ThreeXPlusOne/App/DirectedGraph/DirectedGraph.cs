@@ -147,7 +147,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         _canvasWidth = (int)(maxX + _appSettings.NodeAestheticSettings.NodeSpacerX + maxNodeRadius);
         _canvasHeight = (int)(maxY + _appSettings.NodeAestheticSettings.NodeSpacerY + maxNodeRadius);
 
-        _consoleService.Write($"Setting canvas dimensions to {_canvasWidth}w x {_canvasHeight}h... ");
+        _consoleService.Write($"Setting canvas dimensions to {_canvasWidth:N0} x {_canvasHeight:N0}... ");
         _consoleService.WriteDone();
     }
 
@@ -183,6 +183,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     {
         graphService.OnStart = (message) =>
         {
+            _consoleService.SetForegroundColor(ConsoleColor.White);
             _consoleService.Write(message);
             _consoleService.ShowSpinningBar();
         };

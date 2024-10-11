@@ -19,11 +19,9 @@ public class Process(ILogger<Process> logger,
 
         consoleService.WriteAsciiArtLogo();
         consoleService.WriteCommandParsingMessages(commandParsingMessages);
-        consoleService.WriteSettings();
 
         await directedGraphService.GenerateDirectedGraph();
-
-        await appSettingsService.SaveGeneratedNumbers();
+        await appSettingsService.UpdateAppSettingsFile();
 
         stopwatch.Stop();
 

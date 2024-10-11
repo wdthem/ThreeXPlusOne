@@ -33,7 +33,8 @@ public class MetadataService(IFileService fileService,
 
         if (fileService.FileExists(filePath))
         {
-            consoleService.WriteLine("already exists\n");
+            consoleService.SetForegroundColor(ConsoleColor.Green);
+            consoleService.WriteLine("already exists");
 
             return;
         }

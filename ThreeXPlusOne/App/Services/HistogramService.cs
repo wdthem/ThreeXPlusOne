@@ -13,13 +13,15 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
     /// <param name="collatzResults"></param>
     public async Task GenerateHistogram(List<CollatzResult> collatzResults)
     {
+        consoleService.SetForegroundColor(ConsoleColor.White);
         consoleService.Write("Generating histogram... ");
 
         string filePath = fileService.GenerateHistogramFilePath();
 
         if (fileService.FileExists(filePath))
         {
-            consoleService.WriteLine("already exists\n");
+            consoleService.SetForegroundColor(ConsoleColor.Green);
+            consoleService.WriteLine("already exists");
 
             return;
         }

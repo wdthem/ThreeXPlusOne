@@ -13,7 +13,7 @@ public class AppSettingsService(IOptions<AppSettings> appSettings,
     /// <summary>
     /// Allow the user to save the generated number list to app settings for future use.
     /// </summary>
-    public async Task SaveGeneratedNumbers()
+    public async Task UpdateAppSettingsFile()
     {
         consoleService.WriteHeading("Save app settings");
 
