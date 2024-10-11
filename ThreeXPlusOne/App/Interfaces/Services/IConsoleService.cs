@@ -80,7 +80,8 @@ public interface IConsoleService : ISingletonService
     /// <summary>
     /// Output a separator line.
     /// </summary>
-    void WriteSeparator();
+    /// <param name="delay"></param>
+    void WriteSeparator(bool delay = false);
 
     /// <summary>
     /// Output a section heading.

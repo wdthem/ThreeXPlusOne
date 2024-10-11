@@ -181,7 +181,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
 
         string path = fileService.GenerateDirectedGraphFilePath(imageType);
 
-        OnStart?.Invoke($"Saving image to {path}... ");
+        OnStart?.Invoke("Saving image... ");
 
         using (SKImage image = SKImage.FromBitmap(_bitmap))
         using (SKData data = imageType switch

@@ -425,11 +425,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     {
         if (savedSettings)
         {
-            WriteLine($"\nSaved generated numbers to '{_appSettings.SettingsFileFullPath}'\n");
+            WriteLine($"Saved generated numbers to '{_appSettings.SettingsFileFullPath}'");
         }
         else
         {
-            WriteLine("\nSettings left unchanged\n");
+            WriteLine("Settings left unchanged");
         }
     }
 
@@ -451,7 +451,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     public void WriteDone()
     {
         SetForegroundColor(ConsoleColor.Green);
-        WriteLine("Done\n");
+        WriteLine("Done");
         SetForegroundColor(ConsoleColor.White);
     }
 
@@ -465,7 +465,6 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         Write($"{message} (y/n): ");
 
         ConsoleKeyInfo keyInfo = Console.ReadKey();
-        WriteLine("");
 
         return keyInfo.Key == ConsoleKey.Y;
     }
@@ -473,9 +472,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// <summary>
     /// Write a visual separator in console output.
     /// </summary>
-    public void WriteSeparator()
+    public void WriteSeparator(bool delay = false)
     {
-        Write("\n------------------------------------------------------------------------------------\n", true);
+        Write("------------------------------------------------------------------------------------\n", delay);
     }
 
     /// <summary>
@@ -484,13 +483,16 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// <param name="headerText"></param>
     public void WriteHeading(string headerText)
     {
-        SetForegroundColor(ConsoleColor.White);
-
+        WriteLine("");
+        SetForegroundColor(ConsoleColor.Blue);
         WriteSeparator();
 
         SetForegroundColor(ConsoleColor.DarkYellow);
+        WriteLine($"{headerText.ToUpper()}");
 
-        WriteLine($"\n{headerText}\n");
+        SetForegroundColor(ConsoleColor.Blue);
+        WriteSeparator();
+        WriteLine("");
 
         SetForegroundColor(ConsoleColor.White);
     }

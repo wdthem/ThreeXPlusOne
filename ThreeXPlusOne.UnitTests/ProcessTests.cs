@@ -57,6 +57,6 @@ public class ProcessTests
 
         // Assert
         _directedGraphServiceMock.Verify(graph => graph.GenerateDirectedGraph(), Times.Once);
-        _appSettingsServiceMock.Verify(helper => helper.SaveGeneratedNumbers(), Times.Once);
+        _appSettingsServiceMock.Verify(helper => helper.UpdateAppSettingsFile(), Times.Once);
     }
 }

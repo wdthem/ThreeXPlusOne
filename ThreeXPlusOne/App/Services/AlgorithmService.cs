@@ -159,7 +159,7 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
 
             _appSettings.AlgorithmSettings.FromRandomNumbers = false;
 
-            consoleService.WriteLine($"Using series numbers defined in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)} apart from any excluded in {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}\n");
+            consoleService.WriteLine($"Using series numbers defined in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)} (ignoring any in {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)})");
 
             return inputValues;
         }
@@ -175,7 +175,7 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
                     throw new ApplicationException($"No numbers generated on which to run the algorithm. Check {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}");
                 }
 
-                consoleService.WriteLine($"\nGave up generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers. Generated {inputValues.Count}\n");
+                consoleService.WriteLine($"Gave up generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers. Generated {inputValues.Count}");
 
                 break;
             }

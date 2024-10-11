@@ -36,23 +36,40 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
 
         graph.AddSeries(collatzResults);
         graph.PositionNodes();
-        graph.SetCanvasDimensions();
         graph.SetNodeAesthetics();
+        graph.SetCanvasDimensions();
 
-        //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
-        bool confirmedGenerateGraph = consoleService.ReadYKeyToProceed($"Generate {graphType} visualization?");
-
-        if (!confirmedGenerateGraph)
+        if (!ConfirmGraphGeneration(graphType))
         {
-            consoleService.WriteLine("\nGraph generation cancelled\n");
-
             return;
         }
-
-        consoleService.WriteLine("");
 
         await graph.Draw();
 
         logger.LogInformation("Directed graph ({GraphType}) generated successfully", graphType);
+    }
+
+    /// <summary>
+    /// Confirm the user wants to generate the graph.
+    /// </summary>
+    /// <param name="graphType">The type of graph to generate.</param>
+    private bool ConfirmGraphGeneration(GraphType graphType)
+    {
+        //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
+        consoleService.SetForegroundColor(ConsoleColor.Yellow);
+        bool confirmedGenerateGraph = consoleService.ReadYKeyToProceed($"\nGenerate {graphType} visualization?");
+
+        if (!confirmedGenerateGraph)
+        {
+            consoleService.WriteLine("\n");
+            consoleService.SetForegroundColor(ConsoleColor.Red);
+            consoleService.WriteLine("Graph generation cancelled");
+
+            return false;
+        }
+
+        consoleService.WriteLine("\n");
+
+        return true;
     }
 }
