@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.5.2</Version>
+    <Version>2.5.3</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Console aesthetic improvements</TagMessage>
+    <TagMessage>Add ShapeFactory unit tests</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
