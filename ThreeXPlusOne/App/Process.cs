@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App;
 
-public class Process(IDirectedGraphService directedGraphService,
+public class Process(ILogger<Process> logger,
+                     IDirectedGraphService directedGraphService,
                      IAppSettingsService appSettingsService,
                      IConsoleService consoleService) : IScopedService
 {
@@ -26,5 +28,7 @@ public class Process(IDirectedGraphService directedGraphService,
         stopwatch.Stop();
 
         consoleService.WriteProcessEnd(stopwatch.Elapsed);
+
+        logger.LogInformation("Process completed in {ElapsedTime}", stopwatch.Elapsed);
     }
 }
