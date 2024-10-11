@@ -51,7 +51,7 @@ public class ShapeFactory(IEnumerable<IShape> shapes) : ISingletonService
     /// <summary>
     /// Create either the ShapeType specified or a randomly-selected ShapeType.
     /// </summary>
-    /// <param name="shapeType"></param>
+    /// <param name="shapeTypes"></param>
     /// <returns></returns>
     public IShape CreateShape(List<ShapeType>? shapeTypes = null)
     {
