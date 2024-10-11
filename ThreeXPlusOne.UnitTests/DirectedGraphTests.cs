@@ -110,4 +110,37 @@ public class DirectedGraphTests
         _graphServiceMock.Verify(service => service.SaveImage(It.IsAny<string>(), It.IsAny<int>()), Times.AtMost(1));
         _graphServiceMock.Verify(service => service.Dispose(), Times.Once);
     }
+
+    /// <summary>
+    /// Ensure that the nodes are translated to positive coordinates.
+    /// </summary>
+    [Fact]
+    public void TranslateNodesToPositiveCoordinates_Success00()
+    {
+        // Arrange
+        MockDirectedGraph mockDirectedGraph = new(_appSettings,
+                                                  _graphServicesList,
+                                                  _lightSourceServiceMock.Object,
+                                                  _consoleServiceMock.Object,
+                                                  _shapeFactory);
+
+        Dictionary<int, DirectedGraphNode> nodes = new()
+        {
+            {1, new DirectedGraphNode(1){Position = (-345, -434)}},
+            {2, new DirectedGraphNode(2){Position = (-5, -15)}},
+            {3, new DirectedGraphNode(2){Position = (100, 24)}}
+        };
+
+        double xNodeSpacer = 125;
+        double yNodeSpacer = 125;
+        double nodeRadius = 50;
+
+        // Act
+        mockDirectedGraph.TranslateNodesToPositiveCoordinates_Base(nodes, xNodeSpacer, yNodeSpacer, nodeRadius);
+
+        // Assert
+        nodes[1].Position.Should().Be((175, 175));
+        nodes[2].Position.Should().Be((515, 594));
+        nodes[3].Position.Should().Be((620, 633));
+    }
 }

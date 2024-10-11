@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.5.3</Version>
+    <Version>2.5.4</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Add ShapeFactory unit tests</TagMessage>
+    <TagMessage>Add unit test for translating nodes to positive coordinates</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
