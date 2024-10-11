@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
@@ -7,7 +8,8 @@ using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.Services;
 
-public class DirectedGraphService(IOptions<AppSettings> appSettings,
+public class DirectedGraphService(ILogger<DirectedGraphService> logger,
+                                  IOptions<AppSettings> appSettings,
                                   IEnumerable<IDirectedGraph> directedGraphs,
                                   IAlgorithmService algorithmService,
                                   IConsoleService consoleService) : IDirectedGraphService
@@ -50,5 +52,7 @@ public class DirectedGraphService(IOptions<AppSettings> appSettings,
         consoleService.WriteLine("");
 
         await graph.Draw();
+
+        logger.LogInformation("Directed graph ({GraphType}) generated successfully", graphType);
     }
 }

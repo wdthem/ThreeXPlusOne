@@ -19,10 +19,10 @@ Log.Information("Starting up ThreeXPlusOne app");
 
 try
 {
-
     CommandExecutionSettings commandExecutionSettings = CommandLineParser.ParseCommand(args);
 
     using IHost host = Host.CreateDefaultBuilder(args)
+                           .UseSerilog()
                            .ConfigureApplication(commandExecutionSettings)
                            .Build();
 

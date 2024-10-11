@@ -1,5 +1,7 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using ThreeXPlusOne.App;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces.Services;
 using Xunit;
@@ -16,12 +18,13 @@ public class ProcessTests
     private readonly Mock<IDirectedGraphService> _directedGraphServiceMock;
     private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly Mock<IAppSettingsService> _appSettingsServiceMock;
-
+    private readonly Mock<ILogger<Process>> _loggerMock;
     public ProcessTests()
     {
         _directedGraphServiceMock = new Mock<IDirectedGraphService>();
         _consoleServiceMock = new Mock<IConsoleService>();
         _appSettingsServiceMock = new Mock<IAppSettingsService>();
+        _loggerMock = new Mock<ILogger<Process>>();
     }
 
     private void ResetSettings()
@@ -44,7 +47,8 @@ public class ProcessTests
 
         _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate Standard2D visualization?")).Returns(true);
 
-        var process = new App.Process(_directedGraphServiceMock.Object,
+        var process = new App.Process(_loggerMock.Object,
+                                      _directedGraphServiceMock.Object,
                                       _appSettingsServiceMock.Object,
                                       _consoleServiceMock.Object);
 
