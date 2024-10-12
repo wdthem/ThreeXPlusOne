@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 
-public class Seashell() : Shape, IShape, IVertexShape
+public class Seashell() : Shape, IVertexShape
 {
     private readonly int _spiralTurns = 3;
     private readonly double _angleStep = Math.PI / 20;

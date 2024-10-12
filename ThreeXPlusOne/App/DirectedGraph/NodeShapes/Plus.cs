@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 
-public class Plus() : Shape, IShape, IVertexShape
+public class Plus() : Shape, IVertexShape
 {
     public ShapeType ShapeType => ShapeType.Plus;
 
