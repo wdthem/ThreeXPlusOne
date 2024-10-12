@@ -4,7 +4,7 @@ using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using Xunit;
 
-namespace ThreeXPlusOne.UnitTests;
+namespace ThreeXPlusOne.UnitTests.DirectedGraph;
 
 public class ShapeFactoryTests
 {
