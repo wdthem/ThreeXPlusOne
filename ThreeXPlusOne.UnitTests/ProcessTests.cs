@@ -12,6 +12,7 @@ public class ProcessTests
     private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly Mock<IAppSettingsService> _appSettingsServiceMock;
     private readonly Mock<ILogger<Process>> _loggerMock;
+    
     public ProcessTests()
     {
         _directedGraphServiceMock = new Mock<IDirectedGraphService>();
@@ -19,8 +20,6 @@ public class ProcessTests
         _appSettingsServiceMock = new Mock<IAppSettingsService>();
         _loggerMock = new Mock<ILogger<Process>>();
     }
-
-
 
     [Fact]
     public async Task Run_Success00()
