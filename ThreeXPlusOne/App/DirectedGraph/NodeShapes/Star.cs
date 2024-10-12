@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 
 namespace ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 
-public class Star() : Shape, IShape, IVertexShape
+public class Star() : Shape, IVertexShape
 {
     private readonly int _numberOfPoints = 5;
 

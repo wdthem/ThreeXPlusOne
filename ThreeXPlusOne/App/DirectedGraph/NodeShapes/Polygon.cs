@@ -4,7 +4,7 @@ using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 
-public class Polygon() : Shape, IShape, IVertexShape
+public class Polygon() : Shape, IVertexShape
 {
     /// <summary>
     /// Selection weighting for each possible number of polygon sides.

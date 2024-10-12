@@ -23,7 +23,7 @@ public class SemiCircle() : Shape, IShape
     /// The angle in degrees that the semicircle covers. 
     /// </summary>
     /// <remarks>
-    /// Constant value of 180 for a semicircle
+    /// Constant value of 180 for a semicircle.
     /// </remarks>
     public int SweepAngle => _sweepAngle;
 
