@@ -18,6 +18,7 @@ public class AlgorithmServiceTests
 
     private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly Mock<IMetadataService> _metadataServiceMock;
+    
     public AlgorithmServiceTests()
     {
         _consoleServiceMock = new Mock<IConsoleService>();
