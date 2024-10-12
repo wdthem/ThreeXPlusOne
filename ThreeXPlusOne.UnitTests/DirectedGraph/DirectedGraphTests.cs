@@ -11,7 +11,7 @@ using ThreeXPlusOne.UnitTests.Mocks;
 using Xunit;
 using ThreeXPlusOne.App.DirectedGraph.GraphInstances;
 
-namespace ThreeXPlusOne.UnitTests;
+namespace ThreeXPlusOne.UnitTests.DirectedGraph;
 
 public class DirectedGraphTests
 {

@@ -7,7 +7,7 @@ using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.App.Services;
 using Xunit;
 
-namespace ThreeXPlusOne.UnitTests;
+namespace ThreeXPlusOne.UnitTests.Services;
 
 public class AlgorithmServiceTests
 {
