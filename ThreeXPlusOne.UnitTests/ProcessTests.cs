@@ -12,7 +12,7 @@ public class ProcessTests
     private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly Mock<IAppSettingsService> _appSettingsServiceMock;
     private readonly Mock<ILogger<Process>> _loggerMock;
-    
+
     public ProcessTests()
     {
         _directedGraphServiceMock = new Mock<IDirectedGraphService>();
@@ -25,7 +25,7 @@ public class ProcessTests
     public async Task Run_Success00()
     {
         // Arrange
-        _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate Standard2D visualization?")).Returns(true);
+        _consoleServiceMock.Setup(consoleService => consoleService.ReadYKeyToProceed("Generate Standard2D visualisation?")).Returns(true);
 
         var process = new Process(_loggerMock.Object,
                                   _directedGraphServiceMock.Object,

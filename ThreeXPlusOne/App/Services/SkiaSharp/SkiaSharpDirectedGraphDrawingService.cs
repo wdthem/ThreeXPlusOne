@@ -20,7 +20,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
 
     /// <summary>
-    /// Initialize an SKSurface and SKCanvas based on the provided dimensions.
+    /// Initialise an SKBitmap and SKCanvas based on the provided dimensions.
     /// </summary>
     /// <param name="nodes"></param>
     /// <param name="width"></param>
@@ -31,7 +31,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                            int height,
                            Color backgroundColor)
     {
-        OnStart?.Invoke($"Initializing {GraphProvider} graph... ");
+        OnStart?.Invoke($"Initialising {GraphProvider} graph... ");
 
         _nodes = nodes;
         _bitmap = new SKBitmap(width, height);
