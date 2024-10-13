@@ -39,7 +39,7 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
         graph.SetNodeAesthetics();
         graph.SetCanvasDimensions();
 
-        if (!ConfirmGraphGeneration(graphType))
+        if (!GraphGenerationConfirmed(graphType))
         {
             return;
         }
@@ -53,11 +53,11 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
     /// Confirm the user wants to generate the graph.
     /// </summary>
     /// <param name="graphType">The type of graph to generate.</param>
-    private bool ConfirmGraphGeneration(GraphType graphType)
+    private bool GraphGenerationConfirmed(GraphType graphType)
     {
         //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
         consoleService.SetForegroundColor(ConsoleColor.Yellow);
-        bool confirmedGenerateGraph = consoleService.ReadYKeyToProceed($"\nGenerate {graphType} visualization?");
+        bool confirmedGenerateGraph = consoleService.ReadYKeyToProceed($"\nGenerate {graphType} visualisation?");
 
         if (!confirmedGenerateGraph)
         {
