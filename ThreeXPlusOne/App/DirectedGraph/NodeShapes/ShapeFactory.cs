@@ -36,7 +36,7 @@ public class ShapeFactory(IEnumerable<IShape> shapes) : ISingletonService
 
         if (_shapeSelectionWeights == null)
         {
-            _shapeSelectionWeights = ShapeHelper.ConfigureShapeSelectionWeights(shapesList);
+            _shapeSelectionWeights = ShapeSelectionWeightProvider.ConfigureShapeSelectionWeights(shapesList);
             _totalWeight = _shapeSelectionWeights.Sum(pair => pair.Value.Weight);
         }
 

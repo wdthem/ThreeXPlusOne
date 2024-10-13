@@ -4,7 +4,11 @@ using ThreeXPlusOne.App.Models;
 
 namespace ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 
-public static class ShapeHelper
+/// <summary>
+/// This is a static class because it is used by ShapeFactory and by the Polygon class, and the Polygon class must
+/// have a parameterless constructor.
+/// </summary>
+public static class ShapeSelectionWeightProvider
 {
     /// <summary>
     /// Prepare the data required for weighting the selection of shapes.
