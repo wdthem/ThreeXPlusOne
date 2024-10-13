@@ -38,9 +38,10 @@ public class Polygon() : Shape, IVertexShape
     /// Get a randomly-selected (and weighted) number of sides from 3 to 8 (min: triangle, max: octagon).
     /// </summary>
     /// <returns></returns>
-    private int GenerateNumberOfSides()
+    private int GetNumberOfSides()
     {
-        List<KeyValuePair<ShapeType, ShapeSelectionWeight>> shapeWeightsList = ShapeHelper.ConfigureShapeSelectionWeights(_polygonSideWeights);
+        List<KeyValuePair<ShapeType, ShapeSelectionWeight>> shapeWeightsList =
+            ShapeSelectionWeightProvider.ConfigureShapeSelectionWeights(_polygonSideWeights);
 
         int totalWeight = shapeWeightsList.Sum(pair => pair.Value.Weight);
         int randomWeight = Random.Shared.Next(1, totalWeight + 1); //only adding 1 here because the max value of Random.Shared.Next is exclusive 
@@ -183,7 +184,7 @@ public class Polygon() : Shape, IVertexShape
     public void SetShapeConfiguration((double X, double Y) nodePosition,
                                       double nodeRadius)
     {
-        int numberOfSides = GenerateNumberOfSides();
+        int numberOfSides = GetNumberOfSides();
         double rotationAngle = Random.Shared.NextDouble() * 2 * Math.PI;
 
         if (numberOfSides != 4)
