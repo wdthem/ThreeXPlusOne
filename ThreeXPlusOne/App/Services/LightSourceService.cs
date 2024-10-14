@@ -8,7 +8,7 @@ public class LightSourceService() : ILightSourceService
 {
     private (int Width, int Height) _canvasDimensions;
     private LightSourcePosition _lightSourcePosition = LightSourcePosition.None;
-    private Color _lightSourceColor = Color.LightYellow;
+    private Color _lightSourceColor = Color.FromArgb(200, 255, 255, 224); // LightYellow with an alpha of 200
     private Dictionary<LightSourcePosition, (double X, double Y)>? _positionMappings;
 
     /// <summary>
@@ -87,25 +87,34 @@ public class LightSourceService() : ILightSourceService
     /// <returns></returns>
     public double GetLightSourceMaxDistanceOfEffect()
     {
-        return _canvasDimensions.Height;
+        return _lightSourcePosition switch
+        {
+            LightSourcePosition.LeftCenter or LightSourcePosition.RightCenter => _canvasDimensions.Width,
+            LightSourcePosition.TopCenter or LightSourcePosition.BottomCenter => _canvasDimensions.Height,
+            LightSourcePosition.TopLeft or
+            LightSourcePosition.BottomLeft or
+            LightSourcePosition.TopRight or
+            LightSourcePosition.BottomRight => Math.Sqrt(Math.Pow(_canvasDimensions.Width, 2) + Math.Pow(_canvasDimensions.Height, 2)),
+            _ => 0,// Default to 0 for any other position
+        };
     }
 
     /// <summary>
     /// Set the light source colour based on app settings.
     /// </summary>
     /// <param name="hexCode"></param>
-    private static Color SetLightSourceColor(string hexCode)
+    private Color SetLightSourceColor(string hexCode)
     {
         if (string.IsNullOrWhiteSpace(hexCode))
         {
-            return Color.LightYellow;
+            return _lightSourceColor;
         }
 
         Color colorFromHexCode = ColorTranslator.FromHtml(hexCode);
 
         if (colorFromHexCode == Color.Empty)
         {
-            return Color.LightYellow;
+            return _lightSourceColor;
         }
 
         return Color.FromArgb(200,
