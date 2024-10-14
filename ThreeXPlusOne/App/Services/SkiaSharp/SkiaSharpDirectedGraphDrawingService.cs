@@ -102,7 +102,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
         SKShader shader = SKShader.CreateRadialGradient(ConvertCoordinatesToSKPoint(lightSourceCoordinates),
                                                         (float)radius,
                                                         [startColor, endColor],
-                                                        [0, 1.0f], // Gradient stops
+                                                        [0, 0.75f], // Gradient stops
                                                         SKShaderTileMode.Clamp);
 
         using SKPaint paint = new()

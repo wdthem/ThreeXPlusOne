@@ -8,7 +8,11 @@ public class LightSourceService() : ILightSourceService
 {
     private (int Width, int Height) _canvasDimensions;
     private LightSourcePosition _lightSourcePosition = LightSourcePosition.None;
-    private Color _lightSourceColor = Color.FromArgb(200, 255, 255, 224); // LightYellow with an alpha of 200
+    private Color _lightSourceColor = Color.FromArgb(220, 255, 255, 224); // LightYellow with an alpha of 220
+
+    // Adjust this value between 0 and 1 to control the power of the light source
+    // Precision matters. 0.7f will yield different results to 0.70f
+    private readonly double _lightSourceIntensity = 0.80f;
     private Dictionary<LightSourcePosition, (double X, double Y)>? _positionMappings;
 
     /// <summary>
@@ -19,6 +23,17 @@ public class LightSourceService() : ILightSourceService
         get
         {
             return _lightSourcePosition;
+        }
+    }
+
+    /// <summary>
+    /// The intensity of the light source.
+    /// </summary>
+    public double LightSourceIntensity
+    {
+        get
+        {
+            return _lightSourceIntensity;
         }
     }
 
@@ -79,24 +94,6 @@ public class LightSourceService() : ILightSourceService
         {
             throw new KeyNotFoundException($"Coordinates not found for the light source position '{position}'");
         }
-    }
-
-    /// <summary>
-    /// Get the max distance of the effect of the light source.
-    /// </summary>
-    /// <returns></returns>
-    public double GetLightSourceMaxDistanceOfEffect()
-    {
-        return _lightSourcePosition switch
-        {
-            LightSourcePosition.LeftCenter or LightSourcePosition.RightCenter => _canvasDimensions.Width,
-            LightSourcePosition.TopCenter or LightSourcePosition.BottomCenter => _canvasDimensions.Height,
-            LightSourcePosition.TopLeft or
-            LightSourcePosition.BottomLeft or
-            LightSourcePosition.TopRight or
-            LightSourcePosition.BottomRight => Math.Sqrt(Math.Pow(_canvasDimensions.Width, 2) + Math.Pow(_canvasDimensions.Height, 2)),
-            _ => 0,// Default to 0 for any other position
-        };
     }
 
     /// <summary>

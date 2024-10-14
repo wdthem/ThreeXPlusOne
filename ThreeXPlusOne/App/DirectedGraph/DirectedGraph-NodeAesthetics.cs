@@ -121,29 +121,37 @@ public abstract partial class DirectedGraph
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="lightSourceCoordinates"></param>
-        /// <param name="maxAffectDistance"></param>
         /// <param name="lightSourceColor"></param>
+        /// <param name="lightSourceIntensity"></param>
         /// <returns></returns>
         public static void ApplyLightSourceToNodes(Dictionary<int, DirectedGraphNode> nodes,
                                                    (double X, double Y) lightSourceCoordinates,
-                                                   double maxAffectDistance,
-                                                   Color lightSourceColor)
+                                                   Color lightSourceColor,
+                                                   double lightSourceIntensity)
         {
+            Dictionary<int, double> nodeDistanceFromLightSource = [];
+
             foreach (DirectedGraphNode node in nodes.Values)
             {
-                double distance = Distance(node.Position,
-                                           lightSourceCoordinates);
+                double distance = Distance(node.Position, lightSourceCoordinates);
+                nodeDistanceFromLightSource.Add(node.NumberValue, distance);
+            }
 
-                if (distance > maxAffectDistance)
-                {
-                    continue;
-                }
+            double maxNodeDistance = nodeDistanceFromLightSource.Values.Max();
+
+            foreach (DirectedGraphNode node in nodes.Values)
+            {
+                double distance = nodeDistanceFromLightSource[node.NumberValue];
+
+                //reset the random node alpha value based on the light source config
+                byte nodeColorAlpha = CalculateNodeColorAlphaWithLightSource(distance, maxNodeDistance);
+                node.Shape.Color = Color.FromArgb(nodeColorAlpha, node.Shape.Color);
+                node.Shape.BorderColor = Color.FromArgb(nodeColorAlpha, node.Shape.BorderColor);
 
                 node.Shape.HasLightSourceImpact = true;
 
-                double lightIntensity = 0.4f; // Adjust this value between 0 and 1 to control the light's power
-                double normalizedDistance = distance / maxAffectDistance;
-                double smoothFactor = 1 - Math.Pow(normalizedDistance, 2); // Quadratic decay
+                double lightIntensity = lightSourceIntensity;
+                double smoothFactor = 1 - Math.Pow(distance, 2); // Quadratic decay
                 double blendFactor = Math.Clamp(smoothFactor * lightIntensity, 0, 1); // Ensure it's within bounds
 
                 node.Shape.Color = BlendNodeColorWithLightSourceColor(node.Shape.Color, lightSourceColor, blendFactor);
@@ -166,6 +174,35 @@ public abstract partial class DirectedGraph
                                                  sideStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius),
                                                  sideEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius));
             }
+        }
+
+        /// <summary>
+        /// Calculate the alpha value for the node's color based on its distance from the light source, adjusting for the maximum distance a node can be from the light source.
+        /// </summary>
+        /// <param name="distanceFromLightSource"></param>
+        /// <param name="maxNodeDistance"></param>
+        /// <returns></returns>
+        private static byte CalculateNodeColorAlphaWithLightSource(double distanceFromLightSource,
+                                                                   double maxNodeDistance)
+        {
+            double maxAlpha = 255;
+            double minAlpha = 100;
+            double alphaRange = maxAlpha - minAlpha;
+
+            // Determine the multiplier based on the number of digits in the distance
+            int numberOfDigits = (int)Math.Floor(Math.Log10(maxNodeDistance + 1));
+            double multiplier = Math.Pow(10, numberOfDigits); // 10^numberOfDigits
+            double maxDistance = Math.Log10(distanceFromLightSource + 1) * multiplier;
+
+            double normalizedDistance = distanceFromLightSource / maxDistance;
+
+            // Clamp normalized distance to [0, 1]
+            normalizedDistance = Math.Clamp(normalizedDistance, 0, 1);
+
+            // Calculate alpha using a linear decay function
+            double alphaValue = maxAlpha - (normalizedDistance * alphaRange);
+
+            return (byte)Math.Clamp(alphaValue, minAlpha, maxAlpha);
         }
 
         /// <summary>
@@ -203,7 +240,7 @@ public abstract partial class DirectedGraph
                 return _nodeColors[Random.Shared.Next(_nodeColors.Count)];
             }
 
-            byte alpha = (byte)Random.Shared.Next(30, 231); //avoid too transparent, and avoid fully opaque
+            byte alpha = (byte)Random.Shared.Next(100, 231); //muted colours for default of no light source
             byte red = (byte)Random.Shared.Next(1, 256);    //for rgb, skip 0 to avoid black
             byte green = (byte)Random.Shared.Next(1, 256);
             byte blue = (byte)Random.Shared.Next(1, 256);
@@ -307,13 +344,13 @@ public abstract partial class DirectedGraph
         {
             List<Color> colors = [];
 
-            // Lighter colors
+            // Lighter color
+            colors.Add(AdjustColorBrightness(baseColor, 1.015f));
             colors.Add(AdjustColorBrightness(baseColor, 1.02f));
-            colors.Add(AdjustColorBrightness(baseColor, 1.5f));
 
-            // Darker colors
+            // Darker color
             colors.Add(AdjustColorBrightness(baseColor, 0.98f));
-            colors.Add(AdjustColorBrightness(baseColor, 0.95f));
+            colors.Add(AdjustColorBrightness(baseColor, 0.975f));
 
             return colors;
         }

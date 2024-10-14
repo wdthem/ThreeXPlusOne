@@ -116,8 +116,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
             NodeAesthetics.ApplyLightSourceToNodes(_nodes,
                                                    lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
-                                                   lightSourceService.GetLightSourceMaxDistanceOfEffect(),
-                                                   lightSourceService.LightSourceColor);
+                                                   lightSourceService.LightSourceColor,
+                                                   lightSourceService.LightSourceIntensity);
         }
 
         await Task.Run(() => graphService.Draw(drawNumbersOnNodes: _appSettings.NodeAestheticSettings.DrawNumbersOnNodes,
