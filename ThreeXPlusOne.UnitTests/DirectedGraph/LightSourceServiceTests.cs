@@ -59,19 +59,4 @@ public class LightSourceServiceTests
         act.Should().Throw<KeyNotFoundException>()
             .WithMessage("Coordinates not found for the light source position '99'");
     }
-
-    [Fact]
-    public void GetLightSourceMaxDistanceOfEffect_ReturnsCorrectHeight()
-    {
-        // Arrange
-        int canvasWidth = 800;
-        int canvasHeight = 600;
-        _lightSourceService.Initialize(canvasWidth, canvasHeight, "TopCenter", "#FF5733");
-
-        // Act
-        var maxDistance = _lightSourceService.GetLightSourceMaxDistanceOfEffect();
-
-        // Assert
-        maxDistance.Should().Be(canvasHeight); // Should return the height of the canvas
-    }
 }

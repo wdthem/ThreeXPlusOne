@@ -21,6 +21,11 @@ public interface ILightSourceService : IScopedService
     Color LightSourceColor { get; }
 
     /// <summary>
+    /// The intensity of the light source.
+    /// </summary>
+    double LightSourceIntensity { get; }
+
+    /// <summary>
     /// Initialize the light source service with details about the graph being generated.
     /// </summary>
     /// <param name="canvasWidth"></param>
@@ -35,10 +40,4 @@ public interface ILightSourceService : IScopedService
     /// <param name="position"></param>
     /// <returns></returns>
     (double X, double Y) GetLightSourceCoordinates(LightSourcePosition position);
-
-    /// <summary>
-    /// Get the max distance of the effect of the light source.
-    /// </summary>
-    /// <returns></returns>
-    double GetLightSourceMaxDistanceOfEffect();
 }
