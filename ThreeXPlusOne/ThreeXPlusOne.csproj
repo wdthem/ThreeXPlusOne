@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.5.8</Version>
+    <Version>2.5.9</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Minor improvements</TagMessage>
+    <TagMessage>Improvements in applying light source to nodes</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>

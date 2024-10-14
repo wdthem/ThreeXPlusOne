@@ -32,7 +32,7 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
                                              .Where(graph => graph.GraphType == graphType)
                                              .First();
 
-        consoleService.WriteHeading($"Directed graph ({graphType})");
+        consoleService.WriteHeading($"Directed graph");
 
         graph.AddSeries(collatzResults);
         graph.PositionNodes();

@@ -146,8 +146,8 @@ public abstract partial class DirectedGraph
                 double smoothFactor = 1 - Math.Pow(normalizedDistance, 2); // Quadratic decay
                 double blendFactor = Math.Clamp(smoothFactor * lightIntensity, 0, 1); // Ensure it's within bounds
 
-                node.Shape.Color = BlendColor(node.Shape.Color, lightSourceColor, blendFactor);
-                node.Shape.BorderColor = BlendColor(node.Shape.BorderColor, lightSourceColor, blendFactor);
+                node.Shape.Color = BlendNodeColorWithLightSourceColor(node.Shape.Color, lightSourceColor, blendFactor);
+                node.Shape.BorderColor = BlendNodeColorWithLightSourceColor(node.Shape.BorderColor, lightSourceColor, blendFactor);
 
                 // Calculate and set the gradient start and end points of the 3D shape front face and sides
                 (double lightDirectionX, double lightDirectionY) =
@@ -158,8 +158,8 @@ public abstract partial class DirectedGraph
                 (double normalizedLightDirectionX, double normalizedLightDirectionY) =
                     (lightDirectionX / lightDirectionMagnitude, lightDirectionY / lightDirectionMagnitude);
 
-                node.Shape.GradientStartColor = BlendColor(node.Shape.GradientStartColor, lightSourceColor, blendFactor);
-                node.Shape.BorderGradientStartColor = BlendColor(node.Shape.BorderGradientStartColor, lightSourceColor, blendFactor);
+                node.Shape.GradientStartColor = BlendNodeColorWithLightSourceColor(node.Shape.GradientStartColor, lightSourceColor, blendFactor);
+                node.Shape.BorderGradientStartColor = BlendNodeColorWithLightSourceColor(node.Shape.BorderGradientStartColor, lightSourceColor, blendFactor);
 
                 node.Shape.SetNodeGradientPoints(frontFaceStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius * 0.5),
                                                  frontFaceEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius * 0.5),
@@ -237,16 +237,25 @@ public abstract partial class DirectedGraph
         /// Blend the node's colour with the light source, adjusted for distance from the light source.
         /// </summary>
         /// <param name="baseColor"></param>
-        /// <param name="blendColor"></param>
+        /// <param name="lightSourceColor"></param>
         /// <param name="blendFactor"></param>
         /// <returns></returns>
-        private static Color BlendColor(Color baseColor,
-                                        Color blendColor,
-                                        double blendFactor)
+        private static Color BlendNodeColorWithLightSourceColor(Color baseColor,
+                                                                Color lightSourceColor,
+                                                                double blendFactor)
         {
-            byte r = (byte)((baseColor.R * (1 - blendFactor)) + (blendColor.R * blendFactor));
-            byte g = (byte)((baseColor.G * (1 - blendFactor)) + (blendColor.G * blendFactor));
-            byte b = (byte)((baseColor.B * (1 - blendFactor)) + (blendColor.B * blendFactor));
+            // Calculate the effective alpha based on the blend factor
+            byte effectiveAlpha = (byte)(lightSourceColor.A * blendFactor);
+
+            // Blend the RGB values based on the effective alpha
+            byte r = (byte)Math.Clamp((baseColor.R * (1 - blendFactor)) + (lightSourceColor.R * (effectiveAlpha / 255.0)), 0, 255);
+            byte g = (byte)Math.Clamp((baseColor.G * (1 - blendFactor)) + (lightSourceColor.G * (effectiveAlpha / 255.0)), 0, 255);
+            byte b = (byte)Math.Clamp((baseColor.B * (1 - blendFactor)) + (lightSourceColor.B * (effectiveAlpha / 255.0)), 0, 255);
+
+            // Ensure the resulting color is not darker than the base color
+            r = Math.Max(r, baseColor.R);
+            g = Math.Max(g, baseColor.G);
+            b = Math.Max(b, baseColor.B);
 
             return Color.FromArgb(baseColor.A, r, g, b);
         }

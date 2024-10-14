@@ -464,6 +464,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     {
         Write($"{message} (y/n): ");
 
+        SetForegroundColor(ConsoleColor.Gray);
         ConsoleKeyInfo keyInfo = Console.ReadKey();
 
         return keyInfo.Key == ConsoleKey.Y;
