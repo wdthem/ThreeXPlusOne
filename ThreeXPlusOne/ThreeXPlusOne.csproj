@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.6.1</Version>
+    <Version>2.6.2</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>More light source improvements</TagMessage>
+    <TagMessage>Switch back to linear decay function for light source impact</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>

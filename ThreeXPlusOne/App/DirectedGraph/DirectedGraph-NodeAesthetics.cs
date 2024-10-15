@@ -188,7 +188,7 @@ public abstract partial class DirectedGraph
                                                               double maxNodeDistance)
         {
             double maxAlpha = 255;
-            double minAlpha = 100;
+            double minAlpha = 50;
             double alphaRange = maxAlpha - minAlpha;
 
             // Determine the multiplier based on the number of digits in the max node distance from the light source
@@ -199,8 +199,8 @@ public abstract partial class DirectedGraph
             double normalizedDistance = distanceFromLightSource / maxDistance;
             normalizedDistance = Math.Clamp(normalizedDistance, 0, 1);
 
-            // Calculate alpha using a quadratic decay function
-            double alphaValue = maxAlpha - (Math.Pow(normalizedDistance, 2) * alphaRange);
+            // Calculate alpha using a linear decay function
+            double alphaValue = maxAlpha - (normalizedDistance * alphaRange);
 
             return (byte)Math.Clamp(alphaValue, minAlpha, maxAlpha);
         }
