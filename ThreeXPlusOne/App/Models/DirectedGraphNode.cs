@@ -70,7 +70,7 @@ public record DirectedGraphNode(int numberValue)
     public IShape Shape { get; set; } = new Ellipse();
 
     /// <summary>
-    /// If supplied the center of the spiral to which the node belongs. Used on spiral graphs.
+    /// If supplied, the center of the spiral to which the node belongs. Used on spiral graphs.
     /// </summary>
     public (double X, double Y)? SpiralCenter { get; set; } = null;
 }

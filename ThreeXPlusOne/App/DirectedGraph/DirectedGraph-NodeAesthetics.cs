@@ -144,7 +144,7 @@ public abstract partial class DirectedGraph
                 double distance = nodeDistanceFromLightSource[node.NumberValue];
 
                 //reset the random node alpha value based on the light source config
-                byte nodeColorAlpha = CalculateNodeColorAlphaWithLightSource(distance, maxNodeDistance);
+                byte nodeColorAlpha = GetNodeAlphaWithLightSourceImpact(distance, maxNodeDistance);
                 node.Shape.Color = Color.FromArgb(nodeColorAlpha, node.Shape.Color);
                 node.Shape.BorderColor = Color.FromArgb(nodeColorAlpha, node.Shape.BorderColor);
 
@@ -177,30 +177,30 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Calculate the alpha value for the node's color based on its distance from the light source, adjusting for the maximum distance a node can be from the light source.
+        /// Calculate the alpha value for the node's color based on its distance from the light source, 
+        /// adjusting for the maximum distance a node can be from the light source.
+        /// This creates the effect that nodes further from the light source fade into the background.
         /// </summary>
         /// <param name="distanceFromLightSource"></param>
         /// <param name="maxNodeDistance"></param>
         /// <returns></returns>
-        private static byte CalculateNodeColorAlphaWithLightSource(double distanceFromLightSource,
-                                                                   double maxNodeDistance)
+        private static byte GetNodeAlphaWithLightSourceImpact(double distanceFromLightSource,
+                                                              double maxNodeDistance)
         {
             double maxAlpha = 255;
-            double minAlpha = 100;
+            double minAlpha = 50;
             double alphaRange = maxAlpha - minAlpha;
 
-            // Determine the multiplier based on the number of digits in the distance
+            // Determine the multiplier based on the number of digits in the max node distance from the light source
             int numberOfDigits = (int)Math.Floor(Math.Log10(maxNodeDistance + 1));
             double multiplier = Math.Pow(10, numberOfDigits); // 10^numberOfDigits
             double maxDistance = Math.Log10(distanceFromLightSource + 1) * multiplier;
 
             double normalizedDistance = distanceFromLightSource / maxDistance;
-
-            // Clamp normalized distance to [0, 1]
             normalizedDistance = Math.Clamp(normalizedDistance, 0, 1);
 
-            // Calculate alpha using a linear decay function
-            double alphaValue = maxAlpha - (normalizedDistance * alphaRange);
+            // Calculate alpha using a quadratic decay function
+            double alphaValue = maxAlpha - (Math.Pow(normalizedDistance, 2) * alphaRange);
 
             return (byte)Math.Clamp(alphaValue, minAlpha, maxAlpha);
         }
