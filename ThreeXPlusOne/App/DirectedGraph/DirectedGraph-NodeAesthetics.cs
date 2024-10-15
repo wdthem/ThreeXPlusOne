@@ -188,7 +188,7 @@ public abstract partial class DirectedGraph
                                                               double maxNodeDistance)
         {
             double maxAlpha = 255;
-            double minAlpha = 50;
+            double minAlpha = 100;
             double alphaRange = maxAlpha - minAlpha;
 
             // Determine the multiplier based on the number of digits in the max node distance from the light source
