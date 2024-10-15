@@ -114,7 +114,7 @@ public class LightSourceService() : ILightSourceService
             return _lightSourceColor;
         }
 
-        return Color.FromArgb(200,
+        return Color.FromArgb(_lightSourceColor.A,
                               colorFromHexCode.R,
                               colorFromHexCode.G,
                               colorFromHexCode.B);
@@ -153,7 +153,8 @@ public class LightSourceService() : ILightSourceService
             { LightSourcePosition.BottomRight, (_canvasDimensions.Width, _canvasDimensions.Height) },
 
             { LightSourcePosition.LeftCenter, (0, _canvasDimensions.Height / 2) },
-            { LightSourcePosition.RightCenter, (_canvasDimensions.Width, _canvasDimensions.Height / 2) }
+            { LightSourcePosition.RightCenter, (_canvasDimensions.Width, _canvasDimensions.Height / 2) },
+            { LightSourcePosition.Center, (_canvasDimensions.Width / 2, _canvasDimensions.Height / 2) }
         };
     }
 }
