@@ -305,7 +305,7 @@ public abstract partial class DirectedGraph
         private static List<Color> GetColorsFromHexCodes(string hexCodes)
         {
             List<Color> colors = [];
-            List<string> rawCodes = [.. hexCodes.Split(",")];
+            List<string> rawCodes = [.. hexCodes.Split(",", StringSplitOptions.TrimEntries)];
             Regex hexCodeRegex = HexCodeRegEx();
 
             foreach (string rawCode in rawCodes)

@@ -152,8 +152,8 @@ public class LightSourceService() : ILightSourceService
             { LightSourcePosition.BottomCenter, (_canvasDimensions.Width / 2, _canvasDimensions.Height) },
             { LightSourcePosition.BottomRight, (_canvasDimensions.Width, _canvasDimensions.Height) },
 
-            { LightSourcePosition.LeftCenter, (0, _canvasDimensions.Height / 2) },
-            { LightSourcePosition.RightCenter, (_canvasDimensions.Width, _canvasDimensions.Height / 2) },
+            { LightSourcePosition.CenterLeft, (0, _canvasDimensions.Height / 2) },
+            { LightSourcePosition.CenterRight, (_canvasDimensions.Width, _canvasDimensions.Height / 2) },
             { LightSourcePosition.Center, (_canvasDimensions.Width / 2, _canvasDimensions.Height / 2) }
         };
     }

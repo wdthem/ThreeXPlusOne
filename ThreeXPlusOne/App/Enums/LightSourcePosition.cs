@@ -9,7 +9,7 @@ public enum LightSourcePosition
     BottomLeft = 4,
     BottomCenter = 5,
     BottomRight = 6,
-    LeftCenter = 7,
-    RightCenter = 8,
+    CenterLeft = 7,
+    CenterRight = 8,
     Center = 9
 }
