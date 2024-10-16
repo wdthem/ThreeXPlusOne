@@ -33,9 +33,9 @@ public abstract partial class DirectedGraph
             {
                 node.Position = (node.Position.X + translationX, node.Position.Y + translationY);
 
-                if (node.SpiralCenter != null)
+                if (node is SpiralDirectedGraphNode spiralNode)
                 {
-                    node.SpiralCenter = (node.SpiralCenter.Value.X + translationX, node.SpiralCenter.Value.Y + translationY);
+                    spiralNode.SpiralCenter = (spiralNode.SpiralCenter.X + translationX, spiralNode.SpiralCenter.Y + translationY);
                 }
             }
         }

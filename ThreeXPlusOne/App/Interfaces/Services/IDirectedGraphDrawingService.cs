@@ -31,13 +31,6 @@ public interface IDirectedGraphDrawingService : IScopedService, IDisposable
     void Initialize(List<DirectedGraphNode> nodes, int width, int height, Color backgroundColor);
 
     /// <summary>
-    /// Optionally generate white points in the background to mimic stars.
-    /// </summary>
-    /// <param name="starCount"></param>
-    /// <exception cref="Exception"></exception>
-    void GenerateBackgroundStars(int starCount);
-
-    /// <summary>
     /// Add a light source to the graph emanating from the supplied coordinates.
     /// </summary>
     /// <param name="lightSourceCoordinates"></param>

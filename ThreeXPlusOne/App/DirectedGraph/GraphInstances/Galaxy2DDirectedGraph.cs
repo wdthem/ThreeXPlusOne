@@ -43,7 +43,7 @@ public class Galaxy2DDirectedGraph(IOptions<AppSettings> appSettings,
     {
         // Group nodes by their depth (distance from root in Collatz tree)
         Dictionary<int, List<DirectedGraphNode>> nodesByDepth = GroupNodesByDepth(_nodes);
-        int layerSpacing = _appSettings.DirectedGraphAestheticSettings.RadialLayerSpacing;
+        int layerSpacing = _appSettings.DirectedGraphInstanceSettings.RadialLayerSpacing;
 
         // Set up a spiral factor to create the curve for the first children
         float spiralFactor = 5.0f;  // Controls how tight the curve/spiral is
@@ -68,7 +68,10 @@ public class Galaxy2DDirectedGraph(IOptions<AppSettings> appSettings,
 
             for (int i = 0; i < nodeCount; i++)
             {
-                DirectedGraphNode node = nodesAtDepth[i];
+                if (nodesAtDepth[i] is not SpiralDirectedGraphNode node)
+                {
+                    continue;
+                }
 
                 // Handle first children in a spiraling fashion
                 if (node.Parent != null && node.IsFirstChild)

@@ -34,7 +34,7 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
 
         consoleService.WriteHeading($"Directed graph");
 
-        graph.AddSeries(collatzResults);
+        graph.AddSeries(graphType, collatzResults);
         graph.PositionNodes();
         graph.SetNodeAesthetics();
         graph.SetCanvasDimensions();
