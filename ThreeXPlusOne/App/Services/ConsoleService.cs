@@ -118,9 +118,9 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
                 if (settingAttribute != null)
                 {
-                    lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition))))
-                                                                                    .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType))))
-                                                                                    .Replace("{GraphTypePlaceholder}", string.Join(", ", Enum.GetNames(typeof(GraphType))))
+                    lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)).OrderBy(name => name)))
+                                                                                    .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType)).OrderBy(name => name)))
+                                                                                    .Replace("{GraphTypePlaceholder}", string.Join(", ", Enum.GetNames(typeof(GraphType)).OrderBy(name => name)))
                                                                                     .Replace("{ShapesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ShapeType)).OrderBy(name => name)))}"));
 
                     string suggestedValueText = "  Suggested value: ";
