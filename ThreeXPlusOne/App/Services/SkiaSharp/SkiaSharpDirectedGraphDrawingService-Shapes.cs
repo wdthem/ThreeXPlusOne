@@ -8,58 +8,36 @@ namespace ThreeXPlusOne.App.Services.SkiaSharp;
 public partial class SkiaSharpDirectedGraphDrawingService
 {
     /// <summary>
-    /// Draw a shape based on the defined set of vertices.
+    /// Draw an arc shape with the defined settings.
     /// </summary>
     /// <param name="skiaSharpShapeRenderContext"></param>
     /// <exception cref="Exception"></exception>
-    private void DrawShapeFromVertices(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
+    private void DrawArc(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
     {
-        if (skiaSharpShapeRenderContext.Node.Shape is not IVertexShape vertexShape || vertexShape.Vertices == null)
+        if (skiaSharpShapeRenderContext.Node.Shape is not Arc arc)
         {
-            throw new ApplicationException($"{nameof(DrawShapeFromVertices)}: Vertices were null");
+            throw new ApplicationException($"{nameof(DrawArc)}: Expected shape type not received)");
         }
 
-        using SKPath shapePath = new();
+        using SKPath arcPath = new();
 
-        for (int i = 0; i < vertexShape.Vertices.Count; i++)
-        {
-            (double X, double Y) vertex = vertexShape.Vertices[i];
+        // Top edge of the arc
+        arcPath.AddArc(new SKRect((float)arc.TopArcBounds.Left,
+                                  (float)arc.TopArcBounds.Top,
+                                  (float)arc.TopArcBounds.Right,
+                                  (float)arc.TopArcBounds.Bottom),
+                       (float)arc.TopArcStartAngle,
+                       (float)arc.TopArcSweepAngle);
 
-            if (i == 0)
-            {
-                shapePath.MoveTo(ConvertCoordinatesToSKPoint(vertex));
-            }
-            else
-            {
-                shapePath.LineTo(ConvertCoordinatesToSKPoint(vertex));
-            }
-        }
+        // Bottom edge of the arc (drawn in reverse)
+        arcPath.AddArc(new SKRect((float)arc.BottomArcBounds.Left,
+                                  (float)arc.BottomArcBounds.Top,
+                                  (float)arc.BottomArcBounds.Right,
+                                  (float)arc.BottomArcBounds.Bottom),
+                       (float)arc.BottomArcStartAngle,
+                       (float)arc.BottomArcSweepAngle);
 
-        shapePath.Close();
-
-        DrawShape(skiaSharpShapeRenderContext, shapePath);
-    }
-
-    /// <summary>
-    /// Draw an ellipse shape with the defined settings.
-    /// </summary>
-    /// <param name="skiaSharpShapeRenderContext"></param>
-    /// <exception cref="Exception"></exception>
-    private void DrawEllipse(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
-    {
-        if (skiaSharpShapeRenderContext.Node.Shape is not Ellipse ellipse)
-        {
-            throw new ApplicationException($"{nameof(DrawEllipse)}: Expected shape type not received)");
-        }
-
-        using SKPath ellipsePath = new();
-
-        ellipsePath.AddOval(new SKRect((float)ellipse.Bounds.Left,
-                                       (float)ellipse.Bounds.Top,
-                                       (float)ellipse.Bounds.Right,
-                                       (float)ellipse.Bounds.Bottom));
-
-        DrawShape(skiaSharpShapeRenderContext, ellipsePath);
+        DrawShape(skiaSharpShapeRenderContext, arcPath);
     }
 
     /// <summary>
@@ -101,62 +79,25 @@ public partial class SkiaSharpDirectedGraphDrawingService
     }
 
     /// <summary>
-    /// Draw a semicircle shape with the defined settings.
+    /// Draw an ellipse shape with the defined settings.
     /// </summary>
     /// <param name="skiaSharpShapeRenderContext"></param>
     /// <exception cref="Exception"></exception>
-    private void DrawSemiCircle(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
+    private void DrawEllipse(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
     {
-        if (skiaSharpShapeRenderContext.Node.Shape is not SemiCircle semiCircle)
+        if (skiaSharpShapeRenderContext.Node.Shape is not Ellipse ellipse)
         {
-            throw new ApplicationException($"{nameof(DrawSemiCircle)}: Expected shape type not received)");
+            throw new ApplicationException($"{nameof(DrawEllipse)}: Expected shape type not received)");
         }
 
-        using SKPath semiCirclePath = new();
+        using SKPath ellipsePath = new();
 
-        semiCirclePath.AddArc(new SKRect((float)semiCircle.Bounds.Left,
-                                         (float)semiCircle.Bounds.Top,
-                                         (float)semiCircle.Bounds.Right,
-                                         (float)semiCircle.Bounds.Bottom),
-                              (float)semiCircle.Orientation,
-                              (float)semiCircle.SweepAngle);
+        ellipsePath.AddOval(new SKRect((float)ellipse.Bounds.Left,
+                                       (float)ellipse.Bounds.Top,
+                                       (float)ellipse.Bounds.Right,
+                                       (float)ellipse.Bounds.Bottom));
 
-        semiCirclePath.Close();
-
-        DrawShape(skiaSharpShapeRenderContext, semiCirclePath);
-    }
-
-    /// <summary>
-    /// Draw an arc shape with the defined settings.
-    /// </summary>
-    /// <param name="skiaSharpShapeRenderContext"></param>
-    /// <exception cref="Exception"></exception>
-    private void DrawArc(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
-    {
-        if (skiaSharpShapeRenderContext.Node.Shape is not Arc arc)
-        {
-            throw new ApplicationException($"{nameof(DrawArc)}: Expected shape type not received)");
-        }
-
-        using SKPath arcPath = new();
-
-        // Top edge of the arc
-        arcPath.AddArc(new SKRect((float)arc.TopArcBounds.Left,
-                                  (float)arc.TopArcBounds.Top,
-                                  (float)arc.TopArcBounds.Right,
-                                  (float)arc.TopArcBounds.Bottom),
-                       (float)arc.TopArcStartAngle,
-                       (float)arc.TopArcSweepAngle);
-
-        // Bottom edge of the arc (drawn in reverse)
-        arcPath.AddArc(new SKRect((float)arc.BottomArcBounds.Left,
-                                  (float)arc.BottomArcBounds.Top,
-                                  (float)arc.BottomArcBounds.Right,
-                                  (float)arc.BottomArcBounds.Bottom),
-                       (float)arc.BottomArcStartAngle,
-                       (float)arc.BottomArcSweepAngle);
-
-        DrawShape(skiaSharpShapeRenderContext, arcPath);
+        DrawShape(skiaSharpShapeRenderContext, ellipsePath);
     }
 
     /// <summary>
@@ -190,6 +131,65 @@ public partial class SkiaSharpDirectedGraphDrawingService
         pillPath.Transform(rotationMatrix);
 
         DrawShape(skiaSharpShapeRenderContext, pillPath);
+    }
+
+    /// <summary>
+    /// Draw a semicircle shape with the defined settings.
+    /// </summary>
+    /// <param name="skiaSharpShapeRenderContext"></param>
+    /// <exception cref="Exception"></exception>
+    private void DrawSemiCircle(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
+    {
+        if (skiaSharpShapeRenderContext.Node.Shape is not SemiCircle semiCircle)
+        {
+            throw new ApplicationException($"{nameof(DrawSemiCircle)}: Expected shape type not received)");
+        }
+
+        using SKPath semiCirclePath = new();
+
+        semiCirclePath.AddArc(new SKRect((float)semiCircle.Bounds.Left,
+                                         (float)semiCircle.Bounds.Top,
+                                         (float)semiCircle.Bounds.Right,
+                                         (float)semiCircle.Bounds.Bottom),
+                              (float)semiCircle.Orientation,
+                              (float)semiCircle.SweepAngle);
+
+        semiCirclePath.Close();
+
+        DrawShape(skiaSharpShapeRenderContext, semiCirclePath);
+    }
+
+    /// <summary>
+    /// Draw a shape based on the defined set of vertices.
+    /// </summary>
+    /// <param name="skiaSharpShapeRenderContext"></param>
+    /// <exception cref="Exception"></exception>
+    private void DrawShapeFromVertices(SkiaSharpShapeRenderContext skiaSharpShapeRenderContext)
+    {
+        if (skiaSharpShapeRenderContext.Node.Shape is not IVertexShape vertexShape || vertexShape.Vertices == null)
+        {
+            throw new ApplicationException($"{nameof(DrawShapeFromVertices)}: Vertices were null");
+        }
+
+        using SKPath shapePath = new();
+
+        for (int i = 0; i < vertexShape.Vertices.Count; i++)
+        {
+            (double X, double Y) vertex = vertexShape.Vertices[i];
+
+            if (i == 0)
+            {
+                shapePath.MoveTo(ConvertCoordinatesToSKPoint(vertex));
+            }
+            else
+            {
+                shapePath.LineTo(ConvertCoordinatesToSKPoint(vertex));
+            }
+        }
+
+        shapePath.Close();
+
+        DrawShape(skiaSharpShapeRenderContext, shapePath);
     }
 
     /// <summary>

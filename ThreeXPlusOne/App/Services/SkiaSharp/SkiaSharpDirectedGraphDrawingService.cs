@@ -11,16 +11,14 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     private List<DirectedGraphNode>? _nodes;
     private SKBitmap? _bitmap;
     private SKCanvas? _canvas;
-
     private (double X, double Y)? _lightSourceCoordinates;
 
     public Action<string>? OnStart { get; set; }
     public Action? OnComplete { get; set; }
-
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
 
     /// <summary>
-    /// Initialise an SKBitmap and SKCanvas based on the provided dimensions.
+    /// Initialise SKBitmap and SKCanvas objects based on the provided dimensions.
     /// </summary>
     /// <param name="nodes"></param>
     /// <param name="width"></param>
@@ -43,7 +41,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Add a light source from the top left.
+    /// Add a light source.
     /// </summary>
     /// <param name="lightSourceCoordinates"></param>
     /// <param name="radius"></param>
@@ -53,12 +51,12 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                                     double radius,
                                     Color color)
     {
+        OnStart?.Invoke("Generating light source... ");
+
         if (_canvas == null)
         {
             throw new ApplicationException("Could not add light source. Canvas object was null.");
         }
-
-        OnStart?.Invoke("Generating light source... ");
 
         _lightSourceCoordinates = lightSourceCoordinates;
 
@@ -84,7 +82,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Draw the graph based on the provided app settings.
+    /// Draw the graph.
     /// </summary>
     /// <param name="drawNumbersOnNodes"></param>
     /// <param name="drawNodeConnections"></param>
@@ -134,6 +132,8 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     public void SaveImage(string imageTypeAppSetting,
                           int imageQualityAppSetting)
     {
+        OnStart?.Invoke("Saving image... ");
+
         if (_bitmap == null)
         {
             throw new ApplicationException("Could not save graph. Bitmap object was null");
@@ -147,8 +147,6 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
         }
 
         string path = fileService.GenerateDirectedGraphFilePath(imageType);
-
-        OnStart?.Invoke("Saving image... ");
 
         using (SKImage image = SKImage.FromBitmap(_bitmap))
         using (SKData data = imageType switch
@@ -221,6 +219,10 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                 DrawArc(skiaSharpShapeRenderContext);
                 break;
 
+            case ShapeType.Donut:
+                DrawDonut(skiaSharpShapeRenderContext);
+                break;
+
             case ShapeType.Ellipse:
                 DrawEllipse(skiaSharpShapeRenderContext);
                 break;
@@ -229,19 +231,15 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                 DrawPill(skiaSharpShapeRenderContext);
                 break;
 
+            case ShapeType.SemiCircle:
+                DrawSemiCircle(skiaSharpShapeRenderContext);
+                break;
+
             case ShapeType.Plus:
             case ShapeType.Polygon:
             case ShapeType.Seashell:
             case ShapeType.Star:
                 DrawShapeFromVertices(skiaSharpShapeRenderContext);
-                break;
-
-            case ShapeType.SemiCircle:
-                DrawSemiCircle(skiaSharpShapeRenderContext);
-                break;
-
-            case ShapeType.Donut:
-                DrawDonut(skiaSharpShapeRenderContext);
                 break;
 
             default:
@@ -330,14 +328,14 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                 if (node is SpiralDirectedGraphNode spiralNode)
                 {
                     // Calculate consistent outward curvature relative to spiral center
-                    SKPoint spiralCenterPoint = new((float)spiralNode.SpiralCenter.X, (float)spiralNode.SpiralCenter.Y);
-                    SKPoint midPoint = new((startPoint.X + endPoint.X) / 2, (startPoint.Y + endPoint.Y) / 2);
+                    SKPoint spiralCenterPoint = ConvertCoordinatesToSKPoint(spiralNode.SpiralCenter);
+                    SKPoint midPoint = ConvertCoordinatesToSKPoint(((startPoint.X + endPoint.X) / 2, (startPoint.Y + endPoint.Y) / 2));
 
-                    SKPoint directionVector = new(midPoint.X - spiralCenterPoint.X, midPoint.Y - spiralCenterPoint.Y);
+                    SKPoint directionVector = ConvertCoordinatesToSKPoint((midPoint.X - spiralCenterPoint.X, midPoint.Y - spiralCenterPoint.Y));
 
                     // Normalize the direction vector
                     float magnitude = (float)Math.Sqrt(directionVector.X * directionVector.X + directionVector.Y * directionVector.Y);
-                    SKPoint normalizedDirection = new(directionVector.X / magnitude, directionVector.Y / magnitude);
+                    SKPoint normalizedDirection = ConvertCoordinatesToSKPoint((directionVector.X / magnitude, directionVector.Y / magnitude));
 
                     // Apply exponential scaling to the control point offset based on distance from spiral center
                     float maxControlPointOffset = 150; // Increase max offset to allow more curvature for outer nodes
@@ -354,23 +352,24 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                 else
                 {
                     // Default curve behavior for non-spiral graphs
-                    SKPoint midPoint = new((startPoint.X + endPoint.X) / 2, (startPoint.Y + endPoint.Y) / 2);
+                    SKPoint midPoint = ConvertCoordinatesToSKPoint(((startPoint.X + endPoint.X) / 2, (startPoint.Y + endPoint.Y) / 2));
 
                     if (distance < minDistanceForCurve)
                     {
                         float reducedOffset = distance / 4;
-                        controlPoint = new SKPoint(midPoint.X, midPoint.Y - reducedOffset);
+                        controlPoint = ConvertCoordinatesToSKPoint((midPoint.X, midPoint.Y - reducedOffset));
                     }
                     else
                     {
                         // Apply exponential scaling for distant nodes (without spiral center)
                         float maxControlPointOffset = 50; // Allow more curvature for outer nodes
                         float controlPointOffset = Math.Min((float)Math.Pow(distance / 10, 1.2), maxControlPointOffset);
-                        controlPoint = new SKPoint(midPoint.X, midPoint.Y - controlPointOffset);
+                        controlPoint = ConvertCoordinatesToSKPoint((midPoint.X, midPoint.Y - controlPointOffset));
                     }
                 }
 
                 using SKPath nodeConnectorPath = new();
+
                 nodeConnectorPath.MoveTo(startPoint);
                 nodeConnectorPath.QuadTo(controlPoint, endPoint);
 
