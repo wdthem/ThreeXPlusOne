@@ -328,6 +328,6 @@ public class DirectedGraphInstanceSettings
     /// <summary>
     /// For Spiral and Galaxy graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.
     /// </summary>
-    [AppSetting(description: "For Spiral and Galaxy graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.", suggestedValue: "20")]
-    public double SpiralAngle { get; set; } = 20;
+    [AppSetting(description: "For Spiral and Galaxy graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.", suggestedValue: "70")]
+    public double SpiralAngle { get; set; } = 70;
 }

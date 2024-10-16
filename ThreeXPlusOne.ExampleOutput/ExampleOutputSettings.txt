@@ -30,8 +30,8 @@ Use the following app settings to achieve the results shown in the Example Outpu
   },
   "DirectedGraphInstanceSettings": {
         "Pseudo3DViewerDistance": 200,
-        "SpiralAngle": 20,
-        "RadialLayerSpacing": 40
+        "RadialLayerSpacing": 25,
+        "SpiralAngle": 70
     },
   "OutputFileType": "Png",
   "OutputFileQuality": 100,
@@ -67,8 +67,8 @@ Use the following app settings to achieve the results shown in the Example Outpu
   },
   "DirectedGraphInstanceSettings": {
         "Pseudo3DViewerDistance": 200,
-        "SpiralAngle": 20,
-        "RadialLayerSpacing": 40
+        "RadialLayerSpacing": 25,
+        "SpiralAngle": 70
     },
   "OutputFileType": "Png",
   "OutputFileQuality": 100,
@@ -104,8 +104,8 @@ Use the following app settings to achieve the results shown in the Example Outpu
   },
   "DirectedGraphInstanceSettings": {
         "Pseudo3DViewerDistance": 200,
-        "SpiralAngle": 20,
-        "RadialLayerSpacing": 40
+        "RadialLayerSpacing": 25,
+        "SpiralAngle": 70
     },
   "OutputFileType": "Png",
   "OutputFileQuality": 100,
