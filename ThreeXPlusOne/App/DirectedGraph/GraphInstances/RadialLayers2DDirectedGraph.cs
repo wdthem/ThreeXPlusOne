@@ -43,7 +43,7 @@ public class RadialLayers2DDirectedGraph(IOptions<AppSettings> appSettings,
     {
         // Group nodes by their depth (distance from root in Collatz tree)
         Dictionary<int, List<DirectedGraphNode>> nodesByDepth = GroupNodesByDepth(_nodes);
-        int layerSpacing = _appSettings.DirectedGraphAestheticSettings.RadialLayerSpacing;
+        int layerSpacing = _appSettings.DirectedGraphInstanceSettings.RadialLayerSpacing;
 
         // Iterate over each depth level (layer)
         foreach (int depth in nodesByDepth.Keys)

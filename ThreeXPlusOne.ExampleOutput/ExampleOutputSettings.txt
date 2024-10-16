@@ -24,14 +24,15 @@ Use the following app settings to achieve the results shown in the Example Outpu
   },
   "DirectedGraphAestheticSettings": {
     "CanvasColor": "",
-    "GenerateBackgroundStars": false,
     "GraphType": "Standard2D",
     "LightSourceColor": "",
-    "LightSourcePosition": "None",
-    "Pseudo3DViewerDistance": 200,
-    "SpiralAngle": 20,
-    "RadialLayerSpacing": 40
+    "LightSourcePosition": "None"
   },
+  "DirectedGraphInstanceSettings": {
+        "Pseudo3DViewerDistance": 200,
+        "SpiralAngle": 20,
+        "RadialLayerSpacing": 40
+    },
   "OutputFileType": "Png",
   "OutputFileQuality": 100,
   "OutputPath": ""
@@ -60,14 +61,15 @@ Use the following app settings to achieve the results shown in the Example Outpu
   },
   "DirectedGraphAestheticSettings": {
     "CanvasColor": "",
-    "GenerateBackgroundStars": false,
     "GraphType": "Standard2D",
     "LightSourceColor": "",
-    "LightSourcePosition": "None",
-    "Pseudo3DViewerDistance": 200,
-    "SpiralAngle": 20,
-    "RadialLayerSpacing": 40
+    "LightSourcePosition": "None"
   },
+  "DirectedGraphInstanceSettings": {
+        "Pseudo3DViewerDistance": 200,
+        "SpiralAngle": 20,
+        "RadialLayerSpacing": 40
+    },
   "OutputFileType": "Png",
   "OutputFileQuality": 100,
   "OutputPath": ""
@@ -96,14 +98,15 @@ Use the following app settings to achieve the results shown in the Example Outpu
   },
   "DirectedGraphAestheticSettings": {
     "CanvasColor": "",
-    "GenerateBackgroundStars": false,
     "GraphType": "StandardPseudo3D",
     "LightSourceColor": "",
-    "LightSourcePosition": "None",
-    "Pseudo3DViewerDistance": 200,
-    "SpiralAngle": 20,
-    "RadialLayerSpacing": 40
+    "LightSourcePosition": "None"
   },
+  "DirectedGraphInstanceSettings": {
+        "Pseudo3DViewerDistance": 200,
+        "SpiralAngle": 20,
+        "RadialLayerSpacing": 40
+    },
   "OutputFileType": "Png",
   "OutputFileQuality": 100,
   "OutputPath": ""

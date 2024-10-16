@@ -150,7 +150,7 @@ public class StandardPseudo3DDirectedGraph(IOptions<AppSettings> appSettings,
 
             if (node.Z != node.Parent?.Z)
             {
-                double scale = Math.Exp(normalizedZCoordinate / _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance) * 1.1;
+                double scale = Math.Exp(normalizedZCoordinate / _appSettings.DirectedGraphInstanceSettings.Pseudo3DViewerDistance) * 1.1;
                 nodeRadius /= scale;
             }
 
@@ -177,7 +177,7 @@ public class StandardPseudo3DDirectedGraph(IOptions<AppSettings> appSettings,
             if (node.Parent != null && node.Parent.Children.Count == 2)
             {
                 node.Position = ApplyNodePerspectiveTransformation(node,
-                                                                   _appSettings.DirectedGraphAestheticSettings.Pseudo3DViewerDistance,
+                                                                   _appSettings.DirectedGraphInstanceSettings.Pseudo3DViewerDistance,
                                                                    nodeRadius * 2,
                                                                    nodeRadius * 2,
                                                                    minZCoordinate,

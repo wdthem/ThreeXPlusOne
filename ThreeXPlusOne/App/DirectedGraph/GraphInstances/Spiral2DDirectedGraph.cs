@@ -43,18 +43,23 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
     /// </summary>
     public void PositionNodes()
     {
+        if (_nodes[1] is not SpiralDirectedGraphNode node)
+        {
+            throw new Exception("The first node must be a SpiralDirectedGraphNode.");
+        }
+
         // Set up the base node's position
         (double X, double Y) baseNodePosition = (0, 0);
 
-        _nodes[1].Position = baseNodePosition;
-        _nodes[1].IsPositioned = true;
-        _nodes[1].Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
+        node.Position = baseNodePosition;
+        node.IsPositioned = true;
+        node.Shape.Radius = _appSettings.NodeAestheticSettings.NodeRadius;
 
         _nodesPositioned = 1;
-        _nodes[1].SpiralCenter = (0, 0);
+        node.SpiralCenter = (0, 0);
 
         // Recursive method to position a node and its children
-        PositionNode(_nodes[1],
+        PositionNode(node,
                      10,
                      0,
                      _nodes[1].Position.X,
@@ -102,7 +107,7 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
     /// <param name="angle"></param>
     /// <param name="centerX"></param>
     /// <param name="centerY"></param>
-    private void PositionNode(DirectedGraphNode node,
+    private void PositionNode(SpiralDirectedGraphNode node,
                               float radius,
                               float angle,
                               double centerX,
@@ -137,18 +142,16 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
         float adjustedRadius = radius + (10 * densityFactor);
 
         // If there's a first child, continue the spiral
-        DirectedGraphNode? firstChild = node.Children.FirstOrDefault(n => n.IsFirstChild);
-        if (firstChild != null)
+        if (node.Children.FirstOrDefault(n => n.IsFirstChild) is SpiralDirectedGraphNode firstChild)
         {
             firstChild.SpiralCenter = node.SpiralCenter;
 
-            float newAngle = (float)(angle + _appSettings.DirectedGraphAestheticSettings.SpiralAngle);  //controls the angle of the spiral
+            float newAngle = (float)(angle + _appSettings.DirectedGraphInstanceSettings.SpiralAngle);  //controls the angle of the spiral
             PositionNode(firstChild, adjustedRadius, newAngle, parentX, parentY);
         }
 
         // If there's a second child, start a new spiral
-        DirectedGraphNode? secondChild = node.Children.FirstOrDefault(n => !n.IsFirstChild);
-        if (secondChild != null)
+        if (node.Children.FirstOrDefault(n => !n.IsFirstChild) is SpiralDirectedGraphNode secondChild)
         {
             double offsetX = parentX + adjustedRadius * 2;  // Dynamic offset based on radius
             double offsetY = parentY + adjustedRadius * 2;

@@ -43,39 +43,6 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     }
 
     /// <summary>
-    /// Optionally generate white points in the background to mimic stars.
-    /// </summary>
-    /// <param name="starCount"></param>
-    /// <exception cref="Exception"></exception>
-    public void GenerateBackgroundStars(int starCount)
-    {
-        if (_canvas == null)
-        {
-            throw new ApplicationException("Could not generate background stars. Canvas object was null");
-        }
-
-        OnStart?.Invoke($"Drawing {starCount} background stars... ");
-
-        List<SKPoint> points = [];
-
-        for (int i = 0; i < starCount; i++)
-        {
-            double x = Random.Shared.NextDouble() * _canvas.LocalClipBounds.Width;
-            double y = Random.Shared.NextDouble() * _canvas.LocalClipBounds.Height;
-
-            points.Add(ConvertCoordinatesToSKPoint((x, y)));
-        }
-
-        foreach (SKPoint point in points)
-        {
-            DrawStarWithBlur(_canvas,
-                             point);
-        }
-
-        OnComplete?.Invoke();
-    }
-
-    /// <summary>
     /// Add a light source from the top left.
     /// </summary>
     /// <param name="lightSourceCoordinates"></param>
@@ -360,10 +327,10 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
             else
             {
                 // Check if a spiral center is available for consistent curvature
-                if (node.SpiralCenter != null)
+                if (node is SpiralDirectedGraphNode spiralNode)
                 {
                     // Calculate consistent outward curvature relative to spiral center
-                    SKPoint spiralCenterPoint = new((float)node.SpiralCenter.Value.X, (float)node.SpiralCenter.Value.Y);
+                    SKPoint spiralCenterPoint = new((float)spiralNode.SpiralCenter.X, (float)spiralNode.SpiralCenter.Y);
                     SKPoint midPoint = new((startPoint.X + endPoint.X) / 2, (startPoint.Y + endPoint.Y) / 2);
 
                     SKPoint directionVector = new(midPoint.X - spiralCenterPoint.X, midPoint.Y - spiralCenterPoint.Y);
@@ -374,9 +341,13 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
 
                     // Apply exponential scaling to the control point offset based on distance from spiral center
                     float maxControlPointOffset = 150; // Increase max offset to allow more curvature for outer nodes
-                    float controlPointOffset = distance < minDistanceForCurve
-                                                ? distance / 3  // Smaller curve for close nodes
-                                                : Math.Min((float)Math.Pow(distance / 10, 1.2), maxControlPointOffset); // Exponential scaling
+                    float controlPointOffset;
+
+                    // Calculate the distance from the spiral center
+                    float distanceFromSpiralCenter = (float)Math.Sqrt(Math.Pow(midPoint.X - spiralCenterPoint.X, 2) + Math.Pow(midPoint.Y - spiralCenterPoint.Y, 2));
+                    float exponent = distanceFromSpiralCenter > 5000 ? 0.5f : 1.2f;
+
+                    controlPointOffset = Math.Min((float)Math.Pow(distance / 10, exponent), maxControlPointOffset);
 
                     controlPoint = new SKPoint(midPoint.X + normalizedDirection.X * controlPointOffset, midPoint.Y + normalizedDirection.Y * controlPointOffset);
                 }
@@ -387,13 +358,13 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
 
                     if (distance < minDistanceForCurve)
                     {
-                        float reducedOffset = distance / 3;
+                        float reducedOffset = distance / 4;
                         controlPoint = new SKPoint(midPoint.X, midPoint.Y - reducedOffset);
                     }
                     else
                     {
                         // Apply exponential scaling for distant nodes (without spiral center)
-                        float maxControlPointOffset = 100; // Allow more curvature for outer nodes
+                        float maxControlPointOffset = 50; // Allow more curvature for outer nodes
                         float controlPointOffset = Math.Min((float)Math.Pow(distance / 10, 1.2), maxControlPointOffset);
                         controlPoint = new SKPoint(midPoint.X, midPoint.Y - controlPointOffset);
                     }
@@ -410,33 +381,6 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
             // Optionally draw a small circle at the child node position for visual connection
             canvas.DrawCircle(endPoint, (float)childNode.Shape.Radius * 0.10f, paint);
         }
-    }
-
-    /// <summary>
-    /// Draw a white point on the canvas with a blur effect.
-    /// </summary>
-    /// <param name="canvas"></param>
-    /// <param name="point"></param>
-    private static void DrawStarWithBlur(SKCanvas canvas,
-                                         SKPoint point)
-    {
-        double starSize = Random.Shared.Next(1, 6);
-        double blurRadius = starSize * 0.9;
-
-        using SKPaint blurPaint = new()
-        {
-            IsAntialias = true,
-            MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, (float)blurRadius)
-        };
-
-        using SKPaint starPaint = new()
-        {
-            IsAntialias = true,
-            Color = SKColors.White
-        };
-
-        canvas.DrawCircle(point, (float)starSize, blurPaint);
-        canvas.DrawCircle(point, (float)starSize, starPaint);
     }
 
     /// <summary>

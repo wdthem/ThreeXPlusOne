@@ -34,6 +34,11 @@ public class AppSettings
     public DirectedGraphAestheticSettings DirectedGraphAestheticSettings { get; set; } = new();
 
     /// <summary>
+    /// All settings related to the specific instance type of the directed graph.
+    /// </summary>
+    public DirectedGraphInstanceSettings DirectedGraphInstanceSettings { get; set; } = new();
+
+    /// <summary>
     /// The file type to save the generated graph as.
     /// </summary>
     [AppSetting(description: "The file type of the generated image. Values are: {ImageTypesPlaceholder}", suggestedValue: "Jpeg")]
@@ -288,12 +293,6 @@ public class DirectedGraphAestheticSettings
     public string CanvasColor { get; set; } = "";
 
     /// <summary>
-    /// Whether or not to draw stars on the graph's background.
-    /// </summary>
-    [AppSetting(description: "Whether or not to generate random points of white light in the background of the graph.", suggestedValue: "false")]
-    public bool GenerateBackgroundStars { get; set; }
-
-    /// <summary>
     /// The type of the graph that will be rendered.
     /// </summary>
     [AppSetting(description: "The type of the graph that will be rendered. Values are: {GraphTypePlaceholder}", suggestedValue: "Standard2D")]
@@ -310,11 +309,14 @@ public class DirectedGraphAestheticSettings
     /// </summary>
     [AppSetting(description: "The position of the light source. Values are: {LightSourcePositionsPlaceholder}", suggestedValue: "None")]
     public string LightSourcePosition { get; set; } = "None";
+}
 
+public class DirectedGraphInstanceSettings
+{
     /// <summary>
-    /// For pseudo-3D graphs, the distance from the viewer (to create perspective).
+    /// For the standard pseudo-3D graph, the distance from the viewer (to create perspective).
     /// </summary>
-    [AppSetting(description: "For the psuedo-3D graph, the distance from the viewer. Used when applying the perspective transformation.", suggestedValue: "200")]
+    [AppSetting(description: "For the Standard Pseudo-3D graph, the distance from the viewer. Used when applying the perspective transformation.", suggestedValue: "200")]
     public double Pseudo3DViewerDistance { get; set; } = 200;
 
     /// <summary>
@@ -324,8 +326,8 @@ public class DirectedGraphAestheticSettings
     public int RadialLayerSpacing { get; set; } = 25;
 
     /// <summary>
-    /// For spiral graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.
+    /// For Spiral and Galaxy graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.
     /// </summary>
-    [AppSetting(description: "For Spiral graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.", suggestedValue: "20")]
+    [AppSetting(description: "For Spiral and Galaxy graphs, the angle of the spiral. Lower numbers are more spiralled, higher numbers are more polygonal / shape-like.", suggestedValue: "20")]
     public double SpiralAngle { get; set; } = 20;
 }
