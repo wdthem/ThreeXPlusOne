@@ -24,7 +24,7 @@ public abstract partial class DirectedGraph
         private bool _parsedNodeShapes = false;
 
         /// <summary>
-        /// Assign an IShape object to the node.
+        /// Assign an IShape object to the node that is either user-defined or random.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="nodeRadius"></param>
@@ -63,14 +63,19 @@ public abstract partial class DirectedGraph
         /// <returns></returns>
         /// <param name="node"></param>
         /// <param name="nodeColors">Exclusive colours for nodes</param>
-        /// <param name="nodeColorsBias">Random colours but with some bias toward these</param>
-        /// <param name="colorCodeSeries">Each number series has its own random colour</param>
+        /// <param name="colorCodeSeries">Each number series has its own colour</param>
         public void SetNodeColor(DirectedGraphNode node,
                                  string nodeColors,
-                                 string nodeColorsBias,
                                  bool colorCodeSeries)
         {
-            float borderColorAdjustment = 1.75f;
+            float borderColorAdjustment = 1.50f;
+
+            if (!string.IsNullOrWhiteSpace(nodeColors) &&
+                !_parsedHexCodes)
+            {
+                _nodeColors = GetColorsFromHexCodes(nodeColors);
+                _parsedHexCodes = true;
+            }
 
             if (colorCodeSeries)
             {
@@ -80,27 +85,8 @@ public abstract partial class DirectedGraph
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(nodeColors))
-            {
-                if (!_parsedHexCodes && !string.IsNullOrWhiteSpace(nodeColorsBias))
-                {
-                    _nodeColors = GetColorsFromHexCodes(nodeColorsBias);
-                    _parsedHexCodes = true;
-                }
-
-                node.Shape.Color = GenerateRandomNodeColor();
-                node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, borderColorAdjustment);
-
-                return;
-            }
-
-            if (!_parsedHexCodes)
-            {
-                _nodeColors = GetColorsFromHexCodes(nodeColors);
-                _parsedHexCodes = true;
-            }
-
-            if (_nodeColors.Count == 0)
+            if (string.IsNullOrWhiteSpace(nodeColors) ||
+                _nodeColors.Count == 0)
             {
                 node.Shape.Color = GenerateRandomNodeColor();
                 node.Shape.BorderColor = AdjustColorBrightness(node.Shape.Color, borderColorAdjustment);
@@ -227,21 +213,13 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Generate a random colour for the node, optionally biased toward selecting user-defined colours.
+        /// Generate a random colour for the node.
         /// </summary>
         /// <returns></returns>
-        private Color GenerateRandomNodeColor()
+        private static Color GenerateRandomNodeColor()
         {
-            double bias = 0.20;
-
-            if (_nodeColors.Count > 0 &&
-                Random.Shared.NextDouble() <= bias)
-            {
-                return _nodeColors[Random.Shared.Next(_nodeColors.Count)];
-            }
-
             byte alpha = (byte)Random.Shared.Next(100, 231); //muted colours for default of no light source
-            byte red = (byte)Random.Shared.Next(1, 256);    //for rgb, skip 0 to avoid black
+            byte red = (byte)Random.Shared.Next(1, 256);     //for rgb, skip 0 to avoid black
             byte green = (byte)Random.Shared.Next(1, 256);
             byte blue = (byte)Random.Shared.Next(1, 256);
 
@@ -249,23 +227,34 @@ public abstract partial class DirectedGraph
         }
 
         /// <summary>
-        /// Get the random colour assigned to the given number series,
-        /// generating the colour if required.
+        /// Get the colour assigned to the given number series,
+        /// generating or selecting from the list of user-defined colours as required.
         /// </summary>
         /// <param name="seriesNumber"></param>
         /// <returns></returns>
         private Color GetNodeSeriesColor(int seriesNumber)
         {
-            if (!_seriesColorMappings.TryGetValue(seriesNumber, out Color seriesColor))
+            if (_seriesColorMappings.TryGetValue(seriesNumber, out Color seriesColor))
+            {
+                return seriesColor;
+            }
+
+            if (_nodeColors.Count == 0)
             {
                 do
                 {
                     seriesColor = GenerateRandomNodeColor();
+
                 } while (_seriesColors.Contains(seriesColor));
 
-                _seriesColorMappings.Add(seriesNumber, seriesColor);
                 _seriesColors.Add(seriesColor);
             }
+            else
+            {
+                seriesColor = _nodeColors[Random.Shared.Next(_nodeColors.Count)];
+            }
+
+            _seriesColorMappings.Add(seriesNumber, seriesColor);
 
             return seriesColor;
         }

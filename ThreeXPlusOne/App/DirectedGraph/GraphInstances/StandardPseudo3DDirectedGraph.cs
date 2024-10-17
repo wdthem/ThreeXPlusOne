@@ -85,7 +85,6 @@ public class StandardPseudo3DDirectedGraph(IOptions<AppSettings> appSettings,
 
             _nodeAesthetics.SetNodeColor(node,
                                          _appSettings.NodeAestheticSettings.NodeColors,
-                                         _appSettings.NodeAestheticSettings.NodeColorsBias,
                                          _appSettings.NodeAestheticSettings.ColorCodeNumberSeries);
 
             _consoleService.Write($"\r{lcv} nodes styled... ");

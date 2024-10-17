@@ -222,7 +222,7 @@ public class NodeAestheticSettings
     /// <summary>
     /// Whether or not to draw the number at the center of the node that the node represents.
     /// </summary>
-    [AppSetting(description: $"Whether or not to use the same randomly-selected colour for numbers generated as part of the same series. Overrides {nameof(NodeColors)} and {nameof(NodeColorsBias)}", suggestedValue: "false")]
+    [AppSetting(description: $"Whether or not to use the same colour for numbers generated as part of the same series. If {nameof(NodeColors)} is supplied, uses only those colours, otherwise uses randomly-selected colours.", suggestedValue: "false")]
     public bool ColorCodeNumberSeries { get; set; } = true;
 
     /// <summary>
@@ -234,21 +234,14 @@ public class NodeAestheticSettings
     /// <summary>
     /// Whether or not to draw the number at the center of the node that the node represents.
     /// </summary>
-    [AppSetting(description: "Whether or not to draw the numbers at the center of the node that the node represents.", suggestedValue: "true")]
+    [AppSetting(description: "Whether or not to draw the number at the center of the node that the node represents.", suggestedValue: "true")]
     public bool DrawNumbersOnNodes { get; set; } = true;
 
     /// <summary>
     /// Hex values to be used for node colours (include the '#' with each code).
     /// </summary>
-    [AppSetting(description: $"Comma-separated list of hex codes to use as colours for the nodes (include the '#' with each code). Leave blank to use randomly-selected colours. Overrides {nameof(NodeColorsBias)}.", suggestedValue: "")]
+    [AppSetting(description: $"Comma-separated list of hex codes to use as colours for the nodes (include the '#' with each code). Leave blank to use randomly-selected colours.", suggestedValue: "")]
     public string NodeColors { get; set; } = "";
-
-    /// <summary>
-    /// Hex values to be used to bias random colour selection toward (include the '#' with each code). 
-    /// This makes it so a certain percentage of nodes are guaranteed to be in and around these colours.
-    /// </summary>
-    [AppSetting(description: $"Comma-separated list of hex codes to bias random colour selection toward (include the '#' with each code). Leave blank for 100% randomly-selected colours. Ignored if {nameof(NodeColors)} is set.", suggestedValue: "")]
-    public string NodeColorsBias { get; set; } = "";
 
     /// <summary>
     /// The radius of the node.
