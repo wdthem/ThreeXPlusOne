@@ -191,7 +191,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     {
         graphService.OnStart = (message) =>
         {
-            _consoleService.SetForegroundColor(ConsoleColor.White);
+            _consoleService.SetForegroundColor(ConsoleColor.Gray);
             _consoleService.Write(message);
             _consoleService.ShowSpinningBar();
         };
