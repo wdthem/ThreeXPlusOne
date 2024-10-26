@@ -118,10 +118,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
                 if (settingAttribute != null)
                 {
-                    lines.Add((ConsoleColor.White, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)).OrderBy(name => name)))
-                                                                                    .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType)).OrderBy(name => name)))
-                                                                                    .Replace("{GraphTypePlaceholder}", string.Join(", ", Enum.GetNames(typeof(GraphType)).OrderBy(name => name)))
-                                                                                    .Replace("{ShapesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ShapeType)).OrderBy(name => name)))}"));
+                    lines.Add((ConsoleColor.Gray, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)).OrderBy(name => name)))
+                                                                                   .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType)).OrderBy(name => name)))
+                                                                                   .Replace("{GraphTypePlaceholder}", string.Join(", ", Enum.GetNames(typeof(GraphType)).OrderBy(name => name)))
+                                                                                   .Replace("{ShapesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ShapeType)).OrderBy(name => name)))}"));
 
                     string suggestedValueText = "  Suggested value: ";
 
@@ -134,7 +134,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                         suggestedValueText += $"{settingAttribute.SuggestedValue}\n";
                     }
 
-                    lines.Add((ConsoleColor.White, suggestedValueText));
+                    lines.Add((ConsoleColor.Gray, suggestedValueText));
                 }
             }
         }
@@ -305,7 +305,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             if (isJson)
             {
                 Write($"    {sectionNameWords}");
-                SetForegroundColor(ConsoleColor.DarkYellow);
+                SetForegroundColor(ConsoleColor.Magenta);
                 WriteLine("{");
             }
             else
@@ -359,7 +359,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                     Write($"        {property.Name}: ");
                 }
 
-                SetForegroundColor(ConsoleColor.White);
+                SetForegroundColor(ConsoleColor.Gray);
 
                 if ((value?.ToString() ?? "").Length > 100)
                 {
@@ -395,7 +395,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
         if (isJson && type != typeof(AppSettings))
         {
-            SetForegroundColor(ConsoleColor.DarkYellow);
+            SetForegroundColor(ConsoleColor.Magenta);
             WriteLine("    },");
         }
     }
@@ -439,7 +439,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// <param name="message"></param>
     public void WriteError(string message)
     {
-        SetForegroundColor(ConsoleColor.Red);
+        SetForegroundColor(ConsoleColor.DarkRed);
         Write("\nERROR: ");
         SetForegroundColor(ConsoleColor.White);
         WriteLine($"{message}\n");
@@ -452,7 +452,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     {
         SetForegroundColor(ConsoleColor.Green);
         WriteLine("Done");
-        SetForegroundColor(ConsoleColor.White);
+        SetForegroundColor(ConsoleColor.Gray);
     }
 
     /// <summary>
@@ -485,17 +485,17 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     public void WriteHeading(string headerText)
     {
         WriteLine("");
-        SetForegroundColor(ConsoleColor.Blue);
+        SetForegroundColor(ConsoleColor.White);
         WriteSeparator();
 
-        SetForegroundColor(ConsoleColor.DarkYellow);
+        SetForegroundColor(ConsoleColor.Cyan);
         WriteLine($"{headerText.ToUpper()}");
 
-        SetForegroundColor(ConsoleColor.Blue);
+        SetForegroundColor(ConsoleColor.White);
         WriteSeparator();
         WriteLine("");
 
-        SetForegroundColor(ConsoleColor.White);
+        SetForegroundColor(ConsoleColor.Gray);
     }
 
     /// <summary>
@@ -531,7 +531,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     {
         string? assemblyName = _assembly.GetName().Name;
 
-        Write($"usage: {assemblyName} ");
+        SetForegroundColor(ConsoleColor.Gray);
+        Write("usage: ");
+        SetForegroundColor(ConsoleColor.Green);
+        Write($"{assemblyName} ");
+        SetForegroundColor(ConsoleColor.Gray);
 
         int lcv = 1;
         foreach ((string shortName, string longName, string description, string hint) in commandLineOptions)
@@ -543,7 +547,15 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
             string hintText = !string.IsNullOrWhiteSpace(hint) ? $" {hint}" : "";
 
-            Write($"[-{shortName} | --{longName}{hintText}] ");
+            Write("[");
+            SetForegroundColor(ConsoleColor.DarkCyan);
+            Write($"-{shortName}");
+            SetForegroundColor(ConsoleColor.Gray);
+            Write($" | ");
+            SetForegroundColor(ConsoleColor.DarkCyan);
+            Write($"--{longName}");
+            SetForegroundColor(ConsoleColor.Gray);
+            Write("] ");
 
             lcv++;
         }
@@ -553,7 +565,14 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         foreach ((string shortName, string longName, string description, string hint) in commandLineOptions)
         {
             string commandText = $"  -{shortName}, --{longName}";
-            Write(commandText);
+
+            SetForegroundColor(ConsoleColor.DarkCyan);
+            Write($"  -{shortName}");
+            SetForegroundColor(ConsoleColor.Gray);
+            Write(", ");
+            SetForegroundColor(ConsoleColor.DarkCyan);
+            Write($"--{longName}");
+            SetForegroundColor(ConsoleColor.Gray);
 
             if (commandText.Length <= 15)
             {
@@ -582,7 +601,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteLine("If no custom app settings are supplied, defaults will be used.\n");
         WriteLine($"To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_appSettings.SettingsFileName}' file.\n\nIt must have the following content:\n");
 
-        SetForegroundColor(ConsoleColor.DarkYellow);
+        SetForegroundColor(ConsoleColor.Magenta);
         WriteLine("{");
 
         WriteSettings(type: null,
@@ -591,15 +610,15 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                       includeHeader: false,
                       isJson: true);
 
-        SetForegroundColor(ConsoleColor.DarkYellow);
+        SetForegroundColor(ConsoleColor.Magenta);
         WriteLine("}\n");
 
         WriteHeading("Definitions and suggested values");
 
         List<(ConsoleColor, string)> lines = GenerateSuggestedValueText();
 
-        lines.Add((ConsoleColor.White, "\nThe above app settings are a good starting point from which to experiment.\n"));
-        lines.Add((ConsoleColor.White, "Alternatively, start with the app settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n"));
+        lines.Add((ConsoleColor.Gray, "\nThe above app settings are a good starting point from which to experiment.\n"));
+        lines.Add((ConsoleColor.Gray, "Alternatively, start with the app settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n"));
 
         ScrollOutput("app settings", lines);
 
@@ -615,7 +634,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         AssemblyInformationalVersionAttribute? versionAttribute =
             _assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
 
-        SetForegroundColor(ConsoleColor.White);
+        SetForegroundColor(ConsoleColor.Gray);
 
         if (versionAttribute != null)
         {

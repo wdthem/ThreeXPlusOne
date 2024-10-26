@@ -13,7 +13,7 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
     /// <param name="collatzResults"></param>
     public async Task GenerateHistogram(List<CollatzResult> collatzResults)
     {
-        consoleService.SetForegroundColor(ConsoleColor.White);
+        consoleService.SetForegroundColor(ConsoleColor.Gray);
         consoleService.Write("Generating histogram... ");
 
         string filePath = fileService.GenerateHistogramFilePath();
