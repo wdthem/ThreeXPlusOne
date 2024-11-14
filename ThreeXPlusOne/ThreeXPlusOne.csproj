@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.6.5</Version>
+    <Version>2.6.6</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Better console colours</TagMessage>
+    <TagMessage>Make spinning bar be async</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -125,11 +125,11 @@ public interface IConsoleService : ISingletonService
     /// <summary>
     /// Output a visual indication that the process is doing work.
     /// </summary>
-    /// <param name="token"></param>
-    void ShowSpinningBar();
+    /// <param name="message"></param>
+    Task StartSpinningBar(string? message = null);
 
     /// <summary>
     /// Stop the spinning bar.
     /// </summary>
-    void StopSpinningBar();
+    Task StopSpinningBar(string? message = null);
 }
