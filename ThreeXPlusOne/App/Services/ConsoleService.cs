@@ -831,7 +831,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// <summary>
     /// Write a spinning bar to the console in a threadsafe way to indicate an ongoing process.
     /// </summary>
-    public void ShowSpinningBar()
+    public async Task StartSpinningBar(string? message = null)
     {
         long previousMilliseconds = 0;
         const long updateInterval = 100;
@@ -841,39 +841,50 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         Stopwatch stopwatch = Stopwatch.StartNew();
 
         SetCursorVisibility(false);
+        SetForegroundColor(ConsoleColor.Gray);
 
-        Task.Run(() =>
+        if (message != null)
         {
-            while (!_cancellationTokenSource.Token.IsCancellationRequested)
+            Write($"{message}");
+        }
+
+        while (!_cancellationTokenSource.Token.IsCancellationRequested)
+        {
+            long currentMilliseconds = stopwatch.ElapsedMilliseconds;
+
+            if (currentMilliseconds - previousMilliseconds >= updateInterval)
             {
-                long currentMilliseconds = stopwatch.ElapsedMilliseconds;
-
-                if (currentMilliseconds - previousMilliseconds >= updateInterval)
-                {
-                    Write(_spinner[_spinnerCounter]);
-
-                    SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-
-                    _spinnerCounter = (_spinnerCounter + 1) % _spinner.Length;
-
-                    previousMilliseconds = currentMilliseconds;
-                }
-
-                Thread.Yield();
+                Write(_spinner[_spinnerCounter]);
+                SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                _spinnerCounter = (_spinnerCounter + 1) % _spinner.Length;
+                previousMilliseconds = currentMilliseconds;
             }
 
-            stopwatch.Stop();
-        });
+            await Task.Delay(1, _cancellationTokenSource.Token);
+        }
+
+        stopwatch.Stop();
     }
 
     /// <summary>
     /// Stop the spinning bar in a threadsafe way.
     /// </summary>
-    public void StopSpinningBar()
+    public async Task StopSpinningBar(string? message = null)
     {
-        _cancellationTokenSource?.Cancel();
+        if (_cancellationTokenSource == null)
+        {
+            return;
+        }
+
+        await _cancellationTokenSource.CancelAsync();
+
+        SetCursorPosition(Console.CursorLeft - (message?.Length ?? 0), Console.CursorTop);
+        Write(new string(' ', message?.Length + 1 ?? 1));
+        SetCursorPosition(Console.CursorLeft - (message?.Length + 1 ?? 1), Console.CursorTop);
 
         SetCursorVisibility(true);
+
+        _cancellationTokenSource = null;
     }
 
     /// <summary>
