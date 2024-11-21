@@ -56,14 +56,11 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
     private bool GraphGenerationConfirmed(GraphType graphType)
     {
         //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
-        consoleService.SetForegroundColor(ConsoleColor.Yellow);
-        bool confirmedGenerateGraph = consoleService.ReadYKeyToProceed($"\nGenerate {graphType} visualisation?");
+        bool confirmedGenerateGraph = consoleService.AskForConfirmation($"\nGenerate {graphType} visualisation?");
 
         if (!confirmedGenerateGraph)
         {
-            consoleService.WriteLine("\n");
-            consoleService.SetForegroundColor(ConsoleColor.Red);
-            consoleService.WriteLine("Graph generation cancelled");
+            consoleService.WriteLineWithColorMarkup("\n<BlushRed>Graph generation cancelled</>");
 
             return false;
         }

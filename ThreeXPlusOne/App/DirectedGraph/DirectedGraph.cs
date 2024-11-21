@@ -31,7 +31,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     public void AddSeries(GraphType graphType,
                           List<CollatzResult> collatzResults)
     {
-        _consoleService.Write($"Adding {collatzResults.Count} series to the graph... ");
+        _consoleService.WriteWithColorMarkup($"Adding {collatzResults.Count} series to the graph... ");
 
         for (int seriesNumber = 1; seriesNumber <= collatzResults.Count; seriesNumber++)
         {
@@ -191,7 +191,6 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     {
         graphService.OnStart = (message) =>
         {
-            _consoleService.SetForegroundColor(ConsoleColor.Gray);
             _consoleService.Write(message);
             _ = _consoleService.StartSpinningBar();
         };

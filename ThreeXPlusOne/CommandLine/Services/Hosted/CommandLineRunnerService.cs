@@ -1,11 +1,16 @@
-using ThreeXPlusOne.App;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Services;
 using ThreeXPlusOne.CommandLine.Models;
 
-namespace ThreeXPlusOne.CommandLine;
+namespace ThreeXPlusOne.CommandLine.Services.Hosted;
 
-public class CommandLineRunner(Process process,
-                               IConsoleService consoleService)
+public class CommandLineRunnerService(ILogger<CommandLineRunnerService> logger,
+                                      CommandExecutionSettingsService commandExecutionSettingsService,
+                                      AppService appService,
+                                      IConsoleService consoleService,
+                                      IHostApplicationLifetime applicationLifetime) : BackgroundService
 {
     /// <summary>
     /// Handle any supplied command line options
@@ -68,24 +73,28 @@ public class CommandLineRunner(Process process,
     }
 
     /// <summary>
-    /// Run the command based on the settings parsed by the CommandLineParser
+    /// Run the app based on the settings parsed by the CommandLineParser
     /// </summary>
     /// <param name="commandExecutionSettings"></param>
-    public async Task RunCommand(CommandExecutionSettings commandExecutionSettings)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         try
         {
-            HandleOptions(commandExecutionSettings);
+            HandleOptions(commandExecutionSettingsService.Settings);
 
-            if (commandExecutionSettings.ContinueExecution)
+            if (commandExecutionSettingsService.Settings.ContinueExecution)
             {
                 //run the app
-                await process.Run(commandExecutionSettings.CommandParsingMessages);
+                await appService.Run(commandExecutionSettingsService.Settings.CommandParsingMessages);
             }
+
+            applicationLifetime.StopApplication();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            consoleService.WriteError(e.Message);
+            consoleService.WriteError(ex.Message);
+            logger.LogError("{error}", ex.Message.Replace("\r", "").Replace("\n", " "));
+            applicationLifetime.StopApplication();
         }
     }
 }

@@ -16,10 +16,16 @@ public interface IConsoleService : ISingletonService
     void WriteLine(string message);
 
     /// <summary>
-    /// Set the out color of the console.
+    /// Write a message to the console with color markup via ANSI escape codes for full color support.
     /// </summary>
-    /// <param name="color"></param>
-    void SetForegroundColor(ConsoleColor color);
+    /// <param name="message"></param>
+    void WriteWithColorMarkup(string message);
+
+    /// <summary>
+    /// Write a message to the console with color markup via ANSI escape codes for full color support.
+    /// </summary>
+    /// <param name="message"></param>
+    void WriteLineWithColorMarkup(string message);
 
     /// <summary>
     /// Set the visibility of the cursor.
@@ -75,7 +81,7 @@ public interface IConsoleService : ISingletonService
     /// </summary>
     /// <param name="message"></param>
     /// <returns></returns>
-    bool ReadYKeyToProceed(string message);
+    bool AskForConfirmation(string message);
 
     /// <summary>
     /// Output a separator line.

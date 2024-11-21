@@ -5,6 +5,7 @@ using ThreeXPlusOne.CommandLine;
 using ThreeXPlusOne.CommandLine.Models;
 using ThreeXPlusOne.Logging;
 using Serilog;
+using ThreeXPlusOne.CommandLine.Services;
 
 Log.Logger = new LoggerConfiguration()
             .Enrich.With(new UserNameEnricher())
@@ -26,11 +27,11 @@ try
                            .ConfigureApplication(commandExecutionSettings)
                            .Build();
 
-    using IServiceScope scope = host.Services.CreateScope();
+    // Initialize settings before running the host
+    var settingsService = host.Services.GetRequiredService<CommandExecutionSettingsService>();
+    settingsService.Initialize(commandExecutionSettings);
 
-    CommandLineRunner commandLineRunner = scope.ServiceProvider.GetRequiredService<CommandLineRunner>();
-
-    await commandLineRunner.RunCommand(commandExecutionSettings);
+    await host.RunAsync();
 }
 catch (Exception ex)
 {
