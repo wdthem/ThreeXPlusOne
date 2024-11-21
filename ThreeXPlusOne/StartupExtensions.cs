@@ -2,11 +2,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
-using ThreeXPlusOne.CommandLine;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
+using ThreeXPlusOne.CommandLine.Services;
+using ThreeXPlusOne.CommandLine.Services.Hosted;
 
 namespace ThreeXPlusOne;
 
@@ -57,8 +58,11 @@ public static class StartupExtensions
     /// <returns></returns>
     private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddHostedService<CommandLineRunnerService>();
+
         //command line
-        services.AddScoped<CommandLineRunner>();
+        services.AddScoped<CommandLineRunnerService>();
+        services.AddSingleton<CommandExecutionSettingsService>();
 
         //app
         services.Configure<AppSettings>(configuration);

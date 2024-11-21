@@ -2,12 +2,12 @@
 using Microsoft.Extensions.Logging;
 using ThreeXPlusOne.App.Interfaces.Services;
 
-namespace ThreeXPlusOne.App;
+namespace ThreeXPlusOne.App.Services;
 
-public class Process(ILogger<Process> logger,
-                     IDirectedGraphService directedGraphService,
-                     IAppSettingsService appSettingsService,
-                     IConsoleService consoleService) : IScopedService
+public class AppService(ILogger<AppService> logger,
+                        IDirectedGraphService directedGraphService,
+                        IAppSettingsService appSettingsService,
+                        IConsoleService consoleService) : IScopedService
 {
     /// <summary>
     /// Generated the directed graph based on the user-provided app settings.

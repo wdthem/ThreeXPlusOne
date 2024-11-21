@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using System.Drawing;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -10,17 +12,46 @@ using ThreeXPlusOne.App.Interfaces.Services;
 
 namespace ThreeXPlusOne.App.Services;
 
-public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsoleService
+public partial class ConsoleService : IConsoleService
 {
     private int _spinnerCounter = 0;
     private static readonly object _consoleLock = new();
-    private readonly AppSettings _appSettings = appSettings.Value;
+    private readonly AppSettings _appSettings;
     private CancellationTokenSource? _cancellationTokenSource;
     private readonly string[] _spinner = ["|", "/", "-", "\\"];
+    private readonly string _defaultAnsiForegroundColour;
     private readonly Assembly _assembly = Assembly.GetExecutingAssembly();
 
     [GeneratedRegex("([a-z])([A-Z])")]
     private static partial Regex SplitToWordsRegex();
+
+    [GeneratedRegex(@"(</?[^>]+>)|([^<>]+)")]
+    private static partial Regex ColorMarkup();
+
+    public ConsoleService(IOptions<AppSettings> appSettings)
+    {
+        _appSettings = appSettings.Value;
+
+        EnableAnsiSupport();
+        _defaultAnsiForegroundColour = HexColorToAnsiString(GetHexColor(AppColor.Gray.ToString()));
+    }
+
+    /// <summary>
+    /// Clear the console screen and set the background color to VsCodeGray.
+    /// </summary>
+    private void Clear()
+    {
+        string hexColor = GetHexColor(AppColor.VsCodeGray.ToString());
+        Color color = ColorTranslator.FromHtml(hexColor);
+
+        Write($"\x1b[48;2;{color.R};{color.G};{color.B}m");
+
+        // Clear the entire screen with the new background color
+        Write("\x1b[2J\x1b[H");
+
+        // set default foreground colour
+        Write(_defaultAnsiForegroundColour);
+    }
 
     /// <summary>
     /// Truncate settings values that are long to avoid carriage returns.
@@ -70,11 +101,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// <param name="instance"></param>
     /// <param name="sectionName"></param>
     /// <returns></returns>
-    private List<(ConsoleColor, string)> GenerateSuggestedValueText(Type? type = null,
-                                                                    object? instance = null,
-                                                                    string? sectionName = null)
+    private List<string> GenerateSuggestedValueText(Type? type = null,
+                                                    object? instance = null,
+                                                    string? sectionName = null)
     {
-        List<(ConsoleColor, string)> lines = [];
+        List<string> lines = [];
         type ??= typeof(AppSettings);
         instance ??= _appSettings;
 
@@ -84,11 +115,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
         if (!string.IsNullOrWhiteSpace(sectionName))
         {
-            SetForegroundColor(ConsoleColor.Blue);
 
-            string sectionNameWords = $"{SplitToWordsRegex().Replace(sectionName, "$1 $2")}:\n";
 
-            lines.Add((ConsoleColor.Blue, sectionNameWords));
+            string sectionNameWords = $"{SplitToWordsRegex().Replace(sectionName, "$1 $2")}\n";
+
+            lines.Add($"<AquaTeal>{sectionNameWords}</>");
         }
 
         bool generalSettingsWritten = false;
@@ -107,34 +138,34 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             {
                 if (type == typeof(AppSettings) && !generalSettingsWritten)
                 {
-                    lines.Add((ConsoleColor.Blue, "General Settings:\n"));
+                    lines.Add($"<AquaTeal>General Settings</>\n");
 
                     generalSettingsWritten = true;
                 }
 
-                lines.Add((ConsoleColor.Blue, $"  {property.Name}"));
+                lines.Add($"  <IcyBlue>{property.Name}</>");
 
                 AppSettingAttribute? settingAttribute = property.GetCustomAttribute<AppSettingAttribute>();
 
                 if (settingAttribute != null)
                 {
-                    lines.Add((ConsoleColor.Gray, $"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)).OrderBy(name => name)))
-                                                                                   .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType)).OrderBy(name => name)))
-                                                                                   .Replace("{GraphTypePlaceholder}", string.Join(", ", Enum.GetNames(typeof(GraphType)).OrderBy(name => name)))
-                                                                                   .Replace("{ShapesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ShapeType)).OrderBy(name => name)))}"));
+                    lines.Add($"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)).OrderBy(name => name)))
+                                                               .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType)).OrderBy(name => name)))
+                                                               .Replace("{GraphTypePlaceholder}", string.Join(", ", Enum.GetNames(typeof(GraphType)).OrderBy(name => name)))
+                                                               .Replace("{ShapesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ShapeType)).OrderBy(name => name)))}");
 
-                    string suggestedValueText = "  Suggested value: ";
+                    string suggestedValueText = "  <BlueTint>Suggested value:</> ";
 
                     if (property.PropertyType == typeof(string))
                     {
-                        suggestedValueText += $"\"{settingAttribute.SuggestedValue}\"\n";
+                        suggestedValueText += $"<WarmSand>\"{settingAttribute.SuggestedValue}\"</>\n";
                     }
                     else
                     {
-                        suggestedValueText += $"{settingAttribute.SuggestedValue}\n";
+                        suggestedValueText += $"<WarmSand>{settingAttribute.SuggestedValue}</>\n";
                     }
 
-                    lines.Add((ConsoleColor.Gray, suggestedValueText));
+                    lines.Add(suggestedValueText);
                 }
             }
         }
@@ -147,11 +178,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// </summary>
     /// <param name="outputType"></param>
     /// <param name="lines"></param>
-    private void ScrollOutput(string outputType, List<(ConsoleColor Color, string Text)> lines)
+    private void ScrollOutput(string outputType, List<string> lines)
     {
         int currentLine = 0;
 
-        WriteLine($"Press a key to scroll {outputType} text, 'q' to output all...");
+        WriteLine($"\nPress a key to scroll {outputType} text, 'q' to output all...");
 
         int startLeft = Console.CursorLeft;
         int startTop = Console.CursorTop;
@@ -174,8 +205,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                     //output all remaining lines in one go
                     for (int lcv = currentLine; lcv < lines.Count; lcv++)
                     {
-                        SetForegroundColor(lines[lcv].Color);
-                        WriteLine(lines[lcv].Text);
+                        WriteLineWithColorMarkup(lines[lcv]);
                     }
 
                     break;
@@ -183,8 +213,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
                 if (currentLine < lines.Count)
                 {
-                    SetForegroundColor(lines[currentLine].Color);
-                    WriteLine(lines[currentLine].Text);
+                    WriteLineWithColorMarkup(lines[currentLine]);
 
                     currentLine++;
                 }
@@ -199,27 +228,47 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
+    /// Get the hex color code for an AppColor name.
+    /// </summary>
+    /// <param name="colorName"></param>
+    /// <returns></returns>
+    private string GetHexColor(string colorName)
+    {
+        if (!Enum.TryParse<AppColor>(colorName, true, out var color))
+        {
+            return colorName;
+        }
+
+        FieldInfo? field = typeof(AppColor).GetField(color.ToString());
+        var attribute = field?.GetCustomAttribute<HexColorAttribute>();
+
+        return attribute?.HexValue ?? _defaultAnsiForegroundColour;
+    }
+
+    /// <summary>
+    /// Convert a hex color code to an ANSI escape sequence.
+    /// </summary>
+    /// <param name="hexColor"></param>
+    /// <returns></returns>
+    private static string HexColorToAnsiString(string hexColor)
+    {
+        Color color = ColorTranslator.FromHtml(hexColor);
+
+        return $"\x1b[1m\x1b[38;2;{color.R};{color.G};{color.B}m";
+    }
+
+    /// <summary>
     /// Custom write method for console output (threadsafe).
     /// </summary>
     /// <param name="message"></param>
     /// <param name="delay"></param>
-    public void Write(string message, bool delay = false)
+    public void Write(string message)
     {
         lock (_consoleLock)
         {
-            if (!delay)
-            {
-                Console.Write(message);
+            Console.Write(message);
 
-                return;
-            }
-
-            foreach (char character in message.ToCharArray())
-            {
-                Console.Write(character.ToString());
-
-                Thread.Sleep(Random.Shared.Next(1, 6));
-            }
+            return;
         }
     }
 
@@ -236,15 +285,37 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     }
 
     /// <summary>
-    /// Set the foreground colour (threadsafe).
+    /// Write a message to the console with color markup via ANSI escape codes for full color support.
     /// </summary>
-    /// <param name="color"></param>
-    public void SetForegroundColor(ConsoleColor color)
+    /// <param name="message"></param>
+    public void WriteWithColorMarkup(string message)
     {
-        lock (_consoleLock)
+        Write(_defaultAnsiForegroundColour);
+
+        foreach (Match match in ColorMarkup().Matches(message))
         {
-            Console.ForegroundColor = color;
+            if (!match.Value.StartsWith('<'))
+            {
+                Write(match.Value);
+                continue;
+            }
+
+            Write(match.Value.StartsWith("</")
+                ? _defaultAnsiForegroundColour
+                : HexColorToAnsiString(GetHexColor(match.Value.Trim('<', '>'))));
         }
+
+        Write(_defaultAnsiForegroundColour);
+    }
+
+    /// <summary>
+    /// Write an API action message to the console with color markup as a single line.
+    /// </summary>
+    /// <param name="message"></param>
+    public void WriteLineWithColorMarkup(string message)
+    {
+        WriteWithColorMarkup(message);
+        WriteLine("");
     }
 
     /// <summary>
@@ -296,21 +367,18 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
         if (!string.IsNullOrWhiteSpace(sectionName))
         {
-            SetForegroundColor(ConsoleColor.Blue);
-
             string sectionNameWords = isJson
                                         ? $"\"{sectionName}\":"
                                         : $"{SplitToWordsRegex().Replace(sectionName, "$1 $2")}:";
 
             if (isJson)
             {
-                Write($"    {sectionNameWords}");
-                SetForegroundColor(ConsoleColor.Magenta);
-                WriteLine("{");
+                WriteWithColorMarkup($"    <AquaTeal>{sectionNameWords}</>");
+                WriteLineWithColorMarkup("<BlushRed>{</>");
             }
             else
             {
-                WriteLine($"    {sectionNameWords}");
+                WriteLineWithColorMarkup($"    <AquaTeal>{sectionNameWords}</>");
             }
         }
 
@@ -335,15 +403,12 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
             {
                 if (type == typeof(AppSettings) && !isJson && !generalSettingsWritten)
                 {
-                    SetForegroundColor(ConsoleColor.Blue);
-                    WriteLine("    General Settings:");
+                    WriteLineWithColorMarkup("    <BlueTint>General Settings:</>");
 
                     generalSettingsWritten = true;
                 }
 
                 object? value = property.GetValue(instance, null);
-
-                SetForegroundColor(ConsoleColor.Blue);
 
                 if (isJson)
                 {
@@ -352,14 +417,12 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                         Write("    ");
                     }
 
-                    Write($"    \"{property.Name}\": ");
+                    WriteWithColorMarkup($"    <IcyBlue>\"{property.Name}\":</> ");
                 }
                 else
                 {
-                    Write($"        {property.Name}: ");
+                    WriteWithColorMarkup($"        <IcyBlue>{property.Name}:</> ");
                 }
-
-                SetForegroundColor(ConsoleColor.Gray);
 
                 if ((value?.ToString() ?? "").Length > 100)
                 {
@@ -374,11 +437,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                 {
                     if (property.PropertyType == typeof(string))
                     {
-                        Write("\"[value]\"");
+                        WriteWithColorMarkup("<WarmSand>\"[value]\"</>");
                     }
                     else
                     {
-                        Write("[value]");
+                        WriteWithColorMarkup("<WarmSand>[value]</>");
                     }
 
                     if (lcv < appSettingsProperties.Count)
@@ -395,8 +458,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
         if (isJson && type != typeof(AppSettings))
         {
-            SetForegroundColor(ConsoleColor.Magenta);
-            WriteLine("    },");
+            WriteLineWithColorMarkup("    <BlushRed>},</>");
         }
     }
 
@@ -439,10 +501,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// <param name="message"></param>
     public void WriteError(string message)
     {
-        SetForegroundColor(ConsoleColor.DarkRed);
-        Write("\nERROR: ");
-        SetForegroundColor(ConsoleColor.White);
-        WriteLine($"{message}\n");
+        WriteWithColorMarkup($"\n<BlushRed>Error:</> {message}\n");
     }
 
     /// <summary>
@@ -450,9 +509,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// </summary>
     public void WriteDone()
     {
-        SetForegroundColor(ConsoleColor.Green);
-        WriteLine("Done");
-        SetForegroundColor(ConsoleColor.Gray);
+        WriteLineWithColorMarkup("<BrightJade>Done</>");
     }
 
     /// <summary>
@@ -460,14 +517,17 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// </summary>
     /// <param name="message"></param>
     /// <returns></returns>
-    public bool ReadYKeyToProceed(string message)
+    public bool AskForConfirmation(string message)
     {
-        Write($"{message} (y/n): ");
+        WriteWithColorMarkup($"<PureYellow>{message}</> [<WhiteSmoke>y/n</>] ");
 
-        SetForegroundColor(ConsoleColor.Gray);
-        ConsoleKeyInfo keyInfo = Console.ReadKey();
-
-        return keyInfo.Key == ConsoleKey.Y;
+        while (true)
+        {
+            ConsoleKey key = Console.ReadKey(intercept: true).Key;
+            string response = key == ConsoleKey.Y ? "y" : "n";
+            WriteLine(response);
+            return key == ConsoleKey.Y;
+        }
     }
 
     /// <summary>
@@ -475,7 +535,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// </summary>
     public void WriteSeparator(bool delay = false)
     {
-        Write("------------------------------------------------------------------------------------\n", delay);
+        WriteWithColorMarkup("\n<MediumGray>————————————————————————————————————————————————————————————————————————————————————</>\n");
     }
 
     /// <summary>
@@ -484,18 +544,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// <param name="headerText"></param>
     public void WriteHeading(string headerText)
     {
-        WriteLine("");
-        SetForegroundColor(ConsoleColor.White);
         WriteSeparator();
 
-        SetForegroundColor(ConsoleColor.Cyan);
-        WriteLine($"{headerText.ToUpper()}");
+        WriteWithColorMarkup($"<BlueTint>{headerText.ToUpper()}</>");
 
-        SetForegroundColor(ConsoleColor.White);
         WriteSeparator();
-        WriteLine("");
-
-        SetForegroundColor(ConsoleColor.Gray);
     }
 
     /// <summary>
@@ -531,11 +584,8 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     {
         string? assemblyName = _assembly.GetName().Name;
 
-        SetForegroundColor(ConsoleColor.Gray);
-        Write("usage: ");
-        SetForegroundColor(ConsoleColor.Green);
-        Write($"{assemblyName} ");
-        SetForegroundColor(ConsoleColor.Gray);
+        WriteWithColorMarkup("usage: ");
+        WriteWithColorMarkup($"<BrightJade>{assemblyName}</> ");
 
         int lcv = 1;
         foreach ((string shortName, string longName, string description, string hint) in commandLineOptions)
@@ -547,15 +597,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
             string hintText = !string.IsNullOrWhiteSpace(hint) ? $" {hint}" : "";
 
-            Write("[");
-            SetForegroundColor(ConsoleColor.DarkCyan);
-            Write($"-{shortName}");
-            SetForegroundColor(ConsoleColor.Gray);
-            Write($" | ");
-            SetForegroundColor(ConsoleColor.DarkCyan);
-            Write($"--{longName}");
-            SetForegroundColor(ConsoleColor.Gray);
-            Write("] ");
+            WriteWithColorMarkup($"[<IcyBlue>-{shortName}</> | <IcyBlue>--{longName}</>] ");
 
             lcv++;
         }
@@ -566,13 +608,8 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         {
             string commandText = $"  -{shortName}, --{longName}";
 
-            SetForegroundColor(ConsoleColor.DarkCyan);
-            Write($"  -{shortName}");
-            SetForegroundColor(ConsoleColor.Gray);
-            Write(", ");
-            SetForegroundColor(ConsoleColor.DarkCyan);
-            Write($"--{longName}");
-            SetForegroundColor(ConsoleColor.Gray);
+
+            WriteWithColorMarkup($"  <IcyBlue>-{shortName}</>, <IcyBlue>--{longName}</>");
 
             if (commandText.Length <= 15)
             {
@@ -583,7 +620,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                 Write("\t");
             }
 
-            WriteLine($"{description}");
+            WriteLineWithColorMarkup($"{description}");
         }
 
         WriteLine("");
@@ -601,8 +638,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteLine("If no custom app settings are supplied, defaults will be used.\n");
         WriteLine($"To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_appSettings.SettingsFileName}' file.\n\nIt must have the following content:\n");
 
-        SetForegroundColor(ConsoleColor.Magenta);
-        WriteLine("{");
+        WriteLineWithColorMarkup("<BlushRed>{</>");
 
         WriteSettings(type: null,
                       instance: null,
@@ -610,15 +646,14 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
                       includeHeader: false,
                       isJson: true);
 
-        SetForegroundColor(ConsoleColor.Magenta);
-        WriteLine("}\n");
+        WriteLineWithColorMarkup("<BlushRed>}</>");
 
         WriteHeading("Definitions and suggested values");
 
-        List<(ConsoleColor, string)> lines = GenerateSuggestedValueText();
+        List<string> lines = GenerateSuggestedValueText();
 
-        lines.Add((ConsoleColor.Gray, "\nThe above app settings are a good starting point from which to experiment.\n"));
-        lines.Add((ConsoleColor.Gray, "Alternatively, start with the app settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n"));
+        lines.Add("\nThe above app settings are a good starting point from which to experiment.\n");
+        lines.Add("Alternatively, start with the app settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n");
 
         ScrollOutput("app settings", lines);
 
@@ -634,8 +669,6 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         AssemblyInformationalVersionAttribute? versionAttribute =
             _assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
 
-        SetForegroundColor(ConsoleColor.Gray);
-
         if (versionAttribute != null)
         {
             string version = versionAttribute.InformationalVersion;
@@ -644,11 +677,11 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
             string? assemblyName = _assembly.GetName().Name;
 
-            WriteLine($"{assemblyName}: v{coreVersion}\n");
+            WriteLineWithColorMarkup($"<BrightJade>{assemblyName}</>: v{coreVersion}\n");
         }
         else
         {
-            WriteLine("Version information not found.\n");
+            WriteLineWithColorMarkup("Version information not found.\n");
         }
     }
 
@@ -657,175 +690,20 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
     /// </summary>
     public void WriteAsciiArtLogo()
     {
-        Console.Clear();
-        SetForegroundColor(ConsoleColor.Blue);
+        Clear();
 
-        //line 1
-        Write("\n\n_____");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\\\\\\\\\\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_______________________________________________________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        WriteLine("_        ");
+        Write("\n\n");
 
-        //line 2
-        Write(" ___");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\///////\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("__________________________________________________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\\\\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        WriteLine("_       ");
-
-        //line 3
-        Write("  __");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("______");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_______________________________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_______________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/////\\\\\\");
-        SetForegroundColor(ConsoleColor.Blue);
-        WriteLine("_      ");
-
-        //line 4
-        Write("   _________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\//", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("____");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("____");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_______________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("___________________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        WriteLine("_     ");
-
-        //line 5
-        Write("    ________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\////\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("__");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///\\\\\\/\\\\\\/", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_____________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\\\\\\\\\\\\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_______________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        WriteLine("_    ");
-
-        //line 6
-        Write("     ___________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\//\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("___");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///\\\\\\/", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("______________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/////\\\\\\///", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("________________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        WriteLine("_   ");
-
-        //line 7
-        Write("      __");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("______");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_____");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_________________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("___________________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        WriteLine("_  ");
-
-        //line 8
-        Write("       _");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///\\\\\\\\\\\\\\\\\\/", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("____");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("/\\\\\\/\\///\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_______________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("____________________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/\\\\\\", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        WriteLine("_ ");
-
-        //line 9
-        Write("        ___");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\/////////", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("_____");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("____");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        Write("________________________________________");
-        SetForegroundColor(ConsoleColor.DarkYellow);
-        Write("\\///", true);
-        SetForegroundColor(ConsoleColor.Blue);
-        WriteLine("_ ");
-
-        Write("                                                                                    ", true);
+        WriteLineWithColorMarkup("<SoftOrchid>_____</><IcyBlue>/\\\\\\\\\\\\\\\\\\\\</><SoftOrchid>_______________________________________________________</><IcyBlue>/\\\\\\</><SoftOrchid>_</>        ");
+        WriteLineWithColorMarkup(" <SoftOrchid>___</><IcyBlue>/\\\\\\///////\\\\\\</><SoftOrchid>__________________________________________________</><IcyBlue>/\\\\\\\\\\\\\\</><SoftOrchid>_       ");
+        WriteLineWithColorMarkup("  <SoftOrchid>__</><IcyBlue>\\///</><SoftOrchid>______</><IcyBlue>/\\\\\\</><SoftOrchid>_______________________________</><IcyBlue>/\\\\\\</><SoftOrchid>_______________</><IcyBlue>\\/////\\\\\\</><SoftOrchid>_</>      ");
+        WriteLineWithColorMarkup("   <SoftOrchid>_________</><IcyBlue>/\\\\\\//</><SoftOrchid>____</><IcyBlue>/\\\\\\</><SoftOrchid>____</><IcyBlue>/\\\\\\</><SoftOrchid>_______________</><IcyBlue>\\/\\\\\\</><SoftOrchid>___________________</><IcyBlue>\\/\\\\\\</><SoftOrchid>_</>     ");
+        WriteLineWithColorMarkup("    <SoftOrchid>________</><IcyBlue>\\////\\\\\\<SoftOrchid>__</><IcyBlue>\\///\\\\\\/\\\\\\/</><SoftOrchid>_____________</><IcyBlue>/\\\\\\\\\\\\\\\\\\\\\\</><SoftOrchid>_______________</><IcyBlue>\\/\\\\\\</><SoftOrchid>_</>    ");
+        WriteLineWithColorMarkup("     <SoftOrchid>___________</><IcyBlue>\\//\\\\\\</><SoftOrchid>___</><IcyBlue>\\///\\\\\\/</><SoftOrchid>______________</><IcyBlue>\\/////\\\\\\///</><SoftOrchid>________________</><IcyBlue>\\/\\\\\\</><SoftOrchid>_</>   ");
+        WriteLineWithColorMarkup("      <SoftOrchid>__</><IcyBlue>/\\\\\\</><SoftOrchid>______</><IcyBlue>/\\\\\\</><SoftOrchid>_____</><IcyBlue>/\\\\\\/\\\\\\</><SoftOrchid>_________________</><IcyBlue>\\/\\\\\\</IcyBlue><SoftOrchid>___________________</><IcyBlue>\\/\\\\\\</><SoftOrchid>_</>  ");
+        WriteLineWithColorMarkup("       <SoftOrchid>_</><IcyBlue>\\///\\\\\\\\\\\\\\\\\\/</><SoftOrchid>____</><IcyBlue>/\\\\\\/\\///\\\\\\</><SoftOrchid>_______________</><IcyBlue>\\///</><SoftOrchid>____________________</><IcyBlue>\\/\\\\\\</><SoftOrchid>_ </> ");
+        WriteLineWithColorMarkup("        <SoftOrchid>___</><IcyBlue>\\/////////</><SoftOrchid>_____</><IcyBlue>\\///</><SoftOrchid>____</><IcyBlue>\\///</><SoftOrchid>________________________________________</><IcyBlue>\\///</><SoftOrchid>__ </> ");
         WriteLine("");
-        SetForegroundColor(ConsoleColor.White);
     }
 
     /// <summary>
@@ -841,11 +719,10 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         Stopwatch stopwatch = Stopwatch.StartNew();
 
         SetCursorVisibility(false);
-        SetForegroundColor(ConsoleColor.Gray);
 
         if (message != null)
         {
-            Write($"{message}");
+            WriteWithColorMarkup($"{message}");
         }
 
         while (!_cancellationTokenSource.Token.IsCancellationRequested)
@@ -854,7 +731,7 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
 
             if (currentMilliseconds - previousMilliseconds >= updateInterval)
             {
-                Write(_spinner[_spinnerCounter]);
+                WriteWithColorMarkup($"{_spinner[_spinnerCounter]}");
                 SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                 _spinnerCounter = (_spinnerCounter + 1) % _spinner.Length;
                 previousMilliseconds = currentMilliseconds;
@@ -899,4 +776,54 @@ public partial class ConsoleService(IOptions<AppSettings> appSettings) : IConsol
         WriteHeading($"Process completed");
         WriteLine($"Execution time: {elapsedTime}\n\n");
     }
+
+    #region Windows API imports
+
+    private const int STD_OUTPUT_HANDLE = -11;
+    private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr GetStdHandle(int nStdHandle);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+
+    /// <summary>
+    /// Enable ANSI support for the console if running on Windows.
+    /// </summary>
+    private static void EnableAnsiSupport()
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
+        try
+        {
+            var handle = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (!GetConsoleMode(handle, out uint mode))
+            {
+                return;
+            }
+
+            // Enable ANSI escape codes
+            mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+
+            if (!SetConsoleMode(handle, mode))
+            {
+                return;
+            }
+
+            return;
+        }
+        catch
+        {
+            return;
+        }
+    }
+
+    #endregion
 }

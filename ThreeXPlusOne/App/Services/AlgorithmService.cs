@@ -43,7 +43,7 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
             throw new ApplicationException("No input provided to the algorithm");
         }
 
-        consoleService.Write($"Running 3x + 1 algorithm on {inputValues.Count} numbers... ");
+        consoleService.WriteWithColorMarkup($"Running 3x + 1 algorithm on {inputValues.Count} numbers... ");
 
         List<CollatzResult> collatzResults = [];
 

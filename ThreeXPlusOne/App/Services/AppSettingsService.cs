@@ -18,7 +18,7 @@ public class AppSettingsService(IOptions<AppSettings> appSettings,
         consoleService.WriteHeading("Save app settings");
 
         bool confirmedSaveSettings = _appSettings.AlgorithmSettings.FromRandomNumbers &&
-                                     consoleService.ReadYKeyToProceed($"Save generated number series to '{_appSettings.SettingsFileFullPath}' for reuse?");
+                                     consoleService.AskForConfirmation($"Save generated number series to '{_appSettings.SettingsFileFullPath}' for reuse?");
 
         await fileService.WriteSettingsToFile(confirmedSaveSettings);
 

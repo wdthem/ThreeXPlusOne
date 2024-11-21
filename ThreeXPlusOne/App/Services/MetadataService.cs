@@ -27,14 +27,13 @@ public class MetadataService(IFileService fileService,
     /// <param name="collatzResults"></param>
     private async Task GenerateSeriesMetadataFile(List<CollatzResult> collatzResults)
     {
-        consoleService.Write("Generating number series metadata... ");
+        consoleService.WriteWithColorMarkup("Generating number series metadata... ");
 
         string filePath = fileService.GenerateMetadataFilePath();
 
         if (fileService.FileExists(filePath))
         {
-            consoleService.SetForegroundColor(ConsoleColor.Green);
-            consoleService.WriteLine("already exists");
+            consoleService.WriteLineWithColorMarkup("<BrightJade>already exists</>");
 
             return;
         }
