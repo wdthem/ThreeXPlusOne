@@ -447,11 +447,11 @@ public partial class ConsoleService : IConsoleService
                 {
                     if (property.PropertyType == typeof(string))
                     {
-                        Write("\"[value]\"");
+                        WriteWithColorMarkup("<WarmSand>\"[value]\"</>");
                     }
                     else
                     {
-                        Write("[value]");
+                        WriteWithColorMarkup("<WarmSand>[value]</>");
                     }
 
                     if (lcv < appSettingsProperties.Count)
