@@ -6,8 +6,7 @@ public interface IConsoleService : ISingletonService
     /// Issue a Console.Write() command.
     /// </summary>
     /// <param name="message"></param>
-    /// <param name="delay"></param>
-    void Write(string message, bool delay = false);
+    void Write(string message);
 
     /// <summary>
     /// Issue a Console.WriteLine() command.

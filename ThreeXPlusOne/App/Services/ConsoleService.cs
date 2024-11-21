@@ -262,23 +262,13 @@ public partial class ConsoleService : IConsoleService
     /// </summary>
     /// <param name="message"></param>
     /// <param name="delay"></param>
-    public void Write(string message, bool delay = false)
+    public void Write(string message)
     {
         lock (_consoleLock)
         {
-            if (!delay)
-            {
-                Console.Write(message);
+            Console.Write(message);
 
-                return;
-            }
-
-            foreach (char character in message.ToCharArray())
-            {
-                Console.Write(character.ToString());
-
-                Thread.Sleep(Random.Shared.Next(1, 6));
-            }
+            return;
         }
     }
 
