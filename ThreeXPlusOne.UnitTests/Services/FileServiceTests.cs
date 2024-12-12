@@ -4,6 +4,7 @@ using Moq;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Services;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace ThreeXPlusOne.UnitTests.Services;
 
 public class FileServiceTests
 {
-    private readonly Mock<IConsoleService> _consoleServiceMock;
+    private readonly Mock<IUiComponent> _uiComponentMock;
     private IOptions<AppSettings> _appSettings = new OptionsWrapper<AppSettings>
     (
         new AppSettings { }
@@ -19,7 +20,7 @@ public class FileServiceTests
 
     public FileServiceTests()
     {
-        _consoleServiceMock = new Mock<IConsoleService>();
+        _uiComponentMock = new Mock<IUiComponent>();
     }
 
     private void ResetSettings()
@@ -39,7 +40,7 @@ public class FileServiceTests
     {
         // Arrange
         ResetSettings();
-        var fileService = new FileService(_appSettings, _consoleServiceMock.Object);
+        var fileService = new FileService(_appSettings, _uiComponentMock.Object);
 
         // Act  
         var result = fileService.GenerateDirectedGraphFilePath(ImageType.Jpeg);
@@ -53,7 +54,7 @@ public class FileServiceTests
     {
         // Arrange
         ResetSettings();
-        var fileService = new FileService(_appSettings, _consoleServiceMock.Object);
+        var fileService = new FileService(_appSettings, _uiComponentMock.Object);
 
         // Act  
         var result = fileService.GenerateHistogramFilePath();
@@ -67,7 +68,7 @@ public class FileServiceTests
     {
         // Arrange
         ResetSettings();
-        var fileService = new FileService(_appSettings, _consoleServiceMock.Object);
+        var fileService = new FileService(_appSettings, _uiComponentMock.Object);
 
         // Act  
         var result = fileService.GenerateMetadataFilePath();

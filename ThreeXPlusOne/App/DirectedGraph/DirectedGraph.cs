@@ -5,22 +5,24 @@ using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
 
 namespace ThreeXPlusOne.App.DirectedGraph;
 
 public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                             IEnumerable<IDirectedGraphDrawingService> graphServices,
                                             ILightSourceService lightSourceService,
-                                            IConsoleService consoleService,
-                                            ShapeFactory shapeFactory)
+                                            ShapeFactory shapeFactory,
+                                            IProgressIndicatorPresenter progressIndicatorPresenter,
+                                            IDirectedGraphPresenter directedGraphPresenter)
 {
     private int _canvasWidth = 0;
     private int _canvasHeight = 0;
 
     protected readonly AppSettings _appSettings = appSettings.Value;
-    protected readonly IConsoleService _consoleService = consoleService;
     protected readonly NodePositions _nodePositions = new();
     protected readonly NodeAesthetics _nodeAesthetics = new(shapeFactory);
+    protected readonly IDirectedGraphPresenter _directedGraphPresenter = directedGraphPresenter;
     protected readonly Dictionary<int, DirectedGraphNode> _nodes = [];
 
     /// <summary>
@@ -31,7 +33,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     public void AddSeries(GraphType graphType,
                           List<CollatzResult> collatzResults)
     {
-        _consoleService.WriteWithColorMarkup($"Adding {collatzResults.Count} series to the graph... ");
+        _directedGraphPresenter.DisplayAddingSeriesMessage(collatzResults.Count);
 
         for (int seriesNumber = 1; seriesNumber <= collatzResults.Count; seriesNumber++)
         {
@@ -77,7 +79,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
             }
         }
 
-        _consoleService.WriteDone();
+        _directedGraphPresenter.DisplayDone();
     }
 
     /// <summary>
@@ -141,8 +143,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         _canvasWidth = (int)(maxX + _appSettings.NodeAestheticSettings.NodeSpacerX + maxNodeRadius);
         _canvasHeight = (int)(maxY + _appSettings.NodeAestheticSettings.NodeSpacerY + maxNodeRadius);
 
-        _consoleService.Write($"Setting canvas dimensions to {_canvasWidth:N0} x {_canvasHeight:N0}... ");
-        _consoleService.WriteDone();
+        _directedGraphPresenter.DisplaySettingCanvasSizeMessage(_canvasWidth, _canvasHeight);
+        _directedGraphPresenter.DisplayDone();
     }
 
     /// <summary>
@@ -191,14 +193,14 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
     {
         graphService.OnStart = (message) =>
         {
-            _consoleService.Write(message);
-            _ = _consoleService.StartSpinningBar();
+            _directedGraphPresenter.WriteActionMessage(message);
+            _ = progressIndicatorPresenter.StartSpinningBar();
         };
 
         graphService.OnComplete = async () =>
         {
-            await _consoleService.StopSpinningBar();
-            _consoleService.WriteDone();
+            await progressIndicatorPresenter.StopSpinningBar();
+            _directedGraphPresenter.DisplayDone();
         };
     }
 

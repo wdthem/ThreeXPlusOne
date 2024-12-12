@@ -3,12 +3,13 @@ using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
 
 namespace ThreeXPlusOne.App.Services;
 
 public class AlgorithmService(IOptions<AppSettings> appSettings,
                               IMetadataService metadataService,
-                              IConsoleService consoleService) : IAlgorithmService
+                              IAlgorithmPresenter algorithmPresenter) : IAlgorithmService
 {
     private readonly AppSettings _appSettings = appSettings.Value;
 
@@ -34,7 +35,7 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
     /// <returns></returns>
     private List<CollatzResult> RunAlgorithm()
     {
-        consoleService.WriteHeading("Algorithm execution");
+        algorithmPresenter.DisplayHeading("Algorithm execution");
 
         List<int> inputValues = GetInputValues();
 
@@ -43,7 +44,7 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
             throw new ApplicationException("No input provided to the algorithm");
         }
 
-        consoleService.WriteWithColorMarkup($"Running 3x + 1 algorithm on {inputValues.Count} numbers... ");
+        algorithmPresenter.DisplayRunningAlgorithmMessage(inputValues.Count);
 
         List<CollatzResult> collatzResults = [];
 
@@ -65,7 +66,7 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
             collatzResults.Add(collatzResult);
         }
 
-        consoleService.WriteDone();
+        algorithmPresenter.DisplayDone();
 
         return collatzResults;
     }
@@ -159,12 +160,12 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
 
             _appSettings.AlgorithmSettings.FromRandomNumbers = false;
 
-            consoleService.WriteLine($"Using series numbers defined in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)} (ignoring any in {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)})");
+            algorithmPresenter.DisplayUsingSeriesMessage();
 
             return inputValues;
         }
 
-        consoleService.Write($"Generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers from 1 to {_appSettings.AlgorithmSettings.RandomNumberMax}... ");
+        algorithmPresenter.DisplayGeneratingRandomNumbersMessage();
 
         while (inputValues.Count < _appSettings.AlgorithmSettings.RandomNumberTotal)
         {
@@ -175,7 +176,7 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
                     throw new ApplicationException($"No numbers generated on which to run the algorithm. Check {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)}");
                 }
 
-                consoleService.WriteLine($"Gave up generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers. Generated {inputValues.Count}");
+                algorithmPresenter.DisplayGaveUpGeneratingNumbersMessage(inputValues.Count);
 
                 break;
             }
@@ -197,7 +198,7 @@ public class AlgorithmService(IOptions<AppSettings> appSettings,
         _appSettings.AlgorithmSettings.NumbersToUse = string.Join(", ", inputValues);
         _appSettings.AlgorithmSettings.FromRandomNumbers = true;
 
-        consoleService.WriteDone();
+        algorithmPresenter.DisplayDone();
 
         return inputValues;
     }

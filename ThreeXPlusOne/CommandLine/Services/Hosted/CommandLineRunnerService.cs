@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Services;
 using ThreeXPlusOne.CommandLine.Models;
 
@@ -9,8 +10,11 @@ namespace ThreeXPlusOne.CommandLine.Services.Hosted;
 public class CommandLineRunnerService(ILogger<CommandLineRunnerService> logger,
                                       CommandExecutionSettingsService commandExecutionSettingsService,
                                       AppService appService,
-                                      IConsoleService consoleService,
-                                      IHostApplicationLifetime applicationLifetime) : BackgroundService
+                                      IHostApplicationLifetime applicationLifetime,
+                                      IAppPresenter appPresenter,
+                                      IConfigPresenter configPresenter,
+                                      IHelpPresenter helpPresenter,
+                                      IUiComponent uiComponent) : BackgroundService
 {
     /// <summary>
     /// Handle any supplied command line options
@@ -20,29 +24,31 @@ public class CommandLineRunnerService(ILogger<CommandLineRunnerService> logger,
     {
         if (commandExecutionSettings.CommandParsingMessages.Count > 0 && !commandExecutionSettings.ContinueExecution)
         {
-            consoleService.WriteError(string.Join(", ", commandExecutionSettings.CommandParsingMessages));
-            consoleService.WriteCommandUsage(commandExecutionSettings.OptionsMetadata);
+            uiComponent.WriteError(string.Join(", ", commandExecutionSettings.CommandParsingMessages));
+            helpPresenter.WriteCommandUsage(commandExecutionSettings.OptionsMetadata);
 
             return;
         }
 
         if (commandExecutionSettings.WriteHelpText)
         {
-            consoleService.WriteHelpText(commandExecutionSettings.OptionsMetadata);
+            appPresenter.DisplayAppHeader();
+            helpPresenter.WriteHelpText(commandExecutionSettings.OptionsMetadata);
 
             return;
         }
 
         if (commandExecutionSettings.WriteVersionText)
         {
-            consoleService.WriteVersionText();
+            helpPresenter.WriteVersionText();
 
             return;
         }
 
         if (commandExecutionSettings.WriteConfigText)
         {
-            consoleService.WriteConfigText();
+            appPresenter.DisplayAppHeader();
+            configPresenter.WriteConfigText();
 
             return;
         }
@@ -92,7 +98,7 @@ public class CommandLineRunnerService(ILogger<CommandLineRunnerService> logger,
         }
         catch (Exception ex)
         {
-            consoleService.WriteError(ex.Message);
+            uiComponent.WriteError(ex.Message);
             logger.LogError("{error}", ex.Message.Replace("\r", "").Replace("\n", " "));
             applicationLifetime.StopApplication();
         }

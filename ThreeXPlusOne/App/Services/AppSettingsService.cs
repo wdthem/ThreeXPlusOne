@@ -1,12 +1,13 @@
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Presenters.Interfaces;
 
 namespace ThreeXPlusOne.App.Services;
 
 public class AppSettingsService(IOptions<AppSettings> appSettings,
                                 IFileService fileService,
-                                IConsoleService consoleService) : IAppSettingsService
+                                IAppSettingsPresenter appSettingsPresenter) : IAppSettingsService
 {
     private readonly AppSettings _appSettings = appSettings.Value;
 
@@ -15,13 +16,13 @@ public class AppSettingsService(IOptions<AppSettings> appSettings,
     /// </summary>
     public async Task UpdateAppSettingsFile()
     {
-        consoleService.WriteHeading("Save app settings");
+        appSettingsPresenter.DisplayHeader("Save app settings");
 
         bool confirmedSaveSettings = _appSettings.AlgorithmSettings.FromRandomNumbers &&
-                                     consoleService.AskForConfirmation($"Save generated number series to '{_appSettings.SettingsFileFullPath}' for reuse?");
+                                     appSettingsPresenter.GetConfirmation($"Save generated number series to '{_appSettings.SettingsFileFullPath}' for reuse?");
 
         await fileService.WriteSettingsToFile(confirmedSaveSettings);
 
-        consoleService.WriteSettingsSavedMessage(confirmedSaveSettings);
+        appSettingsPresenter.WriteSettingsSavedMessage(confirmedSaveSettings);
     }
 }

@@ -8,6 +8,10 @@ using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;
 using ThreeXPlusOne.CommandLine.Services;
 using ThreeXPlusOne.CommandLine.Services.Hosted;
+using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Presenters;
+using ThreeXPlusOne.App.Presenters.Interfaces.Components;
+using ThreeXPlusOne.App.Presenters.Components;
 
 namespace ThreeXPlusOne;
 
@@ -66,12 +70,33 @@ public static class StartupExtensions
 
         //app
         services.Configure<AppSettings>(configuration);
+        services.AddPresenters();
         services.AddScopedServices();
         services.AddSingletonServices();
         services.AddDirectedGraphs();
         services.AddDirectedGraphShapes();
 
         return services;
+    }
+
+    /// <summary>
+    /// Add all presenter interfaces and implementations to the DI container
+    /// </summary>
+    /// <param name="services"></param>
+    private static void AddPresenters(this IServiceCollection services)
+    {
+        services.AddScoped<IAppPresenter, AppPresenter>();
+        services.AddScoped<IConfigPresenter, ConfigPresenter>();
+        services.AddScoped<IHelpPresenter, HelpPresenter>();
+        services.AddScoped<IAppSettingsPresenter, AppSettingsPresenter>();
+        services.AddScoped<IHistogramPresenter, HistogramPresenter>();
+        services.AddScoped<IDirectedGraphPresenter, DirectedGraphPresenter>();
+        services.AddScoped<IAlgorithmPresenter, AlgorithmPresenter>();
+        services.AddScoped<IMetadataPresenter, MetadataPresenter>();
+
+        services.AddSingleton<IProgressIndicatorPresenter, ProgressIndicatorPresenter>();
+
+        services.AddSingleton<IUiComponent, UiComponent>();
     }
 
     /// <summary>

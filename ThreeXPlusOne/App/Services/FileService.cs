@@ -4,11 +4,12 @@ using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 
 namespace ThreeXPlusOne.App.Services;
 
 public class FileService(IOptions<AppSettings> appSettings,
-                         IConsoleService consoleService) : IFileService
+                         IUiComponent uiComponent) : IFileService
 {
     private readonly AppSettings _appSettings = appSettings.Value;
     private readonly string _prefix = Assembly.GetExecutingAssembly().GetName().Name!;
@@ -91,7 +92,7 @@ public class FileService(IOptions<AppSettings> appSettings,
         }
         catch (Exception ex)
         {
-            consoleService.WriteError(ex.Message);
+            uiComponent.WriteError(ex.Message);
         }
     }
 

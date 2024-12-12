@@ -5,15 +5,17 @@ using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
 
 namespace ThreeXPlusOne.UnitTests.Mocks;
 
 public class MockDirectedGraph(IOptions<AppSettings> appSettings,
                                IEnumerable<IDirectedGraphDrawingService> graphServices,
                                ILightSourceService lightSourceService,
-                               IConsoleService consoleService,
-                               ShapeFactory shapeFactory)
-                                    : App.DirectedGraph.DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
+                               ShapeFactory shapeFactory,
+                               IProgressIndicatorPresenter progressIndicatorPresenter,
+                               IDirectedGraphPresenter directedGraphPresenter)
+                                    : App.DirectedGraph.DirectedGraph(appSettings, graphServices, lightSourceService, shapeFactory, progressIndicatorPresenter, directedGraphPresenter),
                                       IDirectedGraph
 {
     public GraphType GraphType => GraphType.Standard2D;

@@ -5,15 +5,17 @@ using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Interfaces.DirectedGraph;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
 
 namespace ThreeXPlusOne.App.DirectedGraph.GraphInstances;
 
 public class Galaxy2DDirectedGraph(IOptions<AppSettings> appSettings,
                                    IEnumerable<IDirectedGraphDrawingService> graphServices,
                                    ILightSourceService lightSourceService,
-                                   IConsoleService consoleService,
-                                   ShapeFactory shapeFactory)
-                                      : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
+                                   ShapeFactory shapeFactory,
+                                   IProgressIndicatorPresenter progressIndicatorPresenter,
+                                   IDirectedGraphPresenter directedGraphPresenter)
+                                      : DirectedGraph(appSettings, graphServices, lightSourceService, shapeFactory, progressIndicatorPresenter, directedGraphPresenter),
                                         IDirectedGraph
 {
     private int _nodesPositioned = 0;
@@ -121,11 +123,11 @@ public class Galaxy2DDirectedGraph(IOptions<AppSettings> appSettings,
 
                 node.SpiralCenter = spiralCenter;
 
-                _consoleService.Write($"\r{_nodesPositioned} nodes positioned... ");
+                _directedGraphPresenter.DisplayNodesPositionedMessage(_nodesPositioned);
             }
         }
 
-        _consoleService.WriteDone();
+        _directedGraphPresenter.DisplayDone();
 
         // Translate all nodes to positive coordinates
         NodePositions.TranslateNodesToPositiveCoordinates(_nodes,
@@ -165,12 +167,12 @@ public class Galaxy2DDirectedGraph(IOptions<AppSettings> appSettings,
                                          _appSettings.NodeAestheticSettings.NodeColors,
                                          _appSettings.NodeAestheticSettings.ColorCodeNumberSeries);
 
-            _consoleService.Write($"\r{lcv} nodes styled... ");
+            _directedGraphPresenter.DisplayNodesStyledMessage(lcv);
 
             lcv++;
         }
 
-        _consoleService.WriteDone();
+        _directedGraphPresenter.DisplayDone();
     }
 
     /// <summary>
