@@ -1,11 +1,12 @@
-﻿using ThreeXPlusOne.App.Interfaces.Services;
-using ThreeXPlusOne.App.Models;
+﻿using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Services;
 
 public class HistogramService(IHistogramDrawingService histogramDrawingService,
                               IFileService fileService,
-                              IConsoleService consoleService) : IHistogramService
+                              IHistogramPresenter histogramPresenter) : IHistogramService
 {
     /// <summary>
     /// Generate the histogram based on the lists of series data.
@@ -13,13 +14,13 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
     /// <param name="collatzResults"></param>
     public async Task GenerateHistogram(List<CollatzResult> collatzResults)
     {
-        consoleService.WriteWithColorMarkup("Generating histogram... ");
+        histogramPresenter.DisplayGeneratingHistogramMessage();
 
         string filePath = fileService.GenerateHistogramFilePath();
 
         if (fileService.FileExists(filePath))
         {
-            consoleService.WriteLineWithColorMarkup("<BrightJade>already exists</>");
+            histogramPresenter.DisplayHistogramExistsMessage();
 
             return;
         }
@@ -34,7 +35,7 @@ public class HistogramService(IHistogramDrawingService histogramDrawingService,
         await histogramDrawingService.SaveImage(filePath);
         histogramDrawingService.Dispose();
 
-        consoleService.WriteDone();
+        histogramPresenter.DisplayDone();
     }
 
     /// <summary>

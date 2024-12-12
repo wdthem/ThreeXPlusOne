@@ -1,38 +1,34 @@
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using ThreeXPlusOne.App;
-using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Services;
+using ThreeXPlusOne.App.Services.Interfaces;
 using Xunit;
 
 namespace ThreeXPlusOne.UnitTests;
 
-public class ProcessTests
+public class AppServiceTests
 {
     private readonly Mock<IDirectedGraphService> _directedGraphServiceMock;
-    private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly Mock<IAppSettingsService> _appSettingsServiceMock;
     private readonly Mock<ILogger<AppService>> _loggerMock;
-
-    public ProcessTests()
+    private readonly Mock<IAppPresenter> _appPresenterMock;
+    public AppServiceTests()
     {
         _directedGraphServiceMock = new Mock<IDirectedGraphService>();
-        _consoleServiceMock = new Mock<IConsoleService>();
         _appSettingsServiceMock = new Mock<IAppSettingsService>();
         _loggerMock = new Mock<ILogger<AppService>>();
+        _appPresenterMock = new Mock<IAppPresenter>();
     }
 
     [Fact]
     public async Task Run_Success00()
     {
         // Arrange
-        _consoleServiceMock.Setup(consoleService => consoleService.AskForConfirmation("Generate Standard2D visualisation?")).Returns(true);
-
         var process = new AppService(_loggerMock.Object,
                                      _directedGraphServiceMock.Object,
                                      _appSettingsServiceMock.Object,
-                                     _consoleServiceMock.Object);
+                                     _appPresenterMock.Object);
 
         // Act
         await process.Run([]);

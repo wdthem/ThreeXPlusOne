@@ -2,7 +2,7 @@ using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Models;
 
-namespace ThreeXPlusOne.App.Interfaces.Services;
+namespace ThreeXPlusOne.App.Services.Interfaces;
 
 public interface IDirectedGraphDrawingService : IScopedService, IDisposable
 {
@@ -14,7 +14,7 @@ public interface IDirectedGraphDrawingService : IScopedService, IDisposable
     /// <summary>
     /// Action to perform when the service ends a task.
     /// </summary>
-    Action? OnComplete { get; set; }
+    Action<string?>? OnComplete { get; set; }
 
     /// <summary>
     /// The graph provider implementing the interface.

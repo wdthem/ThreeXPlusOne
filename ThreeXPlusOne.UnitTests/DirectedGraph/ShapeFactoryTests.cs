@@ -1,7 +1,7 @@
 using FluentAssertions;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.DirectedGraph.Interfaces;
 using Xunit;
 
 namespace ThreeXPlusOne.UnitTests.DirectedGraph;

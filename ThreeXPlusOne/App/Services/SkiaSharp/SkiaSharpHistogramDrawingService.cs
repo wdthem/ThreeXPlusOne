@@ -1,6 +1,6 @@
 using SkiaSharp;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Services.SkiaSharp;
 

@@ -1,6 +1,6 @@
 using ThreeXPlusOne.App.Enums;
 
-namespace ThreeXPlusOne.App.Interfaces.Services;
+namespace ThreeXPlusOne.App.Services.Interfaces;
 
 public interface IHistogramDrawingService : IScopedService, IDisposable
 {

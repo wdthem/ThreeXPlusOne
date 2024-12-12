@@ -1,4 +1,4 @@
-namespace ThreeXPlusOne.App.Interfaces.DirectedGraph;
+namespace ThreeXPlusOne.App.DirectedGraph.Interfaces;
 
 /// <summary>
 /// The interface for all Shape instances configured with vertices.

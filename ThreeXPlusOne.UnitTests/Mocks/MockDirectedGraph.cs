@@ -2,18 +2,19 @@ using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.DirectedGraph;
-using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.DirectedGraph.Interfaces;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.UnitTests.Mocks;
 
 public class MockDirectedGraph(IOptions<AppSettings> appSettings,
                                IEnumerable<IDirectedGraphDrawingService> graphServices,
                                ILightSourceService lightSourceService,
-                               IConsoleService consoleService,
-                               ShapeFactory shapeFactory)
-                                    : App.DirectedGraph.DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
+                               ShapeFactory shapeFactory,
+                               IDirectedGraphPresenter directedGraphPresenter)
+                                    : App.DirectedGraph.DirectedGraph(appSettings, graphServices, lightSourceService, shapeFactory, directedGraphPresenter),
                                       IDirectedGraph
 {
     public GraphType GraphType => GraphType.Standard2D;

@@ -1,8 +1,9 @@
 using SkiaSharp;
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Services.SkiaSharp;
 
@@ -14,7 +15,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     private (double X, double Y)? _lightSourceCoordinates;
 
     public Action<string>? OnStart { get; set; }
-    public Action? OnComplete { get; set; }
+    public Action<string?>? OnComplete { get; set; }
     public GraphProvider GraphProvider => GraphProvider.SkiaSharp;
 
     /// <summary>
@@ -29,7 +30,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                            int height,
                            Color backgroundColor)
     {
-        OnStart?.Invoke($"Initialising {GraphProvider} graph... ");
+        OnStart?.Invoke($"\nInitialising {GraphProvider} graph... ");
 
         _nodes = nodes;
         _bitmap = new SKBitmap(width, height);
@@ -37,7 +38,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
 
         _canvas.Clear(ConvertColorToSKColor(backgroundColor));
 
-        OnComplete?.Invoke();
+        OnComplete?.Invoke(null);
     }
 
     /// <summary>
@@ -78,7 +79,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
         // Draw the rectangle over the entire canvas
         _canvas.DrawRect(_canvas.LocalClipBounds, paint);
 
-        OnComplete?.Invoke();
+        OnComplete?.Invoke(null);
     }
 
     /// <summary>
@@ -120,7 +121,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                      drawNumbersOnNodes);
         }
 
-        OnComplete?.Invoke();
+        OnComplete?.Invoke(null);
     }
 
     /// <summary>
@@ -161,7 +162,9 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
             data.SaveTo(stream);
         }
 
-        OnComplete?.Invoke();
+        string ansiFileLink = HrefHelper.GetLocalFileLink(path, $"{EmojiHelper.GetEmojiUnicodeValue(Emoji.Picture)} [IcyBlue]Open {imageType} file[/]");
+
+        OnComplete?.Invoke(ansiFileLink);
     }
 
     /// <summary>

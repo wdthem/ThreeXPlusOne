@@ -2,9 +2,10 @@ using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
 using ThreeXPlusOne.App.Config;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Services;
+using ThreeXPlusOne.App.Services.Interfaces;
 using Xunit;
 
 namespace ThreeXPlusOne.UnitTests.Services;
@@ -16,12 +17,12 @@ public class AlgorithmServiceTests
         new AppSettings { }
     );
 
-    private readonly Mock<IConsoleService> _consoleServiceMock;
+    private readonly Mock<IAlgorithmPresenter> _algorithmPresenterMock;
     private readonly Mock<IMetadataService> _metadataServiceMock;
-    
+
     public AlgorithmServiceTests()
     {
-        _consoleServiceMock = new Mock<IConsoleService>();
+        _algorithmPresenterMock = new Mock<IAlgorithmPresenter>();
         _metadataServiceMock = new Mock<IMetadataService>();
     }
 
@@ -53,7 +54,7 @@ public class AlgorithmServiceTests
 
         var algorithmService = new AlgorithmService(_appSettings,
                                                     _metadataServiceMock.Object,
-                                                    _consoleServiceMock.Object);
+                                                    _algorithmPresenterMock.Object);
 
         // Act
         List<CollatzResult> results = await algorithmService.Run();
@@ -84,7 +85,7 @@ public class AlgorithmServiceTests
 
         var algorithmService = new AlgorithmService(_appSettings,
                                                     _metadataServiceMock.Object,
-                                                    _consoleServiceMock.Object);
+                                                    _algorithmPresenterMock.Object);
 
         // Act
         List<CollatzResult> results = await algorithmService.Run();
@@ -117,7 +118,7 @@ public class AlgorithmServiceTests
 
         var algorithmService = new AlgorithmService(_appSettings,
                                                     _metadataServiceMock.Object,
-                                                    _consoleServiceMock.Object);
+                                                    _algorithmPresenterMock.Object);
 
         // Act
         List<CollatzResult> results = await algorithmService.Run();
@@ -151,7 +152,7 @@ public class AlgorithmServiceTests
 
         var algorithmService = new AlgorithmService(_appSettings,
                                                     _metadataServiceMock.Object,
-                                                    _consoleServiceMock.Object);
+                                                    _algorithmPresenterMock.Object);
 
         // Act
         List<CollatzResult> results = await algorithmService.Run();
@@ -184,7 +185,7 @@ public class AlgorithmServiceTests
 
         var algorithmService = new AlgorithmService(_appSettings,
                                                     _metadataServiceMock.Object,
-                                                    _consoleServiceMock.Object);
+                                                    _algorithmPresenterMock.Object);
 
         // Act
         List<CollatzResult> results = await algorithmService.Run();
@@ -218,7 +219,7 @@ public class AlgorithmServiceTests
 
         var algorithmService = new AlgorithmService(_appSettings,
                                                     _metadataServiceMock.Object,
-                                                    _consoleServiceMock.Object);
+                                                    _algorithmPresenterMock.Object);
 
         // Act
         await algorithmService.Run();
@@ -243,7 +244,7 @@ public class AlgorithmServiceTests
 
         var algorithmService = new AlgorithmService(_appSettings,
                                                     _metadataServiceMock.Object,
-                                                    _consoleServiceMock.Object);
+                                                    _algorithmPresenterMock.Object);
 
         // Act
         List<CollatzResult> results = await algorithmService.Run();

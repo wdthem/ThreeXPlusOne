@@ -5,20 +5,21 @@ using System.Drawing;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.UnitTests.Mocks;
 using Xunit;
 using ThreeXPlusOne.App.DirectedGraph.GraphInstances;
+using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.UnitTests.DirectedGraph;
 
 public class DirectedGraphTests
 {
-    private readonly Mock<IConsoleService> _consoleServiceMock;
     private readonly Mock<ILightSourceService> _lightSourceServiceMock;
     private readonly IEnumerable<IDirectedGraphDrawingService> _graphServicesList;
     private readonly Mock<IDirectedGraphDrawingService> _graphServiceMock;
+    private readonly Mock<IDirectedGraphPresenter> _directedGraphPresenterMock;
     private readonly ShapeFactory _shapeFactory;
     private readonly IOptions<AppSettings> _appSettings = new OptionsWrapper<AppSettings>
     (
@@ -27,11 +28,11 @@ public class DirectedGraphTests
 
     public DirectedGraphTests()
     {
-        _consoleServiceMock = new Mock<IConsoleService>();
         _lightSourceServiceMock = new Mock<ILightSourceService>();
         _graphServiceMock = new Mock<IDirectedGraphDrawingService>();
         _graphServicesList = [_graphServiceMock.Object];
         _shapeFactory = new ShapeFactory([]);
+        _directedGraphPresenterMock = new Mock<IDirectedGraphPresenter>();
     }
 
     [Fact]
@@ -44,8 +45,8 @@ public class DirectedGraphTests
         Standard2DDirectedGraph twoDimensionalGraph = new(_appSettings,
                                                           _graphServicesList,
                                                           _lightSourceServiceMock.Object,
-                                                          _consoleServiceMock.Object,
-                                                          _shapeFactory);
+                                                          _shapeFactory,
+                                                          _directedGraphPresenterMock.Object);
 
         // Act + Assert
         twoDimensionalGraph.Invoking(graph => graph.AddSeries(GraphType.Standard2D, collatzResults)).Should().NotThrow();
@@ -73,8 +74,8 @@ public class DirectedGraphTests
         MockDirectedGraph mockDirectedGraph = new(_appSettings,
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
-                                                  _consoleServiceMock.Object,
-                                                  _shapeFactory);
+                                                  _shapeFactory,
+                                                  _directedGraphPresenterMock.Object);
 
         // Act
         (double xPrime, double yPrime) = mockDirectedGraph.RotateNode_Base(nodeValue, rotationAngle, xCoordinate, yCoordinate);
@@ -96,8 +97,8 @@ public class DirectedGraphTests
         MockDirectedGraph mockDirectedGraph = new(_appSettings,
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
-                                                  _consoleServiceMock.Object,
-                                                  _shapeFactory);
+                                                  _shapeFactory,
+                                                  _directedGraphPresenterMock.Object);
 
         // Act
         await mockDirectedGraph.DrawDirectedGraph_Base();
@@ -120,8 +121,8 @@ public class DirectedGraphTests
         MockDirectedGraph mockDirectedGraph = new(_appSettings,
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
-                                                  _consoleServiceMock.Object,
-                                                  _shapeFactory);
+                                                  _shapeFactory,
+                                                  _directedGraphPresenterMock.Object);
 
         Dictionary<int, DirectedGraphNode> nodes = new()
         {

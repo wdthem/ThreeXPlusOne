@@ -2,18 +2,19 @@ using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.DirectedGraph;
-using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.DirectedGraph.Interfaces;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.DirectedGraph.GraphInstances;
 
 public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
                                    IEnumerable<IDirectedGraphDrawingService> graphServices,
                                    ILightSourceService lightSourceService,
-                                   IConsoleService consoleService,
-                                   ShapeFactory shapeFactory)
-                                       : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
+                                   ShapeFactory shapeFactory,
+                                   IDirectedGraphPresenter directedGraphPresenter)
+                                       : DirectedGraph(appSettings, graphServices, lightSourceService, shapeFactory, directedGraphPresenter),
                                          IDirectedGraph
 {
     private readonly Dictionary<(int, int), List<(double X, double Y)>> _nodeGrid = [];
@@ -65,7 +66,7 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
                      _nodes[1].Position.X,
                      _nodes[1].Position.Y);
 
-        _consoleService.WriteDone();
+        _directedGraphPresenter.DisplayDone();
 
         NodePositions.TranslateNodesToPositiveCoordinates(_nodes,
                                                           _appSettings.NodeAestheticSettings.NodeSpacerX,
@@ -90,12 +91,12 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
                                          _appSettings.NodeAestheticSettings.NodeColors,
                                          _appSettings.NodeAestheticSettings.ColorCodeNumberSeries);
 
-            _consoleService.Write($"\r{lcv} nodes styled... ");
+            _directedGraphPresenter.DisplayNodesStyledMessage(lcv);
 
             lcv++;
         }
 
-        _consoleService.WriteDone();
+        _directedGraphPresenter.DisplayDone();
     }
 
     /// <summary>
@@ -112,7 +113,7 @@ public class Spiral2DDirectedGraph(IOptions<AppSettings> appSettings,
                               double centerX,
                               double centerY)
     {
-        _consoleService.Write($"\r{_nodesPositioned} nodes positioned... ");
+        _directedGraphPresenter.DisplayNodesPositionedMessage(_nodesPositioned);
 
         // Convert polar to Cartesian for the node
         double parentX = centerX + radius * (float)Math.Cos(angle * Math.PI / 180);

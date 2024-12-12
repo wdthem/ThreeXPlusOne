@@ -2,18 +2,19 @@
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.DirectedGraph;
-using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.DirectedGraph.Interfaces;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.DirectedGraph.GraphInstances;
 
 public class Standard2DDirectedGraph(IOptions<AppSettings> appSettings,
                                      IEnumerable<IDirectedGraphDrawingService> graphServices,
                                      ILightSourceService lightSourceService,
-                                     IConsoleService consoleService,
-                                     ShapeFactory shapeFactory)
-                                        : DirectedGraph(appSettings, graphServices, lightSourceService, consoleService, shapeFactory),
+                                     ShapeFactory shapeFactory,
+                                     IDirectedGraphPresenter directedGraphPresenter)
+                                        : DirectedGraph(appSettings, graphServices, lightSourceService, shapeFactory, directedGraphPresenter),
                                           IDirectedGraph
 {
     private readonly Dictionary<(int, int), List<(double X, double Y)>> _nodeGrid = [];
@@ -55,7 +56,7 @@ public class Standard2DDirectedGraph(IOptions<AppSettings> appSettings,
         //recursive method to position a node and its children
         PositionNode(_nodes[1]);
 
-        _consoleService.WriteDone();
+        _directedGraphPresenter.DisplayDone();
 
         NodePositions.TranslateNodesToPositiveCoordinates(_nodes,
                                                           _appSettings.NodeAestheticSettings.NodeSpacerX,
@@ -80,12 +81,12 @@ public class Standard2DDirectedGraph(IOptions<AppSettings> appSettings,
                                          _appSettings.NodeAestheticSettings.NodeColors,
                                          _appSettings.NodeAestheticSettings.ColorCodeNumberSeries);
 
-            _consoleService.Write($"\r{lcv} nodes styled... ");
+            _directedGraphPresenter.DisplayNodesStyledMessage(lcv);
 
             lcv++;
         }
 
-        _consoleService.WriteDone();
+        _directedGraphPresenter.DisplayDone();
     }
 
     /// <summary>
@@ -139,7 +140,7 @@ public class Standard2DDirectedGraph(IOptions<AppSettings> appSettings,
             node.IsPositioned = true;
             _nodesPositioned += 1;
 
-            _consoleService.Write($"\r{_nodesPositioned} nodes positioned... ");
+            _directedGraphPresenter.DisplayNodesPositionedMessage(_nodesPositioned);
         }
 
         foreach (DirectedGraphNode childNode in node.Children)

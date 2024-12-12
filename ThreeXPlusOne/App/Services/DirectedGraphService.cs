@@ -2,9 +2,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.DirectedGraph;
-using ThreeXPlusOne.App.Interfaces.Services;
+using ThreeXPlusOne.App.DirectedGraph.Interfaces;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Services;
 
@@ -12,7 +13,7 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
                                   IOptions<AppSettings> appSettings,
                                   IEnumerable<IDirectedGraph> directedGraphs,
                                   IAlgorithmService algorithmService,
-                                  IConsoleService consoleService) : IDirectedGraphService
+                                  IDirectedGraphPresenter directedGraphPresenter) : IDirectedGraphService
 {
     private readonly AppSettings _appSettings = appSettings.Value;
 
@@ -32,7 +33,7 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
                                              .Where(graph => graph.GraphType == graphType)
                                              .First();
 
-        consoleService.WriteHeading($"Directed graph");
+        directedGraphPresenter.DisplayHeading($"Directed graph");
 
         graph.AddSeries(graphType, collatzResults);
         graph.PositionNodes();
@@ -56,16 +57,14 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
     private bool GraphGenerationConfirmed(GraphType graphType)
     {
         //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
-        bool confirmedGenerateGraph = consoleService.AskForConfirmation($"\nGenerate {graphType} visualisation?");
+        bool confirmedGenerateGraph = directedGraphPresenter.GetConfirmation($"\nGenerate {graphType} visualisation?");
 
         if (!confirmedGenerateGraph)
         {
-            consoleService.WriteLineWithColorMarkup("\n<BlushRed>Graph generation cancelled</>");
+            directedGraphPresenter.DisplayGraphGenerationCancelledMessage();
 
             return false;
         }
-
-        consoleService.WriteLine("\n");
 
         return true;
     }

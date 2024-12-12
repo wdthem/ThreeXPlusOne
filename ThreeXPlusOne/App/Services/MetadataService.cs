@@ -1,12 +1,13 @@
 ﻿using System.Text;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Services;
 
 public class MetadataService(IFileService fileService,
                              IHistogramService histogramService,
-                             IConsoleService consoleService) : IMetadataService
+                             IMetadataPresenter metadataPresenter) : IMetadataService
 {
     /// <summary>
     /// Generate the metadata and histogram based on the lists of series numbers.
@@ -15,7 +16,7 @@ public class MetadataService(IFileService fileService,
     /// <returns></returns>
     public async Task GenerateMetadata(List<CollatzResult> collatzResults)
     {
-        consoleService.WriteHeading("Metadata");
+        metadataPresenter.DisplayMetadataHeader();
 
         await GenerateSeriesMetadataFile(collatzResults);
         await histogramService.GenerateHistogram(collatzResults);
@@ -27,13 +28,13 @@ public class MetadataService(IFileService fileService,
     /// <param name="collatzResults"></param>
     private async Task GenerateSeriesMetadataFile(List<CollatzResult> collatzResults)
     {
-        consoleService.WriteWithColorMarkup("Generating number series metadata... ");
+        metadataPresenter.DisplayGeneratingNumberSeriesMetadataMessage();
 
         string filePath = fileService.GenerateMetadataFilePath();
 
         if (fileService.FileExists(filePath))
         {
-            consoleService.WriteLineWithColorMarkup("<BrightJade>already exists</>");
+            metadataPresenter.DisplayMetadataExistsMessage();
 
             return;
         }
@@ -46,7 +47,7 @@ public class MetadataService(IFileService fileService,
 
         await fileService.WriteMetadataToFile(content.ToString(), filePath);
 
-        consoleService.WriteDone();
+        metadataPresenter.DisplayDone();
     }
 
     /// <summary>
