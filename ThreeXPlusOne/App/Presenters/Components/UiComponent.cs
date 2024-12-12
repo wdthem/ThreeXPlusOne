@@ -1,3 +1,5 @@
+using ThreeXPlusOne.App.Enums;
+using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Services.Interfaces;
 
@@ -11,7 +13,7 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <param name="message"></param>
     public void WriteError(string message)
     {
-        consoleService.WriteWithColorMarkup($"\n[BlushRed]Error:[/] {message}\n");
+        consoleService.WriteWithColorMarkup($"\n{EmojiHelper.GetEmojiUnicodeValue(Emoji.RedX)} {message}\n");
     }
 
     /// <summary>

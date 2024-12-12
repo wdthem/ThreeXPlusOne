@@ -162,7 +162,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
             data.SaveTo(stream);
         }
 
-        string ansiFileLink = HrefHelper.GetLocalFileLink(path, $"Open {imageType} file");
+        string ansiFileLink = HrefHelper.GetLocalFileLink(path, $"{EmojiHelper.GetEmojiUnicodeValue(Emoji.Picture)} [IcyBlue]Open {imageType} file[/]");
 
         OnComplete?.Invoke(ansiFileLink);
     }
