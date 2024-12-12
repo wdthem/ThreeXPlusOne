@@ -25,11 +25,11 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <summary>
     /// Read the y or n key press by the user to know whether or not to proceed.
     /// </summary>
-    /// <param name="message"></param>
+    /// <param name="prompt"></param>
     /// <returns></returns>
-    public bool AskForConfirmation(string message)
+    public bool AskForConfirmation(string prompt)
     {
-        consoleService.WriteWithColorMarkup($"[PureYellow]{message}[/] [[WhiteSmoke]y/n[/]] ");
+        consoleService.WriteWithColorMarkup($"[PureYellow]{prompt}[/] [[WhiteSmoke][y/n][/]] ");
 
         while (true)
         {

@@ -16,12 +16,10 @@ public class MetadataService(IFileService fileService,
     /// <returns></returns>
     public async Task GenerateMetadata(List<CollatzResult> collatzResults)
     {
-        metadataPresenter.DisplayGeneratingMetadataMessage();
+        metadataPresenter.DisplayMetadataHeader();
 
         await GenerateSeriesMetadataFile(collatzResults);
         await histogramService.GenerateHistogram(collatzResults);
-
-        metadataPresenter.DisplayDone();
     }
 
     /// <summary>

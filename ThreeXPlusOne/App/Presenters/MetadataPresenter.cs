@@ -10,9 +10,9 @@ public class MetadataPresenter(IConsoleService consoleService,
     /// <summary>
     /// Display a message indicating that the metadata is being generated.
     /// </summary>
-    public void DisplayGeneratingMetadataMessage()
+    public void DisplayMetadataHeader()
     {
-        consoleService.WriteWithColorMarkup("Generating metadata... ");
+        uiComponent.WriteHeading("Metadata");
     }
 
     /// <summary>

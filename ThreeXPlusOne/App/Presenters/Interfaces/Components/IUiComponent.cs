@@ -16,9 +16,9 @@ public interface IUiComponent
     /// <summary>
     /// Read the y or n key press by the user to know whether or not to proceed.
     /// </summary>
-    /// <param name="message"></param>
+    /// <param name="prompt"></param>
     /// <returns></returns>
-    bool AskForConfirmation(string message);
+    bool AskForConfirmation(string prompt);
 
     /// <summary>
     /// Write a visual separator in console output.

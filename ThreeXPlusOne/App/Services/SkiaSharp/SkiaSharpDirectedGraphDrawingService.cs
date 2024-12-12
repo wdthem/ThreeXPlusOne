@@ -29,7 +29,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                            int height,
                            Color backgroundColor)
     {
-        OnStart?.Invoke($"Initialising {GraphProvider} graph... ");
+        OnStart?.Invoke($"\nInitialising {GraphProvider} graph... ");
 
         _nodes = nodes;
         _bitmap = new SKBitmap(width, height);

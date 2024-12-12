@@ -5,7 +5,7 @@ public interface IMetadataPresenter
     /// <summary>
     /// Display a message indicating that the metadata is being generated.
     /// </summary>
-    void DisplayGeneratingMetadataMessage();
+    void DisplayMetadataHeader();
 
     /// <summary>
     /// Display a message indicating that the number series metadata is being generated.
