@@ -1,7 +1,7 @@
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 
-namespace ThreeXPlusOne.App.Interfaces.DirectedGraph;
+namespace ThreeXPlusOne.App.DirectedGraph.Interfaces;
 
 /// <summary>
 /// The common interface for all Shape instances.

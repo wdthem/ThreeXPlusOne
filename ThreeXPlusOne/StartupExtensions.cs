@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
-using ThreeXPlusOne.App.Interfaces.DirectedGraph;
+using ThreeXPlusOne.App.DirectedGraph.Interfaces;
 using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.CommandLine.Models;

@@ -1,7 +1,7 @@
 ﻿using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Models;
 
-namespace ThreeXPlusOne.App.Interfaces.DirectedGraph;
+namespace ThreeXPlusOne.App.DirectedGraph.Interfaces;
 
 public interface IDirectedGraph
 {
