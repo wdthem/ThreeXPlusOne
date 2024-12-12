@@ -1,17 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Reflection;
 using ThreeXPlusOne.App.DirectedGraph.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Config;
-using ThreeXPlusOne.CommandLine.Models;
-using ThreeXPlusOne.CommandLine.Services;
-using ThreeXPlusOne.CommandLine.Services.Hosted;
 using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Presenters;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Presenters.Components;
+using ThreeXPlusOne.App.Services.Interfaces;
+using ThreeXPlusOne.CommandLine.Models;
+using ThreeXPlusOne.CommandLine.Services;
+using ThreeXPlusOne.CommandLine.Services.Hosted;
 
 namespace ThreeXPlusOne;
 

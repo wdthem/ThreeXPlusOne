@@ -5,12 +5,12 @@ using System.Drawing;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.UnitTests.Mocks;
 using Xunit;
 using ThreeXPlusOne.App.DirectedGraph.GraphInstances;
 using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.UnitTests.DirectedGraph;
 
@@ -19,7 +19,6 @@ public class DirectedGraphTests
     private readonly Mock<ILightSourceService> _lightSourceServiceMock;
     private readonly IEnumerable<IDirectedGraphDrawingService> _graphServicesList;
     private readonly Mock<IDirectedGraphDrawingService> _graphServiceMock;
-    private readonly Mock<IProgressIndicatorPresenter> _progressIndicatorPresenterMock;
     private readonly Mock<IDirectedGraphPresenter> _directedGraphPresenterMock;
     private readonly ShapeFactory _shapeFactory;
     private readonly IOptions<AppSettings> _appSettings = new OptionsWrapper<AppSettings>
@@ -33,7 +32,6 @@ public class DirectedGraphTests
         _graphServiceMock = new Mock<IDirectedGraphDrawingService>();
         _graphServicesList = [_graphServiceMock.Object];
         _shapeFactory = new ShapeFactory([]);
-        _progressIndicatorPresenterMock = new Mock<IProgressIndicatorPresenter>();
         _directedGraphPresenterMock = new Mock<IDirectedGraphPresenter>();
     }
 
@@ -48,7 +46,6 @@ public class DirectedGraphTests
                                                           _graphServicesList,
                                                           _lightSourceServiceMock.Object,
                                                           _shapeFactory,
-                                                          _progressIndicatorPresenterMock.Object,
                                                           _directedGraphPresenterMock.Object);
 
         // Act + Assert
@@ -78,7 +75,6 @@ public class DirectedGraphTests
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
                                                   _shapeFactory,
-                                                  _progressIndicatorPresenterMock.Object,
                                                   _directedGraphPresenterMock.Object);
 
         // Act
@@ -102,7 +98,6 @@ public class DirectedGraphTests
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
                                                   _shapeFactory,
-                                                  _progressIndicatorPresenterMock.Object,
                                                   _directedGraphPresenterMock.Object);
 
         // Act
@@ -127,7 +122,6 @@ public class DirectedGraphTests
                                                   _graphServicesList,
                                                   _lightSourceServiceMock.Object,
                                                   _shapeFactory,
-                                                  _progressIndicatorPresenterMock.Object,
                                                   _directedGraphPresenterMock.Object);
 
         Dictionary<int, DirectedGraphNode> nodes = new()

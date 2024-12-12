@@ -3,9 +3,9 @@ using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.DirectedGraph.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.UnitTests.Mocks;
 
@@ -13,9 +13,8 @@ public class MockDirectedGraph(IOptions<AppSettings> appSettings,
                                IEnumerable<IDirectedGraphDrawingService> graphServices,
                                ILightSourceService lightSourceService,
                                ShapeFactory shapeFactory,
-                               IProgressIndicatorPresenter progressIndicatorPresenter,
                                IDirectedGraphPresenter directedGraphPresenter)
-                                    : App.DirectedGraph.DirectedGraph(appSettings, graphServices, lightSourceService, shapeFactory, progressIndicatorPresenter, directedGraphPresenter),
+                                    : App.DirectedGraph.DirectedGraph(appSettings, graphServices, lightSourceService, shapeFactory, directedGraphPresenter),
                                       IDirectedGraph
 {
     public GraphType GraphType => GraphType.Standard2D;

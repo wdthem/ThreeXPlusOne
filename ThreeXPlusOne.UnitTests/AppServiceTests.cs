@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
 using Moq;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Services;
+using ThreeXPlusOne.App.Services.Interfaces;
 using Xunit;
 
 namespace ThreeXPlusOne.UnitTests;

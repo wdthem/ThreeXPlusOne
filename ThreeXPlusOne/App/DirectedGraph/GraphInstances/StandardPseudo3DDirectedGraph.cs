@@ -3,9 +3,9 @@ using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.DirectedGraph.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.DirectedGraph.GraphInstances;
 
@@ -13,9 +13,8 @@ public class StandardPseudo3DDirectedGraph(IOptions<AppSettings> appSettings,
                                            IEnumerable<IDirectedGraphDrawingService> directedGraphDrawingServices,
                                            ILightSourceService lightSourceService,
                                            ShapeFactory shapeFactory,
-                                           IProgressIndicatorPresenter progressIndicatorPresenter,
                                            IDirectedGraphPresenter directedGraphPresenter)
-                                                : DirectedGraph(appSettings, directedGraphDrawingServices, lightSourceService, shapeFactory, progressIndicatorPresenter, directedGraphPresenter),
+                                                : DirectedGraph(appSettings, directedGraphDrawingServices, lightSourceService, shapeFactory, directedGraphPresenter),
                                                   IDirectedGraph
 {
     private readonly Dictionary<(int, int, int), List<(double X, double Y, double Z)>> _nodeGrid = [];

@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Services;
 

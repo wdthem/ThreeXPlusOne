@@ -1,7 +1,7 @@
 using ThreeXPlusOne.App.Helpers;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Presenters;
 

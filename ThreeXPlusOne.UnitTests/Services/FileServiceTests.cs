@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using Moq;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Services;
 using Xunit;

@@ -3,9 +3,9 @@ using System.Drawing;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.App.Presenters.Interfaces;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.DirectedGraph;
 
@@ -13,7 +13,6 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
                                             IEnumerable<IDirectedGraphDrawingService> graphServices,
                                             ILightSourceService lightSourceService,
                                             ShapeFactory shapeFactory,
-                                            IProgressIndicatorPresenter progressIndicatorPresenter,
                                             IDirectedGraphPresenter directedGraphPresenter)
 {
     private int _canvasWidth = 0;
@@ -194,13 +193,18 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
         graphService.OnStart = (message) =>
         {
             _directedGraphPresenter.WriteActionMessage(message);
-            _ = progressIndicatorPresenter.StartSpinningBar();
+            _ = _directedGraphPresenter.DisplayProgressIndicator();
         };
 
-        graphService.OnComplete = async () =>
+        graphService.OnComplete = async (message) =>
         {
-            await progressIndicatorPresenter.StopSpinningBar();
+            await _directedGraphPresenter.StopProgressIndicator();
             _directedGraphPresenter.DisplayDone();
+
+            if (message != null)
+            {
+                _directedGraphPresenter.WriteActionMessage($"\n{message}\n");
+            }
         };
     }
 

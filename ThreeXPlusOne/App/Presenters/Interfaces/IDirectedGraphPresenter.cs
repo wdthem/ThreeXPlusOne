@@ -1,5 +1,3 @@
-using System.IO.Compression;
-
 namespace ThreeXPlusOne.App.Presenters.Interfaces;
 
 public interface IDirectedGraphPresenter
@@ -57,4 +55,16 @@ public interface IDirectedGraphPresenter
     /// Display a message indicating that the series have been added to the graph.
     /// </summary>
     void DisplayDone();
+
+    /// <summary>
+    /// Display a progress indicator.
+    /// </summary>
+    /// <param name="message"></param>
+    Task DisplayProgressIndicator(string? message = null);
+
+    /// <summary>
+    /// Stop the progress indicator.
+    /// </summary>
+    /// <param name="message"></param>
+    Task StopProgressIndicator(string? message = null);
 }

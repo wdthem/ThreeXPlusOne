@@ -1,6 +1,6 @@
 ﻿using ThreeXPlusOne.App.Models;
 
-namespace ThreeXPlusOne.App.Interfaces.Services;
+namespace ThreeXPlusOne.App.Services.Interfaces;
 
 public interface IMetadataService : IScopedService
 {

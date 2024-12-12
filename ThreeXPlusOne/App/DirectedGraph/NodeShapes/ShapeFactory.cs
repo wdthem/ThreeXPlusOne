@@ -1,7 +1,7 @@
 using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.DirectedGraph.Interfaces;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Models;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 public class ShapeFactory(IEnumerable<IShape> shapes) : ISingletonService

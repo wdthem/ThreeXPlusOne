@@ -1,7 +1,7 @@
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
 
-namespace ThreeXPlusOne.App.Interfaces.Services;
+namespace ThreeXPlusOne.App.Services.Interfaces;
 
 public interface ILightSourceService : IScopedService
 {

@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using ThreeXPlusOne.App.Helpers;
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Services.Base;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Services;
 

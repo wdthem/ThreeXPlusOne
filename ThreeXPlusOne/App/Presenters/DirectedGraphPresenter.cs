@@ -1,10 +1,11 @@
-using ThreeXPlusOne.App.Interfaces.Services;
 using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
+using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Presenters;
 
 public class DirectedGraphPresenter(IConsoleService consoleService,
+                                    IProgressIndicatorPresenter progressIndicatorPresenter,
                                     IUiComponent uiComponent) : IDirectedGraphPresenter
 {
     /// <summary>
@@ -85,5 +86,23 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     public void DisplayDone()
     {
         uiComponent.WriteDone();
+    }
+
+    /// <summary>
+    /// Display a progress indicator.
+    /// </summary>
+    /// <param name="message"></param>
+    public async Task DisplayProgressIndicator(string? message = null)
+    {
+        await progressIndicatorPresenter.StartSpinningBar(message);
+    }
+
+    /// <summary>
+    /// Stop the progress indicator.
+    /// </summary>
+    /// <param name="message"></param>
+    public async Task StopProgressIndicator(string? message = null)
+    {
+        await progressIndicatorPresenter.StopSpinningBar(message);
     }
 }

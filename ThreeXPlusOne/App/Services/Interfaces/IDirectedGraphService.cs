@@ -1,4 +1,4 @@
-namespace ThreeXPlusOne.App.Interfaces.Services;
+namespace ThreeXPlusOne.App.Services.Interfaces;
 
 public interface IDirectedGraphService : IScopedService
 {
