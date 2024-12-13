@@ -32,7 +32,7 @@ public class AppPresenter(IConsoleService consoleService,
 
         foreach (string message in commandParsingMessages)
         {
-            consoleService.WriteLine(message);
+            consoleService.WriteLine($"  {message}");
         }
 
         consoleService.WriteLine("");
@@ -48,7 +48,7 @@ public class AppPresenter(IConsoleService consoleService,
                                            timespan.Minutes, timespan.Seconds, timespan.Milliseconds);
 
         uiComponent.WriteHeading($"Process completed");
-        consoleService.WriteLine($"Execution time: {elapsedTime}\n\n");
+        consoleService.WriteLineWithColorMarkup($"  [WhiteSmoke]Execution time[/]: {elapsedTime}\n\n");
     }
 
     /// <summary>

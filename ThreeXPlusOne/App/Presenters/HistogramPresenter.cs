@@ -12,7 +12,7 @@ public class HistogramPresenter(IConsoleService consoleService,
     /// </summary>
     public void DisplayGeneratingHistogramMessage()
     {
-        consoleService.WriteWithColorMarkup("Generating histogram... ");
+        consoleService.WriteWithColorMarkup("  Generating histogram... ");
     }
 
     /// <summary>

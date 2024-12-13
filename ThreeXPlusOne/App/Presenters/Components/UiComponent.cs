@@ -7,13 +7,15 @@ namespace ThreeXPlusOne.App.Presenters.Components;
 
 public class UiComponent(IConsoleService consoleService) : IUiComponent
 {
+    private readonly string _consoleLine = new('═', consoleService.AppConsoleWidth);
+
     /// <summary>
     /// Write an error message.
     /// </summary>
     /// <param name="message"></param>
     public void WriteError(string message)
     {
-        consoleService.WriteWithColorMarkup($"\n{EmojiHelper.GetEmojiUnicodeValue(Emoji.RedX)} {message}\n");
+        consoleService.WriteWithColorMarkup($"  {EmojiHelper.GetEmojiUnicodeValue(Emoji.RedX)} {message}\n");
     }
 
     /// <summary>
@@ -31,7 +33,7 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <returns></returns>
     public bool AskForConfirmation(string prompt)
     {
-        consoleService.WriteWithColorMarkup($"\n{EmojiHelper.GetEmojiUnicodeValue(Emoji.ThinkingFace)} [EmojiYellow]{prompt}[/] [[WhiteSmoke][y/n][/]] ");
+        consoleService.WriteWithColorMarkup($"  {EmojiHelper.GetEmojiUnicodeValue(Emoji.ThinkingFace)} [EmojiYellow]{prompt}[/] [[WhiteSmoke][y/n][/]] ");
 
         while (true)
         {
@@ -47,9 +49,9 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <summary>
     /// Write a visual separator in console output.
     /// </summary>
-    public void WriteSeparator(bool delay = false)
+    public void WriteSeparator()
     {
-        consoleService.WriteWithColorMarkup("\n[MediumGray]————————————————————————————————————————————————————————————————————————————————————[/]\n");
+        consoleService.WriteLineWithColorMarkup($"\n  [MediumGray]{_consoleLine[..^4]}[/]\n");
     }
 
     /// <summary>
@@ -58,10 +60,10 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <param name="headerText"></param>
     public void WriteHeading(string headerText)
     {
-        WriteSeparator();
-
-        consoleService.WriteWithColorMarkup($"[BlueTint]{headerText.ToUpper()}[/]");
-
-        WriteSeparator();
+        consoleService.WriteLineWithColorMarkup($"\n[SoftOrchid]╔{_consoleLine[..^2]}╗[/]");
+        consoleService.WriteWithColorMarkup("[SoftOrchid]║[/]");
+        consoleService.WriteWithColorMarkup($" [IcyBlue]{headerText.ToUpper().PadRight(_consoleLine.Length - 3)}[/]");
+        consoleService.WriteLineWithColorMarkup("[SoftOrchid]║[/]");
+        consoleService.WriteLineWithColorMarkup($"[SoftOrchid]╚{_consoleLine[..^2]}╝[/]");
     }
 }

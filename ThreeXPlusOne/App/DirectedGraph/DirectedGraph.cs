@@ -203,7 +203,7 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
             if (message != null)
             {
-                _directedGraphPresenter.WriteActionMessage($"\n{message}\n");
+                _directedGraphPresenter.WriteActionMessage($"\n  {message}\n");
             }
         };
     }

@@ -27,7 +27,7 @@ public class AlgorithmPresenter(IOptions<AppSettings> appSettings,
     /// <param name="numberCount"></param>
     public void DisplayRunningAlgorithmMessage(int numberCount)
     {
-        consoleService.WriteWithColorMarkup($"Running 3x + 1 algorithm on {numberCount} numbers... ");
+        consoleService.WriteWithColorMarkup($"  Running 3x + 1 algorithm on {numberCount} numbers... ");
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class AlgorithmPresenter(IOptions<AppSettings> appSettings,
     /// </summary>
     public void DisplayUsingSeriesMessage()
     {
-        consoleService.WriteLine($"Using series numbers defined in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)} (ignoring any in {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)})");
+        consoleService.WriteLine($"  Using series numbers defined in {nameof(_appSettings.AlgorithmSettings.NumbersToUse)} (ignoring any in {nameof(_appSettings.AlgorithmSettings.NumbersToExclude)})");
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class AlgorithmPresenter(IOptions<AppSettings> appSettings,
     /// </summary>
     public void DisplayGeneratingRandomNumbersMessage()
     {
-        consoleService.WriteWithColorMarkup($"Generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers from 1 to {_appSettings.AlgorithmSettings.RandomNumberMax}... ");
+        consoleService.WriteWithColorMarkup($"  Generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers from 1 to {_appSettings.AlgorithmSettings.RandomNumberMax}... ");
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public class AlgorithmPresenter(IOptions<AppSettings> appSettings,
     /// <param name="numberCount"></param>
     public void DisplayGaveUpGeneratingNumbersMessage(int numberCount)
     {
-        consoleService.WriteLine($"Gave up generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers. Generated {numberCount}");
+        consoleService.WriteLine($"  Gave up generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers. Generated {numberCount}");
     }
 
     /// <summary>

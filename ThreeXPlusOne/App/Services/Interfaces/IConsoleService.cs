@@ -3,6 +3,11 @@ namespace ThreeXPlusOne.App.Services.Interfaces;
 public interface IConsoleService : ISingletonService
 {
     /// <summary>
+    /// Get the width of the console window.
+    /// </summary>
+    int AppConsoleWidth { get; }
+
+    /// <summary>
     /// Issue a Console.Write() command.
     /// </summary>
     /// <param name="message"></param>
@@ -31,6 +36,12 @@ public interface IConsoleService : ISingletonService
     /// </summary>
     /// <param name="visible"></param>
     void SetCursorVisibility(bool visible);
+
+    /// <summary>
+    /// Get the cursor position.
+    /// </summary>
+    /// <returns></returns>
+    (int Left, int Top) GetCursorPosition();
 
     /// <summary>
     /// Set the cursor position.

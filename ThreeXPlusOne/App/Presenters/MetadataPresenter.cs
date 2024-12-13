@@ -20,7 +20,7 @@ public class MetadataPresenter(IConsoleService consoleService,
     /// </summary>
     public void DisplayGeneratingNumberSeriesMetadataMessage()
     {
-        consoleService.WriteWithColorMarkup("Generating number series metadata... ");
+        consoleService.WriteWithColorMarkup("  Generating number series metadata... ");
     }
 
     /// <summary>

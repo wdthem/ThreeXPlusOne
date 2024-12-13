@@ -16,7 +16,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="seriesCount"></param>
     public void DisplayAddingSeriesMessage(int seriesCount)
     {
-        consoleService.WriteWithColorMarkup($"Adding {seriesCount} series to the graph... ");
+        consoleService.WriteWithColorMarkup($"  Adding {seriesCount} series to the graph... ");
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="canvasHeight"></param>
     public void DisplaySettingCanvasSizeMessage(int canvasWidth, int canvasHeight)
     {
-        consoleService.WriteWithColorMarkup($"Setting canvas dimensions to {canvasWidth:N0} x {canvasHeight:N0}... ");
+        consoleService.WriteWithColorMarkup($"  Setting canvas dimensions to {canvasWidth:N0} x {canvasHeight:N0}... ");
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="nodesPositioned"></param>
     public void DisplayNodesPositionedMessage(int nodesPositioned)
     {
-        consoleService.WriteWithColorMarkup($"\r{nodesPositioned} nodes positioned... ");
+        consoleService.WriteWithColorMarkup($"\r  {nodesPositioned} nodes positioned... ");
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="nodesStyled"></param>
     public void DisplayNodesStyledMessage(int nodesStyled)
     {
-        consoleService.WriteWithColorMarkup($"\r{nodesStyled} nodes styled... ");
+        consoleService.WriteWithColorMarkup($"\r  {nodesStyled} nodes styled... ");
     }
 
     /// <summary>
@@ -71,7 +71,13 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="message"></param>
     public bool GetConfirmation(string message)
     {
-        return uiComponent.AskForConfirmation(message);
+        uiComponent.WriteSeparator();
+
+        bool result = uiComponent.AskForConfirmation(message);
+
+        uiComponent.WriteSeparator();
+
+        return result;
     }
 
     /// <summary>
@@ -79,7 +85,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// </summary>
     public void DisplayGraphGenerationCancelledMessage()
     {
-        consoleService.WriteLineWithColorMarkup($"\n{EmojiHelper.GetEmojiUnicodeValue(Emoji.RedX)} Graph generation cancelled");
+        consoleService.WriteLineWithColorMarkup($"  {EmojiHelper.GetEmojiUnicodeValue(Emoji.RedX)} Graph generation cancelled");
     }
 
     /// <summary>
@@ -96,7 +102,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="message"></param>
     public async Task DisplayProgressIndicator(string? message = null)
     {
-        await progressIndicatorPresenter.StartSpinningBar(message);
+        await progressIndicatorPresenter.StartSpinner(message);
     }
 
     /// <summary>
@@ -105,6 +111,6 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="message"></param>
     public async Task StopProgressIndicator(string? message = null)
     {
-        await progressIndicatorPresenter.StopSpinningBar(message);
+        await progressIndicatorPresenter.StopSpinner();
     }
 }

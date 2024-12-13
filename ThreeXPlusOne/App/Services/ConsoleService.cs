@@ -13,6 +13,11 @@ public partial class ConsoleService : ConsoleServiceBase, IConsoleService
     private static partial Regex ColorMarkup();
 
     /// <summary>
+    /// The width of the app in the console window.
+    /// </summary>
+    public int AppConsoleWidth => 84;
+
+    /// <summary>
     /// Custom write method for console output (threadsafe).
     /// </summary>
     /// <param name="message"></param>
@@ -82,6 +87,17 @@ public partial class ConsoleService : ConsoleServiceBase, IConsoleService
         {
             Console.CursorVisible = visible;
         }
+    }
+
+    /// <summary>
+    /// Get the cursor position.
+    /// </summary>
+    /// <returns></returns>
+    public (int Left, int Top) GetCursorPosition()
+    {
+        (int left, int top) = Console.GetCursorPosition();
+
+        return (left, top);
     }
 
     /// <summary>

@@ -30,7 +30,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                            int height,
                            Color backgroundColor)
     {
-        OnStart?.Invoke($"\nInitialising {GraphProvider} graph... ");
+        OnStart?.Invoke($"  Initialising {GraphProvider} graph... ");
 
         _nodes = nodes;
         _bitmap = new SKBitmap(width, height);
@@ -52,7 +52,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
                                     double radius,
                                     Color color)
     {
-        OnStart?.Invoke("Generating light source... ");
+        OnStart?.Invoke("  Generating light source... ");
 
         if (_canvas == null)
         {
@@ -103,7 +103,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
             extraMessage = " and connections";
         }
 
-        OnStart?.Invoke($"Drawing {_nodes.Count} nodes{extraMessage}... ");
+        OnStart?.Invoke($"  Drawing {_nodes.Count} nodes{extraMessage}... ");
 
         if (drawNodeConnections)
         {
@@ -133,7 +133,7 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
     public void SaveImage(string imageTypeAppSetting,
                           int imageQualityAppSetting)
     {
-        OnStart?.Invoke("Saving image... ");
+        OnStart?.Invoke("  Saving image... ");
 
         if (_bitmap == null)
         {

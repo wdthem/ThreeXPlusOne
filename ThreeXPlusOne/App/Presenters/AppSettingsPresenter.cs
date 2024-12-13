@@ -20,11 +20,11 @@ public class AppSettingsPresenter(IOptions<AppSettings> appSettings,
     {
         if (savedSettings)
         {
-            consoleService.WriteLine($"Saved generated numbers to '{_appSettings.SettingsFileFullPath}'");
+            consoleService.WriteLine($"  Saved generated numbers to '{_appSettings.SettingsFileFullPath}'");
         }
         else
         {
-            consoleService.WriteLine("Settings left unchanged");
+            consoleService.WriteLine("  Settings left unchanged");
         }
     }
 
@@ -44,6 +44,12 @@ public class AppSettingsPresenter(IOptions<AppSettings> appSettings,
     /// <returns></returns>
     public bool GetConfirmation(string message)
     {
-        return uiComponent.AskForConfirmation(message);
+        uiComponent.WriteSeparator();
+
+        bool result = uiComponent.AskForConfirmation(message);
+
+        uiComponent.WriteSeparator();
+
+        return result;
     }
 }

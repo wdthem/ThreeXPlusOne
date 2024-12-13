@@ -23,7 +23,7 @@ public interface IUiComponent
     /// <summary>
     /// Write a visual separator in console output.
     /// </summary>
-    void WriteSeparator(bool delay = false);
+    void WriteSeparator();
 
     /// <summary>
     /// Write a section heading in console output.
