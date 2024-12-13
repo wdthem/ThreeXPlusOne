@@ -2,6 +2,9 @@ namespace ThreeXPlusOne.App.Enums;
 
 public enum AppColor
 {
+    [HexColor("#4EC9B0")]
+    AquaTeal,
+
     [HexColor("#569CD6")]
     BlueTint,
 
@@ -11,8 +14,8 @@ public enum AppColor
     [HexColor("#1AC578")]
     BrightJade,
 
-    [HexColor("#4EC9B0")]
-    AquaTeal,
+    [HexColor("#FFDE00")]
+    EmojiYellow,
 
     [HexColor("#DEDEDE")]
     Gray,

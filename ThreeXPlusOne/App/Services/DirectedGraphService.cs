@@ -57,7 +57,7 @@ public class DirectedGraphService(ILogger<DirectedGraphService> logger,
     private bool GraphGenerationConfirmed(GraphType graphType)
     {
         //allow the user to bail on generating the graph (for example, if canvas dimensions are too large)
-        bool confirmedGenerateGraph = directedGraphPresenter.GetConfirmation($"\nGenerate {graphType} visualisation?");
+        bool confirmedGenerateGraph = directedGraphPresenter.GetConfirmation($"Generate {graphType} visualisation?");
 
         if (!confirmedGenerateGraph)
         {

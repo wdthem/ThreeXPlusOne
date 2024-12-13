@@ -1,3 +1,5 @@
+using ThreeXPlusOne.App.Enums;
+using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Services.Interfaces;
@@ -77,7 +79,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// </summary>
     public void DisplayGraphGenerationCancelledMessage()
     {
-        consoleService.WriteLineWithColorMarkup("\n[BlushRed]Graph generation cancelled[/]");
+        consoleService.WriteLineWithColorMarkup($"\n{EmojiHelper.GetEmojiUnicodeValue(Emoji.RedX)} Graph generation cancelled");
     }
 
     /// <summary>

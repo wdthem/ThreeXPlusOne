@@ -33,6 +33,11 @@ try
 
     await host.RunAsync();
 }
+catch (PlatformNotSupportedException ex)
+{
+    Log.Fatal(ex, "ThreeXPlusOne app failed to start due to unsupported platform");
+    Console.WriteLine($"\n{ex.Message}\n");
+}
 catch (Exception ex)
 {
     Log.Fatal(ex, "ThreeXPlusOne app failed to start");

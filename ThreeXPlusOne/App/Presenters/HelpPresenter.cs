@@ -1,4 +1,5 @@
 using System.Reflection;
+using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Services.Interfaces;
@@ -26,12 +27,12 @@ public class HelpPresenter(IConsoleService consoleService,
         WriteVersionText();
 
         uiComponent.WriteHeading("GitHub repository");
-        consoleService.WriteLine("https://github.com/wdthem/ThreeXPlusOne\n");
+        consoleService.WriteLine($"{HrefHelper.GetAnsiHyperlink("https://github.com/wdthem/ThreeXPlusOne", "https://github.com/wdthem/ThreeXPlusOne")}\n");
 
         uiComponent.WriteHeading("Credits");
-        consoleService.WriteLine("Inspiration from Veritasium: https://www.youtube.com/watch?v=094y1Z2wpJg");
-        consoleService.WriteLine("ASCII art via: https://www.patorjk.com/software/taag/#p=display");
-        consoleService.WriteLine("Graphs drawn with SkiaSharp: https://github.com/mono/SkiaSharp\n\n");
+        consoleService.WriteLine($"Inspiration from Veritasium: {HrefHelper.GetAnsiHyperlink("https://www.youtube.com/watch?v=094y1Z2wpJg", "https://www.youtube.com/watch?v=094y1Z2wpJg")}");
+        consoleService.WriteLine($"ASCII art via:               {HrefHelper.GetAnsiHyperlink("https://www.patorjk.com/software/taag/#p=display", "https://www.patorjk.com/software/taag/#p=display")}");
+        consoleService.WriteLine($"Graphs drawn with SkiaSharp: {HrefHelper.GetAnsiHyperlink("https://github.com/mono/SkiaSharp", "https://github.com/mono/SkiaSharp")}\n\n");
     }
 
     /// <summary>

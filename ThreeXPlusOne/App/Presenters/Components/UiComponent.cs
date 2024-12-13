@@ -31,13 +31,15 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <returns></returns>
     public bool AskForConfirmation(string prompt)
     {
-        consoleService.WriteWithColorMarkup($"[PureYellow]{prompt}[/] [[WhiteSmoke][y/n][/]] ");
+        consoleService.WriteWithColorMarkup($"\n{EmojiHelper.GetEmojiUnicodeValue(Emoji.ThinkingFace)} [EmojiYellow]{prompt}[/] [[WhiteSmoke][y/n][/]] ");
 
         while (true)
         {
             ConsoleKey key = Console.ReadKey(intercept: true).Key;
             string response = key == ConsoleKey.Y ? "y" : "n";
+
             consoleService.WriteLine(response);
+
             return key == ConsoleKey.Y;
         }
     }
