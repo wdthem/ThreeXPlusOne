@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.Enums;
+using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Services.Interfaces;
@@ -28,10 +29,13 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
         uiComponent.WriteHeading("Configuration");
 
         uiComponent.WriteHeading("App settings");
-        consoleService.WriteLine("If no custom app settings are supplied, defaults will be used.\n");
-        consoleService.WriteLine($"To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same folder as the executable. Or use the --settings flag to provide a directory path to the '{_appSettings.SettingsFileName}' file.\n\nIt must have the following content:\n");
+        consoleService.WriteLine("  If no custom app settings are supplied, defaults will be used.\n");
+        consoleService.WriteLineWithColorMarkup($"  To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same\n" +
+                                                $"  folder as the executable. Or use the [BlueTint]--settings[/] flag to provide a directory path\n" +
+                                                $"  to the '{_appSettings.SettingsFileName}' file.\n\n" +
+                                                $"  It must have the following content:\n");
 
-        consoleService.WriteLineWithColorMarkup("[BlushRed]{[/]");
+        consoleService.WriteLineWithColorMarkup("  [BlushRed]{[/]");
 
         WriteSettings(type: null,
                       instance: null,
@@ -39,19 +43,22 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
                       includeHeader: false,
                       isJson: true);
 
-        consoleService.WriteLineWithColorMarkup("[BlushRed]}[/]");
+        consoleService.WriteLineWithColorMarkup("  [BlushRed]}[/]");
 
         uiComponent.WriteHeading("Definitions and suggested values");
 
         List<string> lines = GenerateSuggestedValueText();
 
-        lines.Add("\nThe above app settings are a good starting point from which to experiment.\n");
-        lines.Add("Alternatively, start with the app settings from the Example Output on the GitHub repository: https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt\n");
+        lines.Add("\n  The above app settings are a good starting point from which to experiment.\n");
+        lines.Add($"  Alternatively, start with the app settings from the following file on the\n" +
+                  $"  GitHub repository: {HrefHelper.GetAnsiHyperlink("https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt", "ExampleOutputSettings.txt")}\n");
 
         ScrollOutput("app settings", lines);
 
         uiComponent.WriteHeading("Performance");
-        consoleService.WriteLine("Be aware that increasing some app settings may result in large canvas sizes, which could cause the program to fail. It depends on the capabilities of the machine running it.\n\n");
+        consoleService.WriteLine("  Be aware that increasing some app settings may result in large canvas sizes,\n" +
+                                 "  which could cause the program to fail. It depends on the capabilities of the\n" +
+                                 "  machine running it.\n\n");
     }
 
     /// <summary>
@@ -85,7 +92,7 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
             if (isJson)
             {
                 consoleService.WriteLineWithColorMarkup($"    [AquaTeal]{sectionNameWords}[/]");
-                consoleService.WriteLineWithColorMarkup("[BlushRed]{[/]");
+                consoleService.WriteLineWithColorMarkup("    [BlushRed]{[/]");
             }
             else
             {
@@ -293,7 +300,7 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
 
             string sectionNameWords = $"{SplitToWordsRegex().Replace(sectionName, "$1 $2")}\n";
 
-            lines.Add($"[AquaTeal]{sectionNameWords}[/]");
+            lines.Add($"\n  [AquaTeal]{sectionNameWords}[/]");
         }
 
         bool generalSettingsWritten = false;
@@ -312,7 +319,7 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
             {
                 if (type == typeof(AppSettings) && !generalSettingsWritten)
                 {
-                    lines.Add($"[AquaTeal]General Settings[/]\n");
+                    lines.Add($"\n  [AquaTeal]General Settings[/]\n");
 
                     generalSettingsWritten = true;
                 }
@@ -323,10 +330,36 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
 
                 if (settingAttribute != null)
                 {
-                    lines.Add($"  {settingAttribute.Description.Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)).OrderBy(name => name)))
-                                                               .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType)).OrderBy(name => name)))
-                                                               .Replace("{GraphTypePlaceholder}", string.Join(", ", Enum.GetNames(typeof(GraphType)).OrderBy(name => name)))
-                                                               .Replace("{ShapesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ShapeType)).OrderBy(name => name)))}");
+                    string description =
+                        settingAttribute.Description
+                            .Replace("{LightSourcePositionsPlaceholder}", string.Join(", ", Enum.GetNames(typeof(LightSourcePosition)).OrderBy(name => name)))
+                            .Replace("{ImageTypesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ImageType)).OrderBy(name => name)))
+                            .Replace("{GraphTypePlaceholder}", string.Join(", ", Enum.GetNames(typeof(GraphType)).OrderBy(name => name)))
+                            .Replace("{ShapesPlaceholder}", string.Join(", ", Enum.GetNames(typeof(ShapeType)).OrderBy(name => name)));
+
+                    string[] words = description.Split(' ');
+                    StringBuilder currentLine = new("  "); // Start with 2 spaces indent
+                    int maxWidth = consoleService.AppConsoleWidth - 4; // Account for indent
+
+                    foreach (string word in words)
+                    {
+                        if (currentLine.Length + word.Length + 1 > maxWidth) // +1 for the space
+                        {
+                            lines.Add(currentLine.ToString());
+                            currentLine.Clear().Append("  "); // Reset with indent
+                        }
+
+                        if (currentLine.Length > 2) // If not at start of line
+                        {
+                            currentLine.Append(' ');
+                        }
+                        currentLine.Append(word);
+                    }
+
+                    if (currentLine.Length > 2) // Add the last line if it's not empty
+                    {
+                        lines.Add(currentLine.ToString());
+                    }
 
                     string suggestedValueText = "  [BlueTint]Suggested value:[/] ";
 

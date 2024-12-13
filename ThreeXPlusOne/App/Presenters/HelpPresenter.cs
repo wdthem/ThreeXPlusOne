@@ -27,12 +27,12 @@ public class HelpPresenter(IConsoleService consoleService,
         WriteVersionText();
 
         uiComponent.WriteHeading("GitHub repository");
-        consoleService.WriteLine($"{HrefHelper.GetAnsiHyperlink("https://github.com/wdthem/ThreeXPlusOne", "https://github.com/wdthem/ThreeXPlusOne")}\n");
+        consoleService.WriteLine($"  {HrefHelper.GetAnsiHyperlink("https://github.com/wdthem/ThreeXPlusOne", "https://github.com/wdthem/ThreeXPlusOne")}\n");
 
         uiComponent.WriteHeading("Credits");
-        consoleService.WriteLine($"Inspiration from Veritasium: {HrefHelper.GetAnsiHyperlink("https://www.youtube.com/watch?v=094y1Z2wpJg", "https://www.youtube.com/watch?v=094y1Z2wpJg")}");
-        consoleService.WriteLine($"ASCII art via:               {HrefHelper.GetAnsiHyperlink("https://www.patorjk.com/software/taag/#p=display", "https://www.patorjk.com/software/taag/#p=display")}");
-        consoleService.WriteLine($"Graphs drawn with SkiaSharp: {HrefHelper.GetAnsiHyperlink("https://github.com/mono/SkiaSharp", "https://github.com/mono/SkiaSharp")}\n\n");
+        consoleService.WriteLine($"  Inspiration from Veritasium: {HrefHelper.GetAnsiHyperlink("https://www.youtube.com/watch?v=094y1Z2wpJg", "https://www.youtube.com/watch?v=094y1Z2wpJg")}");
+        consoleService.WriteLine($"  ASCII art via:               {HrefHelper.GetAnsiHyperlink("https://www.patorjk.com/software/taag/#p=display", "https://www.patorjk.com/software/taag/#p=display")}");
+        consoleService.WriteLine($"  Graphs drawn with SkiaSharp: {HrefHelper.GetAnsiHyperlink("https://github.com/mono/SkiaSharp", "https://github.com/mono/SkiaSharp")}\n\n");
     }
 
     /// <summary>
@@ -51,11 +51,11 @@ public class HelpPresenter(IConsoleService consoleService,
 
             string? assemblyName = _assembly.GetName().Name;
 
-            consoleService.WriteLineWithColorMarkup($"[BrightJade]{assemblyName}[/]: v{coreVersion}\n");
+            consoleService.WriteLineWithColorMarkup($"  [BrightJade]{assemblyName}[/]: v{coreVersion}\n");
         }
         else
         {
-            consoleService.WriteLineWithColorMarkup("Version information not found.\n");
+            consoleService.WriteLineWithColorMarkup("  Version information not found.\n");
         }
     }
 
@@ -67,7 +67,7 @@ public class HelpPresenter(IConsoleService consoleService,
     {
         string? assemblyName = _assembly.GetName().Name;
 
-        consoleService.WriteWithColorMarkup("usage: ");
+        consoleService.WriteWithColorMarkup("\n  usage: ");
         consoleService.WriteWithColorMarkup($"[BrightJade]{assemblyName}[/] ");
 
         int lcv = 1;
@@ -75,7 +75,7 @@ public class HelpPresenter(IConsoleService consoleService,
         {
             if (lcv % 3 == 0)
             {
-                consoleService.Write("\n                     ");
+                consoleService.Write("\n                       ");
             }
 
             string hintText = !string.IsNullOrWhiteSpace(hint) ? $" {hint}" : "";
