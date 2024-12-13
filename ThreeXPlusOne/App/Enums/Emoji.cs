@@ -88,7 +88,7 @@ public enum Emoji
 }
 
 [AttributeUsage(AttributeTargets.Field)]
-public class EmojiUnicodeValueAttribute(string ansiValue) : Attribute
+public class EmojiUnicodeValueAttribute(string unicodeValue) : Attribute
 {
-    public string AnsiValue { get; } = ansiValue;
+    public string UnicodeValue { get; } = unicodeValue;
 }
