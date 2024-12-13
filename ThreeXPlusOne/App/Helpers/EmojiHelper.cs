@@ -15,6 +15,6 @@ public static class EmojiHelper
         FieldInfo? field = typeof(Emoji).GetField(emojiName.ToString());
         var attribute = field?.GetCustomAttribute<EmojiUnicodeValueAttribute>();
 
-        return attribute?.AnsiValue ?? GetEmojiUnicodeValue(Emoji.QuestionMark);
+        return attribute?.AnsiValue ?? GetEmojiUnicodeValue(Emoji.RedX);
     }
 }
