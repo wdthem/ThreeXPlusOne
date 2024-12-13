@@ -18,40 +18,16 @@ public enum Emoji
     GreenCheckMark,
 
     /// <summary>
-    /// 📄 document
-    /// </summary>
-    [EmojiUnicodeValue("\uD83D\uDCC4")]
-    Document,
-
-    /// <summary>
     /// ❌ red X
     /// </summary>
     [EmojiUnicodeValue("\u274C")]
     RedX,
 
     /// <summary>
-    /// 🔒 locked padlock
-    /// </summary>
-    [EmojiUnicodeValue("\uD83D\uDD12")]
-    Lock,
-
-    /// <summary>
-    /// 🔎 magnifying glass
-    /// </summary>
-    [EmojiUnicodeValue("\uD83D\uDD0E")]
-    MagnifyingGlass,
-
-    /// <summary>
     /// 🖼️ framed picture
     /// </summary>
     [EmojiUnicodeValue("\uD83D\uDDBC\uFE0F")]
     Picture,
-
-    /// <summary>
-    /// ❓ question mark
-    /// </summary>
-    [EmojiUnicodeValue("\u2753")]
-    QuestionMark,
 
     /// <summary>
     /// 🤔 thinking face
