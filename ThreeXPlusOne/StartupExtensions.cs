@@ -90,12 +90,14 @@ public static class StartupExtensions
         services.AddScoped<IHelpPresenter, HelpPresenter>();
         services.AddScoped<IAppSettingsPresenter, AppSettingsPresenter>();
         services.AddScoped<IHistogramPresenter, HistogramPresenter>();
-        services.AddScoped<IDirectedGraphPresenter, DirectedGraphPresenter>();
+
         services.AddScoped<IAlgorithmPresenter, AlgorithmPresenter>();
         services.AddScoped<IMetadataPresenter, MetadataPresenter>();
 
+        //presenters involved with the spinner need to be singletons due to the long running nature of the spinner
+        //and the background thread that is required to stop it
         services.AddSingleton<IProgressIndicatorPresenter, ProgressIndicatorPresenter>();
-
+        services.AddSingleton<IDirectedGraphPresenter, DirectedGraphPresenter>();
         services.AddSingleton<IUiComponent, UiComponent>();
     }
 
