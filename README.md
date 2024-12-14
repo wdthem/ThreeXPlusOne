@@ -56,5 +56,14 @@ These three images use the same number series with different settings applied to
   </tr>
 </table>
 
+## Branch names
 
+Branches must using the following format, else a push request build will fail:
+* feature/[issue-number]-some-feature-description
+* bugfix/[issue-number]-bug-description
+* refactor/[issue-number]-some-refactor-description
+
+## Version increment
+
+Pull requests must increment the Version tag in the .csproj file, and give a new description value in the Tag Message, else the pull request build will fail.
 
