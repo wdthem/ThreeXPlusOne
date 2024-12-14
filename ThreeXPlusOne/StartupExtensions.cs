@@ -11,7 +11,6 @@ using ThreeXPlusOne.App.Presenters.Components;
 using ThreeXPlusOne.App.Services.Interfaces;
 using ThreeXPlusOne.CommandLine.Models;
 using ThreeXPlusOne.CommandLine.Services;
-using ThreeXPlusOne.CommandLine.Services.Hosted;
 
 namespace ThreeXPlusOne;
 

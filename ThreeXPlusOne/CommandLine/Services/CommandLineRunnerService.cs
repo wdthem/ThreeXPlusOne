@@ -5,7 +5,7 @@ using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Services;
 using ThreeXPlusOne.CommandLine.Models;
 
-namespace ThreeXPlusOne.CommandLine.Services.Hosted;
+namespace ThreeXPlusOne.CommandLine.Services;
 
 public class CommandLineRunnerService(ILogger<CommandLineRunnerService> logger,
                                       CommandExecutionSettingsService commandExecutionSettingsService,

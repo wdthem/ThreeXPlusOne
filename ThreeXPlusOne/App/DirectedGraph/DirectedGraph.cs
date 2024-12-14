@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using System.Drawing;
+﻿using System.Drawing;
+using Microsoft.Extensions.Options;
 using ThreeXPlusOne.App.Config;
 using ThreeXPlusOne.App.DirectedGraph.NodeShapes;
 using ThreeXPlusOne.App.Enums;
