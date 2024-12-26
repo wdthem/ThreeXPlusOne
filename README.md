@@ -34,7 +34,7 @@ Directed Graphs are drawn via the SkiaSharp library. A variety of items can be c
   * Use the `--settings` flag to provide a directory path of your choice containing the `appSettings.json` file.
 * If the `appSettings.json` file is not supplied by any of the above means, defaults will be used.
 * Run the executable from the command line (with or without `appSettings.json` in place, and optionally using the `--settings` flag)
-* Note that you can also run the app using `dotnet run` from the project folder, which requires that you have `appSettings.json` in the project folder
+* Note that you can also run the app using `dotnet run` from the project folder, which requires that you have `appSettings.json` in the project folder. In order to pass parameters when you use this method, use the syntax `dotnet run -- --config` (for example). You need the empty `--` before adding any other actual parameters.
 * Running the process with the same list of numbers repeatedly will put all generated output into the same folder that was created by the process on the first run of the given number list
 
 ## Performance
