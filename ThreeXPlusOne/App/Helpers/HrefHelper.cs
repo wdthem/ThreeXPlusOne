@@ -1,16 +1,30 @@
+using ThreeXPlusOne.App.Enums;
+using ThreeXPlusOne.App.Enums.Extensions;
+
 namespace ThreeXPlusOne.App.Helpers;
 
 public static class HrefHelper
 {
     /// <summary>
+    /// Create an ANSI hyperlink.
+    /// </summary>
+    /// <param name="uri"></param>
+    /// <param name="displayText"></param>
+    /// <returns></returns>
+    private static string CreateAnsiHyperlink(string uri, string displayText)
+    {
+        return AnsiCode.Hyperlink.GetCode(uri, displayText);
+    }
+
+    /// <summary>
     /// Get an ANSI hyperlink.
     /// </summary>
     /// <param name="url"></param>
-    /// <param name="title"></param>
+    /// <param name="displayText"></param>
     /// <returns></returns>
-    public static string GetAnsiHyperlink(string url, string title)
+    public static string GetHyperlink(string url, string displayText)
     {
-        return $"\x1b]8;;{url}\x07{title}\x1b]8;;\x07";
+        return CreateAnsiHyperlink(url, displayText);
     }
 
     /// <summary>
@@ -31,6 +45,6 @@ public static class HrefHelper
             ? $"file:///{formattedPath}"    // Windows needs 3 slashes
             : $"file://{formattedPath}";    // Unix-like systems need 2 slashes
 
-        return $"\u001b]8;;{fileUrl}\u0007{displayText}\u001b]8;;\u0007";
+        return CreateAnsiHyperlink(fileUrl, displayText);
     }
 }

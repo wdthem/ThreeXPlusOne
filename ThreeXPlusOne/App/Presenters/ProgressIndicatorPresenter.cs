@@ -26,7 +26,7 @@ public class ProgressIndicatorPresenter(IConsoleService consoleService) : IProgr
 
         if (message != null)
         {
-            consoleService.WriteWithColorMarkup($"{message}");
+            consoleService.WriteWithMarkup($"{message}");
         }
 
         while (!_cancellationTokenSource.Token.IsCancellationRequested)
@@ -35,7 +35,7 @@ public class ProgressIndicatorPresenter(IConsoleService consoleService) : IProgr
 
             if (currentMilliseconds - previousMilliseconds >= updateInterval)
             {
-                consoleService.WriteWithColorMarkup($"{_spinner[_spinnerCounter]}");
+                consoleService.WriteWithMarkup($"{_spinner[_spinnerCounter]}");
                 consoleService.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                 _spinnerCounter = (_spinnerCounter + 1) % _spinner.Length;
                 previousMilliseconds = currentMilliseconds;

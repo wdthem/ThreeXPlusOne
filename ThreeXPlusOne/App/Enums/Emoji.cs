@@ -18,16 +18,22 @@ public enum Emoji
     GreenCheckMark,
 
     /// <summary>
-    /// ❌ red X
-    /// </summary>
-    [EmojiUnicodeValue("\u274C")]
-    RedX,
-
-    /// <summary>
     /// 🖼️ framed picture
     /// </summary>
     [EmojiUnicodeValue("\uD83D\uDDBC\uFE0F")]
     Picture,
+
+    /// <summary>
+    /// ❓ question mark
+    /// </summary>
+    [EmojiUnicodeValue("\u2753")]
+    QuestionMark,
+
+    /// <summary>
+    /// ❌ red X
+    /// </summary>
+    [EmojiUnicodeValue("\u274C")]
+    RedX,
 
     /// <summary>
     /// 🤔 thinking face

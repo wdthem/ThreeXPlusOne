@@ -20,7 +20,7 @@ public class MetadataPresenter(IConsoleService consoleService,
     /// </summary>
     public void DisplayGeneratingNumberSeriesMetadataMessage()
     {
-        consoleService.WriteWithColorMarkup("  Generating number series metadata... ");
+        consoleService.WriteWithMarkup("  Generating number series metadata... ");
     }
 
     /// <summary>
@@ -28,7 +28,7 @@ public class MetadataPresenter(IConsoleService consoleService,
     /// </summary>
     public void DisplayMetadataExistsMessage()
     {
-        consoleService.WriteLineWithColorMarkup("[BrightJade]already exists[/]");
+        consoleService.WriteLineWithMarkup("[BrightJade]already exists[/]");
     }
 
     /// <summary>

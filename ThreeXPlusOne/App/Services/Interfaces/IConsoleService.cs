@@ -23,13 +23,13 @@ public interface IConsoleService : ISingletonService
     /// Write a message to the console with color markup via ANSI escape codes for full color support.
     /// </summary>
     /// <param name="message"></param>
-    void WriteWithColorMarkup(string message);
+    void WriteWithMarkup(string message);
 
     /// <summary>
     /// Write a message to the console with color markup via ANSI escape codes for full color support.
     /// </summary>
     /// <param name="message"></param>
-    void WriteLineWithColorMarkup(string message);
+    void WriteLineWithMarkup(string message);
 
     /// <summary>
     /// Set the visibility of the cursor.

@@ -1,16 +1,11 @@
-﻿using System.Text.RegularExpressions;
-using ThreeXPlusOne.App.Helpers;
-using ThreeXPlusOne.App.Services.Base;
+﻿using ThreeXPlusOne.App.Services.Base;
 using ThreeXPlusOne.App.Services.Interfaces;
 
 namespace ThreeXPlusOne.App.Services;
 
-public partial class ConsoleService : ConsoleServiceBase, IConsoleService
+public class ConsoleService(IMarkupService markupService) : ConsoleServiceBase, IConsoleService
 {
     private static readonly object _consoleLock = new();
-
-    [GeneratedRegex(@"(\x1b[\[\]](?:[^\x07\\\]]*[\\\]]{0,1})*(?:\x07|\x1b\\)?)|(\[/\]|\[/?[^\]]+\]|[^\[\]\x1b]+)")]
-    private static partial Regex ColorMarkup();
 
     /// <summary>
     /// The width of the app in the console window.
@@ -45,25 +40,14 @@ public partial class ConsoleService : ConsoleServiceBase, IConsoleService
     }
 
     /// <summary>
-    /// Write a message to the console with color markup via ANSI escape codes for full color support.
+    /// Write a message to the console with markup via ANSI escape codes for full color and formatting support.
     /// </summary>
     /// <param name="message"></param>
-    public void WriteWithColorMarkup(string message)
+    public void WriteWithMarkup(string message)
     {
-        foreach (Match match in ColorMarkup().Matches(message))
+        foreach (string textPart in markupService.ParseMarkup(message))
         {
-            if (!match.Value.StartsWith('['))
-            {
-                Write(match.Value);
-                continue;
-            }
-
-            string value = match.Value.Trim('[', ']');
-            Write(value.StartsWith('/')
-                ? ColorHelper.DefaultAnsiForegroundColour
-                : ColorHelper.GetHexColor(value) is string hex
-                    ? ColorHelper.HexColorToAnsiForegroundColorString(hex)
-                    : match.Value);
+            Write(textPart);
         }
     }
 
@@ -71,9 +55,9 @@ public partial class ConsoleService : ConsoleServiceBase, IConsoleService
     /// Write an API action message to the console with color markup as a single line.
     /// </summary>
     /// <param name="message"></param>
-    public void WriteLineWithColorMarkup(string message)
+    public void WriteLineWithMarkup(string message)
     {
-        WriteWithColorMarkup(message);
+        WriteWithMarkup(message);
         WriteLine("");
     }
 

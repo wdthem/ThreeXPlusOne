@@ -1,5 +1,5 @@
 using ThreeXPlusOne.App.Enums;
-using ThreeXPlusOne.App.Helpers;
+using ThreeXPlusOne.App.Enums.Extensions;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
 using ThreeXPlusOne.App.Services.Interfaces;
 
@@ -15,7 +15,7 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <param name="message"></param>
     public void WriteError(string message)
     {
-        consoleService.WriteWithColorMarkup($"  {EmojiHelper.GetEmojiUnicodeValue(Emoji.RedX)} {message}\n");
+        consoleService.WriteWithMarkup($"  {Emoji.RedX.GetUnicodeValue()} {message}\n");
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// </summary>
     public void WriteDone()
     {
-        consoleService.WriteLineWithColorMarkup("[BrightJade]Done[/]");
+        consoleService.WriteLineWithMarkup("[BrightJade]Done[/]");
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <returns></returns>
     public bool AskForConfirmation(string prompt)
     {
-        consoleService.WriteWithColorMarkup($"  {EmojiHelper.GetEmojiUnicodeValue(Emoji.ThinkingFace)} [EmojiYellow]{prompt}[/] [[WhiteSmoke][y/n][/]] ");
+        consoleService.WriteWithMarkup($"  {Emoji.ThinkingFace.GetUnicodeValue()} [EmojiYellow]{prompt}[/] [[WhiteSmoke][y/n][/]] ");
 
         while (true)
         {
@@ -51,7 +51,7 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// </summary>
     public void WriteSeparator()
     {
-        consoleService.WriteLineWithColorMarkup($"\n  [MediumGray]{_consoleLine[..^4]}[/]\n");
+        consoleService.WriteLineWithMarkup($"\n  [MediumGray]{_consoleLine[..^4]}[/]\n");
     }
 
     /// <summary>
@@ -60,10 +60,10 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <param name="headerText"></param>
     public void WriteHeading(string headerText)
     {
-        consoleService.WriteLineWithColorMarkup($"\n[SoftOrchid]╔{_consoleLine[..^2]}╗[/]");
-        consoleService.WriteWithColorMarkup("[SoftOrchid]║[/]");
-        consoleService.WriteWithColorMarkup($" [IcyBlue]{headerText.ToUpper().PadRight(_consoleLine.Length - 3)}[/]");
-        consoleService.WriteLineWithColorMarkup("[SoftOrchid]║[/]");
-        consoleService.WriteLineWithColorMarkup($"[SoftOrchid]╚{_consoleLine[..^2]}╝[/]");
+        consoleService.WriteLineWithMarkup($"\n[SoftOrchid]╔{_consoleLine[..^2]}╗[/]");
+        consoleService.WriteWithMarkup("[SoftOrchid]║[/]");
+        consoleService.WriteWithMarkup($" [IcyBlue]{headerText.ToUpper().PadRight(_consoleLine.Length - 3)}[/]");
+        consoleService.WriteLineWithMarkup("[SoftOrchid]║[/]");
+        consoleService.WriteLineWithMarkup($"[SoftOrchid]╚{_consoleLine[..^2]}╝[/]");
     }
 }

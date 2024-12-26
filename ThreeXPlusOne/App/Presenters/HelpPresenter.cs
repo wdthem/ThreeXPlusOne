@@ -27,12 +27,12 @@ public class HelpPresenter(IConsoleService consoleService,
         WriteVersionText();
 
         uiComponent.WriteHeading("GitHub repository");
-        consoleService.WriteLine($"  {HrefHelper.GetAnsiHyperlink("https://github.com/wdthem/ThreeXPlusOne", "https://github.com/wdthem/ThreeXPlusOne")}\n");
+        consoleService.WriteLine($"  {HrefHelper.GetHyperlink("https://github.com/wdthem/ThreeXPlusOne", "https://github.com/wdthem/ThreeXPlusOne")}\n");
 
         uiComponent.WriteHeading("Credits");
-        consoleService.WriteLine($"  Inspiration from Veritasium: {HrefHelper.GetAnsiHyperlink("https://www.youtube.com/watch?v=094y1Z2wpJg", "https://www.youtube.com/watch?v=094y1Z2wpJg")}");
-        consoleService.WriteLine($"  ASCII art via:               {HrefHelper.GetAnsiHyperlink("https://www.patorjk.com/software/taag/#p=display", "https://www.patorjk.com/software/taag/#p=display")}");
-        consoleService.WriteLine($"  Graphs drawn with SkiaSharp: {HrefHelper.GetAnsiHyperlink("https://github.com/mono/SkiaSharp", "https://github.com/mono/SkiaSharp")}\n\n");
+        consoleService.WriteLine($"  Inspiration from Veritasium: {HrefHelper.GetHyperlink("https://www.youtube.com/watch?v=094y1Z2wpJg", "https://www.youtube.com/watch?v=094y1Z2wpJg")}");
+        consoleService.WriteLine($"  ASCII art via:               {HrefHelper.GetHyperlink("https://www.patorjk.com/software/taag/#p=display", "https://www.patorjk.com/software/taag/#p=display")}");
+        consoleService.WriteLine($"  Graphs drawn with SkiaSharp: {HrefHelper.GetHyperlink("https://github.com/mono/SkiaSharp", "https://github.com/mono/SkiaSharp")}\n\n");
     }
 
     /// <summary>
@@ -51,11 +51,11 @@ public class HelpPresenter(IConsoleService consoleService,
 
             string? assemblyName = _assembly.GetName().Name;
 
-            consoleService.WriteLineWithColorMarkup($"  [BrightJade]{assemblyName}[/]: v{coreVersion}\n");
+            consoleService.WriteLineWithMarkup($"  [BrightJade]{assemblyName}[/]: v{coreVersion}\n");
         }
         else
         {
-            consoleService.WriteLineWithColorMarkup("  Version information not found.\n");
+            consoleService.WriteLineWithMarkup("  Version information not found.\n");
         }
     }
 
@@ -67,8 +67,8 @@ public class HelpPresenter(IConsoleService consoleService,
     {
         string? assemblyName = _assembly.GetName().Name;
 
-        consoleService.WriteWithColorMarkup("\n  usage: ");
-        consoleService.WriteWithColorMarkup($"[BrightJade]{assemblyName}[/] ");
+        consoleService.WriteWithMarkup("\n  usage: ");
+        consoleService.WriteWithMarkup($"[BrightJade]{assemblyName}[/] ");
 
         int lcv = 1;
         foreach ((string shortName, string longName, string description, string hint) in commandLineOptions)
@@ -80,7 +80,7 @@ public class HelpPresenter(IConsoleService consoleService,
 
             string hintText = !string.IsNullOrWhiteSpace(hint) ? $" {hint}" : "";
 
-            consoleService.WriteWithColorMarkup($"[[IcyBlue]-{shortName}[/] | [IcyBlue]--{longName}[/]] ");
+            consoleService.WriteWithMarkup($"[[IcyBlue]-{shortName}[/] | [IcyBlue]--{longName}[/]] ");
 
             lcv++;
         }
@@ -92,7 +92,7 @@ public class HelpPresenter(IConsoleService consoleService,
             string commandText = $"  -{shortName}, --{longName}";
 
 
-            consoleService.WriteWithColorMarkup($"  [IcyBlue]-{shortName}[/], [IcyBlue]--{longName}[/]");
+            consoleService.WriteWithMarkup($"  [IcyBlue]-{shortName}[/], [IcyBlue]--{longName}[/]");
 
             if (commandText.Length <= 15)
             {
@@ -103,7 +103,7 @@ public class HelpPresenter(IConsoleService consoleService,
                 consoleService.Write("\t");
             }
 
-            consoleService.WriteLineWithColorMarkup($"{description}");
+            consoleService.WriteLineWithMarkup($"{description}");
         }
 
         consoleService.WriteLine("");

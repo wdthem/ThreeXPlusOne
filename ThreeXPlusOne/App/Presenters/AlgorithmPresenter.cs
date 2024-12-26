@@ -27,7 +27,7 @@ public class AlgorithmPresenter(IOptions<AppSettings> appSettings,
     /// <param name="numberCount"></param>
     public void DisplayRunningAlgorithmMessage(int numberCount)
     {
-        consoleService.WriteWithColorMarkup($"  Running 3x + 1 algorithm on {numberCount} numbers... ");
+        consoleService.WriteWithMarkup($"  Running 3x + 1 algorithm on {numberCount} numbers... ");
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class AlgorithmPresenter(IOptions<AppSettings> appSettings,
     /// </summary>
     public void DisplayGeneratingRandomNumbersMessage()
     {
-        consoleService.WriteWithColorMarkup($"  Generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers from 1 to {_appSettings.AlgorithmSettings.RandomNumberMax}... ");
+        consoleService.WriteWithMarkup($"  Generating {_appSettings.AlgorithmSettings.RandomNumberTotal} random numbers from 1 to {_appSettings.AlgorithmSettings.RandomNumberMax}... ");
     }
 
     /// <summary>
