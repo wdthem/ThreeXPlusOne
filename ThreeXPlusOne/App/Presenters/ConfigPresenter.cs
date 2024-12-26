@@ -30,12 +30,12 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
 
         uiComponent.WriteHeading("App settings");
         consoleService.WriteLine("  If no custom app settings are supplied, defaults will be used.\n");
-        consoleService.WriteLineWithColorMarkup($"  To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same\n" +
+        consoleService.WriteLineWithMarkup($"  To apply custom app settings, place a file called '{_appSettings.SettingsFileName}' in the same\n" +
                                                 $"  folder as the executable. Or use the [BlueTint]--settings[/] flag to provide a directory path\n" +
                                                 $"  to the '{_appSettings.SettingsFileName}' file.\n\n" +
                                                 $"  It must have the following content:\n");
 
-        consoleService.WriteLineWithColorMarkup("  [BlushRed]{[/]");
+        consoleService.WriteLineWithMarkup("  [BlushRed]{[/]");
 
         WriteSettings(type: null,
                       instance: null,
@@ -43,7 +43,7 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
                       includeHeader: false,
                       isJson: true);
 
-        consoleService.WriteLineWithColorMarkup("  [BlushRed]}[/]");
+        consoleService.WriteLineWithMarkup("  [BlushRed]}[/]");
 
         uiComponent.WriteHeading("Definitions and suggested values");
 
@@ -51,7 +51,7 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
 
         lines.Add("\n  The above app settings are a good starting point from which to experiment.\n");
         lines.Add($"  Alternatively, start with the app settings from the following file on the\n" +
-                  $"  GitHub repository: {HrefHelper.GetAnsiHyperlink("https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt", "ExampleOutputSettings.txt")}\n");
+                  $"  GitHub repository: {HrefHelper.GetHyperlink("https://github.com/wdthem/ThreeXPlusOne/blob/main/ThreeXPlusOne.ExampleOutput/ExampleOutputSettings.txt", "ExampleOutputSettings.txt")}\n");
 
         ScrollOutput("app settings", lines);
 
@@ -91,12 +91,12 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
 
             if (isJson)
             {
-                consoleService.WriteLineWithColorMarkup($"    [AquaTeal]{sectionNameWords}[/]");
-                consoleService.WriteLineWithColorMarkup("    [BlushRed]{[/]");
+                consoleService.WriteLineWithMarkup($"    [AquaTeal]{sectionNameWords}[/]");
+                consoleService.WriteLineWithMarkup("    [BlushRed]{[/]");
             }
             else
             {
-                consoleService.WriteLineWithColorMarkup($"    [AquaTeal]{sectionNameWords}[/]");
+                consoleService.WriteLineWithMarkup($"    [AquaTeal]{sectionNameWords}[/]");
             }
         }
 
@@ -121,7 +121,7 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
             {
                 if (type == typeof(AppSettings) && !isJson && !generalSettingsWritten)
                 {
-                    consoleService.WriteLineWithColorMarkup("    [BlueTint]General Settings:[/]");
+                    consoleService.WriteLineWithMarkup("    [BlueTint]General Settings:[/]");
 
                     generalSettingsWritten = true;
                 }
@@ -135,11 +135,11 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
                         consoleService.Write("    ");
                     }
 
-                    consoleService.WriteWithColorMarkup($"    [IcyBlue]\"{property.Name}\":[/] ");
+                    consoleService.WriteWithMarkup($"    [IcyBlue]\"{property.Name}\":[/] ");
                 }
                 else
                 {
-                    consoleService.WriteWithColorMarkup($"        [IcyBlue]{property.Name}:[/] ");
+                    consoleService.WriteWithMarkup($"        [IcyBlue]{property.Name}:[/] ");
                 }
 
                 if ((value?.ToString() ?? "").Length > 100)
@@ -155,11 +155,11 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
                 {
                     if (property.PropertyType == typeof(string))
                     {
-                        consoleService.WriteWithColorMarkup("[WarmSand]\"[value]\"[/]");
+                        consoleService.WriteWithMarkup("[WarmSand]\"[value]\"[/]");
                     }
                     else
                     {
-                        consoleService.WriteWithColorMarkup("[WarmSand][value][/]");
+                        consoleService.WriteWithMarkup("[WarmSand][value][/]");
                     }
 
                     if (lcv < appSettingsProperties.Count)
@@ -176,7 +176,7 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
 
         if (isJson && type != typeof(AppSettings))
         {
-            consoleService.WriteLineWithColorMarkup("    [BlushRed]},[/]");
+            consoleService.WriteLineWithMarkup("    [BlushRed]},[/]");
         }
     }
 
@@ -253,7 +253,7 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
                     //output all remaining lines in one go
                     for (int lcv = currentLine; lcv < lines.Count; lcv++)
                     {
-                        consoleService.WriteLineWithColorMarkup(lines[lcv]);
+                        consoleService.WriteLineWithMarkup(lines[lcv]);
                     }
 
                     break;
@@ -261,7 +261,7 @@ public partial class ConfigPresenter(IOptions<AppSettings> appSettings,
 
                 if (currentLine < lines.Count)
                 {
-                    consoleService.WriteLineWithColorMarkup(lines[currentLine]);
+                    consoleService.WriteLineWithMarkup(lines[currentLine]);
 
                     currentLine++;
                 }

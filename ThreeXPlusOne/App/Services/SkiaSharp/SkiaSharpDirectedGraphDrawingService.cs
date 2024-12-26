@@ -1,6 +1,7 @@
 using SkiaSharp;
 using System.Drawing;
 using ThreeXPlusOne.App.Enums;
+using ThreeXPlusOne.App.Enums.Extensions;
 using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Models;
 using ThreeXPlusOne.App.Services.Interfaces;
@@ -162,9 +163,9 @@ public partial class SkiaSharpDirectedGraphDrawingService(IFileService fileServi
             data.SaveTo(stream);
         }
 
-        string ansiFileLink = HrefHelper.GetLocalFileLink(path, $"{EmojiHelper.GetEmojiUnicodeValue(Emoji.Picture)} [IcyBlue]Open {imageType} file[/]");
+        string ansiFileLink = HrefHelper.GetLocalFileLink(path, $"[IcyBlue]Open {imageType} file[/]");
 
-        OnComplete?.Invoke(ansiFileLink);
+        OnComplete?.Invoke($"{Emoji.Picture.GetUnicodeValue()} {ansiFileLink}");
     }
 
     /// <summary>

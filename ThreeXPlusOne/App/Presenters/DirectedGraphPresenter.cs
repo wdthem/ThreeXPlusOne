@@ -1,4 +1,5 @@
 using ThreeXPlusOne.App.Enums;
+using ThreeXPlusOne.App.Enums.Extensions;
 using ThreeXPlusOne.App.Helpers;
 using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
@@ -16,7 +17,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="seriesCount"></param>
     public void DisplayAddingSeriesMessage(int seriesCount)
     {
-        consoleService.WriteWithColorMarkup($"  Adding {seriesCount} series to the graph... ");
+        consoleService.WriteWithMarkup($"  Adding {seriesCount} series to the graph... ");
     }
 
     /// <summary>
@@ -26,7 +27,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="canvasHeight"></param>
     public void DisplaySettingCanvasSizeMessage(int canvasWidth, int canvasHeight)
     {
-        consoleService.WriteWithColorMarkup($"  Setting canvas dimensions to {canvasWidth:N0} x {canvasHeight:N0}... ");
+        consoleService.WriteWithMarkup($"  Setting canvas dimensions to {canvasWidth:N0} x {canvasHeight:N0}... ");
     }
 
     /// <summary>
@@ -35,7 +36,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="nodesPositioned"></param>
     public void DisplayNodesPositionedMessage(int nodesPositioned)
     {
-        consoleService.WriteWithColorMarkup($"\r  {nodesPositioned} nodes positioned... ");
+        consoleService.WriteWithMarkup($"\r  {nodesPositioned} nodes positioned... ");
     }
 
     /// <summary>
@@ -44,7 +45,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="nodesStyled"></param>
     public void DisplayNodesStyledMessage(int nodesStyled)
     {
-        consoleService.WriteWithColorMarkup($"\r  {nodesStyled} nodes styled... ");
+        consoleService.WriteWithMarkup($"\r  {nodesStyled} nodes styled... ");
     }
 
     /// <summary>
@@ -53,7 +54,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// <param name="message"></param>
     public void WriteActionMessage(string message)
     {
-        consoleService.WriteWithColorMarkup(message);
+        consoleService.WriteWithMarkup(message);
     }
 
     /// <summary>
@@ -85,7 +86,7 @@ public class DirectedGraphPresenter(IConsoleService consoleService,
     /// </summary>
     public void DisplayGraphGenerationCancelledMessage()
     {
-        consoleService.WriteLineWithColorMarkup($"  {EmojiHelper.GetEmojiUnicodeValue(Emoji.RedX)} Graph generation cancelled");
+        consoleService.WriteLineWithMarkup($"  {Emoji.RedX.GetUnicodeValue()} Graph generation cancelled");
     }
 
     /// <summary>

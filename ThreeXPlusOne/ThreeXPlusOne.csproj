@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.8.0</Version>
+    <Version>2.8.1</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Add a presenter layer for front-end console code</TagMessage>
+    <TagMessage>Support markup, change helpers to extensions</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>

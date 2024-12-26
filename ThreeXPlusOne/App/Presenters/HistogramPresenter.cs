@@ -12,7 +12,7 @@ public class HistogramPresenter(IConsoleService consoleService,
     /// </summary>
     public void DisplayGeneratingHistogramMessage()
     {
-        consoleService.WriteWithColorMarkup("  Generating histogram... ");
+        consoleService.WriteWithMarkup("  Generating histogram... ");
     }
 
     /// <summary>
@@ -20,7 +20,7 @@ public class HistogramPresenter(IConsoleService consoleService,
     /// </summary>
     public void DisplayHistogramExistsMessage()
     {
-        consoleService.WriteLineWithColorMarkup("[BrightJade]already exists[/]");
+        consoleService.WriteLineWithMarkup("[BrightJade]already exists[/]");
     }
 
     /// <summary>
