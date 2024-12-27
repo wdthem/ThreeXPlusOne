@@ -49,7 +49,7 @@ public static class StartupExtensions
                         })
                       .ConfigureServices((context, services) =>
                         {
-                            services.AddServices(context.Configuration);
+                            services.AddDependencies(context.Configuration);
                         });
     }
 
@@ -59,7 +59,7 @@ public static class StartupExtensions
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
-    private static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHostedService<CommandLineRunnerService>();
 
