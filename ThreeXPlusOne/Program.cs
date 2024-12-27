@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using ThreeXPlusOne;
 using ThreeXPlusOne.CommandLine;
 using ThreeXPlusOne.CommandLine.Models;
-using ThreeXPlusOne.Logging;
-using Serilog;
 using ThreeXPlusOne.CommandLine.Services;
+using ThreeXPlusOne.Logging;
 
 Log.Logger = new LoggerConfiguration()
             .Enrich.With(new UserNameEnricher())
