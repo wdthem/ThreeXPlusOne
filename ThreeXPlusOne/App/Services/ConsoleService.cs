@@ -45,10 +45,7 @@ public class ConsoleService(IMarkupService markupService) : ConsoleServiceBase, 
     /// <param name="message"></param>
     public void WriteWithMarkup(string message)
     {
-        foreach (string textPart in markupService.ParseMarkup(message))
-        {
-            Write(textPart);
-        }
+        Write(markupService.GetDecoratedMessage(message));
     }
 
     /// <summary>

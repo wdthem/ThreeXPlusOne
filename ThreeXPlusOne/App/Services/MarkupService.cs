@@ -3,7 +3,7 @@ using ThreeXPlusOne.App.Enums;
 using ThreeXPlusOne.App.Enums.Extensions;
 using ThreeXPlusOne.App.Services.Interfaces;
 
-namespace DrAggieThem.XeroIntegration.App.Services;
+namespace ThreeXPlusOne.App.Services;
 
 public partial class MarkupService : IMarkupService
 {
@@ -11,7 +11,7 @@ public partial class MarkupService : IMarkupService
     /// Regex to match markup but ignore ANSI escape codes.
     /// </summary>
     /// <returns></returns>
-    [GeneratedRegex(@"(\x1b[\[\]](?:[^\x07\\\]]*[\\\]]{0,1})*(?:\x07|\x1b\\)?)|(\[/\]|\[/?(?:color=)?[^\]]+\]|[^\[\]\x1b]+)")]
+    [GeneratedRegex(@"(\x1b[\[\]](?:[^\x07\\\]]*[\\\]]{0,1})*(?:\x07|\x1b\\)?)|(\\\[|\\\]|\\|(\[/?(?:color=)?[^\]]+\])|[^\[\]\x1b\\]+)")]
     private static partial Regex Markup();
 
     /// <summary>
@@ -128,28 +128,35 @@ public partial class MarkupService : IMarkupService
             return (ansiCode, false);
         }
 
-        return (tag, false);
+        //return original text with invalid markup tags removed
+        return ("", false);
     }
 
     /// <summary>
-    /// Parse a message with markup and return a sequence of text and ANSI code pairs.
+    /// Parse a message with markup and return the processed string with ANSI codes.
     /// </summary>
     /// <param name="message"></param>
     /// <returns></returns>
-    public IEnumerable<string> ParseMarkup(string message)
+    public string GetDecoratedMessage(string message)
     {
-        foreach (Match match in Markup().Matches(message))
-        {
-            if (!match.Value.StartsWith('['))
+        return string.Concat(Markup().Matches(message)
+            .Select(match =>
             {
-                yield return match.Value;
-                continue;
-            }
+                // Handle escaped brackets and backslashes
+                if (match.Value == "\\[") return "[";
+                if (match.Value == "\\]") return "]";
+                if (match.Value == "\\") return "\\";
 
-            string tag = match.Value.Trim('[', ']');
-            var (ansiCode, _) = ProcessMarkupTag(tag);
+                // Handle markup tags
+                if (match.Value.StartsWith('['))
+                {
+                    string tag = match.Value.Trim('[', ']');
+                    var (ansiCode, _) = ProcessMarkupTag(tag);
+                    return ansiCode;
+                }
 
-            yield return ansiCode;
-        }
+                // Return unmodified text
+                return match.Value;
+            }));
     }
 }
