@@ -10,7 +10,7 @@ public class ConsoleService(IMarkupService markupService) : ConsoleServiceBase, 
     /// <summary>
     /// The width of the app in the console window.
     /// </summary>
-    public int AppConsoleWidth => 84;
+    public int AppConsoleWidth => 87;
 
     /// <summary>
     /// Custom write method for console output (threadsafe).

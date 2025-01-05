@@ -69,15 +69,15 @@ public class AppPresenter(IConsoleService consoleService,
     {
         consoleService.Write("\n\n");
 
-        consoleService.WriteLineWithMarkup("[SoftOrchid]_____[/][IcyBlue]/\\\\\\\\\\\\\\\\\\\\[/][SoftOrchid]_______________________________________________________[/][IcyBlue]/\\\\\\[/][SoftOrchid]_[/]        ");
-        consoleService.WriteLineWithMarkup(" [SoftOrchid]___[/][IcyBlue]/\\\\\\///////\\\\\\[/][SoftOrchid]__________________________________________________[/][IcyBlue]/\\\\\\\\\\\\\\[/][SoftOrchid]_       ");
-        consoleService.WriteLineWithMarkup("  [SoftOrchid]__[/][IcyBlue]\\///[/][SoftOrchid]______[/][IcyBlue]/\\\\\\[/][SoftOrchid]_______________________________[/][IcyBlue]/\\\\\\[/][SoftOrchid]_______________[/][IcyBlue]\\/////\\\\\\[/][SoftOrchid]_[/]      ");
-        consoleService.WriteLineWithMarkup("   [SoftOrchid]_________[/][IcyBlue]/\\\\\\//[/][SoftOrchid]____[/][IcyBlue]/\\\\\\[/][SoftOrchid]____[/][IcyBlue]/\\\\\\[/][SoftOrchid]_______________[/][IcyBlue]\\/\\\\\\[/][SoftOrchid]___________________[/][IcyBlue]\\/\\\\\\[/][SoftOrchid]_[/]     ");
-        consoleService.WriteLineWithMarkup("    [SoftOrchid]________[/][IcyBlue]\\////\\\\\\[SoftOrchid]__[/][IcyBlue]\\///\\\\\\/\\\\\\/[/][SoftOrchid]_____________[/][IcyBlue]/\\\\\\\\\\\\\\\\\\\\\\[/][SoftOrchid]_______________[/][IcyBlue]\\/\\\\\\[/][SoftOrchid]_[/]    ");
-        consoleService.WriteLineWithMarkup("     [SoftOrchid]___________[/][IcyBlue]\\//\\\\\\[/][SoftOrchid]___[/][IcyBlue]\\///\\\\\\/[/][SoftOrchid]______________[/][IcyBlue]\\/////\\\\\\///[/][SoftOrchid]________________[/][IcyBlue]\\/\\\\\\[/][SoftOrchid]_[/]   ");
-        consoleService.WriteLineWithMarkup("      [SoftOrchid]__[/][IcyBlue]/\\\\\\[/][SoftOrchid]______[/][IcyBlue]/\\\\\\[/][SoftOrchid]_____[/][IcyBlue]/\\\\\\/\\\\\\[/][SoftOrchid]_________________[/][IcyBlue]\\/\\\\\\[/IcyBlue][SoftOrchid]___________________[/][IcyBlue]\\/\\\\\\[/][SoftOrchid]_[/]  ");
-        consoleService.WriteLineWithMarkup("       [SoftOrchid]_[/][IcyBlue]\\///\\\\\\\\\\\\\\\\\\/[/][SoftOrchid]____[/][IcyBlue]/\\\\\\/\\///\\\\\\[/][SoftOrchid]_______________[/][IcyBlue]\\///[/][SoftOrchid]____________________[/][IcyBlue]\\/\\\\\\[/][SoftOrchid]_ [/] ");
-        consoleService.WriteLineWithMarkup("        [SoftOrchid]___[/][IcyBlue]\\/////////[/][SoftOrchid]_____[/][IcyBlue]\\///[/][SoftOrchid]____[/][IcyBlue]\\///[/][SoftOrchid]________________________________________[/][IcyBlue]\\///[/][SoftOrchid]__ [/] ");
+        consoleService.WriteLineWithMarkup("[SoftOrchid]_____[/][IcyBlue]/\\\\\\\\\\\\\\\\\\\\ [/][SoftOrchid]_______________________________________________________[/][IcyBlue]/\\\\\\ [/][SoftOrchid]_[/]        ");
+        consoleService.WriteLineWithMarkup(" [SoftOrchid]___[/][IcyBlue]/\\\\\\///////\\\\\\ [/][SoftOrchid]__________________________________________________[/][IcyBlue]/\\\\\\\\\\\\\\ [/][SoftOrchid]_       ");
+        consoleService.WriteLineWithMarkup("  [SoftOrchid]__[/][IcyBlue]\\///[/][SoftOrchid]______[/][IcyBlue]/\\\\\\ [/][SoftOrchid]______________________________[/][IcyBlue]/\\\\\\ [/][SoftOrchid]_______________[/][IcyBlue]\\/////\\\\\\ [/][SoftOrchid]_[/]      ");
+        consoleService.WriteLineWithMarkup("   [SoftOrchid]_________[/][IcyBlue]/\\\\\\//[/][SoftOrchid]____[/][IcyBlue]/\\\\\\ [/][SoftOrchid]___[/][IcyBlue]/\\\\\\ [/][SoftOrchid]______________[/][IcyBlue]\\/\\\\\\ [/][SoftOrchid]___________________[/][IcyBlue]\\/\\\\\\ [/][SoftOrchid]_[/]     ");
+        consoleService.WriteLineWithMarkup("    [SoftOrchid]________[/][IcyBlue]\\////\\\\\\ [SoftOrchid]_[/][IcyBlue]\\///\\\\\\/\\\\\\/[/][SoftOrchid]_____________[/][IcyBlue]/\\\\\\\\\\\\\\\\\\\\\\ [/][SoftOrchid]_______________[/][IcyBlue]\\/\\\\\\ [/][SoftOrchid]_[/]    ");
+        consoleService.WriteLineWithMarkup("     [SoftOrchid]___________[/][IcyBlue]\\//\\\\\\ [/][SoftOrchid]__[/][IcyBlue]\\///\\\\\\/[/][SoftOrchid]______________[/][IcyBlue]\\/////\\\\\\///[/][SoftOrchid]_________________[/][IcyBlue]\\/\\\\\\ [/][SoftOrchid]_[/]   ");
+        consoleService.WriteLineWithMarkup("      [SoftOrchid]__[/][IcyBlue]/\\\\\\ [/][SoftOrchid]_____[/][IcyBlue]/\\\\\\ [/][SoftOrchid]___[/][IcyBlue]/\\\\\\/\\\\\\ [/][SoftOrchid]_________________[/][IcyBlue]\\/\\\\\\ [/IcyBlue][SoftOrchid]___________________[/][IcyBlue]\\/\\\\\\ [/][SoftOrchid]_[/]  ");
+        consoleService.WriteLineWithMarkup("       [SoftOrchid]_[/][IcyBlue]\\///\\\\\\\\\\\\\\\\\\/[/][SoftOrchid]___[/][IcyBlue]/\\\\\\/\\///\\\\\\ [/][SoftOrchid]_______________[/][IcyBlue]\\///[/][SoftOrchid]_____________________[/][IcyBlue]\\/\\\\\\ [/][SoftOrchid]_ [/] ");
+        consoleService.WriteLineWithMarkup("        [SoftOrchid]___[/][IcyBlue]\\/////////[/][SoftOrchid]____[/][IcyBlue]\\///[/][SoftOrchid]____[/][IcyBlue]\\///[/][SoftOrchid]__________________________________________[/][IcyBlue]\\///[/][SoftOrchid]___ [/] ");
         consoleService.WriteLine("");
     }
 }

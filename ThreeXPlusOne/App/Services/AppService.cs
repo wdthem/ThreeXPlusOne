@@ -8,7 +8,7 @@ namespace ThreeXPlusOne.App.Services;
 public class AppService(ILogger<AppService> logger,
                         IDirectedGraphService directedGraphService,
                         IAppSettingsService appSettingsService,
-                        IAppPresenter appPresenter) : IScopedService
+                        IAppPresenter appPresenter) : IAppService
 {
     /// <summary>
     /// Generated the directed graph based on the user-provided app settings.

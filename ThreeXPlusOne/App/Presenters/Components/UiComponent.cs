@@ -33,7 +33,7 @@ public class UiComponent(IConsoleService consoleService) : IUiComponent
     /// <returns></returns>
     public bool AskForConfirmation(string prompt)
     {
-        consoleService.WriteWithMarkup($"  {Emoji.ThinkingFace.GetUnicodeValue()} [EmojiYellow]{prompt}[/] [[WhiteSmoke][y/n][/]] ");
+        consoleService.WriteWithMarkup($"  {Emoji.ThinkingFace.GetUnicodeValue()} [EmojiYellow]{prompt}[/] [WhiteSmoke]\\[y/n\\][/] ");
 
         while (true)
         {

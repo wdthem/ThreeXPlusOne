@@ -2,14 +2,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ThreeXPlusOne.App.Presenters.Interfaces;
 using ThreeXPlusOne.App.Presenters.Interfaces.Components;
-using ThreeXPlusOne.App.Services;
+using ThreeXPlusOne.App.Services.Interfaces;
 using ThreeXPlusOne.CommandLine.Models;
 
 namespace ThreeXPlusOne.CommandLine.Services;
 
 public class CommandLineRunnerService(ILogger<CommandLineRunnerService> logger,
                                       CommandExecutionSettingsService commandExecutionSettingsService,
-                                      AppService appService,
+                                      IAppService appService,
                                       IHostApplicationLifetime applicationLifetime,
                                       IAppPresenter appPresenter,
                                       IConfigPresenter configPresenter,
