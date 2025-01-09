@@ -58,7 +58,7 @@ These three images use the same number series with different settings applied to
 
 ## Branch names
 
-Branches must be named using the following format, else a push request build will fail:
+Branches must be named using the following format, else a pull request build will fail:
 * feature/[issue-number]-some-feature-description
 * bugfix/[issue-number]-bug-description
 * refactor/[issue-number]-some-refactor-description
