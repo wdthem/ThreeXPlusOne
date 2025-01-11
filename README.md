@@ -60,7 +60,7 @@ These three images use the same number series with different settings applied to
 
 Branches must be named using the following format, else a pull request build will fail:
 * feature/[issue-number]-some-feature-description
-* bugfix/[issue-number]-bug-description
+* bugfix/[issue-number]-some-bug-description
 * refactor/[issue-number]-some-refactor-description
 
 ## Version increment
