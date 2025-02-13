@@ -1,6 +1,6 @@
 # ThreeXPlusOne
 
-A .NET 8 Console app that generates visualisations of the [Collatz Conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture) (aka 3x+1).
+A .NET Console app that generates visualisations of the [Collatz Conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture) (aka 3x+1).
 
 ## What is the Collatz Conjecture?
 
