@@ -5,7 +5,7 @@ namespace ThreeXPlusOne.App.Services;
 
 public class ConsoleService(IMarkupService markupService) : ConsoleServiceBase, IConsoleService
 {
-    private static readonly object _consoleLock = new();
+    private static readonly Lock _consoleLock = new();
 
     /// <summary>
     /// The width of the app in the console window.
