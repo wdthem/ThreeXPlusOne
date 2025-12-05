@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.9.0</Version>
+    <Version>2.9.1</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyInformationalVersion>$(Version)</AssemblyInformationalVersion>
-    <TagMessage>Upgrade to .NET 9</TagMessage>
+    <TagMessage>Fix light source so nodes past the effect start to fade out</TagMessage>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,20 +18,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Code\" />
-    <None Remove="Config\" />
-    <None Remove="Models\" />
-    <None Remove="Code\Graph\" />
-    <None Remove="Code\Interfaces\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Code\" />
-    <Folder Include="Config\" />
-    <Folder Include="Models\" />
-    <Folder Include="Code\Graph\" />
-    <Folder Include="Code\Interfaces\" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Serilog" Version="4.0.2" />

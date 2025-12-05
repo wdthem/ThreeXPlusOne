@@ -105,6 +105,8 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
 
         if (lightSourceService.LightSourcePosition != LightSourcePosition.None)
         {
+            Color canvasColor = GetCanvasColor();
+
             await Task.Run(() => graphService.GenerateLightSource(lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
                                                                   lightSourceService.Radius,
                                                                   lightSourceService.LightSourceColor));
@@ -112,7 +114,9 @@ public abstract partial class DirectedGraph(IOptions<AppSettings> appSettings,
             NodeAesthetics.ApplyLightSourceToNodes(_nodes,
                                                    lightSourceService.GetLightSourceCoordinates(lightSourceService.LightSourcePosition),
                                                    lightSourceService.LightSourceColor,
-                                                   lightSourceService.LightSourceIntensity);
+                                                   lightSourceService.LightSourceIntensity,
+                                                   lightSourceService.Radius,
+                                                   canvasColor);
         }
 
         await Task.Run(() => graphService.Draw(drawNumbersOnNodes: _appSettings.NodeAestheticSettings.DrawNumbersOnNodes,

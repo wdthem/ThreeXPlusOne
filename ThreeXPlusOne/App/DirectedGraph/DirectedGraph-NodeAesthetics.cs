@@ -104,16 +104,21 @@ public abstract partial class DirectedGraph
         /// <summary>
         /// If a light source is in place, it should impact the colour of nodes.
         /// The closer to the source, the more the impact.
+        /// Nodes beyond the light source effect fade into the background color.
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="lightSourceCoordinates"></param>
         /// <param name="lightSourceColor"></param>
         /// <param name="lightSourceIntensity"></param>
+        /// <param name="lightSourceRadius"></param>
+        /// <param name="canvasColor"></param>
         /// <returns></returns>
         public static void ApplyLightSourceToNodes(Dictionary<int, DirectedGraphNode> nodes,
                                                    (double X, double Y) lightSourceCoordinates,
                                                    Color lightSourceColor,
-                                                   double lightSourceIntensity)
+                                                   double lightSourceIntensity,
+                                                   double lightSourceRadius,
+                                                   Color canvasColor)
         {
             Dictionary<int, double> nodeDistanceFromLightSource = [];
 
@@ -124,6 +129,8 @@ public abstract partial class DirectedGraph
             }
 
             double maxNodeDistance = nodeDistanceFromLightSource.Values.Max();
+            // Calculate the effective light source distance - nodes beyond this fade to background
+            double effectiveLightSourceDistance = lightSourceRadius * lightSourceIntensity;
 
             foreach (DirectedGraphNode node in nodes.Values)
             {
@@ -136,12 +143,54 @@ public abstract partial class DirectedGraph
 
                 node.Shape.HasLightSourceImpact = true;
 
-                double lightIntensity = lightSourceIntensity;
-                double smoothFactor = 1 - Math.Pow(distance, 2); // Quadratic decay
-                double blendFactor = Math.Clamp(smoothFactor * lightIntensity, 0, 1); // Ensure it's within bounds
+                // Normalize distance by the light source radius for proper calculation
+                double normalizedDistance = distance / lightSourceRadius;
+                normalizedDistance = Math.Clamp(normalizedDistance, 0, 1);
 
-                node.Shape.Color = BlendNodeColorWithLightSourceColor(node.Shape.Color, lightSourceColor, blendFactor);
-                node.Shape.BorderColor = BlendNodeColorWithLightSourceColor(node.Shape.BorderColor, lightSourceColor, blendFactor);
+                // Calculate light source blend factor using quadratic decay
+                double smoothFactor = 1 - Math.Pow(normalizedDistance, 2);
+                double lightBlendFactor = Math.Clamp(smoothFactor * lightSourceIntensity, 0, 1);
+
+                Color baseNodeColor = node.Shape.Color;
+                Color baseBorderColor = node.Shape.BorderColor;
+
+                // Apply light source blending if within effective range
+                if (distance <= effectiveLightSourceDistance)
+                {
+                    baseNodeColor = BlendNodeColorWithLightSourceColor(node.Shape.Color, lightSourceColor, lightBlendFactor);
+                    baseBorderColor = BlendNodeColorWithLightSourceColor(node.Shape.BorderColor, lightSourceColor, lightBlendFactor);
+                }
+
+                // Calculate background fade for nodes beyond the light source effect
+                double backgroundBlendFactor = 0.0;
+                if (distance > effectiveLightSourceDistance)
+                {
+                    // Calculate how far beyond the effective distance
+                    double distanceBeyondEffect = distance - effectiveLightSourceDistance;
+                    double maxDistanceBeyondEffect = maxNodeDistance - effectiveLightSourceDistance;
+
+                    if (maxDistanceBeyondEffect > 0)
+                    {
+                        // Normalize the distance beyond effect (0 to 1)
+                        double normalizedDistanceBeyond = distanceBeyondEffect / maxDistanceBeyondEffect;
+                        normalizedDistanceBeyond = Math.Clamp(normalizedDistanceBeyond, 0, 1);
+
+                        // Use a smooth fade curve (e.g., quadratic) for background blending
+                        backgroundBlendFactor = Math.Pow(normalizedDistanceBeyond, 1.5);
+                    }
+                }
+
+                // Blend with background color if needed
+                if (backgroundBlendFactor > 0)
+                {
+                    node.Shape.Color = BlendNodeColorWithBackgroundColor(baseNodeColor, canvasColor, backgroundBlendFactor);
+                    node.Shape.BorderColor = BlendNodeColorWithBackgroundColor(baseBorderColor, canvasColor, backgroundBlendFactor);
+                }
+                else
+                {
+                    node.Shape.Color = baseNodeColor;
+                    node.Shape.BorderColor = baseBorderColor;
+                }
 
                 // Calculate and set the gradient start and end points of the 3D shape front face and sides
                 (double lightDirectionX, double lightDirectionY) =
@@ -152,8 +201,17 @@ public abstract partial class DirectedGraph
                 (double normalizedLightDirectionX, double normalizedLightDirectionY) =
                     (lightDirectionX / lightDirectionMagnitude, lightDirectionY / lightDirectionMagnitude);
 
-                node.Shape.GradientStartColor = BlendNodeColorWithLightSourceColor(node.Shape.GradientStartColor, lightSourceColor, blendFactor);
-                node.Shape.BorderGradientStartColor = BlendNodeColorWithLightSourceColor(node.Shape.BorderGradientStartColor, lightSourceColor, blendFactor);
+                Color gradientStartColor = BlendNodeColorWithLightSourceColor(node.Shape.GradientStartColor, lightSourceColor, lightBlendFactor);
+                Color borderGradientStartColor = BlendNodeColorWithLightSourceColor(node.Shape.BorderGradientStartColor, lightSourceColor, lightBlendFactor);
+
+                if (backgroundBlendFactor > 0)
+                {
+                    gradientStartColor = BlendNodeColorWithBackgroundColor(gradientStartColor, canvasColor, backgroundBlendFactor);
+                    borderGradientStartColor = BlendNodeColorWithBackgroundColor(borderGradientStartColor, canvasColor, backgroundBlendFactor);
+                }
+
+                node.Shape.GradientStartColor = gradientStartColor;
+                node.Shape.BorderGradientStartColor = borderGradientStartColor;
 
                 node.Shape.SetNodeGradientPoints(frontFaceStartPoint: (node.Position.X - normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y - normalizedLightDirectionY * node.Shape.Radius * 0.5),
                                                  frontFaceEndPoint: (node.Position.X + normalizedLightDirectionX * node.Shape.Radius * 0.5, node.Position.Y + normalizedLightDirectionY * node.Shape.Radius * 0.5),
@@ -284,6 +342,32 @@ public abstract partial class DirectedGraph
             b = Math.Max(b, baseColor.B);
 
             return Color.FromArgb(baseColor.A, r, g, b);
+        }
+
+        /// <summary>
+        /// Blend the node's colour with the background color, creating a fade effect.
+        /// The blendFactor determines how much of the background color to blend in (0 = no blend, 1 = full background).
+        /// </summary>
+        /// <param name="nodeColor"></param>
+        /// <param name="backgroundColor"></param>
+        /// <param name="blendFactor"></param>
+        /// <returns></returns>
+        private static Color BlendNodeColorWithBackgroundColor(Color nodeColor,
+                                                               Color backgroundColor,
+                                                               double blendFactor)
+        {
+            // Clamp blend factor to valid range
+            blendFactor = Math.Clamp(blendFactor, 0, 1);
+
+            // Blend RGB values with the background color
+            byte r = (byte)Math.Clamp((nodeColor.R * (1 - blendFactor)) + (backgroundColor.R * blendFactor), 0, 255);
+            byte g = (byte)Math.Clamp((nodeColor.G * (1 - blendFactor)) + (backgroundColor.G * blendFactor), 0, 255);
+            byte b = (byte)Math.Clamp((nodeColor.B * (1 - blendFactor)) + (backgroundColor.B * blendFactor), 0, 255);
+
+            // Also fade the alpha channel to make nodes more transparent as they fade into background
+            byte alpha = (byte)Math.Clamp((nodeColor.A * (1 - blendFactor)) + (backgroundColor.A * blendFactor), 0, 255);
+
+            return Color.FromArgb(alpha, r, g, b);
         }
 
         /// <summary>
