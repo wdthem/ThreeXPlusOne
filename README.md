@@ -1,5 +1,9 @@
 # ThreeXPlusOne
 
+![GitHub issues](https://img.shields.io/github/issues/wdthem/ThreeXPlusOne)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/wdthem/ThreeXPlusOne)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/wdthem/ThreeXPlusOne)
+
 A .NET Console app that generates visualisations of the [Collatz Conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture) (aka 3x+1).
 
 ## What is the Collatz Conjecture?
